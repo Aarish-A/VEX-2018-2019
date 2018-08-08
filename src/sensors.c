@@ -21,8 +21,8 @@ void updateSensorOutputs()
 
 void updateSensorInput(tSensors sen)
 {
+	tHog();
 	gSensor[sen].lstValue = gSensor[sen].value;
-
 	int raw = gSensor[sen].rawValue = SensorValue[sen];
 
 	switch (gSensor[sen].mode)
@@ -38,6 +38,28 @@ void updateSensorInput(tSensors sen)
 		break;
 	}
 
+	//Update buffer holding sensor values for Potis and Encoders - buffer used for vel calc
+	if (SensorType[sen] == sensorPotentiometer || SensorType[sen] == sensorQuadEncoder)
+	{
+		sSensor& s = gSensor[sen];
+		unsigned long t = nPgmTime;
+		if (t > s.dataPointArr[s.arrHead].timestamp)
+		{
+			if (s.dataCount <= SENSOR_DATA_POINT_COUNT)
+			{
+				s.dataCount++;
+			}
+
+			s.arrHead = ( (s.arrHead+1) % SENSOR_DATA_POINT_COUNT );
+			s.dataPointArr[s.arrHead].value = s.value;
+			s.dataPointArr[s.arrHead].timestamp = t;
+
+			if (s.dataCount >= SENSOR_DATA_POINT_COUNT)
+				s.arrTail = ( (s.arrTail+1) % SENSOR_DATA_POINT_COUNT );
+		}
+	}
+	tRelease();
+
 #ifdef MOTOR_SENSOR_LOGS
 	if (_sensorDoDatalog)
 	{
@@ -48,8 +70,7 @@ void updateSensorInput(tSensors sen)
 		if (gSensor[sen].velDatalog != -1)
 		{
 			velocityCheck(sen);
-			if (gSensor[sen].velGood)
-				datalogAddValue(gSensor[sen].velDatalog, gSensor[sen].velocity * 1000);
+			datalogAddValue(gSensor[sen].velDatalog, gSensor[sen].velocity * 1000);
 		}
 	}
 #endif
@@ -119,46 +140,33 @@ void resetQuadratureEncoder(tSensors sen)
 void velocityCheck(tSensors sen)
 {
 	tHog();
-	unsigned long time = nPgmTime;
+	unsigned long t = nPgmTime;
 	sSensor& s = gSensor[sen];
-	for (ubyte i = 0; i < s.velCount; ++i)
-		if (s.velData[i].timestamp >= time)
-	{
-		if (i < SENSOR_VEL_POINT_COUNT - 1)
-			memmove(&s.velData[i], &s.velData[i + 1], sizeof(sSensorVelPoint) * (s.velCount - i - 1));
-		--i;
-		--s.velCount;
-	}
-	if (!s.velCount || time - s.velData[s.velCount - 1].timestamp >= 20)
-	{
-		int sensor = s.value;
-		if (s.velCount >= SENSOR_VEL_POINT_COUNT)
-		{
-			s.velCount = SENSOR_VEL_POINT_COUNT - 1;
-			memmove(&s.velData[0], &s.velData[1], sizeof(sSensorVelPoint) * (SENSOR_VEL_POINT_COUNT - 1));
-		}
-		sSensorVelPoint& data = gSensor[sen].velData[MIN(gSensor[sen].velCount++, SENSOR_VEL_POINT_COUNT - 1)];
-		data.value = sensor;
-		data.timestamp = time;
-		if (s.velCount > 1)
-		{
-			s.lstVelocity = s.velocity;
-			sSensorVelPoint& old = s.velData[0];
-			s.velocity = (float)(sensor - old.value) / (float)(time - old.timestamp);
-			s.velGood = true;
-		}
-	}
-	tRelease();
-}
 
-void velocityClear(tSensors sen)
-{
-	tHog();
-	writeDebugStreamLine("%d velocityClear %d", nPgmTime, sen);
-	gSensor[sen].velCount = 0;
-	gSensor[sen].velocity = gSensor[sen].lstVelocity = 0;
-	gSensor[sen].velGood = false;
-	velocityCheck(sen);
+	if (SensorType[sen] == sensorPotentiometer || SensorType[sen] == sensorQuadEncoder)
+	{
+		if(s.dataCount > 5)
+		{
+			unsigned long tDif = (s.dataPointArr[s.arrHead].timestamp - s.dataPointArr[s.arrTail].timestamp);
+			if( tDif <= 0 )
+			{
+				writeDebugStreamLine("%d SENSOR PORT%d VEL TIMESTAMP ERROR - head:%d t=%d, tail:%d t=%d", nPgmTime, sen - port1 + 1, s.arrHead, s.dataPointArr[s.arrHead].timestamp, s.arrTail, s.dataPointArr[s.arrTail].timestamp);
+			}
+			else
+			{
+				//Calc lst velocity
+				ubyte lstVelHead = ((s.arrHead)==0? (SENSOR_DATA_POINT_COUNT - 1):(s.arrHead-1));
+				s.lstVelocity = (float)(s.dataPointArr[lstVelHead].value - s.dataPointArr[s.arrTail].value) / (float)(s.dataPointArr[lstVelHead].timestamp - s.dataPointArr[s.arrTail].timestamp);
+				if (abs(s.lstVelocity) < 0.0035)
+					s.lstVelocity = 0;
+				//Calc velocity
+				s.velocity = (float)(s.dataPointArr[s.arrHead].value - s.dataPointArr[s.arrTail].value) / (float)(tDif)
+				if (abs(s.velocity) < 0.0035)
+					s.velocity = 0;
+			}
+		}
+	}
+
 	tRelease();
 }
 
@@ -185,8 +193,16 @@ void setupSensors()
 
 		gSensor[i].lstVelocity = 0;
 		gSensor[i].velocity = 0;
-		gSensor[i].velGood = false;
-		gSensor[i].velCount = 0;
+		//gSensor[i].velGood = false;
+
+		for (ubyte j = 0; j < SENSOR_DATA_POINT_COUNT; ++j)
+		{
+			gSensor[i].dataPointArr[j].timestamp = 0;
+			gSensor[i].dataPointArr[j].value = 0;
+		}
+		gSensor[i].arrHead = 0;
+		gSensor[i].arrTail = 0;
+		gSensor[i].dataCount = 0;
 
 #ifdef MOTOR_SENSOR_LOGS
 		gSensor[i].rawDatalog = -1;

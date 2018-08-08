@@ -1,3 +1,6 @@
+#define DATALOG_TURN -1
+#define DATALOG_SWEEP -1
+
 /* Enumerations */
 typedef enum _stopType
 {
@@ -17,16 +20,18 @@ typedef enum _mttMode
 sVector gTargetLast;
 
 /* Functions */
-void moveToTargetSimple(float y, float x, float ys, float xs, byte power, byte startPower, float maxErrX, float decelEarly, byte decelPower, float dropEarly = 0, tStopType stopType = stopSoft | stopHarsh, tMttMode mode = mttProportional, bool velSafety = false);
-void moveToTargetDisSimple(float a, float d, float ys, float xs, byte power, byte startPower, float maxErrX, float decelEarly, byte decelPower, float dropEarly = 0, tStopType stopType = stopSoft | stopHarsh, tMttMode mode = mttProportional, bool velSafety = false);
-void turnToAngleNewAlg(float a, tTurnDir turnDir, float fullRatio, byte coastPower, float stopOffsetDeg, bool mogo = false, bool harshStop = true, bool velSafety = false);
-void turnToTargetNewAlg(float y, float x, tTurnDir turnDir, float fullRatio, byte coastPower, float stopOffsetDeg, bool mogo = false, bool harshStop = true, float offset = 0, bool velSafety = false);
-void sweepTurnToTarget(float y, float x, float a, float r, tTurnDir turnDir, byte power, bool slow = true, bool velSafety = false);
+void moveToTargetSimple(float x, float y, float xs, float ys, byte power, byte breakPower);
+void moveToTarget(float x, float y, float xs, float ys, byte power, byte startPower, float maxErrX, float decelEarly, byte decelPower, float dropEarly = 0, tStopType stopType = stopSoft | stopHarsh, tMttMode mode = mttProportional);
+void moveToTargetDis(float a, float d, float xs, float ys, byte power, byte startPower, float maxErrX, float decelEarly, byte decelPower, float dropEarly = 0, tStopType stopType = stopSoft | stopHarsh, tMttMode mode = mttProportional);
+void turnToAngleNewAlg(float a, tTurnDir turnDir, float fullRatio, byte coastPower, float stopOffsetDeg, bool mogo = false, bool harshStop = true);
+void turnToTargetNewAlg(float x, float y, tTurnDir turnDir, float fullRatio, byte coastPower, float stopOffsetDeg, bool mogo = false, bool harshStop = true, float offset = 0);
+void sweepTurnToTarget(float x, float y, float a, float r, tTurnDir turnDir, byte power, bool slow = true);
 
-MAKE_ASYNC_ONLY_MACHINE_5(autoSimple, ;,
-13, (moveToTargetSimple, float, float, float, float, byte, byte, float, float, byte, float, tStopType, tMttMode, bool), ;,
-13, (moveToTargetDisSimple, float, float, float, float, byte, byte, float, float, byte, float, tStopType, tMttMode, bool), ;,
-8, (turnToAngleNewAlg, float, tTurnDir, float, byte, float, bool, bool, bool), ;,
-10, (turnToTargetNewAlg, float, float, tTurnDir, float, byte, float, bool, bool, float, bool), ;,
-8, (sweepTurnToTarget, float, float, float, float, tTurnDir, byte, bool, bool), ;
-)
+ADD_FUNCS_TO_MACHINE_6(drive, moveToTargetSimple, moveToTarget, moveToTargetDis, turnToAngleNewAlg, turnToTargetNewAlg, sweepTurnToTarget);
+
+PREP_FUNC_STATE_4(moveToTargetSimple, float, float, byte, bool);
+PREP_FUNC_STATE_12(moveToTarget, float, float, float, float, byte, byte, float, float, byte, float, tStopType, tMttMode);
+PREP_FUNC_STATE_12(moveToTargetDis, float, float, float, float, byte, byte, float, float, byte, float, tStopType, tMttMode);
+PREP_FUNC_STATE_7(turnToAngleNewAlg, float, tTurnDir, float, byte, float, bool, bool);
+PREP_FUNC_STATE_9(turnToTargetNewAlg, float, float, tTurnDir, float, byte, float, bool, bool, float);
+PREP_FUNC_STATE_7(sweepTurnToTarget, float, float, float, float, tTurnDir, byte, bool);

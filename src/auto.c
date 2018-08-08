@@ -62,6 +62,22 @@ void resetVelocity(sVel& velocity, sPos& position)
 	velocity.lstChecked = nPgmTime;
 }
 
+bool facing(float targX, float targY)
+{
+	float gAngleTo = aTan2((targX-gPosition.x), (targY-gPosition.Y));
+	writeDebugStreamLine("(%f,%f)RobotPos%f, PosTo%f", gPosition.x, gPosition.y, gPosition.a, gAngleTo);
+	//If the robot is not within +-45 deg of target, drop out
+	if ( abs( (fmod(gPosition.a,365)-fmod(gAngleTo,365)) ) > (pi/4) ) //< (gAngleTo - pi/4) || gPosition.a > (gAngleTo + pi/4) )
+	{
+		writeDebugStreamLine("MOVEMENT ERROR - WRONG DIR. RobotPos%f, PosTo%f", gPosition.a, gAngleTo);
+		return false;
+	}
+	else
+	{
+		return true;
+	}
+}
+
 void trackVelocity(sPos position, sVel& velocity)
 {
 	unsigned long curTime = nPgmTime;
@@ -114,6 +130,15 @@ float getLengthOfLine(sLine line)
 	float x = line.p2.x - line.p1.x;
 	float y = line.p2.y - line.p1.y;
 	return sqrt(x * x + y * y);
+}
+
+void offsetPos(float& x, float& y, float offset)
+{
+	x = offset * sin(gPosition.a);
+	y = offset * cos(gPosition.a);
+
+	x += gPosition.x;
+	y += gPosition.y;
 }
 
 task trackPositionTask()
@@ -186,7 +211,7 @@ void applyHarshStop()
 	updateMotors();
 }
 
-void resetPositionFull(sPos& position, float y, float x, float a)
+void resetPositionFull(sPos& position, float x, float y, float a)
 {
 	tStop(trackPositionTask);
 	writeDebugStreamLine("Resetting position %f %f %f | %f %f %f", position.y, position.x, radToDeg(fmod(gPosition.a, PI * 2)), y, x, radToDeg(fmod(a, PI * 2)));
