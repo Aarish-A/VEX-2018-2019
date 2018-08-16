@@ -62,22 +62,30 @@ void resetVelocity(sVel& velocity, sPos& position)
 	velocity.lstChecked = nPgmTime;
 }
 
-bool facing(float targX, float targY)
+byte facing(float targX, float targY, float offset)
 {
-	float yOffset = (targY-gPosition.Y);
-	float xOffset = (targX-gPosition.x);
-	float gAngleTo = aTan2(xOffset,yOffset);
+	float curX = gPosition.x;
+	float curY = gPosition.y;
+	float curA = simplifyAngle(gPosition.a);
+	float gAngleToFront = aTan2((targX-curX),(targY-curY));
+	float gAngleToBack = aTan2((curX-targX),(curY-targY));
 
-	writeDebugStreamLine("(%f,%f)RobotPos%f, PosTo%f", gPosition.x, gPosition.y, gPosition.a, gAngleTo);
-	//If the robot is not within +-45 deg of target, drop out
-	if ( !yOffset || abs( (fmod(gPosition.a,PI*2)-fmod(gAngleTo,PI*2)) ) > (pi/4) ) //< (gAngleTo - pi/4) || gPosition.a > (gAngleTo + pi/4) )
+	writeDebugStreamLine("(%f,%f)RobotPos%f, PosTo%f", gPosition.x, gPosition.y, gPosition.a, gAngleToFront);
+	//Check if the front, or back of robot is facing the target
+	if ( abs( (curA-gAngleToFront) ) < offset ) //< (gAngleTo - pi/4) || gPosition.a > (gAngleTo + pi/4) )
 	{
-		writeDebugStreamLine("MOVEMENT ERROR - WRONG DIR. RobotPos%f, PosTo%f", gPosition.a, gAngleTo);
-		return false;
+		writeDebugStreamLine("Front facing target (%f, %f)", targX, targY);
+		return facingFront;
+	}
+	else if ( abs( (curA-gAngleToBack) ) < offset )
+	{
+		writeDebugStreamLine("Back facing target (%f, %f)", targX, targY);
+		return facingBack;
 	}
 	else
 	{
-		return true;
+		writeDebugStreamLine("MOVEMENT ERROR - WRONG DIR. RobotPos%f, PosTo%f", gPosition.a, gAngleToFront);
+		return facingNone;
 	}
 }
 

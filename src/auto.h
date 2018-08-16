@@ -26,6 +26,13 @@ typedef enum _turnDir
 	ch
 } tTurnDir;
 
+typedef enum _facingDir
+{
+	facingNone,
+	facingFront,
+	facingBack
+}
+
 /* Structures */
 typedef struct _pos
 {
@@ -76,7 +83,7 @@ void polarToVector(sPolar& polar, sVector& vector); // Convert a polar vector to
 float getAngleOfLine(sLine line);
 float getLengthOfLine(sLine line);
 void offsetPos(float& x, float& y, float offset);
-bool facing(float targX, float targY); //Check to see if robot is facing target
+byte facing(float targX, float targY, float offset = (PI/4)); //Check to see if robot is facing target
 task trackPositionTask();
 task autoMotorSensorUpdateTask(); // Update motors and sensors during auto
 void applyHarshStop();

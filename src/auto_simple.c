@@ -1,8 +1,14 @@
 /* Functions */
 void moveToTargetSimple(float x, float y, byte power, bool harshStop)
 {
-	if (facing(x,y))
+	byte facingDir = facing(x,y,(pi/4))
+	if (facingDir)
 	{
+		if (facingDir==facingFront)
+			power = abs(power);
+		else if (facingDir==facingBack)
+			power = -1 * abs(power);
+
 		float offset = 3.0;
 
 		const float base = 1.8;

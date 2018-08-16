@@ -19,6 +19,12 @@ float nearAngle(float angle, float reference)
 	return round((reference - angle) / (2 * PI)) * (2 * PI) + angle;
 }
 
+float simplifyAngle(float angle)
+{
+	float baseAng = fmod(gPosition.a,PI*2);
+	return (baseAng > PI)? (baseAng - PI*2) : baseAng;
+}
+
 void stopAllButCurrentTasks()
 {
 	// DO NOT MAKE A FOR LOOP, WILL NOT WORK
