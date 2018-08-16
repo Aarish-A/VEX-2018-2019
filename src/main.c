@@ -91,7 +91,7 @@ task driveSet()
 			{
 				float startVelL, startVelR;
 
-				const float velThresh = 0.01;
+				const float velThresh = 0.015;
 				velocityCheck(trackL);
 				velocityCheck(trackR);
 					float left = gSensor[trackL].velocity;
@@ -110,7 +110,7 @@ task driveSet()
 					}
 					else
 					{
-						setDrive((abs(left) > velThresh? (LIM_TO_VAL(sgn(left) * -70, 15)) : 0), (abs(right) > velThresh? (LIM_TO_VAL(sgn(right) * -70, 15)) : 0) );
+						setDrive((abs(left) > velThresh? (LIM_TO_VAL(sgn(left) * -50, 12)) : 0), (abs(right) > velThresh? (LIM_TO_VAL(sgn(right) * -50, 12)) : 0) );
 					}
 					driveStateCycCount++;
 
@@ -130,8 +130,8 @@ task driveSet()
 				break;
 			}
 			//ADD_FUNC_TO_SWITCH_4(driveFuncTest, drive, driveBreak, driveIdle)
-			ADD_FUNC_TO_SWITCH_4(moveToTargetSimple, drive, driveBreak, driveIdle)
-			ADD_FUNC_TO_SWITCH_12(moveToTarget, drive, driveBreak, driveIdle)
+			ADD_FUNC_TO_SWITCH_4(moveToTargetSimple, drive, driveIdle, driveIdle)
+			ADD_FUNC_TO_SWITCH_12(moveToTarget, drive, driveIdle, driveIdle)
 			ADD_FUNC_TO_SWITCH_12(moveToTargetDis, drive, driveBreak, driveIdle)
 			ADD_FUNC_TO_SWITCH_7(turnToAngleNewAlg, drive, driveBreak, driveIdle)
 			ADD_FUNC_TO_SWITCH_9(turnToTargetNewAlg, drive, driveBreak, driveIdle)

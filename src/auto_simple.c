@@ -30,19 +30,19 @@ void moveToTargetSimple(float x, float y, byte power, bool harshStop)
 			currentLocalVector.x = gPosition.x - x;
 			currentLocalVector.y = gPosition.y - y;
 
-			if (currentLocalVector.y <= offset)
-				offset = currentLocalVector.y - 0.2;
+			if (abs(currentLocalVector.y) <= offset)
+				offset = abs(currentLocalVector.y) - 0.2;
 
 			offsetPos(turnGlobalVector.x, turnGlobalVector.y, offset);
 
 			turnLocalVector.x = turnGlobalVector.x - x;
 			//turnLocalVector.y = turnGlobalVector.y - y;
-			LOG(drive)("gTurn:%f, lTurn:%f", turnGlobalVector.x, turnLocalVector.x);
 			throttle = power;
 			turn = LIM_TO_VAL(pow(base, fabs(turnLocalVector.x)), 127);
 
 			//if (driveStateCycCount == 1)
 			dir = sgn(turnLocalVector.x);
+			LOG(drive)("gTurn:%f, lTurn:%f, dir:%d, turn:%d", turnGlobalVector.x, turnLocalVector.x, dir, turn);
 
 			//if (abs(turnLocalVector.x) < 2) //when within two inches of target, go straight
 				//dir = 0;
@@ -53,15 +53,18 @@ void moveToTargetSimple(float x, float y, byte power, bool harshStop)
 				{
 					left = throttle;
 					right = throttle+turn;
+					break;
 				}
 				case(-1): //left
 				{
 					right = throttle;
 					left = throttle+turn;
+					break;
 				}
 				case(0): //straight
 				{
 					right = left = throttle;
+					break;
 				}
 			}
 			setDrive(left,right);
