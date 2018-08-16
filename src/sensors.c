@@ -147,22 +147,36 @@ void velocityCheck(tSensors sen)
 	{
 		if(s.dataCount > 5)
 		{
-			unsigned long tDif = (s.dataPointArr[s.arrHead].timestamp - s.dataPointArr[s.arrTail].timestamp);
-			if( tDif <= 0 )
+			bool outOfBounds = false;
+			if (s.arrHead >= SENSOR_DATA_POINT_COUNT)
 			{
-				writeDebugStreamLine("%d SENSOR PORT%d VEL TIMESTAMP ERROR - head:%d t=%d, tail:%d t=%d", nPgmTime, sen - port1 + 1, s.arrHead, s.dataPointArr[s.arrHead].timestamp, s.arrTail, s.dataPointArr[s.arrTail].timestamp);
+				writeDebugStreamLine("%d SENSOR PORT%d arrHead OUT OF BOUNDS:%d", nPgmTime, sen - port1 + 1, s.arrHead);
+				outOfBounds = true;
 			}
-			else
+			if (s.arrTail >= SENSOR_DATA_POINT_COUNT)
 			{
-				//Calc lst velocity
-				ubyte lstVelHead = ((s.arrHead)==0? (SENSOR_DATA_POINT_COUNT - 1):(s.arrHead-1));
-				s.lstVelocity = (float)(s.dataPointArr[lstVelHead].value - s.dataPointArr[s.arrTail].value) / (float)(s.dataPointArr[lstVelHead].timestamp - s.dataPointArr[s.arrTail].timestamp);
-				if (abs(s.lstVelocity) < 0.0035)
-					s.lstVelocity = 0;
-				//Calc velocity
-				s.velocity = (float)(s.dataPointArr[s.arrHead].value - s.dataPointArr[s.arrTail].value) / (float)(tDif)
-				if (abs(s.velocity) < 0.0035)
-					s.velocity = 0;
+				writeDebugStreamLine("%d SENSOR PORT%d arrTail OUT OF BOUNDS:%d", nPgmTime, sen - port1 + 1, s.arrTail);
+				outOfBounds = true;
+			}
+			if (!outOfBounds)
+			{
+				unsigned long tDif = (s.dataPointArr[s.arrHead].timestamp - s.dataPointArr[s.arrTail].timestamp);
+				if( tDif <= 0 )
+				{
+					writeDebugStreamLine("%d SENSOR PORT%d VEL TIMESTAMP ERROR - head:%d t=%d, tail:%d t=%d", nPgmTime, sen - port1 + 1, s.arrHead, s.dataPointArr[s.arrHead].timestamp, s.arrTail, s.dataPointArr[s.arrTail].timestamp);
+				}
+				else
+				{
+					//Calc lst velocity
+					ubyte lstVelHead = ((s.arrHead)==0? (SENSOR_DATA_POINT_COUNT - 1):(s.arrHead-1));
+					s.lstVelocity = (float)(s.dataPointArr[lstVelHead].value - s.dataPointArr[s.arrTail].value) / (float)(s.dataPointArr[lstVelHead].timestamp - s.dataPointArr[s.arrTail].timestamp);
+					if (abs(s.lstVelocity) < 0.0035)
+						s.lstVelocity = 0;
+					//Calc velocity
+					s.velocity = (float)(s.dataPointArr[s.arrHead].value - s.dataPointArr[s.arrTail].value) / (float)(tDif)
+					if (abs(s.velocity) < 0.0035)
+						s.velocity = 0;
+				}
 			}
 		}
 	}

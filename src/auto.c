@@ -64,10 +64,13 @@ void resetVelocity(sVel& velocity, sPos& position)
 
 bool facing(float targX, float targY)
 {
-	float gAngleTo = aTan2((targX-gPosition.x), (targY-gPosition.Y));
+	float yOffset = (targY-gPosition.Y);
+	float xOffset = (targX-gPosition.x);
+	float gAngleTo = aTan2(xOffset,yOffset);
+
 	writeDebugStreamLine("(%f,%f)RobotPos%f, PosTo%f", gPosition.x, gPosition.y, gPosition.a, gAngleTo);
 	//If the robot is not within +-45 deg of target, drop out
-	if ( abs( (fmod(gPosition.a,365)-fmod(gAngleTo,365)) ) > (pi/4) ) //< (gAngleTo - pi/4) || gPosition.a > (gAngleTo + pi/4) )
+	if ( !yOffset || abs( (fmod(gPosition.a,PI*2)-fmod(gAngleTo,PI*2)) ) > (pi/4) ) //< (gAngleTo - pi/4) || gPosition.a > (gAngleTo + pi/4) )
 	{
 		writeDebugStreamLine("MOVEMENT ERROR - WRONG DIR. RobotPos%f, PosTo%f", gPosition.a, gAngleTo);
 		return false;

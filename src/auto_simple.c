@@ -67,7 +67,10 @@ void moveToTargetSimple(float x, float y, byte power, bool harshStop)
 		if (harshStop)
 			applyHarshStop();
 	}
-
+	else
+	{
+		LOG(drive)("%d Move Simple Exit - Not Facing", npgmtime);
+	}
 }
 
 void moveToTarget(float x, float y, float xs, float ys, byte power, byte startPower, float maxErrX, float decelEarly, byte decelPower, float dropEarly, tStopType stopType, tMttMode mode)
