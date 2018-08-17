@@ -20,7 +20,7 @@ typedef enum _mttMode
 sVector gTargetLast;
 
 /* Functions */
-void moveToTargetSimple(float x, float y, float xs, float ys, byte power, byte breakPower);
+void moveToTargetSimple(float x, float y, byte power, bool correction, bool harshStop);
 void moveToTarget(float x, float y, float xs, float ys, byte power, byte startPower, float maxErrX, float decelEarly, byte decelPower, float dropEarly = 0, tStopType stopType = stopSoft | stopHarsh, tMttMode mode = mttProportional);
 void moveToTargetDis(float a, float d, float xs, float ys, byte power, byte startPower, float maxErrX, float decelEarly, byte decelPower, float dropEarly = 0, tStopType stopType = stopSoft | stopHarsh, tMttMode mode = mttProportional);
 void turnToAngleNewAlg(float a, tTurnDir turnDir, float fullRatio, byte coastPower, float stopOffsetDeg, bool mogo = false, bool harshStop = true);
@@ -29,7 +29,7 @@ void sweepTurnToTarget(float x, float y, float a, float r, tTurnDir turnDir, byt
 
 ADD_FUNCS_TO_MACHINE_6(drive, moveToTargetSimple, moveToTarget, moveToTargetDis, turnToAngleNewAlg, turnToTargetNewAlg, sweepTurnToTarget);
 
-PREP_FUNC_STATE_4(moveToTargetSimple, float, float, byte, bool);
+PREP_FUNC_STATE_5(moveToTargetSimple, float, float, byte, bool, bool);
 PREP_FUNC_STATE_12(moveToTarget, float, float, float, float, byte, byte, float, float, byte, float, tStopType, tMttMode);
 PREP_FUNC_STATE_12(moveToTargetDis, float, float, float, float, byte, byte, float, float, byte, float, tStopType, tMttMode);
 PREP_FUNC_STATE_7(turnToAngleNewAlg, float, tTurnDir, float, byte, float, bool, bool);

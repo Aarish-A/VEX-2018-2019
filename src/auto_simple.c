@@ -1,13 +1,10 @@
 /* Functions */
-void moveToTargetSimple(float x, float y, byte power, bool harshStop)
+void moveToTargetSimple(float x, float y, byte power, bool correction, bool harshStop)
 {
 	byte facingDir = facing(x,y,(pi/4))
 	if (facingDir)
 	{
-		if (facingDir==facingFront)
-			power = abs(power);
-		else if (facingDir==facingBack)
-			power = -1 * abs(power);
+		power = abs(power) * facingDir; //facingDir is -1 if we need to go backwards, 1 if we are going forwards
 
 		float offset = 3.0;
 
@@ -27,46 +24,56 @@ void moveToTargetSimple(float x, float y, byte power, bool harshStop)
 		{
 			VEL_CHECK_INC(drive, velLocalY);
 
-			currentLocalVector.x = gPosition.x - x;
-			currentLocalVector.y = gPosition.y - y;
-
-			if (abs(currentLocalVector.y) <= offset)
-				offset = abs(currentLocalVector.y) - 0.2;
-
-			offsetPos(turnGlobalVector.x, turnGlobalVector.y, offset);
-
-			turnLocalVector.x = turnGlobalVector.x - x;
-			//turnLocalVector.y = turnGlobalVector.y - y;
 			throttle = power;
-			turn = LIM_TO_VAL(pow(base, fabs(turnLocalVector.x)), 127);
 
-			//if (driveStateCycCount == 1)
-			dir = sgn(turnLocalVector.x);
-			LOG(drive)("gTurn:%f, lTurn:%f, dir:%d, turn:%d", turnGlobalVector.x, turnLocalVector.x, dir, turn);
-
-			//if (abs(turnLocalVector.x) < 2) //when within two inches of target, go straight
-				//dir = 0;
-
-			switch(dir)
+			if (correction)
 			{
-				case (1): //right
+				currentLocalVector.x = gPosition.x - x;
+				currentLocalVector.y = gPosition.y - y;
+
+				if (abs(currentLocalVector.y) <= offset)
+					offset = abs(currentLocalVector.y) - 0.2;
+
+				offsetPos(turnGlobalVector.x, turnGlobalVector.y, offset);
+
+				turnLocalVector.x = turnGlobalVector.x - x;
+				//turnLocalVector.y = turnGlobalVector.y - y;
+
+				turn = LIM_TO_VAL(pow(base, fabs(turnLocalVector.x)), 127);
+
+				//if (driveStateCycCount == 1)
+				dir = sgn(turnLocalVector.x);
+				LOG(drive)("gTurn:%f, lTurn:%f, dir:%d, turn:%d", turnGlobalVector.x, turnLocalVector.x, dir, turn);
+
+				//if (abs(turnLocalVector.x) < 2) //when within two inches of target, go straight
+					//dir = 0;
+
+				switch(dir)
 				{
-					left = throttle;
-					right = throttle+turn;
-					break;
-				}
-				case(-1): //left
-				{
-					right = throttle;
-					left = throttle+turn;
-					break;
-				}
-				case(0): //straight
-				{
-					right = left = throttle;
-					break;
+					case (1): //right
+					{
+						left = throttle;
+						right = throttle+turn;
+						break;
+					}
+					case(-1): //left
+					{
+						right = throttle;
+						left = throttle+turn;
+						break;
+					}
+					case(0): //straight
+					{
+						right = left = throttle;
+						break;
+					}
 				}
 			}
+			else
+			{
+				left = right = throttle;
+			}
+
 			setDrive(left,right);
 
 			LOG(drive)("offset:%f, l:%d r:%d, throttle:%d, turn:%d", turnLocalVector.x, left, right, throttle, turn);
