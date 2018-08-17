@@ -28,9 +28,9 @@ typedef enum _turnDir
 
 typedef enum _facingDir
 {
-	facingNone,
-	facingFront,
-	facingBack
+	facingBack = -1,
+	facingNone = 0,
+	facingFront = 1
 }
 
 /* Structures */
