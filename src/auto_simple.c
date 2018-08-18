@@ -29,7 +29,7 @@ void moveToTargetSimple(float x, float y, byte power, tMttMode mode, bool correc
 		{
 			VEL_CHECK_INC(drive, velLocalY);
 
-			switch (tMttMode)
+			switch (mode)
 			{
 				case mttSimple:
 				{

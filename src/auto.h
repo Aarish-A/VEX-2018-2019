@@ -36,6 +36,10 @@ typedef enum _facingDir
 /* Structures */
 typedef struct _pos
 {
+	int leftStart;
+	int rightStart;
+	int backStart;
+
 	float a;
 	float y;
 	float x;
@@ -87,9 +91,14 @@ byte facing(float targX, float targY, float offset = (PI/4)); //Check to see if 
 task trackPositionTask();
 task autoMotorSensorUpdateTask(); // Update motors and sensors during auto
 void applyHarshStop();
-void resetPositionFull(sPos& position, float x, float y, float a); // Reset the position to a desired value and starts tracking
+void resetPositionFull(sPos& position, sPos& positionFive, sPos& positionTen, float x, float y, float a);
 
 /* Variables */
 unsigned long gAutoTime = 0;
 sPos gPosition;
+sPos gPositionFive;
+sPos gPositionTen;
+
 sVel gVelocity;
+sVel gVelocityFive;
+sVel gVelocityTen;

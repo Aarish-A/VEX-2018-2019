@@ -71,8 +71,8 @@ CREATE_MACHINE_3(drive, trackL, Idle, Break, Manual, float, Vel, int, Power)
 
 task driveSet()
 {
-	bool autoLogs = 1;
-	driveLogs = 1;
+	bool autoLogs = 0;
+	driveLogs = 0;
 
 	sCycleData drive;
 	initCycle(drive, 10, "drive");
@@ -316,7 +316,7 @@ sCycleData arm;
 initCycle(arm, 10, "arm");
 while(true)
 {
-	armLogs = 1;
+	armLogs = 0;
 
 	switch (armState)
 	{
@@ -555,7 +555,7 @@ if (RISING(BTN_MOBILE_MIDDLE))
 
 void startTasks()
 {
-	resetPositionFull(gPosition, 0, 0, 0);
+	resetPositionFull(gPosition, gPositionFive, gPositionTen, 0, 0, 0);
 
 	tStart(driveSet);
 	tStart(liftSet);
@@ -567,6 +567,8 @@ void startTasks()
 void stopTasks()
 {
 	tStop(trackPositionTask);
+	tStop(trackPositionTaskFive);
+	tStop(trackPositionTaskTen);
 
 	tStop(driveSet);
 	tStop(liftSet);

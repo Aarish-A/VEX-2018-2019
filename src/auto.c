@@ -5,6 +5,10 @@ void trackPosition(int left, int right, int back, sPos& position)
 	float R = (right - position.rightLst) * SPIN_TO_IN_LR; // The amount the right side of the robot moved
 	float S = (back - position.backLst) * SPIN_TO_IN_S; // The amount the back side of the robot moved
 
+	float LTurn = (left - position.leftStart) * SPIN_TO_IN_LR; // The amount the left side of the robot moved since the beginning
+	float RTurn = (right - position.rightStart) * SPIN_TO_IN_LR; // The amount the right side of the robot moved since the beginning
+	//float STurn = (back - position.backStart) * SPIN_TO_IN_S; // The amount the back side of the robot moved has moved since the beginning
+
 	// Update the last values
 	position.leftLst = left;
 	position.rightLst = right;
@@ -42,7 +46,7 @@ void trackPosition(int left, int right, int back, sPos& position)
 	position.y += h2 * -sinP; // -sin(x) = sin(-x)
 	position.x += h2 * cosP; // cos(x) = cos(-x)
 
-	position.a += a;
+	position.a = (LTurn - RTurn) / (L_DISTANCE_IN + R_DISTANCE_IN);
 }
 
 void resetPosition(sPos& position)
@@ -160,8 +164,37 @@ task trackPositionTask()
 		updateSensorInput(trackR);
 		updateSensorInput(trackB);
 		trackPosition(gSensor[trackL].value, gSensor[trackR].value, gSensor[trackB].value, gPosition);
+		writeDebugStreamLine("%d 1ms: (%f, %f) %f", npgmtime, gPosition.x, gPosition.y, gPosition.a);
 		trackVelocity(gPosition, gVelocity);
 		sleep(1);
+	}
+}
+
+task trackPositionTaskFive()
+{
+	while (true)
+	{
+		updateSensorInput(trackL);
+		updateSensorInput(trackR);
+		updateSensorInput(trackB);
+		trackPosition(gSensor[trackL].value, gSensor[trackR].value, gSensor[trackB].value, gPositionFive);
+		writeDebugStreamLine("%d 5ms: (%f, %f) %f", npgmtime, gPositionFive.x, gPositionFive.y, gPositionFive.a);
+		trackVelocity(gPositionFive, gVelocityFive);
+		sleep(5);
+	}
+}
+
+task trackPositionTaskTen()
+{
+	while (true)
+	{
+		updateSensorInput(trackL);
+		updateSensorInput(trackR);
+		updateSensorInput(trackB);
+		trackPosition(gSensor[trackL].value, gSensor[trackR].value, gSensor[trackB].value, gPositionTen);
+		writeDebugStreamLine("%d 10ms: (%f, %f) %f", npgmtime, gPositionTen.x, gPositionTen.y, gPositionTen.a);
+		trackVelocity(gPositionTen, gVelocityTen);
+		sleep(10);
 	}
 }
 
@@ -222,18 +255,35 @@ void applyHarshStop()
 	updateMotors();
 }
 
-void resetPositionFull(sPos& position, float x, float y, float a)
+void resetPositionFull(sPos& position, sPos& positionFive, sPos& positionTen, float x, float y, float a)
 {
 	tStop(trackPositionTask);
-	writeDebugStreamLine("Resetting position %f %f %f | %f %f %f", position.y, position.x, radToDeg(fmod(gPosition.a, PI * 2)), y, x, radToDeg(fmod(a, PI * 2)));
+	tStop(trackPositionTaskFive);
+	tStop(trackPositionTaskTen);
+
+	//writeDebugStreamLine("Resetting position %f %f %f | %f %f %f", position.y, position.x, radToDeg(fmod(gPosition.a, PI * 2)), y, x, radToDeg(fmod(a, PI * 2)));
+
 	resetPosition(position);
+	resetPosition(positionFive);
+	resetPosition(positionTen);
 
 	resetQuadratureEncoder(trackL);
 	resetQuadratureEncoder(trackR);
 	resetQuadratureEncoder(trackB);
 
-	position.y = y;
-	position.x = x;
-	position.a = a;
+	updateSensorInput(trackL);
+	updateSensorInput(trackR);
+	updateSensorInput(trackB);
+
+	positionFive.leftStart = positionTen.leftStart = position.leftStart = gSensor[trackL].value;
+	positionFive.rightStart = positionTen.rightStart = position.rightStart = gSensor[trackR].value;
+	positionFive.backStart = positionTen.backStart = position.backStart = gSensor[trackB].value;
+
+	positionFive.y = positionTen.y = position.y = y;
+	positionFive.x = positionTen.x = position.x = x;
+	positionFive.a = positionTen.a = position.a = a;
+
 	tStart(trackPositionTask);
+	tStart(trackPositionTaskFive);
+	tStart(trackPositionTaskTen);
 }
