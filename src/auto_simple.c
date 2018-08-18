@@ -1,15 +1,12 @@
 /* Functions */
-void moveToTargetSimple(float x, float y, byte power, bool correction, bool harshStop)
+void moveToTargetSimple(float x, float y, byte power, tMttMode mode, bool correction, bool harshStop)
 {
 	byte facingDir = facing(x,y,(pi/4))
 	if (facingDir)
 	{
 		power = abs(power) * facingDir; //facingDir is -1 if we need to go backwards, 1 if we are going forwards
 
-		float offset = 3.0;
-
-		const float base = 1.8;
-		const float kP = -5.0;
+		//General Variables
 		word throttle, turn, left, right;
 		byte dir;
 
@@ -20,11 +17,34 @@ void moveToTargetSimple(float x, float y, byte power, bool correction, bool hars
 		sVector turnLocalVector;
 		sPolar turnLocalPolar;
 
+		//Drive Variables
+		const float propKP = -6.0;
+
+		//Turn Variables
+		float offset = 3.0;
+		const float turnBase = 1.8;
+		const float turnKP = -5.0;
+
 		do
 		{
 			VEL_CHECK_INC(drive, velLocalY);
 
-			throttle = power;
+			switch (tMttMode)
+			{
+				case mttSimple:
+				{
+					if (abs(currentLocalVector.y) > 3)
+						throttle = power;
+					else
+						throttle = 7;
+					break;
+				}
+				case mttProportional:
+				{
+					throttle = currentLocalVector.y * propKP;
+					break;
+				}
+			}
 
 			if (correction)
 			{
@@ -39,7 +59,7 @@ void moveToTargetSimple(float x, float y, byte power, bool correction, bool hars
 				turnLocalVector.x = turnGlobalVector.x - x;
 				//turnLocalVector.y = turnGlobalVector.y - y;
 
-				turn = LIM_TO_VAL(pow(base, fabs(turnLocalVector.x)), 127);
+				turn = LIM_TO_VAL(pow(turnBase, fabs(turnLocalVector.x)), 127) * facingDir;
 
 				//if (driveStateCycCount == 1)
 				dir = sgn(turnLocalVector.x);
@@ -79,9 +99,11 @@ void moveToTargetSimple(float x, float y, byte power, bool correction, bool hars
 			LOG(drive)("offset:%f, l:%d r:%d, throttle:%d, turn:%d", turnLocalVector.x, left, right, throttle, turn);
 
 			sleep(10);
-		} WHILE(drive, (abs(currentLocalVector.y) > 2) );
+		} WHILE(drive, (abs(currentLocalVector.y) > 0.5) );
+		LOG(drive)("%d (%f, %f)", npgmtime, gPosition.x, gPosition.y);
 		if (harshStop)
 			applyHarshStop();
+		LOG(drive)("%d After harsh stop:(%f, %f)", npgmtime, gPosition.x, gPosition.y);
 	}
 	else
 	{

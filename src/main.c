@@ -130,7 +130,7 @@ task driveSet()
 				break;
 			}
 			//ADD_FUNC_TO_SWITCH_4(driveFuncTest, drive, driveBreak, driveIdle)
-			ADD_FUNC_TO_SWITCH_5(moveToTargetSimple, drive, driveIdle, driveIdle)
+			ADD_FUNC_TO_SWITCH_6(moveToTargetSimple, drive, driveIdle, driveIdle)
 			ADD_FUNC_TO_SWITCH_12(moveToTarget, drive, driveIdle, driveIdle)
 			ADD_FUNC_TO_SWITCH_12(moveToTargetDis, drive, driveBreak, driveIdle)
 			ADD_FUNC_TO_SWITCH_7(turnToAngleNewAlg, drive, driveBreak, driveIdle)
@@ -145,7 +145,7 @@ void handleDrive()
 	if (RISING(BTN_DRIVE_TEST))
 	{
 		LOG(drive)("Btn_Drive_Test Pressed");
-		ASSIGN_FUNC_STATE_5(moveToTargetSimple, 0, 10, 60, true, true);
+		ASSIGN_FUNC_STATE_6(moveToTargetSimple, 0, 10, 60, mttProportional, true, true);
 		driveStateChange(drivemoveToTargetSimple, 2000, 0.3, velUp);
 		//ASSIGN_FUNC_STATE_4(driveFuncTest, 200, nPgmTime, -1, -1);
 		//driveStateChange(drivedriveFuncTest, 400, 0.01, velUp);
