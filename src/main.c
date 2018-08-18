@@ -146,7 +146,7 @@ void handleDrive()
 	{
 		LOG(drive)("Btn_Drive_Test Pressed");
 		ASSIGN_FUNC_STATE_6(moveToTargetSimple, 0, 10, 60, mttProportional, true, true);
-		driveStateChange(drivemoveToTargetSimple, 2000, 0.3, velUp);
+		driveStateChange(drivemoveToTargetSimple, 2000, 0.3, velEither);
 		//ASSIGN_FUNC_STATE_4(driveFuncTest, 200, nPgmTime, -1, -1);
 		//driveStateChange(drivedriveFuncTest, 400, 0.01, velUp);
 		//ASSIGN_FUNC_STATE_12(moveToTarget, 10, 0, 0, 0, 127, 0, 5, 10, 50, 0, stopSoft | stopHarsh, mttProportional);

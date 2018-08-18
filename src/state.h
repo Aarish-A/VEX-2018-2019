@@ -101,7 +101,8 @@ void machine##VelSafetyCheck (tVelType velType = velSensor) \
 			} \ 
 			case velLocalY: \ 
 			{ \ 
-				out = gVelocity.x * sin(gPosition.a) + gVelocity.y * cos(gPosition.a); \ 
+				out = ( gVelocity.x * (float) sin(gPosition.a) )+ (gVelocity.y * (float) cos(gPosition.a)); \ 
+				if(machine##Logs) writeDebugStreamLine("%d:"#machine"velSafety out locY= %f", npgmtime, out); \ 
 				goodVel = true; \ 
 				break; \ 
 			} \ 
@@ -120,7 +121,7 @@ void machine##VelSafetyCheck (tVelType velType = velSensor) \
 					if ( out < abs(machine##VelSafetyThresh) ) \
 					{ \
 						machine##VelSafetyCount ++; \
-						if(machine##Logs) writeDebugStreamLine("%d:"#machine"velSafety %f", npgmtime, out); \ 
+						if(machine##Logs) writeDebugStreamLine("%d:"#machine"velSafety trip(either)%f", npgmtime, out); \ 
 					} \
 				} \
 				else \
@@ -128,7 +129,7 @@ void machine##VelSafetyCheck (tVelType velType = velSensor) \
 					if ( (sgn(machine##VelSafetyThresh) == 1)? (out < machine##VelSafetyThresh) :  (out > machine##VelSafetyThresh) ) \
 					{ \
 						machine##VelSafetyCount ++; \
-						if(machine##Logs) writeDebugStreamLine("%d:"#machine"velSafety %f", npgmtime, out); \ 
+						if(machine##Logs) writeDebugStreamLine("%d:"#machine"velSafety trip(dir)%f", npgmtime, out); \ 
 					} \
 				} \
 		} \ 
@@ -222,7 +223,8 @@ void machine##VelSafetyCheck (tVelType velType = velSensor) \
 			} \ 
 			case velLocalY: \ 
 			{ \ 
-				out = gVelocity.x * sin(gPosition.a) + gVelocity.y * cos(gPosition.a); \ 
+				out = ( gVelocity.x * (float) sin(gPosition.a) )+ (gVelocity.y * (float) cos(gPosition.a)); \ 
+				if(machine##Logs) writeDebugStreamLine("%d:"#machine"velSafety out locY= %f", npgmtime, out); \ 
 				goodVel = true; \ 
 				break; \ 
 			} \ 
@@ -241,7 +243,7 @@ void machine##VelSafetyCheck (tVelType velType = velSensor) \
 					if ( out < abs(machine##VelSafetyThresh) ) \
 					{ \
 						machine##VelSafetyCount ++; \
-						if(machine##Logs) writeDebugStreamLine("%d:"#machine"velSafety %f", npgmtime, out); \ 
+						if(machine##Logs) writeDebugStreamLine("%d:"#machine"velSafety trip(either)%f", npgmtime, out); \ 
 					} \
 				} \
 				else \
@@ -249,7 +251,7 @@ void machine##VelSafetyCheck (tVelType velType = velSensor) \
 					if ( (sgn(machine##VelSafetyThresh) == 1)? (out < machine##VelSafetyThresh) :  (out > machine##VelSafetyThresh) ) \
 					{ \
 						machine##VelSafetyCount ++; \
-						if(machine##Logs) writeDebugStreamLine("%d:"#machine"velSafety %f", npgmtime, out); \ 
+						if(machine##Logs) writeDebugStreamLine("%d:"#machine"velSafety trip(dir)%f", npgmtime, out); \ 
 					} \
 				} \
 		} \ 
@@ -343,7 +345,8 @@ void machine##VelSafetyCheck (tVelType velType = velSensor) \
 			} \ 
 			case velLocalY: \ 
 			{ \ 
-				out = gVelocity.x * sin(gPosition.a) + gVelocity.y * cos(gPosition.a); \ 
+				out = ( gVelocity.x * (float) sin(gPosition.a) )+ (gVelocity.y * (float) cos(gPosition.a)); \ 
+				if(machine##Logs) writeDebugStreamLine("%d:"#machine"velSafety out locY= %f", npgmtime, out); \ 
 				goodVel = true; \ 
 				break; \ 
 			} \ 
@@ -362,7 +365,7 @@ void machine##VelSafetyCheck (tVelType velType = velSensor) \
 					if ( out < abs(machine##VelSafetyThresh) ) \
 					{ \
 						machine##VelSafetyCount ++; \
-						if(machine##Logs) writeDebugStreamLine("%d:"#machine"velSafety %f", npgmtime, out); \ 
+						if(machine##Logs) writeDebugStreamLine("%d:"#machine"velSafety trip(either)%f", npgmtime, out); \ 
 					} \
 				} \
 				else \
@@ -370,7 +373,7 @@ void machine##VelSafetyCheck (tVelType velType = velSensor) \
 					if ( (sgn(machine##VelSafetyThresh) == 1)? (out < machine##VelSafetyThresh) :  (out > machine##VelSafetyThresh) ) \
 					{ \
 						machine##VelSafetyCount ++; \
-						if(machine##Logs) writeDebugStreamLine("%d:"#machine"velSafety %f", npgmtime, out); \ 
+						if(machine##Logs) writeDebugStreamLine("%d:"#machine"velSafety trip(dir)%f", npgmtime, out); \ 
 					} \
 				} \
 		} \ 
@@ -464,7 +467,8 @@ void machine##VelSafetyCheck (tVelType velType = velSensor) \
 			} \ 
 			case velLocalY: \ 
 			{ \ 
-				out = gVelocity.x * sin(gPosition.a) + gVelocity.y * cos(gPosition.a); \ 
+				out = ( gVelocity.x * (float) sin(gPosition.a) )+ (gVelocity.y * (float) cos(gPosition.a)); \ 
+				if(machine##Logs) writeDebugStreamLine("%d:"#machine"velSafety out locY= %f", npgmtime, out); \ 
 				goodVel = true; \ 
 				break; \ 
 			} \ 
@@ -483,7 +487,7 @@ void machine##VelSafetyCheck (tVelType velType = velSensor) \
 					if ( out < abs(machine##VelSafetyThresh) ) \
 					{ \
 						machine##VelSafetyCount ++; \
-						if(machine##Logs) writeDebugStreamLine("%d:"#machine"velSafety %f", npgmtime, out); \ 
+						if(machine##Logs) writeDebugStreamLine("%d:"#machine"velSafety trip(either)%f", npgmtime, out); \ 
 					} \
 				} \
 				else \
@@ -491,7 +495,7 @@ void machine##VelSafetyCheck (tVelType velType = velSensor) \
 					if ( (sgn(machine##VelSafetyThresh) == 1)? (out < machine##VelSafetyThresh) :  (out > machine##VelSafetyThresh) ) \
 					{ \
 						machine##VelSafetyCount ++; \
-						if(machine##Logs) writeDebugStreamLine("%d:"#machine"velSafety %f", npgmtime, out); \ 
+						if(machine##Logs) writeDebugStreamLine("%d:"#machine"velSafety trip(dir)%f", npgmtime, out); \ 
 					} \
 				} \
 		} \ 
@@ -585,7 +589,8 @@ void machine##VelSafetyCheck (tVelType velType = velSensor) \
 			} \ 
 			case velLocalY: \ 
 			{ \ 
-				out = gVelocity.x * sin(gPosition.a) + gVelocity.y * cos(gPosition.a); \ 
+				out = ( gVelocity.x * (float) sin(gPosition.a) )+ (gVelocity.y * (float) cos(gPosition.a)); \ 
+				if(machine##Logs) writeDebugStreamLine("%d:"#machine"velSafety out locY= %f", npgmtime, out); \ 
 				goodVel = true; \ 
 				break; \ 
 			} \ 
@@ -604,7 +609,7 @@ void machine##VelSafetyCheck (tVelType velType = velSensor) \
 					if ( out < abs(machine##VelSafetyThresh) ) \
 					{ \
 						machine##VelSafetyCount ++; \
-						if(machine##Logs) writeDebugStreamLine("%d:"#machine"velSafety %f", npgmtime, out); \ 
+						if(machine##Logs) writeDebugStreamLine("%d:"#machine"velSafety trip(either)%f", npgmtime, out); \ 
 					} \
 				} \
 				else \
@@ -612,7 +617,7 @@ void machine##VelSafetyCheck (tVelType velType = velSensor) \
 					if ( (sgn(machine##VelSafetyThresh) == 1)? (out < machine##VelSafetyThresh) :  (out > machine##VelSafetyThresh) ) \
 					{ \
 						machine##VelSafetyCount ++; \
-						if(machine##Logs) writeDebugStreamLine("%d:"#machine"velSafety %f", npgmtime, out); \ 
+						if(machine##Logs) writeDebugStreamLine("%d:"#machine"velSafety trip(dir)%f", npgmtime, out); \ 
 					} \
 				} \
 		} \ 
@@ -706,7 +711,8 @@ void machine##VelSafetyCheck (tVelType velType = velSensor) \
 			} \ 
 			case velLocalY: \ 
 			{ \ 
-				out = gVelocity.x * sin(gPosition.a) + gVelocity.y * cos(gPosition.a); \ 
+				out = ( gVelocity.x * (float) sin(gPosition.a) )+ (gVelocity.y * (float) cos(gPosition.a)); \ 
+				if(machine##Logs) writeDebugStreamLine("%d:"#machine"velSafety out locY= %f", npgmtime, out); \ 
 				goodVel = true; \ 
 				break; \ 
 			} \ 
@@ -725,7 +731,7 @@ void machine##VelSafetyCheck (tVelType velType = velSensor) \
 					if ( out < abs(machine##VelSafetyThresh) ) \
 					{ \
 						machine##VelSafetyCount ++; \
-						if(machine##Logs) writeDebugStreamLine("%d:"#machine"velSafety %f", npgmtime, out); \ 
+						if(machine##Logs) writeDebugStreamLine("%d:"#machine"velSafety trip(either)%f", npgmtime, out); \ 
 					} \
 				} \
 				else \
@@ -733,7 +739,7 @@ void machine##VelSafetyCheck (tVelType velType = velSensor) \
 					if ( (sgn(machine##VelSafetyThresh) == 1)? (out < machine##VelSafetyThresh) :  (out > machine##VelSafetyThresh) ) \
 					{ \
 						machine##VelSafetyCount ++; \
-						if(machine##Logs) writeDebugStreamLine("%d:"#machine"velSafety %f", npgmtime, out); \ 
+						if(machine##Logs) writeDebugStreamLine("%d:"#machine"velSafety trip(dir)%f", npgmtime, out); \ 
 					} \
 				} \
 		} \ 

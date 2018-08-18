@@ -29,10 +29,11 @@ void moveToTargetSimple(float x, float y, byte power, tMttMode mode, bool correc
 		{
 			VEL_CHECK_INC(drive, velLocalY);
 
-			switch (tMttMode)
+			switch (mode)
 			{
 				case mttSimple:
 				{
+					LOG(drive)("simple drive throttle");
 					if (abs(currentLocalVector.y) > 3)
 						throttle = power;
 					else
@@ -42,6 +43,9 @@ void moveToTargetSimple(float x, float y, byte power, tMttMode mode, bool correc
 				case mttProportional:
 				{
 					throttle = currentLocalVector.y * propKP;
+					LOG(drive)("prop drive throttle pwr%f", throttle);
+					if (abs(currentLocalVector.y) < 5)
+						LIM_TO_VAL_SET(throttle, 15);
 					break;
 				}
 			}
@@ -96,10 +100,10 @@ void moveToTargetSimple(float x, float y, byte power, tMttMode mode, bool correc
 
 			setDrive(left,right);
 
-			LOG(drive)("offset:%f, l:%d r:%d, throttle:%d, turn:%d", turnLocalVector.x, left, right, throttle, turn);
+			LOG(drive)("distTo:%f, tOffset:%f, l:%d r:%d, throttle:%d, turn:%d", currentLocalVector.y, turnLocalVector.x, left, right, throttle, turn);
 
 			sleep(10);
-		} WHILE(drive, (abs(currentLocalVector.y) > 0.5) );
+		} WHILE(drive, (abs(currentLocalVector.y) > 0.8) );
 		LOG(drive)("%d (%f, %f)", npgmtime, gPosition.x, gPosition.y);
 		if (harshStop)
 			applyHarshStop();
