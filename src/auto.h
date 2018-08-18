@@ -36,6 +36,10 @@ typedef enum _facingDir
 /* Structures */
 typedef struct _pos
 {
+	int leftStart;
+	int rightStart;
+	int backStart;
+
 	float a;
 	float y;
 	float x;
