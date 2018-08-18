@@ -217,7 +217,11 @@ void applyHarshStop()
 	writeDebugStreamLine("Applying harsh stop: %d %d", left, right);
 	setDrive(left, right);
 	updateMotors();
-	sleep(150);
+
+	unsigned long startTime = npgmtime;
+	WHILE(drive, (npgmtime-startTime) < 150)
+		sleep(10);
+
 	setDrive(0, 0);
 	updateMotors();
 }

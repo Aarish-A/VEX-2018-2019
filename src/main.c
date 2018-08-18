@@ -62,10 +62,9 @@ void setDrive(word left, word right)
 	gMotor[driveR1].power = gMotor[driveR2].power = LIM_TO_VAL(right, 127);
 }
 
-#include "auto.c"
-
 CREATE_MACHINE_3(drive, trackL, Idle, Break, Manual, float, Vel, int, Power)
 //#include "driveTest.c"
+#include "auto.c"
 #include "auto_simple.h"
 #include "auto_simple.c"
 
