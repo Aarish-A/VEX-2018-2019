@@ -146,7 +146,7 @@ for cnt in range (minPNum, maxPNum+1):
 	f.write("		{ \\ \n")
 	f.write("				if (machine##VelSafetyDir == velEither) \\" + "\n" )
 	f.write("				{ \\" + "\n" )
-	f.write("					if ( out < abs(machine##VelSafetyThresh) ) \\" + "\n" )
+	f.write("					if ( abs(out) < abs(machine##VelSafetyThresh) ) \\" + "\n" )
 	f.write("					{ \\" + "\n" )
 	f.write("						machine##VelSafetyCount ++; \\" + "\n" )
 	f.write("						if(machine##Logs) writeDebugStreamLine(\"%d:\"#machine\"velSafety trip(either)%f\", npgmtime, out); \\ \n")

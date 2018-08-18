@@ -118,7 +118,7 @@ void machine##VelSafetyCheck (tVelType velType = velSensor) \
 		{ \ 
 				if (machine##VelSafetyDir == velEither) \
 				{ \
-					if ( out < abs(machine##VelSafetyThresh) ) \
+					if ( abs(out) < abs(machine##VelSafetyThresh) ) \
 					{ \
 						machine##VelSafetyCount ++; \
 						if(machine##Logs) writeDebugStreamLine("%d:"#machine"velSafety trip(either)%f", npgmtime, out); \ 
@@ -240,7 +240,7 @@ void machine##VelSafetyCheck (tVelType velType = velSensor) \
 		{ \ 
 				if (machine##VelSafetyDir == velEither) \
 				{ \
-					if ( out < abs(machine##VelSafetyThresh) ) \
+					if ( abs(out) < abs(machine##VelSafetyThresh) ) \
 					{ \
 						machine##VelSafetyCount ++; \
 						if(machine##Logs) writeDebugStreamLine("%d:"#machine"velSafety trip(either)%f", npgmtime, out); \ 
@@ -362,7 +362,7 @@ void machine##VelSafetyCheck (tVelType velType = velSensor) \
 		{ \ 
 				if (machine##VelSafetyDir == velEither) \
 				{ \
-					if ( out < abs(machine##VelSafetyThresh) ) \
+					if ( abs(out) < abs(machine##VelSafetyThresh) ) \
 					{ \
 						machine##VelSafetyCount ++; \
 						if(machine##Logs) writeDebugStreamLine("%d:"#machine"velSafety trip(either)%f", npgmtime, out); \ 
@@ -484,7 +484,7 @@ void machine##VelSafetyCheck (tVelType velType = velSensor) \
 		{ \ 
 				if (machine##VelSafetyDir == velEither) \
 				{ \
-					if ( out < abs(machine##VelSafetyThresh) ) \
+					if ( abs(out) < abs(machine##VelSafetyThresh) ) \
 					{ \
 						machine##VelSafetyCount ++; \
 						if(machine##Logs) writeDebugStreamLine("%d:"#machine"velSafety trip(either)%f", npgmtime, out); \ 
@@ -606,7 +606,7 @@ void machine##VelSafetyCheck (tVelType velType = velSensor) \
 		{ \ 
 				if (machine##VelSafetyDir == velEither) \
 				{ \
-					if ( out < abs(machine##VelSafetyThresh) ) \
+					if ( abs(out) < abs(machine##VelSafetyThresh) ) \
 					{ \
 						machine##VelSafetyCount ++; \
 						if(machine##Logs) writeDebugStreamLine("%d:"#machine"velSafety trip(either)%f", npgmtime, out); \ 
@@ -728,7 +728,7 @@ void machine##VelSafetyCheck (tVelType velType = velSensor) \
 		{ \ 
 				if (machine##VelSafetyDir == velEither) \
 				{ \
-					if ( out < abs(machine##VelSafetyThresh) ) \
+					if ( abs(out) < abs(machine##VelSafetyThresh) ) \
 					{ \
 						machine##VelSafetyCount ++; \
 						if(machine##Logs) writeDebugStreamLine("%d:"#machine"velSafety trip(either)%f", npgmtime, out); \ 
