@@ -7,7 +7,7 @@
 task main()
 {
 	sensorValue[enc] = 0;
-	long startVal = sensorValue[enc];
+	const int startVal = sensorValue[enc];
 	int shotCount = 0;
 
 	bool lstButton;
@@ -21,10 +21,10 @@ task main()
 			motor[mtr] = 127;
 			shotCount++;
 
-			while( (SensorValue[enc] - startVal) < (shotCount*RELOAD_VAL) )
+			while( abs(SensorValue[enc] - startVal) < (shotCount*RELOAD_VAL) )
 			{
 				sleep(50);
-				writeDebugStreamLine("%d Sensor:%d", npgmtime, SensorValue[enc])
+				writeDebugStreamLine("%d Sensor:%d", nPgmTime, SensorValue[enc]);
 			}
 
 			motor[mtr] = 0;
