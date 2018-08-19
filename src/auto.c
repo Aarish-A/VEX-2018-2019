@@ -1,12 +1,14 @@
 /* Functions */
 void trackPosition(int left, int right, int back, sPos& position)
 {
+	tHog();
 	float L = (left - position.leftLst) * SPIN_TO_IN_LR; // The amount the left side of the robot moved
 	float R = (right - position.rightLst) * SPIN_TO_IN_LR; // The amount the right side of the robot moved
 	float S = (back - position.backLst) * SPIN_TO_IN_S; // The amount the back side of the robot moved
 
 	float LTurn = (left - position.leftStart) * SPIN_TO_IN_LR; // The amount the left side of the robot moved since the beginning
 	float RTurn = (right - position.rightStart) * SPIN_TO_IN_LR; // The amount the right side of the robot moved since the beginning
+
 	// Update the last values
 	position.leftLst = left;
 	position.rightLst = right;
@@ -16,6 +18,7 @@ void trackPosition(int left, int right, int back, sPos& position)
 	float i; // Half on the angle that I've traveled
 	float h2; // The same as h but using the back instead of the side wheels
 	float a = (L - R) / (L_DISTANCE_IN + R_DISTANCE_IN); // The angle that I've traveled
+	tRelease();
 
 	if (a)
 	{
