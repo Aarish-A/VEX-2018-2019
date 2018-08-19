@@ -5,6 +5,8 @@ void trackPosition(int left, int right, int back, sPos& position)
 	float R = (right - position.rightLst) * SPIN_TO_IN_LR; // The amount the right side of the robot moved
 	float S = (back - position.backLst) * SPIN_TO_IN_S; // The amount the back side of the robot moved
 
+	float LTurn = (left - position.leftStart) * SPIN_TO_IN_LR; // The amount the left side of the robot moved since the beginning
+	float RTurn = (right - position.rightStart) * SPIN_TO_IN_LR; // The amount the right side of the robot moved since the beginning
 	// Update the last values
 	position.leftLst = left;
 	position.rightLst = right;
@@ -14,6 +16,7 @@ void trackPosition(int left, int right, int back, sPos& position)
 	float i; // Half on the angle that I've traveled
 	float h2; // The same as h but using the back instead of the side wheels
 	float a = (L - R) / (L_DISTANCE_IN + R_DISTANCE_IN); // The angle that I've traveled
+
 	if (a)
 	{
 		float r = R / a; // The radius of the circle the robot travel's around with the right side of the robot
@@ -42,7 +45,7 @@ void trackPosition(int left, int right, int back, sPos& position)
 	position.y += h2 * -sinP; // -sin(x) = sin(-x)
 	position.x += h2 * cosP; // cos(x) = cos(-x)
 
-	position.a += a;
+	position.a = (LTurn - RTurn) / (L_DISTANCE_IN + R_DISTANCE_IN);
 }
 
 void resetPosition(sPos& position)
@@ -236,8 +239,13 @@ void resetPositionFull(sPos& position, float x, float y, float a)
 	resetQuadratureEncoder(trackR);
 	resetQuadratureEncoder(trackB);
 
+	position.leftStart = gSensor[trackL].value;
+	position.rightStart = gSensor[trackR].value;
+	position.backStart = gSensor[trackB].value;
+
 	position.y = y;
 	position.x = x;
 	position.a = a;
+
 	tStart(trackPositionTask);
 }
