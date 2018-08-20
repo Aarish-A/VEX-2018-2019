@@ -18,7 +18,7 @@ void followLine(float x, float y, byte power, tMttMode mode, bool correction, bo
 
 		//Correction-Turn Variables
 		sVector offsetGlobalVector;
-		float offset = 3.0;
+		float offset = 5.0;
 		sLine followLine;
 		if (correction)
 		{
