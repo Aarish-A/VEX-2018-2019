@@ -27,6 +27,7 @@ void followLine(float x, float y, byte power, tMttMode mode, bool correction, bo
 			followLine.p2.x = x;
 			followLine.p2.y = y;
 			makeLine(followLine);
+			writeDebugStreamLine("%d Constructing line to follow: y=%fx+%f", npgmtime, followLine.m, followLine.b);
 		}
 
 		do
@@ -99,7 +100,7 @@ void followLine(float x, float y, byte power, tMttMode mode, bool correction, bo
 					}
 				}
 
-			LOG(drive)("%d (%f,%f), turn:%f, thrttle:%f, errr:%f, pLine(%f,%f), m%f,b%f", npgmtime, gPosition.x, gPosition.y, turn, throttle, errorX, targX, gPosition.y, followLine.m, followLine.b);
+			LOG(drive)("%d LocalPos:(%f,%f), OffsetPos(%f,%f), %d, %d, t:%f l:%d r:%d, trttle:%d, trn:%d",npgmtime, currentLocalVector.x, currentLocalVector.y, targX, offsetGlobalVector.y, facingDir, dir, errX, left, right, throttle, turn);
 			}
 			else
 			{
