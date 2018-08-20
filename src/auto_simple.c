@@ -1,4 +1,8 @@
 /* Functions */
+void followLine(float x, float y, byte power, tMttMode mode, bool correction, bool harshStop)
+{
+}
+
 void moveToTargetSimple(float x, float y, byte power, tMttMode mode, bool correction, bool harshStop)
 {
 	byte facingDir = facing(x,y,(pi/4))
@@ -18,42 +22,48 @@ void moveToTargetSimple(float x, float y, byte power, tMttMode mode, bool correc
 		sPolar turnLocalPolar;
 
 		//Drive Variables
-		const float propKP = -6.0;
+		const float propKP = 6.0;
 
 		//Turn Variables
-		float offset = 3.0;
-		const float turnBase = 1.8;
+		float offset = 4.0;
+		const float turnBase = 1.42;
 		const float turnKP = -5.0;
 
 		do
 		{
 			VEL_CHECK_INC(drive, velLocalY);
 
+			currentLocalVector.x = gPosition.x - x;
+			currentLocalVector.y = gPosition.y - y;
+
 			switch (mode)
 			{
 				case mttSimple:
 				{
-					LOG(drive)("simple drive throttle");
+					LOG(drive)("\t simple drive throttle");
 					if (abs(currentLocalVector.y) > 3)
-						throttle = power;
+						throttle = abs(power) * facingDir;
 					else
-						throttle = 7;
+						throttle = 7 * facingDir;
 					break;
 				}
 				case mttProportional:
 				{
-					throttle = currentLocalVector.y * propKP;
-					LOG(drive)("prop drive throttle pwr%f", throttle);
+					throttle = LIM_TO_VAL((currentLocalVector.y * propKP), 127);
+					LOG(drive)("\t prop drive throttle pwr%f", throttle);
 					if (abs(currentLocalVector.y) < 5)
 						LIM_TO_VAL_SET(throttle, 15);
 					break;
 				}
 			}
 
+			throttle = abs(throttle) * facingDir;
+
+			//if (abs(currentLocalVector.y) < 4 && correction)
+			//	correction = 0;
+
 			if (correction)
 			{
-				currentLocalVector.x = gPosition.x - x;
-				currentLocalVector.y = gPosition.y - y;
 
 				if (abs(currentLocalVector.y) <= offset)
 					offset = abs(currentLocalVector.y) - 0.2;
@@ -61,29 +71,35 @@ void moveToTargetSimple(float x, float y, byte power, tMttMode mode, bool correc
 				offsetPos(turnGlobalVector.x, turnGlobalVector.y, offset);
 
 				turnLocalVector.x = turnGlobalVector.x - x;
-				//turnLocalVector.y = turnGlobalVector.y - y;
+				turnLocalVector.y = turnGlobalVector.y - y;
 
-				turn = LIM_TO_VAL(pow(turnBase, fabs(turnLocalVector.x)), 127) * facingDir;
+				if (abs(turnLocalVector.x) > 8 && abs(throttle) > 62)
+					throttle /= 2;
+
+				if (fabs(turnLocalVector.x) > 2 && fabs(turnLocalVector.x) < 7)
+					turn = LIM_TO_VAL((fabs(turnLocalVector.x) * 4), 127) * facingDir;
+				else
+					turn = LIM_TO_VAL(pow(turnBase, fabs(turnLocalVector.x)), 127) * facingDir;
 
 				//if (driveStateCycCount == 1)
-				dir = sgn(turnLocalVector.x);
-				LOG(drive)("gTurn:%f, lTurn:%f, dir:%d, turn:%d", turnGlobalVector.x, turnLocalVector.x, dir, turn);
+				dir = sgn(turnLocalVector.x) * sgn(turnLocalVector.y) * facingDir;
+				//LOG(drive)("gTurn:%f, lTurn:%f, dir:%d, turn:%d", turnGlobalVector.x, turnLocalVector.x, dir, turn);
 
 				//if (abs(turnLocalVector.x) < 2) //when within two inches of target, go straight
 					//dir = 0;
 
 				switch(dir)
 				{
-					case (1): //right
+					case (-1): // turn right
 					{
 						left = throttle;
-						right = throttle+turn;
+						right = throttle + turn;
 						break;
 					}
-					case(-1): //left
+					case(1): // turn left
 					{
 						right = throttle;
-						left = throttle+turn;
+						left = throttle + turn;
 						break;
 					}
 					case(0): //straight
@@ -98,15 +114,20 @@ void moveToTargetSimple(float x, float y, byte power, tMttMode mode, bool correc
 				left = right = throttle;
 			}
 
+			LIM_TO_VAL_SET(left, 127);
+			LIM_TO_VAL_SET(right, 127);
+
 			setDrive(left,right);
 
-			LOG(drive)("distTo:%f, tOffset:%f, l:%d r:%d, throttle:%d, turn:%d", currentLocalVector.y, turnLocalVector.x, left, right, throttle, turn);
+			LOG(drive)("loc coord:(%f,%f), %d, %d, t:%f l:%d r:%d, throttle:%d, turn:%d", currentLocalVector.x, currentLocalVector.y, facingDir, dir, turnLocalVector.x, left, right, throttle, turn);
 
 			sleep(10);
 		} WHILE(drive, (abs(currentLocalVector.y) > 0.8) );
 		LOG(drive)("%d (%f, %f)", npgmtime, gPosition.x, gPosition.y);
+
 		if (harshStop)
 			applyHarshStop();
+
 		LOG(drive)("%d After harsh stop:(%f, %f)", npgmtime, gPosition.x, gPosition.y);
 	}
 	else
