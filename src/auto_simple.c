@@ -6,13 +6,8 @@ void followLine(float x, float y, byte power, tMttMode mode, bool correction, bo
 	if (facingDir)
 	{
 		sVector currentLocalVector;
-
-		sLine followLine;
-		followLine.p1.x = gPosition.x;
-		followLine.p1.y = gPosition.y;
-		followLine.p2.x = x;
-		followLine.p2.y = y;
-		makeLine(followLine);
+		if ((gPosition.x - x) == 0 && correction) //makeLine divides by change-in x - this prevents divide-by-zero error
+			correction = 0;
 
 		//General Variables
 		word throttle, turn, left, right;
@@ -24,6 +19,15 @@ void followLine(float x, float y, byte power, tMttMode mode, bool correction, bo
 		//Correction-Turn Variables
 		sVector offsetGlobalVector;
 		float offset = 3.0;
+		sLine followLine;
+		if (correction)
+		{
+			followLine.p1.x = gPosition.x;
+			followLine.p1.y = gPosition.y;
+			followLine.p2.x = x;
+			followLine.p2.y = y;
+			makeLine(followLine);
+		}
 
 		do
 		{
@@ -75,21 +79,21 @@ void followLine(float x, float y, byte power, tMttMode mode, bool correction, bo
 				{
 					case (-1): // turn right
 					{
-						LOG(drive)("turn right");
+						//LOG(drive)("turn right");
 						left = throttle;
 						right = throttle + turn;
 						break;
 					}
 					case(1): // turn left
 					{
-						LOG(drive)("turn left");
+						//LOG(drive)("turn left");
 						right = throttle;
 						left = throttle + turn;
 						break;
 					}
 					case(0): //straight
 					{
-						LOG(drive)("turn straight");
+						//LOG(drive)("turn straight");
 						right = left = throttle;
 						break;
 					}
