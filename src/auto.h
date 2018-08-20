@@ -18,6 +18,12 @@
 // Translate gPosition.a to normal angle (in radians)
 #define TRANS_ANG(a) (-a + (pi/2))
 
+//Find the x value given y
+#define X_OF_LINE(line, y) ( ((float)y - line.b) / line.m )
+
+//Find the y value given x
+#define Y_OF_LINE(line, x) ( (line.m * (float)x) + line.b )
+
 /* Enumerations */
 typedef enum _turnDir
 {
@@ -71,6 +77,9 @@ typedef struct _line
 {
 	sVector p1;
 	sVector p2;
+
+	float m;
+	float b;
 } sLine;
 
 /* Functions */
@@ -80,6 +89,7 @@ void resetVelocity(sVel& velocity, sPos& position); // Reset the velocity
 void trackVelocity(sPos position, sVel& velocity); // Update the velocity of the robot
 void vectorToPolar(sVector& vector, sPolar& polar); // Convert a cartesian vector to a polar vector
 void polarToVector(sPolar& polar, sVector& vector); // Convert a polar vector to a cartesian vector
+void makeLine(sLine& line); //Constructs line following y = mx + b
 float getAngleOfLine(sLine line);
 float getLengthOfLine(sLine line);
 void offsetPos(float& x, float& y, float offset);

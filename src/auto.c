@@ -131,6 +131,12 @@ void polarToVector(sPolar& polar, sVector& vector)
 		vector.x = vector.y = 0;
 }
 
+void makeLine(sLine& line)
+{
+	line.m = (line.p2.y - line.p1.y) / (line.p2.x - line.p1.x);
+	line.b = line.p2.y - (line.m * line.p2.x);
+}
+
 float getAngleOfLine(sLine line)
 {
 	return atan2(line.p2.x - line.p1.x, line.p2.y - line.p1.y);
