@@ -4,8 +4,24 @@
 #define GEAR_RATIO (5/3)
 #define RELOAD_VAL 360.0*(5.0/(float)3.0)
 
+task printBttn()
+{
+	while (true)
+	{
+		bool button = vexRT[Btn6U];
+
+		datalogDataGroupStart();
+		datalogAddValueWithTimeStamp(1, button);
+		datalogDataGroupEnd();
+
+		sleep(10);
+	}
+}
+
 task main()
 {
+	startTask(printBttn);
+
 	sensorValue[enc] = 0;
 	const int startVal = sensorValue[enc];
 	int shotCount = 0;
@@ -14,7 +30,7 @@ task main()
 	writeDebugStreamLine("start");
 	while (true)
 	{
-		button = vexRT[btn6u];
+		button = vexRT[Btn6U];
 
 		if (button && !lstButton)
 		{
@@ -26,15 +42,16 @@ task main()
 			writeDebugStreamLine("Start loop %f", target);
 			while( abs(SensorValue[enc] - startVal) < target )
 			{
-				sleep(50);
 				writeDebugStreamLine("%d sC:%d, targ:%f, Sensor:%d", nPgmTime, shotCount, target, SensorValue[enc]);
+				sleep(10);
 			}
 
 			motor[mtr] = 0;
 		}
 
 		lstButton = button;
-
 		sleep(10);
 	}
+
+	stopTask(printBttn);
 }
