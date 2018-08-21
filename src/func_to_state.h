@@ -1,5 +1,5 @@
-/*/t Auto-Generated Macros to Add Up to 7 Funcs to a Machine /t*/
-/*/t TO BE CALLED IN HEADER /t*/
+/*	 Auto-Generated Macros to Add Up to 7 Funcs to a Machine 	*/
+/*	 TO BE CALLED IN HEADER 	*/
 
 #define ADD_FUNCS_TO_MACHINE_1(machine, func1) \
 typedef enum _tFuncStates##machine \
@@ -92,8 +92,8 @@ const int func5##Loc = machine##StateCount + 4; \
 const int func6##Loc = machine##StateCount + 5; \ 
 const int func7##Loc = machine##StateCount + 6
 
-/* /t ///////////////////// /t */
-/*/t Auto-Generated Macros to Use Funcs w/ up to 13 Paramaters /t*/
+/* 	 ///////////////////// 	 */
+/*	 Auto-Generated Macros to Use Funcs w/ up to 13 Paramaters 	*/
 
 /* Macros for 0 Param Functions */
 //Add function to the machine - TO BE CALLED IN STATE MACHINE SWITCH

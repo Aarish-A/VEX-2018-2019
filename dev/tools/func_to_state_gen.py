@@ -1,10 +1,10 @@
-f = open('..\..\src\FuncToState.h', 'w')
+f = open("..\..\src\\func_to_state.h", "w")
 maxFuncNum = 7
 maxParamNum = 13
 
 
-f.write("/*/t Auto-Generated Macros to Add Up to %d Funcs to a Machine /t*/" %maxFuncNum + "\n")
-f.write("/*/t TO BE CALLED IN HEADER /t*/" + "\n")
+f.write("/*\t Auto-Generated Macros to Add Up to %d Funcs to a Machine \t*/" %maxFuncNum + "\n")
+f.write("/*\t TO BE CALLED IN HEADER \t*/" + "\n")
 f.write("" + "\n")
 for func in range (1, maxFuncNum+1):
 	f.write("#define ADD_FUNCS_TO_MACHINE_%d(machine" %func)
@@ -32,8 +32,8 @@ for func in range (1, maxFuncNum+1):
 			f.write("; \\ \n")
 	f.write("" + "\n")
 
-f.write("/* /t ///////////////////// /t */" + "\n")
-f.write("/*/t Auto-Generated Macros to Use Funcs w/ up to %d Paramaters /t*/" %maxParamNum + "\n")
+f.write("/* \t ///////////////////// \t */" + "\n")
+f.write("/*\t Auto-Generated Macros to Use Funcs w/ up to %d Paramaters \t*/" %maxParamNum + "\n")
 f.write("" + "\n")
 for pNum in range (0, maxParamNum+1):
 	f.write("/* Macros for %d Param Functions */" %pNum + "\n")
