@@ -100,7 +100,7 @@ void followLine(float x, float y, byte power, tMttMode mode, bool correction, bo
 					}
 				}
 
-			LOG(drive)("%d LocalPos:(%f,%f), OffsetPos(%f,%f), %d, %d, t:%f l:%d r:%d, trttle:%d, trn:%d",npgmtime, currentLocalVector.x, currentLocalVector.y, targX, offsetGlobalVector.y, facingDir, dir, errX, left, right, throttle, turn);
+			LOG(drive)("%d LocalPos:(%f,%f), OffsetPos(%f,%f), %d, %d, t:%f l:%d r:%d, trttle:%d, trn:%d",npgmtime, currentLocalVector.x, currentLocalVector.y, targX, offsetGlobalVector.y, facingDir, dir, errorX, left, right, throttle, turn);
 			}
 			else
 			{
