@@ -27,9 +27,9 @@
 #define CHECK_POTI_JUMPS 1
 #define DRIVE_TURN (gJoy[JOY_TURN].cur - gJoy[JOY_TURN].deadzone * sgn(gJoy[JOY_TURN].cur))
 
-//#include "StateTest.h"
+//#include "state_test.h"
 #include "state.h"
-#include "FuncToState.h"
+#include "func_to_state.h"
 
 // Year-independent libraries (headers)
 #include "task.h"
@@ -51,8 +51,6 @@
 // Other includes
 #include "Vex_Competition_Includes_Custom.c"
 #include "controls.h"
-//#include "auto_simple.h"
-//#include "auto_simple.c"
 
 /* Drive Controls */
 void setDrive(word left, word right)
@@ -65,8 +63,8 @@ void setDrive(word left, word right)
 CREATE_MACHINE_3(drive, trackL, Idle, Break, Manual, float, Vel, int, Power)
 //#include "driveTest.c"
 #include "auto.c"
-#include "auto_simple.h"
-#include "auto_simple.c"
+#include "drive_algs.h"
+#include "drive_algs.c"
 
 task driveSet()
 {
