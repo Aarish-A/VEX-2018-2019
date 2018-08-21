@@ -70,7 +70,13 @@ void followLine(float x, float y, byte power, tMttMode mode, bool correction, bo
 				float targX = X_OF_LINE(followLine, offsetGlobalVector.y);
 				float errorX = fabs(targX - gPosition.x);
 
-				turn = LIM_TO_VAL(pow(turnBase, errorX), 127) * facingDir;
+				//turn = LIM_TO_VAL(pow(turnBase, errorX), 127);
+				if (fabs(errorX) < 1)
+					turn = 0;
+				else
+					turn = LIM_TO_VAL( ((float)5 * (exp(0.2 * errorX))), 127); //turn = 5(e^(0.2x))
+
+				turn *= facingDir;
 
 				if (abs(errorX) > 8 && abs(throttle) > 62)
 					throttle /= 2;
