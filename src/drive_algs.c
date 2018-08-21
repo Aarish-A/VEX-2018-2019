@@ -1,7 +1,7 @@
 /* Functions */
-void followLine(float x, float y, byte power, tMttMode mode, bool correction, bool harshStop)
+void followLine(float x, float y, byte power, tMttMode mode, bool correction, tStopType stopType)
 {
-	byte facingDir = facing(x,y,(pi/4));
+	byte facingDir = facingCoord(x,y,(pi/4));
 
 	if (facingDir)
 	{
@@ -119,21 +119,71 @@ void followLine(float x, float y, byte power, tMttMode mode, bool correction, bo
 			setDrive(left,right);
 
 			sleep(10);
-		} WHILE(drive, (abs(currentLocalVector.y) > 0.8) );
+		} WHILE(drive, ( abs(currentLocalVector.y) > ((stopType & stopSoft)? 3.5 : 0.8) ));
+
 		LOG(drive)("%d Done LineFollow(%f, %f)", npgmtime, gPosition.x, gPosition.y);
 
-		LOG(drive)("%d (%f, %f)", npgmtime, gPosition.x, gPosition.y);
+		if (stopType & stopSoft)
+		{
+			LOG(drive)("%d Starting LineFollow stopSoft(%f,%f), vel:%f", npgmtime, gPosition.x, gPosition.y, gVelocity.y);
 
-		if (harshStop)
+			WHILE(drive, abs(currentLocalVector.y) > 0.6)
+			{
+				throttle = facingDir * -6;
+				setDrive(throttle, throttle);
+				LOG(drive)("%d LocalPos:(%f,%f), %d, %d, pow:%d",npgmtime, currentLocalVector.x, currentLocalVector.y, facingDir, dir, throttle);
+
+				sleep(10);
+			}
+		}
+
+		LOG(drive)("%d Done LineFollow stopSoft(%f, %f)", npgmtime, gPosition.x, gPosition.y);
+
+		if (stopHarsh & stopType)
 			applyHarshStop();
+		else
+			setDrive(0,0);
 
 		LOG(drive)("%d After harsh stop:(%f, %f)", npgmtime, gPosition.x, gPosition.y);
 	}
 }
 
+void turnToFace(float x, float y, tFacingDir facingDir, tStopType stopType)
+{
+	float curX = gPosition.x;
+	float curY = gPosition.y;
+	float gAngleToFront = aTan2((x-curX),(y-curY));
+	float gAngleToBack = aTan2((curX-x),(curY-y));
+
+	LOG(drive)("%d Begin turnToFace(%f,%f)", npgmtime, x, y);
+
+	tTurnDir turnDir;
+	if (facingDir == facingFront)
+		if (fmod(gPosition.a - gAngleToFront, PI * 2) < PI) turnDir = ccw; else turnDir = cw;
+	else if (facingDir == facingBack)
+		if (fmod(gPosition.a - gAngleToBack, PI * 2) < PI) turnDir = ccw; else turnDir = cw;
+	else
+		LOG(drive)("%d Exit turnToFace. facingDir must be facingFront or facingBack", npgmtime);
+
+	if (turnDir == cw)
+		setDrive(90, -90);
+	else
+		setDrive(90, 90);
+
+	WHILE(drive, (facingCoord(x, y, 0.2) != facingDir))
+	{
+		sleep(10);
+	}
+
+	if (stopType & stopHarsh)
+		applyHarshStop();
+	else
+		setDrive(0,0);
+}
+
 void moveToTargetSimple(float x, float y, byte power, tMttMode mode, bool correction, bool harshStop)
 {
-	byte facingDir = facing(x,y,(pi/4))
+	byte facingDir = facingCoord(x,y,(pi/4))
 	if (facingDir)
 	{
 		power = abs(power) * facingDir; //facingDir is -1 if we need to go backwards, 1 if we are going forwards

@@ -37,7 +37,7 @@ typedef enum _facingDir
 	facingBack = -1,
 	facingNone = 0,
 	facingFront = 1
-}
+} tFacingDir;
 
 /* Structures */
 typedef struct _pos
@@ -108,7 +108,8 @@ float getLengthOfLine(sLine line); //Get length of a line
 
 /* Misc Auto Functions/Tasks */
 void offsetPos(float& x, float& y, float offset); //Store offset of current position in x and y
-byte facing(float targX, float targY, float offset = (PI/4)); //Check to see if robot is facing target
+byte facingAngle(float targAngle, float offset); //Check to see if back OR front of robot is facing angle
+byte facingCoord(float targX, float targY, float offset = (PI/4)); //Check to see if back OR front of robot is facing target
 task autoMotorSensorUpdateTask(); // Update motors and sensors during auto
 void applyHarshStop();
 
