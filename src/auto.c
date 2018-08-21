@@ -111,9 +111,14 @@ void resetPositionFull(sPos& position, float x, float y, float a)
 	resetQuadratureEncoder(trackR);
 	resetQuadratureEncoder(trackB);
 
+	position.leftStart = gSensor[trackL].value;
+	position.rightStart = gSensor[trackR].value;
+	position.backStart = gSensor[trackB].value;
+
 	position.y = y;
 	position.x = x;
 	position.a = a;
+
 	tStart(trackPositionTask);
 }
 
@@ -256,27 +261,3 @@ void applyHarshStop()
 	setDrive(0, 0);
 	updateMotors();
 }
-<<<<<<< HEAD
-
-void resetPositionFull(sPos& position, float x, float y, float a)
-{
-	tStop(trackPositionTask);
-	writeDebugStreamLine("Resetting position %f %f %f | %f %f %f", position.y, position.x, radToDeg(fmod(gPosition.a, PI * 2)), y, x, radToDeg(fmod(a, PI * 2)));
-	resetPosition(position);
-
-	resetQuadratureEncoder(trackL);
-	resetQuadratureEncoder(trackR);
-	resetQuadratureEncoder(trackB);
-
-	position.leftStart = gSensor[trackL].value;
-	position.rightStart = gSensor[trackR].value;
-	position.backStart = gSensor[trackB].value;
-
-	position.y = y;
-	position.x = x;
-	position.a = a;
-
-	tStart(trackPositionTask);
-}
-=======
->>>>>>> master
