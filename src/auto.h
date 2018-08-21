@@ -46,9 +46,12 @@ typedef struct _pos
 	int rightStart;
 	int backStart;
 
-	float a;
-	float y;
-	float x;
+	float aStart; //Since a is recalculated each cycle, starting angle needs to be stored and added
+
+	float a; //Recalculate angle each cycle
+	float y; //Accumulate y over time
+	float x; //Accumulate x over time
+
 	int leftLst;
 	int rightLst;
 	int backLst;

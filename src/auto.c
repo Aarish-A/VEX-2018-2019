@@ -48,7 +48,7 @@ void trackPosition(int left, int right, int back, sPos& position)
 	position.y += h2 * -sinP; // -sin(x) = sin(-x)
 	position.x += h2 * cosP; // cos(x) = cos(-x)
 
-	position.a = (LTurn - RTurn) / (L_DISTANCE_IN + R_DISTANCE_IN);
+	position.a = aStart + ( ((float)(LTurn - RTurn)) / ((float)(L_DISTANCE_IN + R_DISTANCE_IN)) );
 }
 
 void resetPosition(sPos& position)
@@ -117,7 +117,7 @@ void resetPositionFull(sPos& position, float x, float y, float a)
 
 	position.y = y;
 	position.x = x;
-	position.a = a;
+	aStart = a;
 
 	tStart(trackPositionTask);
 }
