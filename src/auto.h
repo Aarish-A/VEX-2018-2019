@@ -82,22 +82,28 @@ typedef struct _line
 	float b;
 } sLine;
 
-/* Functions */
+/* Tracking Functions/Tasks */
 void trackPosition(int left, int right, int back, sPos& position); // Update the position of the robot
 void resetPosition(sPos& position); // Reset the position
 void resetVelocity(sVel& velocity, sPos& position); // Reset the velocity
 void trackVelocity(sPos position, sVel& velocity); // Update the velocity of the robot
+task trackPositionTask();
+void resetPositionFull(sPos& position, float x, float y, float a); // Reset the position to a desired value and starts tracking
+
+/* Vector Translation Functions */
 void vectorToPolar(sVector& vector, sPolar& polar); // Convert a cartesian vector to a polar vector
 void polarToVector(sPolar& polar, sVector& vector); // Convert a polar vector to a cartesian vector
+
+/* Line Manipulation Functions */
 void makeLine(sLine& line); //Constructs line following y = mx + b
-float getAngleOfLine(sLine line);
-float getLengthOfLine(sLine line);
-void offsetPos(float& x, float& y, float offset);
+float getAngleOfLine(sLine line); //Get angle of a line
+float getLengthOfLine(sLine line); //Get length of a line
+
+/* Misc Auto Functions/Tasks */
+void offsetPos(float& x, float& y, float offset); //Store offset of current position in x and y
 byte facing(float targX, float targY, float offset = (PI/4)); //Check to see if robot is facing target
-task trackPositionTask();
 task autoMotorSensorUpdateTask(); // Update motors and sensors during auto
 void applyHarshStop();
-void resetPositionFull(sPos& position, float x, float y, float a); // Reset the position to a desired value and starts tracking
 
 /* Variables */
 unsigned long gAutoTime = 0;

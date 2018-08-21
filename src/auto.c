@@ -1,4 +1,4 @@
-/* Functions */
+/* Tracking Functions/Tasks */
 void trackPosition(int left, int right, int back, sPos& position)
 {
 	float L = (left - position.leftLst) * SPIN_TO_IN_LR; // The amount the left side of the robot moved
@@ -62,6 +62,107 @@ void resetVelocity(sVel& velocity, sPos& position)
 	velocity.lstChecked = nPgmTime;
 }
 
+void trackVelocity(sPos position, sVel& velocity)
+{
+	unsigned long curTime = nPgmTime;
+	long passed = curTime - velocity.lstChecked;
+	if (passed > 40)
+	{
+		float posA = position.a;
+		float posY = position.y;
+		float posX = position.x;
+		velocity.a = ((posA - velocity.lstPosA) * 1000.0) / passed;
+		velocity.y = ((posY - velocity.lstPosY) * 1000.0) / passed;
+		velocity.x = ((posX - velocity.lstPosX) * 1000.0) / passed;
+
+		velocity.lstPosA = posA;
+		velocity.lstPosY = posY;
+		velocity.lstPosX = posX;
+		velocity.lstChecked = curTime;
+	}
+}
+
+task trackPositionTask()
+{
+	while (true)
+	{
+		updateSensorInput(trackL);
+		updateSensorInput(trackR);
+		updateSensorInput(trackB);
+		trackPosition(gSensor[trackL].value, gSensor[trackR].value, gSensor[trackB].value, gPosition);
+		trackVelocity(gPosition, gVelocity);
+		sleep(1);
+	}
+}
+
+void resetPositionFull(sPos& position, float x, float y, float a)
+{
+	tStop(trackPositionTask);
+	writeDebugStreamLine("Resetting position %f %f %f | %f %f %f", position.y, position.x, radToDeg(fmod(gPosition.a, PI * 2)), y, x, radToDeg(fmod(a, PI * 2)));
+	resetPosition(position);
+
+	resetQuadratureEncoder(trackL);
+	resetQuadratureEncoder(trackR);
+	resetQuadratureEncoder(trackB);
+
+	position.y = y;
+	position.x = x;
+	position.a = a;
+	tStart(trackPositionTask);
+}
+
+/* Vector Translation Functions */
+void vectorToPolar(sVector& vector, sPolar& polar)
+{
+	if (vector.x || vector.y)
+	{
+		polar.magnitude = sqrt(vector.x * vector.x + vector.y * vector.y);
+		polar.angle = atan2(vector.y, vector.x);
+	}
+	else
+		polar.magnitude = polar.angle = 0;
+}
+
+void polarToVector(sPolar& polar, sVector& vector)
+{
+	if (polar.magnitude)
+	{
+		vector.x = polar.magnitude * cos(polar.angle);
+		vector.y = polar.magnitude * sin(polar.angle);
+	}
+	else
+		vector.x = vector.y = 0;
+}
+
+/* Line Manipulation Functions */
+void makeLine(sLine& line)
+{
+	line.m = (line.p2.y - line.p1.y) / (line.p2.x - line.p1.x);
+	line.b = line.p2.y - (line.m * line.p2.x);
+}
+
+float getAngleOfLine(sLine line)
+{
+	return atan2(line.p2.x - line.p1.x, line.p2.y - line.p1.y);
+}
+
+float getLengthOfLine(sLine line)
+{
+	float x = line.p2.x - line.p1.x;
+	float y = line.p2.y - line.p1.y;
+	return sqrt(x * x + y * y);
+}
+
+/* Misc Auto Functions/Tasks */
+void offsetPos(float& x, float& y, float offset)
+{
+	x = offset * sin(gPosition.a);
+	y = offset * cos(gPosition.a);
+
+	x += gPosition.x;
+	y += gPosition.y;
+}
+
 byte facing(float targX, float targY, float offset)
 {
 	float curX = gPosition.x;
@@ -86,88 +187,6 @@ byte facing(float targX, float targY, float offset)
 	{
 		writeDebugStreamLine("MOVEMENT ERROR - WRONG DIR. RobotPos%f, PosTo%f", gPosition.a, gAngleToFront);
 		return facingNone;
-	}
-}
-
-void trackVelocity(sPos position, sVel& velocity)
-{
-	unsigned long curTime = nPgmTime;
-	long passed = curTime - velocity.lstChecked;
-	if (passed > 40)
-	{
-		float posA = position.a;
-		float posY = position.y;
-		float posX = position.x;
-		velocity.a = ((posA - velocity.lstPosA) * 1000.0) / passed;
-		velocity.y = ((posY - velocity.lstPosY) * 1000.0) / passed;
-		velocity.x = ((posX - velocity.lstPosX) * 1000.0) / passed;
-
-		velocity.lstPosA = posA;
-		velocity.lstPosY = posY;
-		velocity.lstPosX = posX;
-		velocity.lstChecked = curTime;
-	}
-}
-
-void vectorToPolar(sVector& vector, sPolar& polar)
-{
-	if (vector.x || vector.y)
-	{
-		polar.magnitude = sqrt(vector.x * vector.x + vector.y * vector.y);
-		polar.angle = atan2(vector.y, vector.x);
-	}
-	else
-		polar.magnitude = polar.angle = 0;
-}
-
-void polarToVector(sPolar& polar, sVector& vector)
-{
-	if (polar.magnitude)
-	{
-		vector.x = polar.magnitude * cos(polar.angle);
-		vector.y = polar.magnitude * sin(polar.angle);
-	}
-	else
-		vector.x = vector.y = 0;
-}
-
-void makeLine(sLine& line)
-{
-	line.m = (line.p2.y - line.p1.y) / (line.p2.x - line.p1.x);
-	line.b = line.p2.y - (line.m * line.p2.x);
-}
-
-float getAngleOfLine(sLine line)
-{
-	return atan2(line.p2.x - line.p1.x, line.p2.y - line.p1.y);
-}
-
-float getLengthOfLine(sLine line)
-{
-	float x = line.p2.x - line.p1.x;
-	float y = line.p2.y - line.p1.y;
-	return sqrt(x * x + y * y);
-}
-
-void offsetPos(float& x, float& y, float offset)
-{
-	x = offset * sin(gPosition.a);
-	y = offset * cos(gPosition.a);
-
-	x += gPosition.x;
-	y += gPosition.y;
-}
-
-task trackPositionTask()
-{
-	while (true)
-	{
-		updateSensorInput(trackL);
-		updateSensorInput(trackR);
-		updateSensorInput(trackB);
-		trackPosition(gSensor[trackL].value, gSensor[trackR].value, gSensor[trackB].value, gPosition);
-		trackVelocity(gPosition, gVelocity);
-		sleep(1);
 	}
 }
 
@@ -230,20 +249,4 @@ void applyHarshStop()
 
 	setDrive(0, 0);
 	updateMotors();
-}
-
-void resetPositionFull(sPos& position, float x, float y, float a)
-{
-	tStop(trackPositionTask);
-	writeDebugStreamLine("Resetting position %f %f %f | %f %f %f", position.y, position.x, radToDeg(fmod(gPosition.a, PI * 2)), y, x, radToDeg(fmod(a, PI * 2)));
-	resetPosition(position);
-
-	resetQuadratureEncoder(trackL);
-	resetQuadratureEncoder(trackR);
-	resetQuadratureEncoder(trackB);
-
-	position.y = y;
-	position.x = x;
-	position.a = a;
-	tStart(trackPositionTask);
 }
