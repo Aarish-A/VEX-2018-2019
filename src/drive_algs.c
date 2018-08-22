@@ -2,10 +2,11 @@
 
 //TODO: Test Offset Calc
 //TODO: Make local y be delta x - if delta x is larger than delta y
-//TODO: Make the target perpendicular to the line we are following
+//TODO: Make the while loop end when abs(currentLocalPos.hypotenuse) < 0.5
+
 void followLineVec(float x, float y, byte power, tMttMode mode, bool correction, tStopType stopType)
 {
-	byte facingDir = facingCoord(x,y,(pi/4));
+	byte facingDir = facingCoord(x,y,1.13); // Must be facing within 130 degrees of target
 
 	if (facingDir)
 	{
