@@ -1,4 +1,8 @@
 /* Functions */
+
+//TODO: Test Offset Calc
+//TODO: Make local y be delta x - if delta x is larger than delta y
+//TODO: Make the target perpendicular to the line we are following
 void followLineVec(float x, float y, byte power, tMttMode mode, bool correction, tStopType stopType)
 {
 	byte facingDir = facingCoord(x,y,(pi/4));
@@ -79,19 +83,22 @@ void followLineVec(float x, float y, byte power, tMttMode mode, bool correction,
 				}
 
 				//Construct triangle connecting end point and offset position
-				offsetLocalPos.hypotenuse = currentLocalPos.hypotenuse + offset;
-				float factor = offsetLocalPos.hypotenuse / currentLocalPos.hypotenuse;
-				offsetLocalPos.vector.x = factor * currentLocalPos.vector.x;
-				offsetLocalPos.vector.y = factor * currentLocalPos.vector.y;
+				offsetLocalPos.hypotenuse = currentLocalPos.hypotenuse - offset;
+				offsetLocalPos.vector.x = sin(gPosition.a) * offsetLocalPos.hypotenuse;
+				offsetLocalPos.vector.y = cos(gPosition.a) * offsetLocalPos.hypotenuse;
+				LOG(drive)("\t\tOffsetPos:(%f,%f),hyp(%f)", offsetLocalPos.vector.x, offsetLocalPos.vector.y, offsetLocalPos.hypotenuse);
 
 				//Construct triangle connecting end point and target position
 				targetLocalPos.hypotenuse = offsetLocalPos.hypotenuse;
 				targetLocalPos.vector.x = targetLocalPos.hypotenuse * sinA;
 				targetLocalPos.vector.y = targetLocalPos.hypotenuse * cosA;
+				LOG(drive)("\t\tTargetPos:(%f,%f),hyp(%f)", targetLocalPos.vector.x, targetLocalPos.vector.y, targetLocalPos.hypotenuse);
 
 				//Hypotenuse in the error triange is the error
 				constructTrianglePos(error, offsetLocalPos.vector.x - targetLocalPos.vector.x, offsetLocalPos.vector.y - targetLocalPos.vector.y);
 				float errorVal = fabs(error.hypotenuse);
+				LOG(drive)("\t\tErrorPos:(%f,%f),hyp(%f)", error.vector.x, error.vector.y, error.hypotenuse);
+
 
 				if (fabs(errorVal) <= 1)
 					turn = 0;
@@ -127,8 +134,8 @@ void followLineVec(float x, float y, byte power, tMttMode mode, bool correction,
 						break;
 					}
 				}
-
-			LOG(drive)("%d Err:%f, LocalPos:(%f,%f), OffsetPos(%f,%f), TargPos(%f,%f), vel:%f, l:%d r:%d, trttle:%d, trn:%d",npgmtime, error.hypotenuse, currentLocalPos.vector.x, currentLocalPos.vector.y, offsetLocalPos.vector.x, offsetLocalPos.vector.y, targetLocalPos.vector.x, targetLocalPos.vector.y, gVelocity.localY, facingDir, dir, errorVal, left, right, throttle, turn);
+			LOG(drive)("%d Err:%f, LocalPos:(%f,%f), vel:%f, l:%d r:%d, trttle:%d, trn:%d",npgmtime, error.hypotenuse, currentLocalPos.vector.x, currentLocalPos.vector.y, gVelocity.localY, facingDir, dir, errorVal, left, right, throttle, turn);
+			//LOG(drive)("%d Err:%f, LocalPos:(%f,%f), OffsetPos(%f,%f), TargPos(%f,%f), vel:%f, l:%d r:%d, trttle:%d, trn:%d",npgmtime, error.hypotenuse, currentLocalPos.vector.x, currentLocalPos.vector.y, offsetLocalPos.vector.x, offsetLocalPos.vector.y, targetLocalPos.vector.x, targetLocalPos.vector.y, gVelocity.localY, facingDir, dir, errorVal, left, right, throttle, turn);
 			}
 			else
 			{
