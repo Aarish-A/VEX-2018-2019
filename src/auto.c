@@ -150,8 +150,52 @@ void polarToVector(sPolar& polar, sVector& vector)
 /* Line Manipulation Functions */
 void makeLine(sLine& line)
 {
-	line.m = (line.p2.y - line.p1.y) / (line.p2.x - line.p1.x);
-	line.b = line.p2.y - (line.m * line.p2.x);
+	line.m = line.b = line.x = line.y = 0; // Reset all the line constants
+
+	float x = line.p2.x - line.p1.x;
+	float y = line.p2.y - line.p1.y;
+
+	if (x == 0 && y != 0)
+	{
+		line.lineType = vertical;
+		line.x = line.p2.y;
+	}
+	else if (y == 0 && x != 0)
+	{
+		line.lineType = horizontal;
+		line.y = line.p2.x;
+	}
+	else if (y == 0 && x == 0)
+	{
+		line.lineType = point;
+	}
+	else if (y != 0 && x != 0)
+	{
+		line.lineType = diagonal;
+		line.m = y / x;
+		line.b = line.p2.y - (line.m * line.p2.x);
+	}
+}
+
+void makeLineInverse(const sLine& original, sLine& inverse, sVector pOI)
+{
+	inverse.m = inverse.b = inverse.x = inverse.y = 0; // Reset all the line constants
+	switch (original.lineType)
+	{
+		case diagonal:
+			inverse.lineType = diagonal;
+			inverse.m = -1 * (1 / original.m);
+			inverse.b = pOI.y - (inverse.m * pOI.x);
+			break;
+		case horizontal:
+			inverse.lineType = vertical;
+			inverse.x = pOI.y;
+			break;
+		case vertical;
+			inverse.lineType = horizontal;
+			inverse.y = pOI.x;
+			break;
+	}
 }
 
 float getAngleOfLine(sLine line)

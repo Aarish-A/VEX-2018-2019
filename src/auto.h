@@ -82,13 +82,26 @@ typedef struct _polar
 	float angle;
 } sPolar; // 2D polar vector
 
+typedef enum _lineType
+{
+	point,
+	diagonal,
+	vertical,
+	horizontal
+} tLineType; // Type of linear function
+
 typedef struct _line
 {
+	tLineType lineType;
+
 	sVector p1;
 	sVector p2;
 
-	float m;
+	float m; // Used if line is diagonal
 	float b;
+
+	float x; // Used if line is vertical
+	float y; // Used if line is horizontal
 } sLine;
 
 /* Tracking Functions/Tasks */
@@ -105,6 +118,7 @@ void polarToVector(sPolar& polar, sVector& vector); // Convert a polar vector to
 
 /* Line Manipulation Functions */
 void makeLine(sLine& line); //Constructs line following y = mx + b
+void makeLineInverse(const sLine& original, sLine& inverse, sVector pOI); //Populares inverse line (struct)
 float getAngleOfLine(sLine line); //Get angle of a line
 float getLengthOfLine(sLine line); //Get length of a line
 
