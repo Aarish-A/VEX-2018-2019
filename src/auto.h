@@ -92,18 +92,19 @@ typedef enum _lineType
 
 typedef struct _line
 {
-	tLineType lineType;
-
 	sVector p1;
 	sVector p2;
 
 	float length;
+	float deltaX;
+	float deltaY;
 
+	tLineType lineType;
+	//Used Internally to Find Equation of Line
 	float m; // Used if line is diagonal
 	float b;
-
-	float x; // Used if line is vertical
-	float y; // Used if line is horizontal
+	float xVer; // Used if line is vertical
+	float yHor; // Used if line is horizontal
 } sLine;
 
 /* Tracking Functions/Tasks */

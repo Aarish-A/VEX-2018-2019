@@ -150,22 +150,23 @@ void polarToVector(sPolar& polar, sVector& vector)
 /* Line Manipulation Functions */
 void makeLine(sLine& line)
 {
-	line.m = line.b = line.x = line.y = 0; // Reset all the line constants
+	line.m = line.b = line.xVer = line.yHor = 0; // Reset all the line constants
 
-	float x = line.p2.x - line.p1.x;
-	float y = line.p2.y - line.p1.y;
+	float x = line.deltaX = line.p2.x - line.p1.x;
+	float y = line.deltaY = line.p2.y - line.p1.y;
+
 
 	line.length = sqrt((x*x) + (y*y));
 
 	if (x == 0 && y != 0)
 	{
 		line.lineType = vertical;
-		line.x = line.p2.y;
+		line.xVer = line.p2.y;
 	}
 	else if (y == 0 && x != 0)
 	{
 		line.lineType = horizontal;
-		line.y = line.p2.x;
+		line.yHor = line.p2.x;
 	}
 	else if (y == 0 && x == 0)
 	{
@@ -181,7 +182,7 @@ void makeLine(sLine& line)
 
 void makeLineInverse(const sLine& original, sLine& inverse, sVector pOI)
 {
-	inverse.m = inverse.b = inverse.x = inverse.y = 0; // Reset all the line constants
+	inverse.m = inverse.b = inverse.xVer = inverse.yHor = 0; // Reset all the line constants
 	switch (original.lineType)
 	{
 		case diagonal:
@@ -191,11 +192,11 @@ void makeLineInverse(const sLine& original, sLine& inverse, sVector pOI)
 			break;
 		case horizontal:
 			inverse.lineType = vertical;
-			inverse.x = pOI.y;
+			inverse.xVer = pOI.y;
 			break;
 		case vertical;
 			inverse.lineType = horizontal;
-			inverse.y = pOI.x;
+			inverse.yHor = pOI.x;
 			break;
 	}
 }
@@ -215,9 +216,11 @@ float findX(sLine line, float y)
 			return -1;
 			break;
 		case vertical;
-			return line.x;
+			return line.xVer;
 			break;
 	}
+	writeDebugStreamLine("%d No X for line", npgmtime);
+	return -1;
 }
 
 float findY(sLine line, float x)
@@ -231,13 +234,15 @@ float findY(sLine line, float x)
 			return ((line.m*x)+line.b);
 			break;
 		case horizontal:
-			return line.y;
+			return line.yHor;
 			break;
 		case vertical;
 			writeDebugStreamLine("%d Error, cannot find y of horizontal line", npgmtime);
 			return -1;
 			break;
 	}
+	writeDebugStreamLine("%d No X for line", npgmtime);
+	return -1;
 }
 
 float getAngleOfLine(sLine line)
