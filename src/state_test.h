@@ -1,27 +1,38 @@
+#define ACCEL_TIME 75 //amnt of MS that must elapse before starting to check vel safety
+
+/* Universal State Macros */
+#define NOT_T_O(machineIn) ( (machineIn##Timeout <= 0)? 1 : (npgmTime < machineIn##Timeout) )
+
+#define WHILE(machineIn, condition) while( NOT_T_O(machineIn) && machineIn##VelSafetyCount < 10 && (condition) )
+
+#define LOG(machineIn) if(machineIn##Logs) writeDebugStreamLine
+
+#define VEL_CHECK_INC(machineIn, safetyType) machineIn##VelSafetyCheck(safetyType); \
+machineIn##StateCycCount++
+
 typedef enum _tVelDir
 {
 	velEither = -1,
 	velUp = 0,
 	velDown = 1
 }tVelDir;
-/// new
 typedef enum _tVelType
 {
 	velSensor,
 	velLocalY,
 	velAngle
 } tVelType;
-///
-
-/* /////////////// State Machine Macros (For X Params) ////////////////// */
+/* /////////////// State Machine Macros (For X States) ////////////////// */
 /* Create machine using:
 	CREATE_MACHINE (-----)
 	{
 		---
 	}
 */
-#define CREATE_MACHINE_5(machine, sensor, state0, state1, state2, state3, state4, type1, arg1Name, type2, arg2Name) \
-const int machine##StateCount = 5; \
+
+/*	Macro for Machine w/ 3 States	*/
+#define CREATE_MACHINE_3(machine, sensor, state0, state1, state2, type1, arg1Name, type2, arg2Name) \
+const int machine##StateCount = 3; \
 typedef enum _tStates##machine \
 { \
 	machine##state0, \
@@ -75,27 +86,23 @@ void machine##VelSafetyCheck (tVelType velType = velSensor) \
 			machine##VelSafetyThresh = abs(machine##VelSafetyThresh); \
 		else if (machine##VelSafetyDir == velDown) \
 			machine##VelSafetyThresh = -1 * abs(machine##VelSafetyThresh); \
-	\
-	tHog(); \
+		\
+		tHog(); \
 		float out = 0; \
 		bool goodVel = false; \
 		switch (velType) \
 		{ \
 			case velSensor: \
 			{ \
-				if (machine##StateCycCount == 0) \
-					velocityClear(sensor); \
 				velocityCheck(sensor); \
-				if (gSensor[sensor].velGood) \
-				{ \
 					out = gSensor[sensor].velocity; \
 					goodVel = true; \
-				} \
 				break; \
 			} \
 			case velLocalY: \
 			{ \
-				out = gVelocity.x * sin(gPosition.a) + gVelocity.y * cos(gPosition.a); \
+				out = ( gVelocity.x * (float) sin(gPosition.a) )+ (gVelocity.y * (float) cos(gPosition.a)); \
+				if(machine##Logs) writeDebugStreamLine("%d:"#machine"velSafety out locY= %f", npgmtime, out); \
 				goodVel = true; \
 				break; \
 			} \
@@ -107,26 +114,25 @@ void machine##VelSafetyCheck (tVelType velType = velSensor) \
 			} \
 		} \
 		unsigned long curTime = npgmTime; \
-		if (goodVel && curTime-machine##StateStartTime > 100) \
+		if (goodVel && curTime-machine##StateStartTime > ACCEL_TIME) \
 		{ \
 				if (machine##VelSafetyDir == velEither) \
 				{ \
-					if ( out < abs(machine##VelSafetyThresh) ) \
+					if ( abs(out) < abs(machine##VelSafetyThresh) ) \
 					{ \
-						machine##VelSafetyCount++; \
-						if(machine##Logs) writeDebugStreamLine("%d:"#machine"velSafety %f", npgmtime, out); \
+						machine##VelSafetyCount ++; \
+						if(machine##Logs) writeDebugStreamLine("%d:"#machine"velSafety trip(either)%f", npgmtime, out); \
 					} \
 				} \
 				else \
 				{ \
 					if ( (sgn(machine##VelSafetyThresh) == 1)? (out < machine##VelSafetyThresh) :  (out > machine##VelSafetyThresh) ) \
 					{ \
-						machine##VelSafetyCount++; \
-						if(machine##Logs) writeDebugStreamLine("%d:"#machine"velSafety %f", npgmtime, out); \
+						machine##VelSafetyCount ++; \
+						if(machine##Logs) writeDebugStreamLine("%d:"#machine"velSafety trip(dir)%f", npgmtime, out); \
 					} \
 				} \
 		} \
-		tRelease(); \
 	} \
 } \
 \
@@ -144,24 +150,7 @@ void machine##SafetyCheck(int timedOutState = machine##state0, type1 machine##ar
 			writeDebugStreamLine("%d" #machine "safety: Timedout? %d at %d VelSafety? %d", npgmTime, timedout, machine##Timeout, velSafety); \
 			machine##StateChange(timedOutState, machine##arg1Name, machine##arg2Name); \
 		} \
-} /*\
-task machine##Set () \ */
-
-/* Universal State Macros */
-#define NOT_T_O(machineIn) ( (machineIn##Timeout <= 0)? 1 : (npgmTime < machineIn##Timeout) )
-
-#define WHILE(machineIn, condition) while( NOT_T_O(machineIn) && machineIn##VelSafetyCount < 10 && (condition) )
-
-#define SAFETY_CHECK(machineIn) (NOT_T_O(machineIn) && machineIn##VelSafetyCount < 10) ) \
-{ \
-	machineIn##VelSafetyCheck();
-
-#define LOG(machineIn) if(machineIn##Logs) writeDebugStreamLine
-
-
-#define END_STATE(machineIn) \
-machine##StateCycCount++; \
-break
+}
 
 /* Test macros: */
 /*
@@ -203,21 +192,23 @@ const int func4##Loc = machine##StateCount + 4; \
 const int func5##Loc = machine##StateCount + 5
 
 //Create global variables for all args of a func - call in header
+/* Macros for 4 Param Functions */
+//Create global variables for all args of a func - TO BE CALLED IN HEADER
 #define PREP_FUNC_STATE_4(func, type1, type2, type3, type4) \
 const int func##ArgCount = 4; \
 type1 func##Arg1 = -1; \
 type2 func##Arg2 = -1; \
 type3 func##Arg3 = -1; \
-type4 func##Arg4 = -1;
+type4 func##Arg4 = -1
 
-//Assign to all func args - call before putting machine into the func state
+//Assign to all func args - TO BE CALLED RIGHT BEFORE PUTTING MACHINE INTO STATE
 #define ASSIGN_FUNC_STATE_4(func, arg1In, arg2In, arg3In, arg4In) \
 func##Arg1 = arg1In; \
 func##Arg2 = arg2In; \
 func##Arg3 = arg3In; \
-func##Arg4 = arg4In;
+func##Arg4 = arg4In
 
-//Add function to the machine - call when defining switch statement
+//Add function to the machine - TO BE CALLED IN STATE MACHINE SWITCH
 #define CALL_FUNC_STATE_4(func) func(func##Arg1, func##Arg2, func##Arg3, func##Arg4)
 
 #define ADD_FUNC_TO_SWITCH_4(func, machine, nextState, safetyState) \
