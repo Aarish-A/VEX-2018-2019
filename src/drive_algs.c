@@ -6,7 +6,7 @@ void followLine(float x, float y, byte power, tMttMode mode, bool correction, tS
 	if (facingDir)
 	{
 		sVector currentLocalVector;
-		if ((gPosition.x - x) == 0 && correction) //makeLine divides by change-in x - this prevents divide-by-zero error
+		if ((gPosition.x - x) == 0) //makeLine divides by change-in x - this prevents divide-by-zero error
 			correction = 0;
 
 		//General Variables
@@ -15,6 +15,7 @@ void followLine(float x, float y, byte power, tMttMode mode, bool correction, tS
 
 		//Drive Variables
 		const float propKP = 6.0;
+		float softExit = 3;
 
 		//Correction-Turn Variables
 		sVector offsetGlobalVector;
@@ -33,7 +34,17 @@ void followLine(float x, float y, byte power, tMttMode mode, bool correction, tS
 		do
 		{
 			VEL_CHECK_INC(drive, velLocalY);
-
+			/*
+			if (stopSoft & stopType) //Determine how many inches before target to begin softStop
+			{
+				if (gVelocity.localY > 6)
+					softExit = 10
+				else if(gVelocity.localY > 2)
+					softExit = 3.5;
+				else
+					softExit = 1.5;
+			}
+			*/
 			currentLocalVector.x = gPosition.x - x;
 			currentLocalVector.y = gPosition.y - y;
 
@@ -62,23 +73,25 @@ void followLine(float x, float y, byte power, tMttMode mode, bool correction, tS
 			{
 				const float turnBase = 1.42;
 
-				if (abs(currentLocalVector.y) <= offset)
-					offset = abs(currentLocalVector.y) - 0.2;
-
 				offsetPos(offsetGlobalVector.x, offsetGlobalVector.y, offset);
+				if (abs(currentLocalVector.y) <= (offset+2))
+				{
+					offset = abs(currentLocalVector.y) - softExit;
+					LOG(drive)("\t\t Offset Reset - %f", offset);
+				}
 
 				float targX = X_OF_LINE(followLine, offsetGlobalVector.y);
-				float errorX = fabs(targX - gPosition.x);
+				float errorX = fabs(offsetGlobalVector.x - targX);
 
 				//turn = LIM_TO_VAL(pow(turnBase, errorX), 127);
-				if (fabs(errorX) < 1)
+				if (fabs(errorX) <= 1)
 					turn = 0;
 				else
-					turn = LIM_TO_VAL( ((float)5 * (exp(0.2 * errorX))), 127); //turn = 5(e^(0.2x))
+					turn = LIM_TO_VAL( ((float)5.5 * (exp(0.2 * errorX))), 127); //turn = 5(e^(0.2x))
 
 				turn *= facingDir;
 
-				if (abs(errorX) > 8 && abs(throttle) > 62)
+				if (abs(errorX) > 6 && abs(throttle) > 65)
 					throttle /= 2;
 
 				byte dir = sgn(currentLocalVector.x) * sgn(currentLocalVector.y) * facingDir;
@@ -106,7 +119,7 @@ void followLine(float x, float y, byte power, tMttMode mode, bool correction, tS
 					}
 				}
 
-			LOG(drive)("%d LocalPos:(%f,%f), OffsetPos(%f,%f), %d, %d, t:%f l:%d r:%d, trttle:%d, trn:%d",npgmtime, currentLocalVector.x, currentLocalVector.y, targX, offsetGlobalVector.y, facingDir, dir, errorX, left, right, throttle, turn);
+			LOG(drive)("%d LocalPos:(%f,%f), targ:%f - projx:%f = error%f, vel:%f, %d, %d, t:%f l:%d r:%d, trttle:%d, trn:%d",npgmtime, currentLocalVector.x, currentLocalVector.y, targX, offsetGlobalVector.x, errorX, gVelocity.localY, facingDir, dir, errorX, left, right, throttle, turn);
 			}
 			else
 			{
@@ -119,15 +132,18 @@ void followLine(float x, float y, byte power, tMttMode mode, bool correction, tS
 			setDrive(left,right);
 
 			sleep(10);
-		} WHILE(drive, ( abs(currentLocalVector.y) > ((stopType & stopSoft)? 3.5 : 0.8) ));
+		} WHILE(drive, ( abs(currentLocalVector.y) > ((stopType & stopSoft)? softExit : 0.8) ));
 
 		LOG(drive)("%d Done LineFollow(%f, %f)", npgmtime, gPosition.x, gPosition.y);
 
 		if (stopType & stopSoft)
 		{
-			LOG(drive)("%d Starting LineFollow stopSoft(%f,%f), vel:%f", npgmtime, gPosition.x, gPosition.y, gVelocity.y);
+			currentLocalVector.x = gPosition.x - x;
+			currentLocalVector.y = gPosition.y - y;
 
-			WHILE(drive, abs(currentLocalVector.y) > 0.6)
+			LOG(drive)("%d Starting LineFollow stopSoft(%f,%f), vel:%f", npgmtime, gPosition.x, gPosition.y, gVelocity.localY);
+
+			WHILE(drive, abs(currentLocalVector.y) > 0.6 && abs(gVelocity.localY) > 0.3)
 			{
 				throttle = facingDir * -6;
 				setDrive(throttle, throttle);

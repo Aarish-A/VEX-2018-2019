@@ -81,6 +81,8 @@ void trackVelocity(sPos position, sVel& velocity)
 		velocity.y = ((posY - velocity.lstPosY) * 1000.0) / passed;
 		velocity.x = ((posX - velocity.lstPosX) * 1000.0) / passed;
 
+		velocity.localY = (velocity.x * (float) sin(position.a) )+ (velocity.y * (float) cos(position.a);
+
 		velocity.lstPosA = posA;
 		velocity.lstPosY = posY;
 		velocity.lstPosX = posX;

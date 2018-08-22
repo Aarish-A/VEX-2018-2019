@@ -62,6 +62,8 @@ typedef struct _vel
 	float a;
 	float y;
 	float x;
+	float localY;
+
 	unsigned long lstChecked;
 	float lstPosA;
 	float lstPosY;

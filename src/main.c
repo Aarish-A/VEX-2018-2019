@@ -143,7 +143,7 @@ void handleDrive()
 	if (RISING(BTN_DRIVE_TEST))
 	{
 		LOG(drive)("Btn_Drive_Test Pressed");
-		ASSIGN_FUNC_STATE_6(followLine, 0, 10, 60, mttProportional, true, true);
+		ASSIGN_FUNC_STATE_6(followLine, 0, 10, 60, mttProportional, true, (stopSoft | stopHarsh));
 		driveStateChange(drivefollowLine, 2000, 0.3, velEither);
 
 		//ASSIGN_FUNC_STATE_6(moveToTargetSimple, 0, 10, 60, mttProportional, true, true);
