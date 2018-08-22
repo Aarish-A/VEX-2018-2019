@@ -104,23 +104,17 @@ void machine##VelSafetyCheck (tVelType velType = velSensor) \
 		switch (velType) \
 		{ \
 			case velSensor: \
-			{ \
 				velocityCheck(sensor); \
-					out = gSensor[sensor].velocity; \
-					goodVel = true; \
+				out = gSensor[sensor].velocity; \
+				goodVel = true; \
 				break; \
-			} \
 			case velLocalY: \
-			{ \
 				out = gVelocity.velLocalY; \
 				break; \
-			} \
 			case velAngle: \
-			{ \
 				out = gVelocity.a; \
 				goodVel = true; \
 				break; \
-			} \
 		} \
 		unsigned long curTime = npgmTime; \
 		if (goodVel && curTime-machine##StateStartTime > ACCEL_TIME) \
