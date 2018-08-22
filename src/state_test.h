@@ -197,7 +197,8 @@ const int func5##Loc = machine##StateCount + 5
 //Create global variables for all args of a func - call in header
 /* Macros for 4 Param Functions */
 //Create global variables for all args of a func - TO BE CALLED IN HEADER
-#define PREP_FUNC_STATE_4(func, type1, type2, type3, type4) \
+#define PREP_FUNC_STATE_4(funcType, func, type1, arg1, type2, arg2, type3, arg3, type4, arg4) \
+funcType func (type1 arg1, type2 arg2, type3 arg3, type4 arg4);
 const int func##ArgCount = 4; \
 type1 func##Arg1 = -1; \
 type2 func##Arg2 = -1; \
