@@ -97,6 +97,8 @@ typedef struct _line
 	sVector p1;
 	sVector p2;
 
+	float length;
+
 	float m; // Used if line is diagonal
 	float b;
 
@@ -121,6 +123,8 @@ void makeLine(sLine& line); //Constructs line following y = mx + b
 void makeLineInverse(const sLine& original, sLine& inverse, sVector pOI); //Populares inverse line (struct)
 float getAngleOfLine(sLine line); //Get angle of a line
 float getLengthOfLine(sLine line); //Get length of a line
+float findX(sLine line, float y);
+float findY(sLine line, float x);
 
 /* Misc Auto Functions/Tasks */
 void offsetPos(float& x, float& y, float offset); //Store offset of current position in x and y

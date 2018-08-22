@@ -155,6 +155,8 @@ void makeLine(sLine& line)
 	float x = line.p2.x - line.p1.x;
 	float y = line.p2.y - line.p1.y;
 
+	line.length = sqrt((x*x) + (y*y));
+
 	if (x == 0 && y != 0)
 	{
 		line.lineType = vertical;
@@ -194,6 +196,46 @@ void makeLineInverse(const sLine& original, sLine& inverse, sVector pOI)
 		case vertical;
 			inverse.lineType = horizontal;
 			inverse.y = pOI.x;
+			break;
+	}
+}
+
+float findX(sLine line, float y)
+{
+	switch (line.lineType)
+	{
+		case point:
+			return line.p2.x;
+			break;
+		case diagonal:
+			return (y - line.b) / line.m;
+			break;
+		case horizontal:
+			writeDebugStreamLine("%d Error, cannot find x of horizontal line", npgmtime);
+			return -1;
+			break;
+		case vertical;
+			return line.x;
+			break;
+	}
+}
+
+float findY(sLine line, float x)
+{
+	switch (line.lineType)
+	{
+		case point:
+			return line.p2.y;
+			break;
+		case diagonal:
+			return ((line.m*x)+line.b);
+			break;
+		case horizontal:
+			return line.y;
+			break;
+		case vertical;
+			writeDebugStreamLine("%d Error, cannot find y of horizontal line", npgmtime);
+			return -1;
 			break;
 	}
 }
