@@ -76,6 +76,12 @@ typedef struct _vector
 	float x;
 } sVector; // 2D cartesian vector
 
+typedef struct _trianglePos
+{
+	sVector vector;
+	float hypotenuse;
+} sTrianglePos; // Triangle - used to store location and magnitude
+
 typedef struct _polar
 {
 	float magnitude;
@@ -116,6 +122,7 @@ task trackPositionTask();
 void resetPositionFull(sPos& position, float x, float y, float a); // Reset the position to a desired value and starts tracking
 
 /* Vector Translation Functions */
+void constructTrianglePos(sTrianglePos& pos, float x, float y); // Creates triangle location position - setting vector and hypotenuse
 void vectorToPolar(sVector& vector, sPolar& polar); // Convert a cartesian vector to a polar vector
 void polarToVector(sPolar& polar, sVector& vector); // Convert a polar vector to a cartesian vector
 

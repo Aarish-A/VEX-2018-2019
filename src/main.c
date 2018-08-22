@@ -127,6 +127,7 @@ task driveSet()
 				break;
 			}
 			//ADD_FUNC_TO_SWITCH_4(driveFuncTest, drive, driveBreak, driveIdle)
+			ADD_FUNC_TO_SWITCH_6(followLineVec, drive, driveIdle, driveIdle)
 			ADD_FUNC_TO_SWITCH_6(followLine, drive, driveIdle, driveIdle)
 			ADD_FUNC_TO_SWITCH_6(moveToTargetSimple, drive, driveIdle, driveIdle)
 			ADD_FUNC_TO_SWITCH_12(moveToTarget, drive, driveIdle, driveIdle)
@@ -143,8 +144,8 @@ void handleDrive()
 	if (RISING(BTN_DRIVE_TEST))
 	{
 		LOG(drive)("Btn_Drive_Test Pressed");
-		ASSIGN_FUNC_STATE_6(followLine, 0, 10, 60, mttProportional, true, (stopSoft | stopHarsh));
-		driveStateChange(drivefollowLine, 2000, 0.3, velEither);
+		ASSIGN_FUNC_STATE_6(followLineVec, 0, 10, 60, mttProportional, true, (stopSoft | stopHarsh));
+		driveStateChange(drivefollowLineVec, 2000, 0.3, velEither);
 
 		//ASSIGN_FUNC_STATE_6(moveToTargetSimple, 0, 10, 60, mttProportional, true, true);
 		//driveStateChange(drivemoveToTargetSimple, 2000, 0.3, velEither);

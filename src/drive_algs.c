@@ -1,4 +1,178 @@
 /* Functions */
+void followLineVec(float x, float y, byte power, tMttMode mode, bool correction, tStopType stopType)
+{
+	byte facingDir = facingCoord(x,y,(pi/4));
+
+	if (facingDir)
+	{
+		//Vectors & Magnitudes - relative to the end coordinate
+		sTrianglePos currentLocalPos; constructTrianglePos(currentLocalPos, gPosition.x - x, gPosition.y - y);
+		sTrianglePos offsetLocalPos;
+		sTrianglePos targetLocalPos;
+		sTrianglePos error;
+
+		//Angle of the line we are following - relative to vertical
+		const float a = atan2(currentLocalPos.vector.x, currentLocalPos.vector.y);
+		const float cosA = cos(a);
+		const float sinA = sin(a);
+
+		//General Variables
+		word throttle, turn, left, right;
+		byte dir;
+
+		//Drive Variables
+		const float propKP = 6.0;
+		float softExit = 3;
+
+		//Correction-Turn Variables
+		float offset = 5.0;
+		sLine followLine;
+
+		do
+		{
+			VEL_CHECK_INC(drive, velLocalY);
+			/*
+			if (stopSoft & stopType) //Determine how many inches before target to begin softStop
+			{
+				if (gVelocity.localY > 6)
+					softExit = 10
+				else if(gVelocity.localY > 2)
+					softExit = 3.5;
+				else
+					softExit = 1.5;
+			}
+			*/
+
+			//Construct triangle connecting end point and robot position
+			constructTrianglePos(currentLocalPos, gPosition.x - x, gPosition.y - y);
+
+			switch (mode)
+			{
+				case mttSimple:
+				{
+					if (abs(currentLocalPos.vector.y) > 3)
+						throttle = abs(power) * facingDir;
+					else
+						throttle = 7 * facingDir;
+					break;
+				}
+				case mttProportional:
+				{
+					throttle = LIM_TO_VAL((currentLocalPos.vector.y * propKP), 127);
+					if (abs(currentLocalPos.vector.y) < 5)
+						LIM_TO_VAL_SET(throttle, 15);
+					break;
+				}
+			}
+			throttle = abs(throttle) * facingDir;
+			LOG(drive)("\t Facing%d, Drive throttle mode:%d, Pwr%f", facingDir, mode, throttle);
+
+			if (correction)
+			{
+				const float turnBase = 1.42;
+
+				//Make offset value smaller as when we are close to the target
+				if (abs(currentLocalPos.vector.y) <= (offset+2))
+				{
+					offset = abs(currentLocalPos.vector.y) - softExit;
+					LOG(drive)("\t\t Offset Reset - %f", offset);
+				}
+
+				//Construct triangle connecting end point and offset position
+				offsetLocalPos.hypotenuse = currentLocalPos.hypotenuse + offset;
+				float factor = offsetLocalPos.hypotenuse / currentLocalPos.hypotenuse;
+				offsetLocalPos.vector.x = factor * currentLocalPos.vector.x;
+				offsetLocalPos.vector.y = factor * currentLocalPos.vector.y;
+
+				//Construct triangle connecting end point and target position
+				targetLocalPos.hypotenuse = offsetLocalPos.hypotenuse;
+				targetLocalPos.vector.x = targetLocalPos.hypotenuse * sinA;
+				targetLocalPos.vector.y = targetLocalPos.hypotenuse * cosA;
+
+				//Hypotenuse in the error triange is the error
+				constructTrianglePos(error, offsetLocalPos.vector.x - targetLocalPos.vector.x, offsetLocalPos.vector.y - targetLocalPos.vector.y);
+				float errorVal = fabs(error.hypotenuse);
+
+				if (fabs(errorVal) <= 1)
+					turn = 0;
+				else
+					turn = LIM_TO_VAL( ((float)5.5 * (exp(0.2 * errorVal))), 127); //turn = 5(e^(0.2x))
+
+				turn *= facingDir;
+
+				if (abs(errorVal) > 6 && abs(throttle) > 65)
+					throttle /= 2;
+
+				byte dir = sgn(currentLocalPos.vector.x) * sgn(currentLocalPos.vector.y) * facingDir;
+				switch(dir)
+				{
+					case (-1): // turn right
+					{
+						//LOG(drive)("turn right");
+						left = throttle;
+						right = throttle + turn;
+						break;
+					}
+					case(1): // turn left
+					{
+						//LOG(drive)("turn left");
+						right = throttle;
+						left = throttle + turn;
+						break;
+					}
+					case(0): //straight
+					{
+						//LOG(drive)("turn straight");
+						right = left = throttle;
+						break;
+					}
+				}
+
+			LOG(drive)("%d Err:%f, LocalPos:(%f,%f), OffsetPos(%f,%f), TargPos(%f,%f), vel:%f, l:%d r:%d, trttle:%d, trn:%d",npgmtime, error.hypotenuse, currentLocalPos.vector.x, currentLocalPos.vector.y, offsetLocalPos.vector.x, offsetLocalPos.vector.y, targetLocalPos.vector.x, targetLocalPos.vector.y, gVelocity.localY, facingDir, dir, errorVal, left, right, throttle, turn);
+			}
+			else
+			{
+				left = right = throttle;
+			}
+
+			LIM_TO_VAL_SET(left, 127);
+			LIM_TO_VAL_SET(right, 127);
+
+			setDrive(left,right);
+
+			sleep(10);
+		} WHILE(drive, ( abs(currentLocalPos.vector.y) > ((stopType & stopSoft)? softExit : 0.8) ));
+
+		LOG(drive)("%d Done LineFollow(%f, %f)", npgmtime, gPosition.x, gPosition.y);
+
+		if (stopType & stopSoft)
+		{
+			//Construct triangle connecting end point and robot position
+			constructTrianglePos(currentLocalPos, gPosition.x - x, gPosition.y - y);
+
+			LOG(drive)("%d Starting LineFollow stopSoft(%f,%f), vel:%f", npgmtime, gPosition.x, gPosition.y, gVelocity.localY);
+
+			WHILE(drive, abs(currentLocalPos.vector.y) > 0.6 && abs(gVelocity.localY) > 0.3)
+			{
+				throttle = facingDir * -6;
+				setDrive(throttle, throttle);
+				LOG(drive)("%d LocalPos:(%f,%f), %d, %d, pow:%d",npgmtime, currentLocalPos.vector.x, currentLocalPos.vector.y, facingDir, dir, throttle);
+
+				sleep(10);
+			}
+		}
+
+		LOG(drive)("%d Done LineFollow stopSoft(%f, %f)", npgmtime, gPosition.x, gPosition.y);
+
+		if (stopHarsh & stopType)
+			applyHarshStop();
+		else
+			setDrive(0,0);
+
+		LOG(drive)("%d After harsh stop:(%f, %f)", npgmtime, gPosition.x, gPosition.y);
+	}
+}
+
 void followLine(float x, float y, byte power, tMttMode mode, bool correction, tStopType stopType)
 {
 	byte facingDir = facingCoord(x,y,(pi/4));
@@ -6,8 +180,8 @@ void followLine(float x, float y, byte power, tMttMode mode, bool correction, tS
 	if (facingDir)
 	{
 		sVector currentLocalVector;
-		if ((gPosition.x - x) == 0) //makeLine divides by change-in x - this prevents divide-by-zero error
-			correction = 0;
+		//if ((gPosition.x - x) == 0) //makeLine divides by change-in x - this prevents divide-by-zero error
+		//	correction = 0;
 
 		//General Variables
 		word throttle, turn, left, right;
@@ -80,7 +254,7 @@ void followLine(float x, float y, byte power, tMttMode mode, bool correction, tS
 					LOG(drive)("\t\t Offset Reset - %f", offset);
 				}
 
-				float targX = X_OF_LINE(followLine, offsetGlobalVector.y);
+				float targX = findX(followLine, offsetGlobalVector.y);
 				float errorX = fabs(offsetGlobalVector.x - targX);
 
 				//turn = LIM_TO_VAL(pow(turnBase, errorX), 127);

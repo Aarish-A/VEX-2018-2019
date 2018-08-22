@@ -1,5 +1,5 @@
 f = open("..\..\src\\func_to_state.h", "w")
-maxFuncNum = 8
+maxFuncNum = 9
 maxParamNum = 13
 
 
