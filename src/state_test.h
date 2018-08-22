@@ -86,7 +86,7 @@ void machine##StateChange(int stateIn, long timeout = -1, float velSafetyThresh 
 \
 void machine##Await() \
 { \
-	while (machine##Blocked) sleep(10);\
+	while (machine##Blocked) sleep(10); \
 } \
 \
 void machine##VelSafetyCheck (tVelType velType = velSensor) \
@@ -112,9 +112,7 @@ void machine##VelSafetyCheck (tVelType velType = velSensor) \
 			} \
 			case velLocalY: \
 			{ \
-				out = ( gVelocity.x * (float) sin(gPosition.a) )+ (gVelocity.y * (float) cos(gPosition.a)); \
-				if(machine##Logs) writeDebugStreamLine("%d:"#machine"velSafety out locY= %f", npgmtime, out); \
-				goodVel = true; \
+				out = gVelocity.velLocalY; \
 				break; \
 			} \
 			case velAngle: \
