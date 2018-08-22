@@ -81,7 +81,7 @@ task driveSet()
 			{
 				setDrive(0,0);
 
-				driveStateCycCount++
+				driveStateCycCount++;
 				break;
 			}
 			case driveBreak: //1:

@@ -3,7 +3,11 @@
 /* Universal State Macros */
 #define NOT_T_O(machineIn) ( (machineIn##Timeout <= 0)? 1 : (npgmTime < machineIn##Timeout) )
 
-#define WHILE(machineIn, condition) while( NOT_T_O(machineIn) && machineIn##VelSafetyCount < 10 && (condition) )
+#define WHILE(machineIn, condition) machineBlocked = true; \
+	while( NOT_T_O(machineIn) && machineIn##VelSafetyCount < 10 && (condition) )
+
+#define DO_WHILE(machineIn, condition) while( NOT_T_O(machineIn) && machineIn##VelSafetyCount < 10 && (condition) ); \
+machineBlocked = true
 
 #define LOG(machineIn) if(machineIn##Logs) writeDebugStreamLine
 
@@ -43,6 +47,7 @@ typedef enum _tStates##machine \
 }tStates##machine; \
 \
 tStates##machine machine##State = machine##state0; \
+bool machine##Blocked = false; \
 float machine##VelSafetyThresh = -1; \
 tVelDir machine##VelSafetyDir = -1; \
 unsigned long machine##Timeout; \
@@ -56,6 +61,7 @@ void machine##StateChange(int stateIn, long timeout = -1, float velSafetyThresh 
 { \
 	if (machine##State != stateIn) \
 	{ \
+		machine##Blocked = false; \
 		unsigned long curTime = npgmtime; \
 		if (timeout <= 0) \
 		{ \
@@ -76,6 +82,11 @@ void machine##StateChange(int stateIn, long timeout = -1, float velSafetyThresh 
 		machine##arg2Name = arg2In;  \
 		writeDebugStreamLine ("%d" #machine "State:%d, TO:%d velS:%f, %d, %d", npgmTime, machine##State, machine##timeout, machine##VelSafetyThresh, machine##arg1Name, machine##arg2Name); \
 	} \
+} \
+\
+void machine##Await() \
+{ \
+	while (machine##Blocked) sleep(10);\
 } \
 \
 void machine##VelSafetyCheck (tVelType velType = velSensor) \
@@ -215,6 +226,7 @@ func##Arg4 = arg4In
 case (func##Loc): \
 { \
 	int curState = machine##State; \
+	machine##Blocked = true; \
 	CALL_FUNC_STATE_4(func); \
 	machine##SafetyCheck(safetyState); \
 	if (machine##State == curState) \
