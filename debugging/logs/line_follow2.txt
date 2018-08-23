@@ -1,0 +1,160 @@
+5,7.710791),hyp(10.081549)
+13477 Err:10.081549, LocalPos:(15.831800,-13.688683), vel:34.450123 f:1.000000 t:-1.000000, l:5 r:82, trttle:41, trn:41
+	 Facing1, Drive throttle mode:1, Pwr79.000000
+		OffsetPos:(11.678081,-3.058684),hyp(12.071997), localOffset(-4.050322,10.227164)
+		TargetPos:(5.262015,-10.864820),hyp(12.071997)
+		ErrorPos:(6.416066,7.806135),hyp(10.104535)
+13491 Err:10.104535, LocalPos:(15.728402,-13.285849), vel:30.845984 f:1.000000 t:-1.000000, l:5 r:80, trttle:39, trn:41
+	 Facing1, Drive throttle mode:1, Pwr76.000000
+		 Offset Reset - 3.714671
+		OffsetPos:(14.213356,-9.367863),hyp(17.022818), localOffset(-1.402910,3.439568)
+		TargetPos:(7.420009,-15.320568),hyp(17.022818)
+		ErrorPos:(6.793347,5.952705),hyp(9.032401)
+13504 Err:9.032401, LocalPos:(15.616265,-12.807430), vel:30.845984 f:1.000000 t:-1.000000, l:5 r:71, trttle:38, trn:33
+	 Facing1, Drive throttle mode:1, Pwr74.000000
+		OffsetPos:(14.032211,-8.917141),hyp(16.625834), localOffset(-1.455325,3.417720)
+		TargetPos:(7.246969,-14.963282),hyp(16.625834)
+		ErrorPos:(6.785243,6.046141),hyp(9.088198)
+13518 Err:9.088198, LocalPos:(15.487536,-12.334862), vel:30.845984 f:1.000000 t:-1.000000, l:4 r:70, trttle:37, trn:33
+	 Facing1, Drive throttle mode:1, Pwr68.000000
+		OffsetPos:(13.506454,-7.995484),hyp(15.695607), localOffset(-1.601948,3.351499)
+		TargetPos:(6.841496,-14.126076),hyp(15.695607)
+		ErrorPos:(6.664958,6.130591),hyp(9.055706)
+13552 Err:9.055706, LocalPos:(15.108402,-11.346983), vel:32.010841 f:1.000000 t:-1.000000, l:1 r:67, trttle:34, trn:33
+	 Facing1, Drive throttle mode:1, Pwr65.000000
+		OffsetPos:(13.302981,-7.635440),hyp(15.338490), localOffset(-1.669923,3.318153)
+		TargetPos:(6.685834,-13.804669),hyp(15.338490)
+		ErrorPos:(6.617147,6.169230),hyp(9.046880)
+13566 Err:9.046880, LocalPos:(14.972904,-10.953592), vel:32.010841 f:1.000000 t:-1.000000, l:32 r:98, trttle:65, trn:33
+	 Facing1, Drive throttle mode:1, Pwr63.000000
+		OffsetPos:(13.079303,-7.299877),hyp(14.978530), localOffset(-1.728834,3.287843)
+		TargetPos:(6.528932,-13.480705),hyp(14.978530)
+		ErrorPos:(6.550371,6.180828),hyp(9.006108)
+13579 Err:9.006108, LocalPos:(14.808137,-10.587721), vel:32.010841 f:1.000000 t:-1.000000, l:30 r:96, trttle:63, trn:33
+	 Facing1, Drive throttle mode:1, Pwr57.000000
+		OffsetPos:(12.667701,-6.376256),hyp(14.181935), localOffset(-1.836767,3.228787)
+		TargetPos:(6.181708,-12.763768),hyp(14.181935)
+		ErrorPos:(6.485993,6.387512),hyp(9.103209)
+13613 Err:9.103209, LocalPos:(14.504468,-9.605043), vel:30.211912 f:1.000000 t:-1.000000, l:24 r:90, trttle:57, trn:33
+	 Facing1, Drive throttle mode:1, Pwr50.000000
+		OffsetPos:(11.999017,-5.234031),hyp(13.090894), localOffset(-1.990858,3.136122)
+		TargetPos:(5.706138,-11.781829),hyp(13.090894)
+		ErrorPos:(6.292879,6.547798),hyp(9.081519)
+13657 Err:9.081519, LocalPos:(13.989875,-8.370153), vel:30.659374 f:1.000000 t:-1.000000, l:17 r:83, trttle:50, trn:33
+13668 Done LineFollow(13.757195, 26.970991)
+13668 Starting LineFollow stopSoft(13.757195,26.970991), vel:30.659374
+13668 LocalPos:(13.757195,-8.029009), 1, 0, pow:-6
+13701 LocalPos:(13.757195,-8.029009), 1, 0, pow:-6
+13712 LocalPos:(13.757195,-8.029009), 1, 0, pow:-6
+13773 LocalPos:(13.757195,-8.029009), 1, 0, pow:-6
+13804 LocalPos:(13.757195,-8.029009), 1, 0, pow:-6
+13836 LocalPos:(13.757195,-8.029009), 1, 0, pow:-6
+13847 LocalPos:(13.757195,-8.029009), 1, 0, pow:-6
+13878 LocalPos:(13.757195,-8.029009), 1, 0, pow:-6
+13909 LocalPos:(13.757195,-8.029009), 1, 0, pow:-6
+13941 LocalPos:(13.757195,-8.029009), 1, 0, pow:-6
+13952 LocalPos:(13.757195,-8.029009), 1, 0, pow:-6
+13983 LocalPos:(13.757195,-8.029009), 1, 0, pow:-6
+14014 LocalPos:(13.757195,-8.029009), 1, 0, pow:-6
+14044 LocalPos:(13.757195,-8.029009), 1, 0, pow:-6
+14056 LocalPos:(13.757195,-8.029009), 1, 0, pow:-6
+14087 Done LineFollow stopSoft(11.637242, 31.513128)
+Vel y | a: 0.000000 | 0.000000
+Applying harsh stop: 0 0
+14257 After harsh stop:(11.676418, 31.502726)
+14258"drive"State:0, TO:0 velS:-1.000000, -1, -1
+83144"drive"State:2, TO:0 velS:-1.000000, -1, -1
+83446"drive"State:1, TO:83596 velS:-1.000000, -1, -1
+83601"drive"safety: Timedout? 1 at 83596 VelSafety? 0
+83601"drive"State:0, TO:0 velS:-1.000000, -1, -1
+83867"drive"State:2, TO:0 velS:-1.000000, -1, -1
+84181"drive"State:1, TO:84331 velS:-1.000000, -1, -1
+84336"drive"safety: Timedout? 1 at 84331 VelSafety? 0
+84336"drive"State:0, TO:0 velS:-1.000000, -1, -1
+84503"drive"State:2, TO:0 velS:-1.000000, -1, -1
+85338"drive"State:1, TO:85488 velS:-1.000000, -1, -1
+85353"drive"State:0, TO:0 velS:-1.000000, -1, -1
+85769"drive"State:2, TO:0 velS:-1.000000, -1, -1
+86103"drive"State:1, TO:86253 velS:-1.000000, -1, -1
+86269"drive"safety: Timedout? 1 at 86253 VelSafety? 0
+86269"drive"State:0, TO:0 velS:-1.000000, -1, -1
+86341"drive"State:2, TO:0 velS:-1.000000, -1, -1
+87540"drive"State:1, TO:87690 velS:-1.000000, -1, -1
+87565"drive"State:0, TO:0 velS:-1.000000, -1, -1
+88004"drive"State:2, TO:0 velS:-1.000000, -1, -1
+88756"drive"State:1, TO:88906 velS:-1.000000, -1, -1
+88792"drive"State:0, TO:0 velS:-1.000000, -1, -1
+88957"drive"State:2, TO:0 velS:-1.000000, -1, -1
+89700"drive"State:1, TO:89850 velS:-1.000000, -1, -1
+89734"drive"State:0, TO:0 velS:-1.000000, -1, -1
+98077"drive"State:2, TO:0 velS:-1.000000, -1, -1
+99158"drive"State:1, TO:99308 velS:-1.000000, -1, -1
+99317"drive"safety: Timedout? 1 at 99308 VelSafety? 0
+99318"drive"State:0, TO:0 velS:-1.000000, -1, -1
+99533"drive"State:2, TO:0 velS:-1.000000, -1, -1
+99750"drive"State:1, TO:99900 velS:-1.000000, -1, -1
+99814"drive"State:0, TO:0 velS:-1.000000, -1, -1
+100314"drive"State:2, TO:0 velS:-1.000000, -1, -1
+100659"drive"State:1, TO:100809 velS:-1.000000, -1, -1
+100683"drive"State:0, TO:0 velS:-1.000000, -1, -1
+100973"drive"State:2, TO:0 velS:-1.000000, -1, -1
+101254"drive"State:1, TO:101404 velS:-1.000000, -1, -1
+101257"drive"State:0, TO:0 velS:-1.000000, -1, -1
+		ErrorPos:(2.579926,0.937048),hyp(2.744827)
+102604 Err:2.744827, LocalPos:(10.075116,-33.632145), vel:0.258848 f:1.000000 t:-1.000000, l:118 r:136, trttle:127, trn:9
+	 Facing1, Drive throttle modeErrorPos:(2.824272,1.051504),hyp(3.013664)
+102681 Err:3.013664, LocalPos:(10.007881,-32.577412), vel:12.140933 f:1.000000 t:-1.000000, l:117 r:137, trttle:127, trn:10
+	 Facing1, Drive throttle mode(21.293558)
+		ErrorPos:(3.504556,1.405476),hyp(3.775880)
+102788 Err:3.775880, LocalPos:(10.011327,-29.976856), vel:27.231285 f:1.000000 t:-1.000000, l:116 r:138, trttle:127, trn:11
+	 Facing1, Drive1182),hyp(19.562801)
+		ErrorPos:(3.988643,1.703842),hyp(4.337321)
+102847 Err:4.337321, LocalPos:(9.968136,-28.022200), vel:34.170689 f:1.000000 t:-1.000000, l:114 r:140, trttle:127, trn:13
+	 FacingtPos:(4.805426,-15.950330),hyp(16.658485)
+		ErrorPos:(4.684447,2.259185),hyp(5.200765)
+102937 Err:5.200765, LocalPos:(9.798124,-24.686825), vel:38.357464 f:1.000000 t:-1.000000, l:112 r:142, trttlePos:(4.131586,-13.713697),hyp(14.322552)
+		ErrorPos:(5.315921,2.948936),hyp(6.079082)
+103012 Err:6.079082, LocalPos:(9.727742,-21.761192), vel:38.453697 f:1.000000 t:-1.000000, l:45 r:81, trttle:63(-0.336264,10.994859)
+		TargetPos:(3.860577,-12.814156),hyp(13.383073)
+		ErrorPos:(5.461806,3.212083),hyp(6.336308)
+103041 Err:6.336308, LocalPos:(9.658647,-20.596931), vel:39.787956 f:1.000000 t:-1.000000, l:42 r:80, trttle:61, trn:19
+	 Facing1, Drive throttle mode:1, Pwr112.000000
+		OffsetPos:(9.410869,-7.765441),hyp(12.201087), localOffset(-0.252217,10.997108)
+		TargetPos:(3.519613,-11.682416),hyp(12.201087)
+		ErrorPos:(5.891255,3.916975),hyp(7.074573)
+103084 Err:7.074573, LocalPos:(9.663085,-18.762548), vel:41.371925 f:1.000000 t:-1.000000, l:34 r:78, trttle:56, trn:22
+	 Facing1, Drive throttle mode:1, Pwr109.000000
+		OffsetPos:(9.280666,-7.209995),hyp(11.752226), localOffset(-0.308252,10.995680)
+		TargetPos:(3.390131,-11.252636),hyp(11.752226)
+		ErrorPos:(5.890535,4.042641),hyp(7.144323)
+103098 Err:7.144323, LocalPos:(9.588918,-18.205675), vel:41.371925 f:1.000000 t:-1.000000, l:32 r:76, trttle:54, trn:22
+	 Facing1, Drive throttle mode:1, Pwr93.000000
+		OffsetPos:(9.354714,-4.608638),hyp(10.428337), localOffset(-0.252217,10.997108)
+		TargetPos:(3.008233,-9.985026),hyp(10.428337)
+		ErrorPos:(6.346481,5.376389),hyp(8.317655)
+103162 Err:8.317655, LocalPos:(9.606931,-15.605745), vel:41.003384 f:1.000000 t:-1.000000, l:17 r:75, trttle:46, trn:29
+	 Facing1, Drive throttle mode:1, Pwr90.000000
+		OffsetPos:(9.296228,-4.087745),hyp(10.155271), localOffset(-0.280235,10.996430)
+		TargetPos:(2.929462,-9.723568),hyp(10.155271)
+		ErrorPos:(6.366766,5.635823),hyp(8.502836)
+103176 Err:8.502836, LocalPos:(9.576464,-15.084175), vel:41.003384 f:1.000000 t:-1.000000, l:15 r:75, trttle:45, trn:30
+	 Facing1, Drive throttle mode:1, Pwr80.000000
+		OffsetPos:(9.276767,-2.351177),hyp(9.570081), localOffset(-0.308252,10.995680)
+		TargetPos:(2.760654,-9.163255),hyp(9.570081)
+		ErrorPos:(6.516112,6.812078),hyp(9.426777)
+103218 Err:9.426777, LocalPos:(9.585018,-13.346857), vel:39.624825 f:1.000000 t:-1.000000, l:4 r:76, trttle:40, trn:36
+	 Facing1, Drive throttle mode:1, Pwr72.000000
+		 Offset Reset - 3.547411
+		OffsetPos:(9.248739,-8.485108),hyp(12.551344), localOffset(-0.162633,3.543681)
+		TargetPos:(3.620651,-12.017783),hyp(12.551344)
+		ErrorPos:(5.628089,3.532675),hyp(6.644936)
+103253 Err:6.644936, LocalPos:(9.411372,-12.028790), vel:39.624825 f:1.000000 t:-1.000000, l:16 r:56, trttle:36, trn:20
+	 Facing1, Drive throttle mode:1, Pwr68.000000
+		OffsetPos:(9.278249,-7.924721),hyp(12.201931), localOffset(-0.144573,3.544464)
+		TargetPos:(3.519856,-11.683225),hyp(12.201931)
+		ErrorPos:(5.758392,3.758503),hyp(6.876440)
+103267 Err:6.876440, LocalPos:(9.422822,-11.469185), vel:39.223385 f:1.000000 t:-1.000000, l:13 r:55, trttle:34, trn:21
+	 Facing1, Drive throttle mode:1, Pwr59.000000
+		OffsetPos:(9.194426,-6.323996),hyp(11.159318), loca271920"drive"State:2, TO:0 velS:-1.000000, -1, -1
+272162"drive"State:1, TO:272312 velS:-1.000000, -1, -1
+272164"drive"State:0, TO:0 velS:-1.000000, -1, -1

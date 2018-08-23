@@ -40,10 +40,10 @@ void followLineVec(float x, float y, byte power, tMttMode mode, bool correction,
 
 		//Drive Variables
 		const float propKP = 6.0;
-		float softExit = fabs(deltaY/4) + 2;
+		float softExit = fabs(deltaY/4.5) + 1;
 
 		//Correction-Turn Variables
-		float offset = 5.0;
+		float offset = S_DISTANCE_IN+4.0;
 		sLine followLine;
 
 		LOG(auto)("%dStart FollowLine to (%f,%f),a:%f. Offset:%f. softExit:%f", npgmtime, deltaX, deltaY, a, offset, softExit);
@@ -76,7 +76,7 @@ void followLineVec(float x, float y, byte power, tMttMode mode, bool correction,
 					break;
 				}
 			}
-			throttle = abs(throttle) * facingDir;
+			throttle = LIM_TO_VAL(abs(throttle) * facingDir, 127);
 			LOG(auto)("\t Facing%d, Drive throttle mode:%d, Pwr%f", facingDir, mode, throttle);
 
 			if (correction)
@@ -116,8 +116,8 @@ void followLineVec(float x, float y, byte power, tMttMode mode, bool correction,
 
 				turn *= facingDir;
 
-				if (abs(errorVal) > 6 && abs(throttle) > 65)
-					throttle /= 2;
+				//if (abs(errorVal) > 6 && abs(throttle) > 65)
+				//	throttle /= 2;
 
 				byte dir = sgn(currentLocalPos.vector.x) * sgn(currentLocalPos.vector.y) * facingDir;
 				switch(dir)
@@ -125,15 +125,15 @@ void followLineVec(float x, float y, byte power, tMttMode mode, bool correction,
 					case (-1): // turn right
 					{
 						//LOG(auto)("turn right");
-						left = MIN_LIM_TO_VAL(throttle-turn, 5, throttle);
-						right = throttle + turn;
+						right = LIM_TO_VAL(throttle + turn, 127);
+						left = MIN_LIM_TO_VAL(right - (2*turn), 5, throttle);
 						break;
 					}
 					case(1): // turn left
 					{
 						//LOG(auto)("turn left");
-						right = MIN_LIM_TO_VAL(throttle-turn, 5, throttle);
-						left = throttle + turn;
+						left = LIM_TO_VAL(throttle + turn, 127);
+						right = MIN_LIM_TO_VAL(right - (2*turn), 5, throttle);
 						break;
 					}
 					case(0): //straight
