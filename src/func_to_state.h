@@ -124,6 +124,18 @@ const int func8##Loc = machine##StateCount + 7
 case (func##Loc): \
 { \
 	int curState = machine##State; \
+	machine##Blocked = true; \ 
+	func##Ret = CALL_FUNC_STATE_0(func); \
+	machine##SafetyCheck(safetyState); \
+	if (machine##State == curState) \
+		machine##StateChange(nextState); \
+	break; \
+}
+#define ADD_FUNC_TO_SWITCH_VOID_0(func, machine, nextState, safetyState) \
+case (func##Loc): \
+{ \
+	int curState = machine##State; \
+	machine##Blocked = true; \ 
 	CALL_FUNC_STATE_0(func); \
 	machine##SafetyCheck(safetyState); \
 	if (machine##State == curState) \
@@ -133,7 +145,15 @@ case (func##Loc): \
 
 /* Macros for 1 Param Functions */
 //Create global variables for all args of a func - TO BE CALLED IN HEADER
-#define PREP_FUNC_STATE_1(func, type1) \
+#define PREP_FUNC_STATE_1(funcType, func, type1, arg1) \
+funcType func (type1 arg1); \
+funcType func##Ret; \ 
+const int func##ArgCount = 1; \
+type1 func##Arg1 = -1
+
+//Create global variables for all args of a func - TO BE CALLED IN HEADER
+#define PREP_FUNC_STATE_VOID_1(funcType, func, type1, arg1) \
+funcType func (type1 arg1); \
 const int func##ArgCount = 1; \
 type1 func##Arg1 = -1
 
@@ -148,6 +168,18 @@ func##Arg1 = arg1In
 case (func##Loc): \
 { \
 	int curState = machine##State; \
+	machine##Blocked = true; \ 
+	func##Ret = CALL_FUNC_STATE_1(func); \
+	machine##SafetyCheck(safetyState); \
+	if (machine##State == curState) \
+		machine##StateChange(nextState); \
+	break; \
+}
+#define ADD_FUNC_TO_SWITCH_VOID_1(func, machine, nextState, safetyState) \
+case (func##Loc): \
+{ \
+	int curState = machine##State; \
+	machine##Blocked = true; \ 
 	CALL_FUNC_STATE_1(func); \
 	machine##SafetyCheck(safetyState); \
 	if (machine##State == curState) \
@@ -157,7 +189,16 @@ case (func##Loc): \
 
 /* Macros for 2 Param Functions */
 //Create global variables for all args of a func - TO BE CALLED IN HEADER
-#define PREP_FUNC_STATE_2(func, type1, type2) \
+#define PREP_FUNC_STATE_2(funcType, func, type1, arg1, type2, arg2) \
+funcType func (type1 arg1, type2 arg2); \
+funcType func##Ret; \ 
+const int func##ArgCount = 2; \
+type1 func##Arg1 = -1; \ 
+type2 func##Arg2 = -1
+
+//Create global variables for all args of a func - TO BE CALLED IN HEADER
+#define PREP_FUNC_STATE_VOID_2(funcType, func, type1, arg1, type2, arg2) \
+funcType func (type1 arg1, type2 arg2); \
 const int func##ArgCount = 2; \
 type1 func##Arg1 = -1; \ 
 type2 func##Arg2 = -1
@@ -174,6 +215,18 @@ func##Arg2 = arg2In
 case (func##Loc): \
 { \
 	int curState = machine##State; \
+	machine##Blocked = true; \ 
+	func##Ret = CALL_FUNC_STATE_2(func); \
+	machine##SafetyCheck(safetyState); \
+	if (machine##State == curState) \
+		machine##StateChange(nextState); \
+	break; \
+}
+#define ADD_FUNC_TO_SWITCH_VOID_2(func, machine, nextState, safetyState) \
+case (func##Loc): \
+{ \
+	int curState = machine##State; \
+	machine##Blocked = true; \ 
 	CALL_FUNC_STATE_2(func); \
 	machine##SafetyCheck(safetyState); \
 	if (machine##State == curState) \
@@ -183,7 +236,17 @@ case (func##Loc): \
 
 /* Macros for 3 Param Functions */
 //Create global variables for all args of a func - TO BE CALLED IN HEADER
-#define PREP_FUNC_STATE_3(func, type1, type2, type3) \
+#define PREP_FUNC_STATE_3(funcType, func, type1, arg1, type2, arg2, type3, arg3) \
+funcType func (type1 arg1, type2 arg2, type3 arg3); \
+funcType func##Ret; \ 
+const int func##ArgCount = 3; \
+type1 func##Arg1 = -1; \ 
+type2 func##Arg2 = -1; \ 
+type3 func##Arg3 = -1
+
+//Create global variables for all args of a func - TO BE CALLED IN HEADER
+#define PREP_FUNC_STATE_VOID_3(funcType, func, type1, arg1, type2, arg2, type3, arg3) \
+funcType func (type1 arg1, type2 arg2, type3 arg3); \
 const int func##ArgCount = 3; \
 type1 func##Arg1 = -1; \ 
 type2 func##Arg2 = -1; \ 
@@ -202,6 +265,18 @@ func##Arg3 = arg3In
 case (func##Loc): \
 { \
 	int curState = machine##State; \
+	machine##Blocked = true; \ 
+	func##Ret = CALL_FUNC_STATE_3(func); \
+	machine##SafetyCheck(safetyState); \
+	if (machine##State == curState) \
+		machine##StateChange(nextState); \
+	break; \
+}
+#define ADD_FUNC_TO_SWITCH_VOID_3(func, machine, nextState, safetyState) \
+case (func##Loc): \
+{ \
+	int curState = machine##State; \
+	machine##Blocked = true; \ 
 	CALL_FUNC_STATE_3(func); \
 	machine##SafetyCheck(safetyState); \
 	if (machine##State == curState) \
@@ -211,7 +286,18 @@ case (func##Loc): \
 
 /* Macros for 4 Param Functions */
 //Create global variables for all args of a func - TO BE CALLED IN HEADER
-#define PREP_FUNC_STATE_4(func, type1, type2, type3, type4) \
+#define PREP_FUNC_STATE_4(funcType, func, type1, arg1, type2, arg2, type3, arg3, type4, arg4) \
+funcType func (type1 arg1, type2 arg2, type3 arg3, type4 arg4); \
+funcType func##Ret; \ 
+const int func##ArgCount = 4; \
+type1 func##Arg1 = -1; \ 
+type2 func##Arg2 = -1; \ 
+type3 func##Arg3 = -1; \ 
+type4 func##Arg4 = -1
+
+//Create global variables for all args of a func - TO BE CALLED IN HEADER
+#define PREP_FUNC_STATE_VOID_4(funcType, func, type1, arg1, type2, arg2, type3, arg3, type4, arg4) \
+funcType func (type1 arg1, type2 arg2, type3 arg3, type4 arg4); \
 const int func##ArgCount = 4; \
 type1 func##Arg1 = -1; \ 
 type2 func##Arg2 = -1; \ 
@@ -232,6 +318,18 @@ func##Arg4 = arg4In
 case (func##Loc): \
 { \
 	int curState = machine##State; \
+	machine##Blocked = true; \ 
+	func##Ret = CALL_FUNC_STATE_4(func); \
+	machine##SafetyCheck(safetyState); \
+	if (machine##State == curState) \
+		machine##StateChange(nextState); \
+	break; \
+}
+#define ADD_FUNC_TO_SWITCH_VOID_4(func, machine, nextState, safetyState) \
+case (func##Loc): \
+{ \
+	int curState = machine##State; \
+	machine##Blocked = true; \ 
 	CALL_FUNC_STATE_4(func); \
 	machine##SafetyCheck(safetyState); \
 	if (machine##State == curState) \
@@ -241,7 +339,19 @@ case (func##Loc): \
 
 /* Macros for 5 Param Functions */
 //Create global variables for all args of a func - TO BE CALLED IN HEADER
-#define PREP_FUNC_STATE_5(func, type1, type2, type3, type4, type5) \
+#define PREP_FUNC_STATE_5(funcType, func, type1, arg1, type2, arg2, type3, arg3, type4, arg4, type5, arg5) \
+funcType func (type1 arg1, type2 arg2, type3 arg3, type4 arg4, type5 arg5); \
+funcType func##Ret; \ 
+const int func##ArgCount = 5; \
+type1 func##Arg1 = -1; \ 
+type2 func##Arg2 = -1; \ 
+type3 func##Arg3 = -1; \ 
+type4 func##Arg4 = -1; \ 
+type5 func##Arg5 = -1
+
+//Create global variables for all args of a func - TO BE CALLED IN HEADER
+#define PREP_FUNC_STATE_VOID_5(funcType, func, type1, arg1, type2, arg2, type3, arg3, type4, arg4, type5, arg5) \
+funcType func (type1 arg1, type2 arg2, type3 arg3, type4 arg4, type5 arg5); \
 const int func##ArgCount = 5; \
 type1 func##Arg1 = -1; \ 
 type2 func##Arg2 = -1; \ 
@@ -264,6 +374,18 @@ func##Arg5 = arg5In
 case (func##Loc): \
 { \
 	int curState = machine##State; \
+	machine##Blocked = true; \ 
+	func##Ret = CALL_FUNC_STATE_5(func); \
+	machine##SafetyCheck(safetyState); \
+	if (machine##State == curState) \
+		machine##StateChange(nextState); \
+	break; \
+}
+#define ADD_FUNC_TO_SWITCH_VOID_5(func, machine, nextState, safetyState) \
+case (func##Loc): \
+{ \
+	int curState = machine##State; \
+	machine##Blocked = true; \ 
 	CALL_FUNC_STATE_5(func); \
 	machine##SafetyCheck(safetyState); \
 	if (machine##State == curState) \
@@ -273,7 +395,20 @@ case (func##Loc): \
 
 /* Macros for 6 Param Functions */
 //Create global variables for all args of a func - TO BE CALLED IN HEADER
-#define PREP_FUNC_STATE_6(func, type1, type2, type3, type4, type5, type6) \
+#define PREP_FUNC_STATE_6(funcType, func, type1, arg1, type2, arg2, type3, arg3, type4, arg4, type5, arg5, type6, arg6) \
+funcType func (type1 arg1, type2 arg2, type3 arg3, type4 arg4, type5 arg5, type6 arg6); \
+funcType func##Ret; \ 
+const int func##ArgCount = 6; \
+type1 func##Arg1 = -1; \ 
+type2 func##Arg2 = -1; \ 
+type3 func##Arg3 = -1; \ 
+type4 func##Arg4 = -1; \ 
+type5 func##Arg5 = -1; \ 
+type6 func##Arg6 = -1
+
+//Create global variables for all args of a func - TO BE CALLED IN HEADER
+#define PREP_FUNC_STATE_VOID_6(funcType, func, type1, arg1, type2, arg2, type3, arg3, type4, arg4, type5, arg5, type6, arg6) \
+funcType func (type1 arg1, type2 arg2, type3 arg3, type4 arg4, type5 arg5, type6 arg6); \
 const int func##ArgCount = 6; \
 type1 func##Arg1 = -1; \ 
 type2 func##Arg2 = -1; \ 
@@ -298,6 +433,18 @@ func##Arg6 = arg6In
 case (func##Loc): \
 { \
 	int curState = machine##State; \
+	machine##Blocked = true; \ 
+	func##Ret = CALL_FUNC_STATE_6(func); \
+	machine##SafetyCheck(safetyState); \
+	if (machine##State == curState) \
+		machine##StateChange(nextState); \
+	break; \
+}
+#define ADD_FUNC_TO_SWITCH_VOID_6(func, machine, nextState, safetyState) \
+case (func##Loc): \
+{ \
+	int curState = machine##State; \
+	machine##Blocked = true; \ 
 	CALL_FUNC_STATE_6(func); \
 	machine##SafetyCheck(safetyState); \
 	if (machine##State == curState) \
@@ -307,7 +454,21 @@ case (func##Loc): \
 
 /* Macros for 7 Param Functions */
 //Create global variables for all args of a func - TO BE CALLED IN HEADER
-#define PREP_FUNC_STATE_7(func, type1, type2, type3, type4, type5, type6, type7) \
+#define PREP_FUNC_STATE_7(funcType, func, type1, arg1, type2, arg2, type3, arg3, type4, arg4, type5, arg5, type6, arg6, type7, arg7) \
+funcType func (type1 arg1, type2 arg2, type3 arg3, type4 arg4, type5 arg5, type6 arg6, type7 arg7); \
+funcType func##Ret; \ 
+const int func##ArgCount = 7; \
+type1 func##Arg1 = -1; \ 
+type2 func##Arg2 = -1; \ 
+type3 func##Arg3 = -1; \ 
+type4 func##Arg4 = -1; \ 
+type5 func##Arg5 = -1; \ 
+type6 func##Arg6 = -1; \ 
+type7 func##Arg7 = -1
+
+//Create global variables for all args of a func - TO BE CALLED IN HEADER
+#define PREP_FUNC_STATE_VOID_7(funcType, func, type1, arg1, type2, arg2, type3, arg3, type4, arg4, type5, arg5, type6, arg6, type7, arg7) \
+funcType func (type1 arg1, type2 arg2, type3 arg3, type4 arg4, type5 arg5, type6 arg6, type7 arg7); \
 const int func##ArgCount = 7; \
 type1 func##Arg1 = -1; \ 
 type2 func##Arg2 = -1; \ 
@@ -334,6 +495,18 @@ func##Arg7 = arg7In
 case (func##Loc): \
 { \
 	int curState = machine##State; \
+	machine##Blocked = true; \ 
+	func##Ret = CALL_FUNC_STATE_7(func); \
+	machine##SafetyCheck(safetyState); \
+	if (machine##State == curState) \
+		machine##StateChange(nextState); \
+	break; \
+}
+#define ADD_FUNC_TO_SWITCH_VOID_7(func, machine, nextState, safetyState) \
+case (func##Loc): \
+{ \
+	int curState = machine##State; \
+	machine##Blocked = true; \ 
 	CALL_FUNC_STATE_7(func); \
 	machine##SafetyCheck(safetyState); \
 	if (machine##State == curState) \
@@ -343,7 +516,22 @@ case (func##Loc): \
 
 /* Macros for 8 Param Functions */
 //Create global variables for all args of a func - TO BE CALLED IN HEADER
-#define PREP_FUNC_STATE_8(func, type1, type2, type3, type4, type5, type6, type7, type8) \
+#define PREP_FUNC_STATE_8(funcType, func, type1, arg1, type2, arg2, type3, arg3, type4, arg4, type5, arg5, type6, arg6, type7, arg7, type8, arg8) \
+funcType func (type1 arg1, type2 arg2, type3 arg3, type4 arg4, type5 arg5, type6 arg6, type7 arg7, type8 arg8); \
+funcType func##Ret; \ 
+const int func##ArgCount = 8; \
+type1 func##Arg1 = -1; \ 
+type2 func##Arg2 = -1; \ 
+type3 func##Arg3 = -1; \ 
+type4 func##Arg4 = -1; \ 
+type5 func##Arg5 = -1; \ 
+type6 func##Arg6 = -1; \ 
+type7 func##Arg7 = -1; \ 
+type8 func##Arg8 = -1
+
+//Create global variables for all args of a func - TO BE CALLED IN HEADER
+#define PREP_FUNC_STATE_VOID_8(funcType, func, type1, arg1, type2, arg2, type3, arg3, type4, arg4, type5, arg5, type6, arg6, type7, arg7, type8, arg8) \
+funcType func (type1 arg1, type2 arg2, type3 arg3, type4 arg4, type5 arg5, type6 arg6, type7 arg7, type8 arg8); \
 const int func##ArgCount = 8; \
 type1 func##Arg1 = -1; \ 
 type2 func##Arg2 = -1; \ 
@@ -372,6 +560,18 @@ func##Arg8 = arg8In
 case (func##Loc): \
 { \
 	int curState = machine##State; \
+	machine##Blocked = true; \ 
+	func##Ret = CALL_FUNC_STATE_8(func); \
+	machine##SafetyCheck(safetyState); \
+	if (machine##State == curState) \
+		machine##StateChange(nextState); \
+	break; \
+}
+#define ADD_FUNC_TO_SWITCH_VOID_8(func, machine, nextState, safetyState) \
+case (func##Loc): \
+{ \
+	int curState = machine##State; \
+	machine##Blocked = true; \ 
 	CALL_FUNC_STATE_8(func); \
 	machine##SafetyCheck(safetyState); \
 	if (machine##State == curState) \
@@ -381,7 +581,23 @@ case (func##Loc): \
 
 /* Macros for 9 Param Functions */
 //Create global variables for all args of a func - TO BE CALLED IN HEADER
-#define PREP_FUNC_STATE_9(func, type1, type2, type3, type4, type5, type6, type7, type8, type9) \
+#define PREP_FUNC_STATE_9(funcType, func, type1, arg1, type2, arg2, type3, arg3, type4, arg4, type5, arg5, type6, arg6, type7, arg7, type8, arg8, type9, arg9) \
+funcType func (type1 arg1, type2 arg2, type3 arg3, type4 arg4, type5 arg5, type6 arg6, type7 arg7, type8 arg8, type9 arg9); \
+funcType func##Ret; \ 
+const int func##ArgCount = 9; \
+type1 func##Arg1 = -1; \ 
+type2 func##Arg2 = -1; \ 
+type3 func##Arg3 = -1; \ 
+type4 func##Arg4 = -1; \ 
+type5 func##Arg5 = -1; \ 
+type6 func##Arg6 = -1; \ 
+type7 func##Arg7 = -1; \ 
+type8 func##Arg8 = -1; \ 
+type9 func##Arg9 = -1
+
+//Create global variables for all args of a func - TO BE CALLED IN HEADER
+#define PREP_FUNC_STATE_VOID_9(funcType, func, type1, arg1, type2, arg2, type3, arg3, type4, arg4, type5, arg5, type6, arg6, type7, arg7, type8, arg8, type9, arg9) \
+funcType func (type1 arg1, type2 arg2, type3 arg3, type4 arg4, type5 arg5, type6 arg6, type7 arg7, type8 arg8, type9 arg9); \
 const int func##ArgCount = 9; \
 type1 func##Arg1 = -1; \ 
 type2 func##Arg2 = -1; \ 
@@ -412,6 +628,18 @@ func##Arg9 = arg9In
 case (func##Loc): \
 { \
 	int curState = machine##State; \
+	machine##Blocked = true; \ 
+	func##Ret = CALL_FUNC_STATE_9(func); \
+	machine##SafetyCheck(safetyState); \
+	if (machine##State == curState) \
+		machine##StateChange(nextState); \
+	break; \
+}
+#define ADD_FUNC_TO_SWITCH_VOID_9(func, machine, nextState, safetyState) \
+case (func##Loc): \
+{ \
+	int curState = machine##State; \
+	machine##Blocked = true; \ 
 	CALL_FUNC_STATE_9(func); \
 	machine##SafetyCheck(safetyState); \
 	if (machine##State == curState) \
@@ -421,7 +649,24 @@ case (func##Loc): \
 
 /* Macros for 10 Param Functions */
 //Create global variables for all args of a func - TO BE CALLED IN HEADER
-#define PREP_FUNC_STATE_10(func, type1, type2, type3, type4, type5, type6, type7, type8, type9, type10) \
+#define PREP_FUNC_STATE_10(funcType, func, type1, arg1, type2, arg2, type3, arg3, type4, arg4, type5, arg5, type6, arg6, type7, arg7, type8, arg8, type9, arg9, type10, arg10) \
+funcType func (type1 arg1, type2 arg2, type3 arg3, type4 arg4, type5 arg5, type6 arg6, type7 arg7, type8 arg8, type9 arg9, type10 arg10); \
+funcType func##Ret; \ 
+const int func##ArgCount = 10; \
+type1 func##Arg1 = -1; \ 
+type2 func##Arg2 = -1; \ 
+type3 func##Arg3 = -1; \ 
+type4 func##Arg4 = -1; \ 
+type5 func##Arg5 = -1; \ 
+type6 func##Arg6 = -1; \ 
+type7 func##Arg7 = -1; \ 
+type8 func##Arg8 = -1; \ 
+type9 func##Arg9 = -1; \ 
+type10 func##Arg10 = -1
+
+//Create global variables for all args of a func - TO BE CALLED IN HEADER
+#define PREP_FUNC_STATE_VOID_10(funcType, func, type1, arg1, type2, arg2, type3, arg3, type4, arg4, type5, arg5, type6, arg6, type7, arg7, type8, arg8, type9, arg9, type10, arg10) \
+funcType func (type1 arg1, type2 arg2, type3 arg3, type4 arg4, type5 arg5, type6 arg6, type7 arg7, type8 arg8, type9 arg9, type10 arg10); \
 const int func##ArgCount = 10; \
 type1 func##Arg1 = -1; \ 
 type2 func##Arg2 = -1; \ 
@@ -454,6 +699,18 @@ func##Arg10 = arg10In
 case (func##Loc): \
 { \
 	int curState = machine##State; \
+	machine##Blocked = true; \ 
+	func##Ret = CALL_FUNC_STATE_10(func); \
+	machine##SafetyCheck(safetyState); \
+	if (machine##State == curState) \
+		machine##StateChange(nextState); \
+	break; \
+}
+#define ADD_FUNC_TO_SWITCH_VOID_10(func, machine, nextState, safetyState) \
+case (func##Loc): \
+{ \
+	int curState = machine##State; \
+	machine##Blocked = true; \ 
 	CALL_FUNC_STATE_10(func); \
 	machine##SafetyCheck(safetyState); \
 	if (machine##State == curState) \
@@ -463,7 +720,25 @@ case (func##Loc): \
 
 /* Macros for 11 Param Functions */
 //Create global variables for all args of a func - TO BE CALLED IN HEADER
-#define PREP_FUNC_STATE_11(func, type1, type2, type3, type4, type5, type6, type7, type8, type9, type10, type11) \
+#define PREP_FUNC_STATE_11(funcType, func, type1, arg1, type2, arg2, type3, arg3, type4, arg4, type5, arg5, type6, arg6, type7, arg7, type8, arg8, type9, arg9, type10, arg10, type11, arg11) \
+funcType func (type1 arg1, type2 arg2, type3 arg3, type4 arg4, type5 arg5, type6 arg6, type7 arg7, type8 arg8, type9 arg9, type10 arg10, type11 arg11); \
+funcType func##Ret; \ 
+const int func##ArgCount = 11; \
+type1 func##Arg1 = -1; \ 
+type2 func##Arg2 = -1; \ 
+type3 func##Arg3 = -1; \ 
+type4 func##Arg4 = -1; \ 
+type5 func##Arg5 = -1; \ 
+type6 func##Arg6 = -1; \ 
+type7 func##Arg7 = -1; \ 
+type8 func##Arg8 = -1; \ 
+type9 func##Arg9 = -1; \ 
+type10 func##Arg10 = -1; \ 
+type11 func##Arg11 = -1
+
+//Create global variables for all args of a func - TO BE CALLED IN HEADER
+#define PREP_FUNC_STATE_VOID_11(funcType, func, type1, arg1, type2, arg2, type3, arg3, type4, arg4, type5, arg5, type6, arg6, type7, arg7, type8, arg8, type9, arg9, type10, arg10, type11, arg11) \
+funcType func (type1 arg1, type2 arg2, type3 arg3, type4 arg4, type5 arg5, type6 arg6, type7 arg7, type8 arg8, type9 arg9, type10 arg10, type11 arg11); \
 const int func##ArgCount = 11; \
 type1 func##Arg1 = -1; \ 
 type2 func##Arg2 = -1; \ 
@@ -498,6 +773,18 @@ func##Arg11 = arg11In
 case (func##Loc): \
 { \
 	int curState = machine##State; \
+	machine##Blocked = true; \ 
+	func##Ret = CALL_FUNC_STATE_11(func); \
+	machine##SafetyCheck(safetyState); \
+	if (machine##State == curState) \
+		machine##StateChange(nextState); \
+	break; \
+}
+#define ADD_FUNC_TO_SWITCH_VOID_11(func, machine, nextState, safetyState) \
+case (func##Loc): \
+{ \
+	int curState = machine##State; \
+	machine##Blocked = true; \ 
 	CALL_FUNC_STATE_11(func); \
 	machine##SafetyCheck(safetyState); \
 	if (machine##State == curState) \
@@ -507,7 +794,26 @@ case (func##Loc): \
 
 /* Macros for 12 Param Functions */
 //Create global variables for all args of a func - TO BE CALLED IN HEADER
-#define PREP_FUNC_STATE_12(func, type1, type2, type3, type4, type5, type6, type7, type8, type9, type10, type11, type12) \
+#define PREP_FUNC_STATE_12(funcType, func, type1, arg1, type2, arg2, type3, arg3, type4, arg4, type5, arg5, type6, arg6, type7, arg7, type8, arg8, type9, arg9, type10, arg10, type11, arg11, type12, arg12) \
+funcType func (type1 arg1, type2 arg2, type3 arg3, type4 arg4, type5 arg5, type6 arg6, type7 arg7, type8 arg8, type9 arg9, type10 arg10, type11 arg11, type12 arg12); \
+funcType func##Ret; \ 
+const int func##ArgCount = 12; \
+type1 func##Arg1 = -1; \ 
+type2 func##Arg2 = -1; \ 
+type3 func##Arg3 = -1; \ 
+type4 func##Arg4 = -1; \ 
+type5 func##Arg5 = -1; \ 
+type6 func##Arg6 = -1; \ 
+type7 func##Arg7 = -1; \ 
+type8 func##Arg8 = -1; \ 
+type9 func##Arg9 = -1; \ 
+type10 func##Arg10 = -1; \ 
+type11 func##Arg11 = -1; \ 
+type12 func##Arg12 = -1
+
+//Create global variables for all args of a func - TO BE CALLED IN HEADER
+#define PREP_FUNC_STATE_VOID_12(funcType, func, type1, arg1, type2, arg2, type3, arg3, type4, arg4, type5, arg5, type6, arg6, type7, arg7, type8, arg8, type9, arg9, type10, arg10, type11, arg11, type12, arg12) \
+funcType func (type1 arg1, type2 arg2, type3 arg3, type4 arg4, type5 arg5, type6 arg6, type7 arg7, type8 arg8, type9 arg9, type10 arg10, type11 arg11, type12 arg12); \
 const int func##ArgCount = 12; \
 type1 func##Arg1 = -1; \ 
 type2 func##Arg2 = -1; \ 
@@ -544,6 +850,18 @@ func##Arg12 = arg12In
 case (func##Loc): \
 { \
 	int curState = machine##State; \
+	machine##Blocked = true; \ 
+	func##Ret = CALL_FUNC_STATE_12(func); \
+	machine##SafetyCheck(safetyState); \
+	if (machine##State == curState) \
+		machine##StateChange(nextState); \
+	break; \
+}
+#define ADD_FUNC_TO_SWITCH_VOID_12(func, machine, nextState, safetyState) \
+case (func##Loc): \
+{ \
+	int curState = machine##State; \
+	machine##Blocked = true; \ 
 	CALL_FUNC_STATE_12(func); \
 	machine##SafetyCheck(safetyState); \
 	if (machine##State == curState) \
@@ -553,7 +871,27 @@ case (func##Loc): \
 
 /* Macros for 13 Param Functions */
 //Create global variables for all args of a func - TO BE CALLED IN HEADER
-#define PREP_FUNC_STATE_13(func, type1, type2, type3, type4, type5, type6, type7, type8, type9, type10, type11, type12, type13) \
+#define PREP_FUNC_STATE_13(funcType, func, type1, arg1, type2, arg2, type3, arg3, type4, arg4, type5, arg5, type6, arg6, type7, arg7, type8, arg8, type9, arg9, type10, arg10, type11, arg11, type12, arg12, type13, arg13) \
+funcType func (type1 arg1, type2 arg2, type3 arg3, type4 arg4, type5 arg5, type6 arg6, type7 arg7, type8 arg8, type9 arg9, type10 arg10, type11 arg11, type12 arg12, type13 arg13); \
+funcType func##Ret; \ 
+const int func##ArgCount = 13; \
+type1 func##Arg1 = -1; \ 
+type2 func##Arg2 = -1; \ 
+type3 func##Arg3 = -1; \ 
+type4 func##Arg4 = -1; \ 
+type5 func##Arg5 = -1; \ 
+type6 func##Arg6 = -1; \ 
+type7 func##Arg7 = -1; \ 
+type8 func##Arg8 = -1; \ 
+type9 func##Arg9 = -1; \ 
+type10 func##Arg10 = -1; \ 
+type11 func##Arg11 = -1; \ 
+type12 func##Arg12 = -1; \ 
+type13 func##Arg13 = -1
+
+//Create global variables for all args of a func - TO BE CALLED IN HEADER
+#define PREP_FUNC_STATE_VOID_13(funcType, func, type1, arg1, type2, arg2, type3, arg3, type4, arg4, type5, arg5, type6, arg6, type7, arg7, type8, arg8, type9, arg9, type10, arg10, type11, arg11, type12, arg12, type13, arg13) \
+funcType func (type1 arg1, type2 arg2, type3 arg3, type4 arg4, type5 arg5, type6 arg6, type7 arg7, type8 arg8, type9 arg9, type10 arg10, type11 arg11, type12 arg12, type13 arg13); \
 const int func##ArgCount = 13; \
 type1 func##Arg1 = -1; \ 
 type2 func##Arg2 = -1; \ 
@@ -592,6 +930,18 @@ func##Arg13 = arg13In
 case (func##Loc): \
 { \
 	int curState = machine##State; \
+	machine##Blocked = true; \ 
+	func##Ret = CALL_FUNC_STATE_13(func); \
+	machine##SafetyCheck(safetyState); \
+	if (machine##State == curState) \
+		machine##StateChange(nextState); \
+	break; \
+}
+#define ADD_FUNC_TO_SWITCH_VOID_13(func, machine, nextState, safetyState) \
+case (func##Loc): \
+{ \
+	int curState = machine##State; \
+	machine##Blocked = true; \ 
 	CALL_FUNC_STATE_13(func); \
 	machine##SafetyCheck(safetyState); \
 	if (machine##State == curState) \

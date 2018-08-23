@@ -126,14 +126,14 @@ task driveSet()
 
 				break;
 			}
-			//ADD_FUNC_TO_SWITCH_4(driveFuncTest, drive, driveBreak, driveIdle)
-			ADD_FUNC_TO_SWITCH_6(followLine, drive, driveIdle, driveIdle)
-			ADD_FUNC_TO_SWITCH_6(moveToTargetSimple, drive, driveIdle, driveIdle)
-			ADD_FUNC_TO_SWITCH_12(moveToTarget, drive, driveIdle, driveIdle)
-			ADD_FUNC_TO_SWITCH_12(moveToTargetDis, drive, driveBreak, driveIdle)
-			ADD_FUNC_TO_SWITCH_7(turnToAngleNewAlg, drive, driveBreak, driveIdle)
-			ADD_FUNC_TO_SWITCH_9(turnToTargetNewAlg, drive, driveBreak, driveIdle)
-			ADD_FUNC_TO_SWITCH_7(sweepTurnToTarget, drive, driveBreak, driveIdle)
+			//ADD_FUNC_TO_SWITCH_VOID_4(driveFuncTest, drive, driveBreak, driveIdle)
+			ADD_FUNC_TO_SWITCH_VOID_6(followLine, drive, driveIdle, driveIdle)
+			ADD_FUNC_TO_SWITCH_VOID_6(moveToTargetSimple, drive, driveIdle, driveIdle)
+			ADD_FUNC_TO_SWITCH_VOID_12(moveToTarget, drive, driveIdle, driveIdle)
+			ADD_FUNC_TO_SWITCH_VOID_12(moveToTargetDis, drive, driveBreak, driveIdle)
+			ADD_FUNC_TO_SWITCH_VOID_7(turnToAngleNewAlg, drive, driveBreak, driveIdle)
+			ADD_FUNC_TO_SWITCH_VOID_9(turnToTargetNewAlg, drive, driveBreak, driveIdle)
+			ADD_FUNC_TO_SWITCH_VOID_7(sweepTurnToTarget, drive, driveBreak, driveIdle)
 		}
 		endCycle(drive);
 	}

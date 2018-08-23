@@ -19,25 +19,28 @@ typedef enum _mttMode
 /* Variables */
 sVector gTargetLast;
 
+///* Movement Functions */
+//void followLine(float x, float y, byte power, tMttMode mode, bool correction, tStopType stopType);
+//void moveToTargetSimple(float x, float y, byte power, tMttMode mode, bool correction, bool harshStop);
+//void moveToTarget(float x, float y, float xs, float ys, byte power, byte startPower, float maxErrX, float decelEarly, byte decelPower, float dropEarly = 0, tStopType stopType = stopSoft | stopHarsh, tMttMode mode = mttProportional);
+//void moveToTargetDis(float a, float d, float xs, float ys, byte power, byte startPower, float maxErrX, float decelEarly, byte decelPower, float dropEarly = 0, tStopType stopType = stopSoft | stopHarsh, tMttMode mode = mttProportional);
+
+///* Turning Functions */
+//void turnToFace(float x, float y, tFacingDir facingDir = facingFront, tStopType stopType);
+//void turnToAngleNewAlg(float a, tTurnDir turnDir, float fullRatio, byte coastPower, float stopOffsetDeg, bool mogo = false, bool harshStop = true);
+//void turnToTargetNewAlg(float x, float y, tTurnDir turnDir, float fullRatio, byte coastPower, float stopOffsetDeg, bool mogo = false, bool harshStop = true, float offset = 0);
+//void sweepTurnToTarget(float x, float y, float a, float r, tTurnDir turnDir, byte power, bool slow = true);
+
 /* Movement Functions */
-void followLine(float x, float y, byte power, tMttMode mode, bool correction, tStopType stopType);
-void moveToTargetSimple(float x, float y, byte power, tMttMode mode, bool correction, bool harshStop);
-void moveToTarget(float x, float y, float xs, float ys, byte power, byte startPower, float maxErrX, float decelEarly, byte decelPower, float dropEarly = 0, tStopType stopType = stopSoft | stopHarsh, tMttMode mode = mttProportional);
-void moveToTargetDis(float a, float d, float xs, float ys, byte power, byte startPower, float maxErrX, float decelEarly, byte decelPower, float dropEarly = 0, tStopType stopType = stopSoft | stopHarsh, tMttMode mode = mttProportional);
+PREP_FUNC_STATE_VOID_6(void, followLine, float, x, float, y, byte, power, tMttMode, mode, bool, correction, tStopType, stopType);
+PREP_FUNC_STATE_VOID_6(void, moveToTargetSimple, float, x, float, y, byte, power, tMttMode, mode, bool, correction, bool, harshStop);
+PREP_FUNC_STATE_VOID_12(void, moveToTarget, float, x, float, y, float, xs, float, ys, byte, power, byte, startPower, float, maxErrX, float, decelEarly, byte, decelPower, float, dropEarly, tStopType, stopType, tMttMode, mode);
+PREP_FUNC_STATE_VOID_12(void, moveToTargetDis, float, a, float, d, float, xs, float, ys, byte, power, byte, startPower, float, maxErrX, float, decelEarly, byte, decelPower, float, dropEarly, tStopType, stopType, tMttMode, mode);
 
 /* Turning Functions */
-void turnToFace(float x, float y, tFacingDir facingDir = facingFront, tStopType stopType);
-void turnToAngleNewAlg(float a, tTurnDir turnDir, float fullRatio, byte coastPower, float stopOffsetDeg, bool mogo = false, bool harshStop = true);
-void turnToTargetNewAlg(float x, float y, tTurnDir turnDir, float fullRatio, byte coastPower, float stopOffsetDeg, bool mogo = false, bool harshStop = true, float offset = 0);
-void sweepTurnToTarget(float x, float y, float a, float r, tTurnDir turnDir, byte power, bool slow = true);
+PREP_FUNC_STATE_VOID_4(void, turnToFace, float, x, float, y, tFacingDir, facingDir, tStopType, stopType);
+PREP_FUNC_STATE_VOID_7(void, turnToAngleNewAlg, float, a, tTurnDir, turnDir, float, fullRatio, byte, coastPower, float, stopOffsetDeg, bool, mogo, bool, harshStop);
+PREP_FUNC_STATE_VOID_9(void, turnToTargetNewAlg, float, x, float, y, tTurnDir, turnDir, float, fullRatio, byte, coastPower, float, stopOffsetDeg, bool, mogo, bool, harshStop, float, offset);
+PREP_FUNC_STATE_VOID_7(void, sweepTurnToTarget, float, x, float, y, float, a, float, r, tTurnDir, turnDir, byte, power, bool, slow);
 
 ADD_FUNCS_TO_MACHINE_8(drive, followLine, moveToTargetSimple, moveToTarget, moveToTargetDis, turnToFace, turnToAngleNewAlg, turnToTargetNewAlg, sweepTurnToTarget);
-
-PREP_FUNC_STATE_6(followLine, float, float, byte, tMttMode, bool, tStopType);
-PREP_FUNC_STATE_6(moveToTargetSimple, float, float, byte, tMttMode, bool, bool);
-PREP_FUNC_STATE_12(moveToTarget, float, float, float, float, byte, byte, float, float, byte, float, tStopType, tMttMode);
-PREP_FUNC_STATE_12(moveToTargetDis, float, float, float, float, byte, byte, float, float, byte, float, tStopType, tMttMode);
-PREP_FUNC_STATE_4(turnToFace, float, float, tFacingDir, tStopType);
-PREP_FUNC_STATE_7(turnToAngleNewAlg, float, tTurnDir, float, byte, float, bool, bool);
-PREP_FUNC_STATE_9(turnToTargetNewAlg, float, float, tTurnDir, float, byte, float, bool, bool, float);
-PREP_FUNC_STATE_7(sweepTurnToTarget, float, float, float, float, tTurnDir, byte, bool);
