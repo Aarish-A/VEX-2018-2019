@@ -51,17 +51,6 @@ void followLineVec(float x, float y, byte power, tMttMode mode, bool correction,
 		do
 		{
 			VEL_CHECK_INC(drive, velLocalY);
-			/*
-			if (stopSoft & stopType) //Determine how many inches before target to begin softStop
-			{
-				if (gVelocity.localY > 6)
-					softExit = 10
-				else if(gVelocity.localY > 2)
-					softExit = 3.5;
-				else
-					softExit = 1.5;
-			}
-			*/
 
 			//Construct triangle connecting end point and robot position
 			if (!invertAxes)
@@ -123,7 +112,7 @@ void followLineVec(float x, float y, byte power, tMttMode mode, bool correction,
 				if (fabs(errorVal) <= 1)
 					turn = 0;
 				else
-					turn = LIM_TO_VAL( ((float)5.5 * (exp(0.2 * errorVal))), 127); //turn = 5(e^(0.2x))
+					turn = LIM_TO_VAL( ((float)5.5 * (exp(0.2 * errorVal))), 127); //turn = 3.6(e^(0.2x))
 
 				turn *= facingDir;
 
@@ -136,14 +125,14 @@ void followLineVec(float x, float y, byte power, tMttMode mode, bool correction,
 					case (-1): // turn right
 					{
 						//LOG(auto)("turn right");
-						left = throttle;
+						left = MIN_LIM_TO_VAL(throttle-turn, 5, throttle);
 						right = throttle + turn;
 						break;
 					}
 					case(1): // turn left
 					{
 						//LOG(auto)("turn left");
-						right = throttle;
+						right = MIN_LIM_TO_VAL(throttle-turn, 5, throttle);
 						left = throttle + turn;
 						break;
 					}

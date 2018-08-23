@@ -4,9 +4,12 @@
 
 // Limit a variable to a value
 #define LIM_TO_VAL(input, val) (abs(input) > (val) ? (val) * sgn(input) : (input))
+#define MIN_LIM_TO_VAL(input, val, targSgn) (( (sgn(targSgn) >= 0)? (input < sgn(targSgn)):(input > sgn(targSgn)*(val)) )? (val) * sgn(targSgn) : (input))
+
 
 // Limit a variable to a value and set that variable to the result
 #define LIM_TO_VAL_SET(input, val) input = LIM_TO_VAL(input, val)
+#define MINLIM_TO_VAL_SET(input, val) input = MIN_LIM_TO_VAL(input, val)
 
 // The length of an array
 #define ARR_LEN(array) (sizeof(array) / sizeof(array[0]))
