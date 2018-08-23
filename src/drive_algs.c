@@ -8,13 +8,9 @@ void followLineVec(float x, float y, byte power, tMttMode mode, bool correction,
 {
 	byte facingDir = facingCoord(x,y,1.13); // Must be facing within 130 degrees of target
 
-	if (facingDir)
-	{
-		//Vectors & Magnitudes - relative to the end coordinate
-		sTrianglePos currentLocalPos; //constructTrianglePos(currentLocalPos, gPosition.x - x, gPosition.y - y);
-		bool invertAxes = false;
-		float deltaX = gPosition.x - x;
-		float deltaY = gPosition.y - y;
+	bool invertAxes = false;
+	float deltaX = gPosition.x - x;
+	float deltaY = gPosition.y - y;
 		/*
 		if (deltaX > deltaY)
 		{
@@ -24,6 +20,11 @@ void followLineVec(float x, float y, byte power, tMttMode mode, bool correction,
 			deltaY = temp;
 		}
 		*/
+
+	if (facingDir && fabs(deltaY) > 4)
+	{
+		//Vectors & Magnitudes - relative to the end coordinate
+		sTrianglePos currentLocalPos; //constructTrianglePos(currentLocalPos, gPosition.x - x, gPosition.y - y);
 		sTrianglePos offsetLocalPos;
 		sTrianglePos targetLocalPos;
 		sTrianglePos error;
@@ -39,11 +40,13 @@ void followLineVec(float x, float y, byte power, tMttMode mode, bool correction,
 
 		//Drive Variables
 		const float propKP = 6.0;
-		float softExit = 3;
+		float softExit = fabs(deltaY/4) + 2;
 
 		//Correction-Turn Variables
 		float offset = 5.0;
 		sLine followLine;
+
+		LOG(auto)("%dStart FollowLine to (%f,%f),a:%f. Offset:%f. softExit:%f", npgmtime, deltaX, deltaY, a, offset, softExit);
 
 		do
 		{
@@ -70,7 +73,7 @@ void followLineVec(float x, float y, byte power, tMttMode mode, bool correction,
 			{
 				case mttSimple:
 				{
-					if (abs(currentLocalPos.vector.y) > 3)
+					if (fabs(currentLocalPos.vector.y) > 3)
 						throttle = abs(power) * facingDir;
 					else
 						throttle = 7 * facingDir;
@@ -79,23 +82,23 @@ void followLineVec(float x, float y, byte power, tMttMode mode, bool correction,
 				case mttProportional:
 				{
 					throttle = LIM_TO_VAL((currentLocalPos.vector.y * propKP), 127);
-					if (abs(currentLocalPos.vector.y) < 5)
+					if (fabs(currentLocalPos.vector.y) < 5)
 						LIM_TO_VAL_SET(throttle, 15);
 					break;
 				}
 			}
 			throttle = abs(throttle) * facingDir;
-			LOG(drive)("\t Facing%d, Drive throttle mode:%d, Pwr%f", facingDir, mode, throttle);
+			LOG(auto)("\t Facing%d, Drive throttle mode:%d, Pwr%f", facingDir, mode, throttle);
 
 			if (correction)
 			{
 				const float turnBase = 1.42;
-
+				tHog();
 				//Make offset value smaller as when we are close to the target
 				if (abs(currentLocalPos.vector.y) <= (offset+2))
 				{
 					offset = abs(currentLocalPos.vector.y) - softExit;
-					LOG(drive)("\t\t Offset Reset - %f", offset);
+					LOG(auto)("\t\t Offset Reset - %f", offset);
 				}
 
 				//Construct triangle connecting end point and offset position
@@ -103,18 +106,18 @@ void followLineVec(float x, float y, byte power, tMttMode mode, bool correction,
 				localOffset.x = offset * sin(gPosition.a);
 				localOffset.y = offset * cos(gPosition.a);
 				constructTrianglePos(offsetLocalPos, currentLocalPos.vector.x+localOffset.x, currentLocalPos.vector.y+localOffset.y);
-				LOG(drive)("\t\tOffsetPos:(%f,%f),hyp(%f), localOffset(%f,%f)", offsetLocalPos.vector.x, offsetLocalPos.vector.y, offsetLocalPos.hypotenuse, localOffset.x, localOffset.y);
+				LOG(auto)("\t\tOffsetPos:(%f,%f),hyp(%f), localOffset(%f,%f)", offsetLocalPos.vector.x, offsetLocalPos.vector.y, offsetLocalPos.hypotenuse, localOffset.x, localOffset.y);
 
 				//Construct triangle connecting end point and target position
 				targetLocalPos.hypotenuse = offsetLocalPos.hypotenuse;
 				targetLocalPos.vector.x = targetLocalPos.hypotenuse * sinA;
 				targetLocalPos.vector.y = targetLocalPos.hypotenuse * cosA;
-				LOG(drive)("\t\tTargetPos:(%f,%f),hyp(%f)", targetLocalPos.vector.x, targetLocalPos.vector.y, targetLocalPos.hypotenuse);
+				LOG(auto)("\t\tTargetPos:(%f,%f),hyp(%f)", targetLocalPos.vector.x, targetLocalPos.vector.y, targetLocalPos.hypotenuse);
 
 				//Hypotenuse in the error triange is the error
 				constructTrianglePos(error, offsetLocalPos.vector.x - targetLocalPos.vector.x, offsetLocalPos.vector.y - targetLocalPos.vector.y);
 				float errorVal = fabs(error.hypotenuse);
-				LOG(drive)("\t\tErrorPos:(%f,%f),hyp(%f)", error.vector.x, error.vector.y, error.hypotenuse);
+				LOG(auto)("\t\tErrorPos:(%f,%f),hyp(%f)", error.vector.x, error.vector.y, error.hypotenuse);
 
 
 				if (fabs(errorVal) <= 1)
@@ -132,27 +135,27 @@ void followLineVec(float x, float y, byte power, tMttMode mode, bool correction,
 				{
 					case (-1): // turn right
 					{
-						//LOG(drive)("turn right");
+						//LOG(auto)("turn right");
 						left = throttle;
 						right = throttle + turn;
 						break;
 					}
 					case(1): // turn left
 					{
-						//LOG(drive)("turn left");
+						//LOG(auto)("turn left");
 						right = throttle;
 						left = throttle + turn;
 						break;
 					}
 					case(0): //straight
 					{
-						//LOG(drive)("turn straight");
+						//LOG(auto)("turn straight");
 						right = left = throttle;
 						break;
 					}
 				}
-			LOG(drive)("%d Err:%f, LocalPos:(%f,%f), vel:%f, l:%d r:%d, trttle:%d, trn:%d",npgmtime, error.hypotenuse, currentLocalPos.vector.x, currentLocalPos.vector.y, gVelocity.localY, facingDir, dir, errorVal, left, right, throttle, turn);
-			//LOG(drive)("%d Err:%f, LocalPos:(%f,%f), OffsetPos(%f,%f), TargPos(%f,%f), vel:%f, l:%d r:%d, trttle:%d, trn:%d",npgmtime, error.hypotenuse, currentLocalPos.vector.x, currentLocalPos.vector.y, offsetLocalPos.vector.x, offsetLocalPos.vector.y, targetLocalPos.vector.x, targetLocalPos.vector.y, gVelocity.localY, facingDir, dir, errorVal, left, right, throttle, turn);
+			LOG(auto)("%d Err:%f, LocalPos:(%f,%f), vel:%f f:%f t:%f, l:%d r:%d, trttle:%d, trn:%d",npgmtime, error.hypotenuse, currentLocalPos.vector.x, currentLocalPos.vector.y, gVelocity.localY, facingDir, dir, left, right, throttle, turn);
+			//LOG(auto)("%d Err:%f, LocalPos:(%f,%f), OffsetPos(%f,%f), TargPos(%f,%f), vel:%f, l:%d r:%d, trttle:%d, trn:%d",npgmtime, error.hypotenuse, currentLocalPos.vector.x, currentLocalPos.vector.y, offsetLocalPos.vector.x, offsetLocalPos.vector.y, targetLocalPos.vector.x, targetLocalPos.vector.y, gVelocity.localY, facingDir, dir, errorVal, left, right, throttle, turn);
 			}
 			else
 			{
@@ -163,11 +166,11 @@ void followLineVec(float x, float y, byte power, tMttMode mode, bool correction,
 			LIM_TO_VAL_SET(right, 127);
 
 			setDrive(left,right);
-
+			tRelease();
 			sleep(10);
-		} WHILE(drive, ( abs(currentLocalPos.vector.y) > ((stopType & stopSoft)? softExit : 0.8) ));
+		} WHILE(drive, ( fabs(currentLocalPos.vector.y) > ((stopType & stopSoft)? softExit : 0.8) ));
 
-		LOG(drive)("%d Done LineFollow(%f, %f)", npgmtime, gPosition.x, gPosition.y);
+		LOG(auto)("%d Done LineFollow(%f, %f)", npgmtime, gPosition.x, gPosition.y);
 
 		if (stopType & stopSoft)
 		{
@@ -178,26 +181,26 @@ void followLineVec(float x, float y, byte power, tMttMode mode, bool correction,
 				constructTrianglePos(currentLocalPos, gPosition.y - y, gPosition.x - x);
 			//
 
-			LOG(drive)("%d Starting LineFollow stopSoft(%f,%f), vel:%f", npgmtime, gPosition.x, gPosition.y, gVelocity.localY);
+			LOG(auto)("%d Starting LineFollow stopSoft(%f,%f), vel:%f", npgmtime, gPosition.x, gPosition.y, gVelocity.localY);
 
-			WHILE(drive, abs(currentLocalPos.vector.y) > 0.6 && abs(gVelocity.localY) > 0.3)
+			WHILE(drive, fabs(currentLocalPos.vector.y) > 0.6 && fabs(gVelocity.localY) > 0.3)
 			{
 				throttle = facingDir * -6;
 				setDrive(throttle, throttle);
-				LOG(drive)("%d LocalPos:(%f,%f), %d, %d, pow:%d",npgmtime, currentLocalPos.vector.x, currentLocalPos.vector.y, facingDir, dir, throttle);
+				LOG(auto)("%d LocalPos:(%f,%f), %d, %d, pow:%d",npgmtime, currentLocalPos.vector.x, currentLocalPos.vector.y, facingDir, dir, throttle);
 
 				sleep(10);
 			}
 		}
 
-		LOG(drive)("%d Done LineFollow stopSoft(%f, %f)", npgmtime, gPosition.x, gPosition.y);
+		LOG(auto)("%d Done LineFollow stopSoft(%f, %f)", npgmtime, gPosition.x, gPosition.y);
 
 		if (stopHarsh & stopType)
 			applyHarshStop();
 		else
 			setDrive(0,0);
 
-		LOG(drive)("%d After harsh stop:(%f, %f)", npgmtime, gPosition.x, gPosition.y);
+		LOG(auto)("%d After harsh stop:(%f, %f)", npgmtime, gPosition.x, gPosition.y);
 	}
 }
 
@@ -269,7 +272,7 @@ void followLine(float x, float y, byte power, tMttMode mode, bool correction, tS
 				}
 			}
 			throttle = abs(throttle) * facingDir;
-			LOG(drive)("\t Facing%d, Drive throttle mode:%d, Pwr%f", facingDir, mode, throttle);
+			LOG(auto)("\t Facing%d, Drive throttle mode:%d, Pwr%f", facingDir, mode, throttle);
 
 			if (correction)
 			{
@@ -279,7 +282,7 @@ void followLine(float x, float y, byte power, tMttMode mode, bool correction, tS
 				if (abs(currentLocalVector.y) <= (offset+2))
 				{
 					offset = abs(currentLocalVector.y) - softExit;
-					LOG(drive)("\t\t Offset Reset - %f", offset);
+					LOG(auto)("\t\t Offset Reset - %f", offset);
 				}
 
 				float targX = findX(followLine, offsetGlobalVector.y);
@@ -301,27 +304,27 @@ void followLine(float x, float y, byte power, tMttMode mode, bool correction, tS
 				{
 					case (-1): // turn right
 					{
-						//LOG(drive)("turn right");
+						//LOG(auto)("turn right");
 						left = throttle;
 						right = throttle + turn;
 						break;
 					}
 					case(1): // turn left
 					{
-						//LOG(drive)("turn left");
+						//LOG(auto)("turn left");
 						right = throttle;
 						left = throttle + turn;
 						break;
 					}
 					case(0): //straight
 					{
-						//LOG(drive)("turn straight");
+						//LOG(auto)("turn straight");
 						right = left = throttle;
 						break;
 					}
 				}
 
-			LOG(drive)("%d LocalPos:(%f,%f), targ:%f - projx:%f = error%f, vel:%f, %d, %d, t:%f l:%d r:%d, trttle:%d, trn:%d",npgmtime, currentLocalVector.x, currentLocalVector.y, targX, offsetGlobalVector.x, errorX, gVelocity.localY, facingDir, dir, errorX, left, right, throttle, turn);
+			LOG(auto)("%d LocalPos:(%f,%f), targ:%f - projx:%f = error%f, vel:%f, %d, %d, t:%f l:%d r:%d, trttle:%d, trn:%d",npgmtime, currentLocalVector.x, currentLocalVector.y, targX, offsetGlobalVector.x, errorX, gVelocity.localY, facingDir, dir, errorX, left, right, throttle, turn);
 			}
 			else
 			{
@@ -336,33 +339,33 @@ void followLine(float x, float y, byte power, tMttMode mode, bool correction, tS
 			sleep(10);
 		} WHILE(drive, ( abs(currentLocalVector.y) > ((stopType & stopSoft)? softExit : 0.8) ));
 
-		LOG(drive)("%d Done LineFollow(%f, %f)", npgmtime, gPosition.x, gPosition.y);
+		LOG(auto)("%d Done LineFollow(%f, %f)", npgmtime, gPosition.x, gPosition.y);
 
 		if (stopType & stopSoft)
 		{
 			currentLocalVector.x = gPosition.x - x;
 			currentLocalVector.y = gPosition.y - y;
 
-			LOG(drive)("%d Starting LineFollow stopSoft(%f,%f), vel:%f", npgmtime, gPosition.x, gPosition.y, gVelocity.localY);
+			LOG(auto)("%d Starting LineFollow stopSoft(%f,%f), vel:%f", npgmtime, gPosition.x, gPosition.y, gVelocity.localY);
 
 			WHILE(drive, abs(currentLocalVector.y) > 0.6 && abs(gVelocity.localY) > 0.3)
 			{
 				throttle = facingDir * -6;
 				setDrive(throttle, throttle);
-				LOG(drive)("%d LocalPos:(%f,%f), %d, %d, pow:%d",npgmtime, currentLocalVector.x, currentLocalVector.y, facingDir, dir, throttle);
+				LOG(auto)("%d LocalPos:(%f,%f), %d, %d, pow:%d",npgmtime, currentLocalVector.x, currentLocalVector.y, facingDir, dir, throttle);
 
 				sleep(10);
 			}
 		}
 
-		LOG(drive)("%d Done LineFollow stopSoft(%f, %f)", npgmtime, gPosition.x, gPosition.y);
+		LOG(auto)("%d Done LineFollow stopSoft(%f, %f)", npgmtime, gPosition.x, gPosition.y);
 
 		if (stopHarsh & stopType)
 			applyHarshStop();
 		else
 			setDrive(0,0);
 
-		LOG(drive)("%d After harsh stop:(%f, %f)", npgmtime, gPosition.x, gPosition.y);
+		LOG(auto)("%d After harsh stop:(%f, %f)", npgmtime, gPosition.x, gPosition.y);
 	}
 }
 
@@ -373,7 +376,7 @@ void turnToFace(float x, float y, tFacingDir facingDir, tStopType stopType)
 	float gAngleToFront = aTan2((x-curX),(y-curY));
 	float gAngleToBack = aTan2((curX-x),(curY-y));
 
-	LOG(drive)("%d Begin turnToFace(%f,%f)", npgmtime, x, y);
+	LOG(auto)("%d Begin turnToFace(%f,%f)", npgmtime, x, y);
 
 	tTurnDir turnDir;
 	if (facingDir == facingFront)
@@ -381,7 +384,7 @@ void turnToFace(float x, float y, tFacingDir facingDir, tStopType stopType)
 	else if (facingDir == facingBack)
 		if (fmod(gPosition.a - gAngleToBack, PI * 2) < PI) turnDir = ccw; else turnDir = cw;
 	else
-		LOG(drive)("%d Exit turnToFace. facingDir must be facingFront or facingBack", npgmtime);
+		LOG(auto)("%d Exit turnToFace. facingDir must be facingFront or facingBack", npgmtime);
 
 	if (turnDir == cw)
 		setDrive(90, -90);
@@ -436,7 +439,7 @@ void moveToTargetSimple(float x, float y, byte power, tMttMode mode, bool correc
 			{
 				case mttSimple:
 				{
-					LOG(drive)("\t simple drive throttle");
+					LOG(auto)("\t simple drive throttle");
 					if (abs(currentLocalVector.y) > 3)
 						throttle = abs(power) * facingDir;
 					else
@@ -446,7 +449,7 @@ void moveToTargetSimple(float x, float y, byte power, tMttMode mode, bool correc
 				case mttProportional:
 				{
 					throttle = LIM_TO_VAL((currentLocalVector.y * propKP), 127);
-					LOG(drive)("\t prop drive throttle pwr%f", throttle);
+					LOG(auto)("\t prop drive throttle pwr%f", throttle);
 					if (abs(currentLocalVector.y) < 5)
 						LIM_TO_VAL_SET(throttle, 15);
 					break;
@@ -479,7 +482,7 @@ void moveToTargetSimple(float x, float y, byte power, tMttMode mode, bool correc
 
 				//if (driveStateCycCount == 1)
 				dir = sgn(turnLocalVector.x) * sgn(turnLocalVector.y) * facingDir;
-				//LOG(drive)("gTurn:%f, lTurn:%f, dir:%d, turn:%d", turnGlobalVector.x, turnLocalVector.x, dir, turn);
+				//LOG(auto)("gTurn:%f, lTurn:%f, dir:%d, turn:%d", turnGlobalVector.x, turnLocalVector.x, dir, turn);
 
 				//if (abs(turnLocalVector.x) < 2) //when within two inches of target, go straight
 					//dir = 0;
@@ -515,26 +518,26 @@ void moveToTargetSimple(float x, float y, byte power, tMttMode mode, bool correc
 
 			setDrive(left,right);
 
-			LOG(drive)("loc coord:(%f,%f), %d, %d, t:%f l:%d r:%d, throttle:%d, turn:%d", currentLocalVector.x, currentLocalVector.y, facingDir, dir, turnLocalVector.x, left, right, throttle, turn);
+			LOG(auto)("loc coord:(%f,%f), %d, %d, t:%f l:%d r:%d, throttle:%d, turn:%d", currentLocalVector.x, currentLocalVector.y, facingDir, dir, turnLocalVector.x, left, right, throttle, turn);
 
 			sleep(10);
 		} WHILE(drive, (abs(currentLocalVector.y) > 0.8) );
-		LOG(drive)("%d (%f, %f)", npgmtime, gPosition.x, gPosition.y);
+		LOG(auto)("%d (%f, %f)", npgmtime, gPosition.x, gPosition.y);
 
 		if (harshStop)
 			applyHarshStop();
 
-		LOG(drive)("%d After harsh stop:(%f, %f)", npgmtime, gPosition.x, gPosition.y);
+		LOG(auto)("%d After harsh stop:(%f, %f)", npgmtime, gPosition.x, gPosition.y);
 	}
 	else
 	{
-		LOG(drive)("%d Move Simple Exit - Not Facing", npgmtime);
+		LOG(auto)("%d Move Simple Exit - Not Facing", npgmtime);
 	}
 }
 
 void moveToTarget(float x, float y, float xs, float ys, byte power, byte startPower, float maxErrX, float decelEarly, byte decelPower, float dropEarly, tStopType stopType, tMttMode mode)
 {
-	LOG(drive)("Moving to %f %f from %f %f at %d", y, x, ys, xs, power);
+	LOG(auto)("Moving to %f %f from %f %f at %d", y, x, ys, xs, power);
 
 	gTargetLast.y = y;
 	gTargetLast.x = x;
@@ -551,10 +554,10 @@ void moveToTarget(float x, float y, float xs, float ys, byte power, byte startPo
 	followLine.p2.x = x;
 
 	float lineLength = getLengthOfLine(followLine);
-	LOG(drive)("Line length: %.2f", lineLength);
+	LOG(auto)("Line length: %.2f", lineLength);
 	float lineAngle = getAngleOfLine(followLine); // Get the angle of the line that we're following relative to the vertical
 	float pidAngle = nearAngle(lineAngle - (power < 0 ? PI : 0), gPosition.a);
-	LOG(drive)("Line | Pid angle: %f | %f", radToDeg(lineAngle), radToDeg(pidAngle));
+	LOG(auto)("Line | Pid angle: %f | %f", radToDeg(lineAngle), radToDeg(pidAngle));
 
 	// Current position relative to the ending point
 	sVector currentPosVector;
@@ -654,7 +657,7 @@ void moveToTarget(float x, float y, float xs, float ys, byte power, byte startPo
 		endCycle(cycle);
 	} WHILE(drive, (currentPosVector.y < -dropEarly - MAX((vel * ((stopType & stopSoft) ? 0.175 : 0.098)), decelEarly)) );
 
-	LOG(drive)("%f %f", currentPosVector.y, vel);
+	LOG(auto)("%f %f", currentPosVector.y, vel);
 
 	setDrive(decelPower, decelPower);
 
@@ -693,7 +696,7 @@ void moveToTarget(float x, float y, float xs, float ys, byte power, byte startPo
 	else
 		setDrive(0, 0);
 
-	LOG(drive)("Moved to %f %f from %f %f | %f %f %f", y, x, ys, xs, gPosition.y, gPosition.x, radToDeg(gPosition.a));
+	LOG(auto)("Moved to %f %f from %f %f | %f %f %f", y, x, ys, xs, gPosition.y, gPosition.x, radToDeg(gPosition.a));
 }
 
 void moveToTargetDis(float a, float d, float xs, float ys, byte power, byte startPower, float maxErrX, float decelEarly, byte decelPower, float dropEarly, tStopType stopType, tMttMode mode)
@@ -703,7 +706,7 @@ void moveToTargetDis(float a, float d, float xs, float ys, byte power, byte star
 
 void turnToAngleNewAlg(float a, tTurnDir turnDir, float fullRatio, byte coastPower, float stopOffsetDeg, bool mogo, bool harshStop)
 {
-	LOG(drive)("Turning to %f", radToDeg(a));
+	LOG(auto)("Turning to %f", radToDeg(a));
 
 
 	if (turnDir == ch)
@@ -749,12 +752,12 @@ void turnToAngleNewAlg(float a, tTurnDir turnDir, float fullRatio, byte coastPow
 			}
 			sleep(10);
 		}
-		LOG(drive)("Turn done: %d",  gPosition.a);
+		LOG(auto)("Turn done: %d",  gPosition.a);
 		if (harshStop)
 		{
 			setDrive(-20, 20);
 			sleep(150);
-			LOG(drive)("Break done: %d",  gPosition.a);
+			LOG(auto)("Break done: %d",  gPosition.a);
 		}
 		setDrive(0, 0);
 		break;
@@ -791,22 +794,22 @@ void turnToAngleNewAlg(float a, tTurnDir turnDir, float fullRatio, byte coastPow
 			}
 			sleep(10);
 		}
-		LOG(drive)("Turn done: %d",  gPosition.a);
+		LOG(auto)("Turn done: %d",  gPosition.a);
 		if (harshStop)
 		{
 			setDrive(20, -20);
 			sleep(150);
-			LOG(drive)("Break done: %d",  gPosition.a);
+			LOG(auto)("Break done: %d",  gPosition.a);
 		}
 		setDrive(0, 0);
 		break;
 	}
-	LOG(drive)("Turned to %f | %f %f %f", radToDeg(a), gPosition.y, gPosition.x, radToDeg(gPosition.a));
+	LOG(auto)("Turned to %f | %f %f %f", radToDeg(a), gPosition.y, gPosition.x, radToDeg(gPosition.a));
 }
 
 void turnToTargetNewAlg(float x, float y, tTurnDir turnDir, float fullRatio, byte coastPower, float stopOffsetDeg, bool mogo, bool harshStop, float offset)
 {
-	LOG(drive)("Turning to %f %f", y, x);
+	LOG(auto)("Turning to %f %f", y, x);
 
 	if (turnDir == ch)
 		if (fmod(atan2(x - gPosition.x, y - gPosition.y) + offset - gPosition.a, PI * 2) > PI) turnDir = ccw; else turnDir = cw;
@@ -821,7 +824,7 @@ void turnToTargetNewAlg(float x, float y, tTurnDir turnDir, float fullRatio, byt
 	case cw:
 		target = gPosition.a + fmod(atan2(x - gPosition.x, y - gPosition.y) + offset - gPosition.a, PI * 2);
 		endFull = gPosition.a * (1 - fullRatio) + target * fullRatio;
-		LOG(drive)("%f %f", radToDeg(target), radToDeg(endFull));
+		LOG(auto)("%f %f", radToDeg(target), radToDeg(endFull));
 		setDrive(127, -127);
 		WHILE(drive, (gPosition.a < endFull ))
 		{
@@ -852,19 +855,19 @@ void turnToTargetNewAlg(float x, float y, tTurnDir turnDir, float fullRatio, byt
 			}
 			sleep(10);
 		}
-		LOG(drive)("Turn done: %d",  gPosition.a);
+		LOG(auto)("Turn done: %d",  gPosition.a);
 		if (harshStop)
 		{
 			setDrive(-20, 20);
 			sleep(150);
-			LOG(drive)("Break done: %d",  gPosition.a);
+			LOG(auto)("Break done: %d",  gPosition.a);
 		}
 		setDrive(0, 0);
 		break;
 	case ccw:
 		target = gPosition.a - fmod(gPosition.a - atan2(x - gPosition.x, y - gPosition.y) - offset, PI * 2);
 		endFull = gPosition.a * (1 - fullRatio) + (target) * fullRatio;
-		LOG(drive)("%f %f", radToDeg(target), radToDeg(endFull));
+		LOG(auto)("%f %f", radToDeg(target), radToDeg(endFull));
 		setDrive(-127, 127);
 		WHILE(drive, (gPosition.a > endFull))
 		{
@@ -895,17 +898,17 @@ void turnToTargetNewAlg(float x, float y, tTurnDir turnDir, float fullRatio, byt
 			}
 			sleep(10);
 		}
-		LOG(drive)("Turn done: %d",  gPosition.a);
+		LOG(auto)("Turn done: %d",  gPosition.a);
 		if (harshStop)
 		{
 			setDrive(20, -20);
 			sleep(150);
-			LOG(drive)("Break done: %d",  gPosition.a);
+			LOG(auto)("Break done: %d",  gPosition.a);
 		}
 		setDrive(0, 0);
 		break;
 	}
-	LOG(drive)("Turned to %f %f | %f %f %f", y, x, gPosition.y, gPosition.x, radToDeg(gPosition.a));
+	LOG(auto)("Turned to %f %f | %f %f %f", y, x, gPosition.y, gPosition.x, radToDeg(gPosition.a));
 }
 
 void sweepTurnToTarget(float x, float y, float a, float r, tTurnDir turnDir, byte power, bool slow)
@@ -954,7 +957,7 @@ void sweepTurnToTarget(float x, float y, float a, float r, tTurnDir turnDir, byt
 
 		a = nearAngle(a, power > 0 ? gPosition.a : (gPosition.a + PI));
 
-		LOG(drive)("%d Sweep to %f around %f %f", nPgmTime, radToDeg(a), yOrigin, xOrigin);
+		LOG(auto)("%d Sweep to %f around %f %f", nPgmTime, radToDeg(a), yOrigin, xOrigin);
 
 		do
 		{
@@ -1013,7 +1016,7 @@ void sweepTurnToTarget(float x, float y, float a, float r, tTurnDir turnDir, byt
 
 		a = nearAngle(a, power > 0 ? gPosition.a : (gPosition.a + PI));
 
-		LOG(drive)("%d Sweep to %f around %f %f", nPgmTime, radToDeg(a), yOrigin, xOrigin);
+		LOG(auto)("%d Sweep to %f around %f %f", nPgmTime, radToDeg(a), yOrigin, xOrigin);
 
 		do
 		{
@@ -1061,5 +1064,5 @@ void sweepTurnToTarget(float x, float y, float a, float r, tTurnDir turnDir, byt
 		break;
 	}
 	setDrive(0, 0);
-	LOG(drive)("%d Done sweep turn", nPgmTime);
+	LOG(auto)("%d Done sweep turn", nPgmTime);
 }

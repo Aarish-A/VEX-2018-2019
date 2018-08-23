@@ -62,14 +62,14 @@ void setDrive(word left, word right)
 
 CREATE_MACHINE_3(drive, trackL, Idle, Break, Manual, float, Vel, int, Power)
 //#include "driveTest.c"
+bool autoLogs = 1;
 #include "auto.c"
 #include "drive_algs.h"
 #include "drive_algs.c"
 
 task driveSet()
 {
-	bool autoLogs = 1;
-	driveLogs = 1;
+	driveLogs = 0;
 
 	sCycleData drive;
 	initCycle(drive, 10, "drive");
@@ -122,7 +122,7 @@ task driveSet()
 				sVector newVector;
 				newVector.x = gPosition.x;
 				newVector.y = gPosition.y;
-				LOG(auto)("%d (%f,%f) a:%f", npgmtime, gPosition.x, gPosition.y, gPosition.a);
+				LOG(drive)("%d (%f,%f) a:%f", npgmtime, gPosition.x, gPosition.y, gPosition.a);
 
 				break;
 			}
@@ -144,7 +144,7 @@ void handleDrive()
 	if (RISING(BTN_DRIVE_TEST))
 	{
 		LOG(drive)("Btn_Drive_Test Pressed");
-		ASSIGN_FUNC_STATE_6(followLineVec, 0, 10, 60, mttProportional, true, (stopSoft | stopHarsh));
+		ASSIGN_FUNC_STATE_6(followLineVec, 0, 35, 60, mttProportional, true, (stopSoft | stopHarsh));
 		driveStateChange(drivefollowLineVec, 2000, 0.3, velEither);
 
 		//ASSIGN_FUNC_STATE_6(moveToTargetSimple, 0, 10, 60, mttProportional, true, true);
@@ -316,7 +316,7 @@ sCycleData arm;
 initCycle(arm, 10, "arm");
 while(true)
 {
-	armLogs = 1;
+	armLogs = 0;
 
 	switch (armState)
 	{
