@@ -3,16 +3,18 @@
 /* Universal State Macros */
 #define NOT_T_O(machineIn) ( (machineIn##Timeout <= 0)? 1 : (npgmTime < machineIn##Timeout) )
 
-#define WHILE(machineIn, condition) machineBlocked = true; \
+#define WHILE(machineIn, condition) machineIn##Blocked = true; \
 	while( NOT_T_O(machineIn) && machineIn##VelSafetyCount < 10 && (condition) )
 
 #define DO_WHILE(machineIn, condition) while( NOT_T_O(machineIn) && machineIn##VelSafetyCount < 10 && (condition) ); \
-machineBlocked = true
+machineIn##Blocked = true
 
 #define LOG(machineIn) if(machineIn##Logs) writeDebugStreamLine
 
 #define VEL_CHECK_INC(machineIn, safetyType) machineIn##VelSafetyCheck(safetyType); \
 machineIn##StateCycCount++
+
+#define MACHINE_AWAIT(machineIn) while (machineIn##Blocked) { sleep(10); }
 
 typedef enum _tVelDir
 {
@@ -41,9 +43,7 @@ typedef enum _tStates##machine \
 { \
 	machine##state0, \
 	machine##state1, \
-	machine##state2, \
-	machine##state3, \
-	machine##state4 \
+	machine##state2 \
 }tStates##machine; \
 \
 tStates##machine machine##State = machine##state0; \
@@ -57,11 +57,13 @@ int machine##VelSafetyCount = 0; \
 unsigned long machine##StateStartTime = 0; \
 unsigned long machine##StateCycCount = 0; \
 bool machine##Logs = 0; \
-void machine##StateChange(int stateIn, long timeout = -1, float velSafetyThresh = -1, tVelDir velDir = -1, type1 arg1In = -1, type2 arg2In = -1) \
+void machine##StateChange(int stateIn, bool await =  0, long timeout = -1, float velSafetyThresh = -1, tVelDir velDir = -1, type1 arg1In = -1, type2 arg2In = -1) \
 { \
 	if (machine##State != stateIn) \
 	{ \
-		machine##Blocked = false; \
+		machine##State = stateIn; \
+		machine##Blocked = await; \
+		writeDebugStreamLine("Await?%d, machineBlocked?%d",  await, machine##Blocked); \
 		unsigned long curTime = npgmtime; \
 		if (timeout <= 0) \
 		{ \
@@ -77,16 +79,12 @@ void machine##StateChange(int stateIn, long timeout = -1, float velSafetyThresh 
 		machine##StateCycCount = 0; \
 		machine##VelSafetyThresh = velSafetyThresh; \
 		machine##VelSafetyDir = velDir; \
-		machine##State = stateIn; \
 		machine##arg1Name = arg1In; \
 		machine##arg2Name = arg2In;  \
 		writeDebugStreamLine ("%d" #machine "State:%d, TO:%d velS:%f, %d, %d", npgmTime, machine##State, machine##timeout, machine##VelSafetyThresh, machine##arg1Name, machine##arg2Name); \
+		writeDebugStreamLine("Before await - Await?%d, machineBlocked?%d",  await, machine##Blocked); \
+		if (await) MACHINE_AWAIT(machine); \
 	} \
-} \
-\
-void machine##Await() \
-{ \
-	while (machine##Blocked) sleep(10); \
 } \
 \
 void machine##VelSafetyCheck (tVelType velType = velSensor) \
@@ -109,7 +107,7 @@ void machine##VelSafetyCheck (tVelType velType = velSensor) \
 				goodVel = true; \
 				break; \
 			case velLocalY: \
-				out = gVelocity.velLocalY; \
+				out = gVelocity.localY; \
 				break; \
 			case velAngle: \
 				out = gVelocity.a; \
@@ -151,7 +149,7 @@ void machine##SafetyCheck(int timedOutState = machine##state0, type1 machine##ar
 		if (velSafety || timedOut) \
 		{ \
 			writeDebugStreamLine("%d" #machine "safety: Timedout? %d at %d VelSafety? %d", npgmTime, timedout, machine##Timeout, velSafety); \
-			machine##StateChange(timedOutState, machine##arg1Name, machine##arg2Name); \
+			machine##StateChange(timedOutState, false, machine##arg1Name, machine##arg2Name); \
 		} \
 }
 
@@ -177,28 +175,35 @@ typedef enum _tFuncStates##machine \
 }tFuncStates##machine; \
 const int func0##Loc = machine##StateCount
 
-#define ADD_FUNCS_TO_MACHINE_5(machine, func0, func1, func2, func3, func4, func5) \
+#define ADD_FUNCS_TO_MACHINE_5(machine, func1, func2, func3, func4, func5) \
 typedef enum _tFuncStates##machine \
 { \
-	machine##func0 = machine##StateCount, \
-	machine##func1, \
+	machine##func1 = machine##StateCount, \
 	machine##func2, \
 	machine##func3, \
 	machine##func4, \
 	machine##func5 \
 }tFuncStates##machine; \
-const int func0##Loc = machine##StateCount; \
-const int func1##Loc = machine##StateCount + 1; \
-const int func2##Loc = machine##StateCount + 2; \
-const int func3##Loc = machine##StateCount + 3; \
-const int func4##Loc = machine##StateCount + 4; \
-const int func5##Loc = machine##StateCount + 5
+const int func1##Loc = machine##StateCount + 0; \
+const int func2##Loc = machine##StateCount + 1; \
+const int func3##Loc = machine##StateCount + 2; \
+const int func4##Loc = machine##StateCount + 3; \
+const int func5##Loc = machine##StateCount + 4
 
 //Create global variables for all args of a func - call in header
 /* Macros for 4 Param Functions */
 //Create global variables for all args of a func - TO BE CALLED IN HEADER
 #define PREP_FUNC_STATE_4(funcType, func, type1, arg1, type2, arg2, type3, arg3, type4, arg4) \
-funcType func (type1 arg1, type2 arg2, type3 arg3, type4 arg4);
+funcType func (type1 arg1, type2 arg2, type3 arg3, type4 arg4); \
+funcType func##Ret; \
+const int func##ArgCount = 4; \
+type1 func##Arg1 = -1; \
+type2 func##Arg2 = -1; \
+type3 func##Arg3 = -1; \
+type4 func##Arg4 = -1
+
+#define PREP_FUNC_STATE_VOID_4(funcType, func, type1, arg1, type2, arg2, type3, arg3, type4, arg4) \
+funcType func (type1 arg1, type2 arg2, type3 arg3, type4 arg4); \
 const int func##ArgCount = 4; \
 type1 func##Arg1 = -1; \
 type2 func##Arg2 = -1; \
@@ -216,6 +221,18 @@ func##Arg4 = arg4In
 #define CALL_FUNC_STATE_4(func) func(func##Arg1, func##Arg2, func##Arg3, func##Arg4)
 
 #define ADD_FUNC_TO_SWITCH_4(func, machine, nextState, safetyState) \
+case (func##Loc): \
+{ \
+	int curState = machine##State; \
+	machine##Blocked = true; \
+	func##Ret = CALL_FUNC_STATE_4(func); \
+	machine##SafetyCheck(safetyState); \
+	if (machine##State == curState) \
+		machine##StateChange(nextState, 0); \
+	break; \
+}
+
+#define ADD_FUNC_TO_SWITCH_VOID_4(func, machine, nextState, safetyState) \
 case (func##Loc): \
 { \
 	int curState = machine##State; \

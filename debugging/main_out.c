@@ -1290,7 +1290,7 @@ void followLine(float x, float y, byte power, tMttMode mode, bool correction, tS
  if (facingDir)
  {
   sVector currentLocalVector;
-  if ((gPosition.x - x) == 0 && correction)
+  if ((gPosition.x - x) == 0)
    correction = 0;
 
 
@@ -1299,10 +1299,11 @@ void followLine(float x, float y, byte power, tMttMode mode, bool correction, tS
 
 
   const float propKP = 6.0;
+  float softExit = 3;
 
 
   sVector offsetGlobalVector;
-  float offset = 7.0;
+  float offset = 5.0;
   sLine followLine;
   if (correction)
   {
@@ -1317,7 +1318,7 @@ void followLine(float x, float y, byte power, tMttMode mode, bool correction, tS
   do
   {
    driveVelSafetyCheck(velLocalY); driveStateCycCount++;
-
+# 48 "drive_algs.c"
    currentLocalVector.x = gPosition.x - x;
    currentLocalVector.y = gPosition.y - y;
 
@@ -1346,22 +1347,21 @@ void followLine(float x, float y, byte power, tMttMode mode, bool correction, tS
    {
     const float turnBase = 1.42;
 
-    if (abs(currentLocalVector.y) <= offset)
+    offsetPos(offsetGlobalVector.x, offsetGlobalVector.y, offset);
+    if (abs(currentLocalVector.y) <= (offset+2))
     {
-     offset = abs(currentLocalVector.y) - 0.2;
-     if(driveLogs) writeDebugStreamLine("/t/t Offset Rest - %f", offset);
+     offset = abs(currentLocalVector.y) - softExit;
+     if(driveLogs) writeDebugStreamLine("\t\t Offset Reset - %f", offset);
     }
 
-    offsetPos(offsetGlobalVector.x, offsetGlobalVector.y, offset);
-
     float targX = ( ((float)offsetGlobalVector.y - followLine.b) / followLine.m );
-    float errorX = fabs(targX - gPosition.x);
+    float errorX = fabs(offsetGlobalVector.x - targX);
 
 
-    if (fabs(errorX) < 1)
+    if (fabs(errorX) <= 1)
      turn = 0;
     else
-     turn = (abs(((float)5 * (exp(0.2 * errorX)))) > (127) ? (127) * sgn(((float)5 * (exp(0.2 * errorX)))) : (((float)5 * (exp(0.2 * errorX)))));
+     turn = (abs(((float)5.5 * (exp(0.2 * errorX)))) > (127) ? (127) * sgn(((float)5.5 * (exp(0.2 * errorX)))) : (((float)5.5 * (exp(0.2 * errorX)))));
 
     turn *= facingDir;
 
@@ -1393,7 +1393,7 @@ void followLine(float x, float y, byte power, tMttMode mode, bool correction, tS
      }
     }
 
-   if(driveLogs) writeDebugStreamLine("%d LocalPos:(%f,%f), OffsetPos(%f,%f), %d, %d, t:%f l:%d r:%d, trttle:%d, trn:%d",npgmtime, currentLocalVector.x, currentLocalVector.y, targX, offsetGlobalVector.y, facingDir, dir, errorX, left, right, throttle, turn);
+   if(driveLogs) writeDebugStreamLine("%d LocalPos:(%f,%f), targ:%f - projx:%f = error%f, vel:%f, %d, %d, t:%f l:%d r:%d, trttle:%d, trn:%d",npgmtime, currentLocalVector.x, currentLocalVector.y, targX, offsetGlobalVector.x, errorX, gVelocity.localY, facingDir, dir, errorX, left, right, throttle, turn);
    }
    else
    {
@@ -1406,7 +1406,7 @@ void followLine(float x, float y, byte power, tMttMode mode, bool correction, tS
    setDrive(left,right);
 
    sleep(10);
-  } while( ( (driveTimeout <= 0)? 1 : (npgmTime < driveTimeout) ) && driveVelSafetyCount < 10 && (( abs(currentLocalVector.y) > ((stopType & stopSoft)? 3 : 0.8) )) );
+  } while( ( (driveTimeout <= 0)? 1 : (npgmTime < driveTimeout) ) && driveVelSafetyCount < 10 && (( abs(currentLocalVector.y) > ((stopType & stopSoft)? softExit : 0.8) )) );
 
   if(driveLogs) writeDebugStreamLine("%d Done LineFollow(%f, %f)", npgmtime, gPosition.x, gPosition.y);
 
@@ -1678,7 +1678,7 @@ void moveToTarget(float x, float y, float xs, float ys, byte power, byte startPo
    case mttCascading:
    const float kB = 2.8;
    const float kP = 2.0;
-# 415 "drive_algs.c"
+# 425 "drive_algs.c"
     float vTarget = 45 * (1 - exp(0.07 * (currentPosVector.y + dropEarly)));
     finalPower = round(kB * vTarget + kP * (vTarget - vel)) * sgn(power);
     break;
@@ -2135,7 +2135,7 @@ task driveSet()
    {
     setDrive(0,0);
 
-    driveStateCycCount++
+    driveStateCycCount++;
     break;
    }
    case driveBreak:
