@@ -186,11 +186,13 @@ task liftSet()
 		{
 		case 0: //idle
 			{
+				liftBlocked = 0;
 				setLift(0);
 				break;
 			}
 		case 1: //hold
 			{
+				liftBlocked = 0;
 				if (gSensor[liftPoti].value < LIFT_HOLD_DOWN_THRESHOLD) //Lift is at bottom
 					setLift(!gSensor[limLift].value ? -15 : -90);
 				else if (gSensor[liftPoti].value > LIFT_HOLD_UP_THRESHOLD) //Lift is at top
@@ -201,6 +203,7 @@ task liftSet()
 			}
 		case 2: //manual
 			{
+				liftBlocked = 0;
 				short joy = gJoy[JOY_LIFT].cur;
 				setLift(joy);
 
@@ -323,11 +326,13 @@ while(true)
 	{
 	case 0: //idle
 		{
+			armBlocked = 0;
 			setArm(0);
 			break;
 		}
 	case 1: //hold
 		{
+			armBlocked = 0;
 			if (gSensor[armPoti].value < ARM_HOLD_DOWN_THRESHOLD) //Arm is at bottom
 				setArm(gSensor[limArm].value ? -15 : -40);
 			else
@@ -336,6 +341,7 @@ while(true)
 		}
 	case 2: //manual
 		{
+			armBlocked = 0;
 			short joy = -1 * (gJoy[JOY_ARM].cur);
 			velocityCheck(armPoti);
 			LOG(arm)("power: %d, vel: %f", joy, gSensor[armPoti].velocity);
@@ -481,11 +487,13 @@ while (true)
 	{
 	case 0: //idle
 		{
+			armBlocked = 0;
 			setMobile(0);
 			break;
 		}
 	case 1: //hold
 		{
+			armBlocked = 0;
 			setMobile(gSensor[mobilePoti].value < MOBILE_HALFWAY? -5 : 5);
 			break;
 		}
