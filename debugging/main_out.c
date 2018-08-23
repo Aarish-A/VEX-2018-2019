@@ -2235,6 +2235,7 @@ task liftSet()
    }
   case 1:
    {
+    liftBlocked = 0;
     if (gSensor[liftPoti].value < (800 + 50))
      setLift(!gSensor[limLift].value ? -15 : -90);
     else if (gSensor[liftPoti].value > ((800 + 1930) - 100))
@@ -2245,6 +2246,7 @@ task liftSet()
    }
   case 2:
    {
+    liftBlocked = 0;
     short joy = gJoy[CH2].cur;
     setLift(joy);
 
@@ -2352,11 +2354,13 @@ while(true)
  {
  case 0:
   {
+   armBlocked = 0;
    setArm(0);
    break;
   }
  case 1:
   {
+  armBlocked = 0;
    if (gSensor[armPoti].value < ((2700 - 1450) + 50))
     setArm(gSensor[limArm].value ? -15 : -40);
    else
@@ -2365,6 +2369,7 @@ while(true)
   }
  case 2:
   {
+  armBlocked = 0;
    short joy = -1 * (gJoy[CH1].cur);
    velocityCheck(armPoti);
    if(armLogs) writeDebugStreamLine("power: %d, vel: %f", joy, gSensor[armPoti].velocity);
@@ -2499,11 +2504,13 @@ while (true)
  {
  case 0:
   {
+   mobileBlocked = 0;
    setMobile(0);
    break;
   }
  case 1:
   {
+  mobileBlocked = 0;
    setMobile(gSensor[mobilePoti].value < 1550? -5 : 5);
    break;
   }

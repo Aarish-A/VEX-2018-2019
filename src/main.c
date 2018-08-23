@@ -79,6 +79,7 @@ task driveSet()
 		{
 			case driveIdle: //0:
 			{
+				driveBlocked = 0;
 				setDrive(0,0);
 
 				driveStateCycCount++;
@@ -86,6 +87,7 @@ task driveSet()
 			}
 			case driveBreak: //1:
 			{
+				driveBlocked = 0;
 				float startVelL, startVelR;
 
 				const float velThresh = 0.015;
@@ -116,6 +118,7 @@ task driveSet()
 			}
 			case driveManual: //2:
 			{
+				driveBlocked = 0;
 				//float angleToTen = atan2( (gPosition.x - 0), (gPosition.y - 10) );
 				setDrive((LIM_TO_VAL((gJoy[JOY_THROTTLE].cur + DRIVE_TURN), 127)), (LIM_TO_VAL((gJoy[JOY_THROTTLE].cur - DRIVE_TURN), 127)));
 				driveStateCycCount++;
