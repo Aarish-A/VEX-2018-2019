@@ -27,7 +27,7 @@
 #define CHECK_POTI_JUMPS 1
 #define DRIVE_TURN (gJoy[JOY_TURN].cur - gJoy[JOY_TURN].deadzone * sgn(gJoy[JOY_TURN].cur))
 // Year-independent libraries (headers)
-#include "task.h"
+#include "../src/task.h"
 #include "motors.h"
 #include "sensors.h"
 #include "joysticks.h"
@@ -44,6 +44,7 @@
 #include "utilities.c"
 
 #include "state.h"
+#include "func_to_state.h"
 //#include "state_test.h"
 
 /* Example of how to use state.h and func_to_state.h libraries */
