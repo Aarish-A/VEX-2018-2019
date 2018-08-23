@@ -43,7 +43,8 @@
 #include "cycle.c"
 #include "utilities.c"
 
-#include "state_test.h"
+#include "state.h"
+//#include "state_test.h"
 
 /* Example of how to use state.h and func_to_state.h libraries */
 CREATE_MACHINE_3(drive, trackL, Idle, Break, Manual, float, Vel, int, Power)

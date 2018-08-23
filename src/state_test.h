@@ -14,7 +14,7 @@ machineIn##Blocked = true
 #define VEL_CHECK_INC(machineIn, safetyType) machineIn##VelSafetyCheck(safetyType); \
 machineIn##StateCycCount++
 
-#define MACHINE_AWAIT(machineIn) while (machineIn##Blocked) { sleep(10); }
+#define MACHINE_AWAIT(machineIn) while (machineIn##Blocked) sleep(10)
 
 typedef enum _tVelDir
 {

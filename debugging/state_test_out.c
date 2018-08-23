@@ -839,8 +839,8 @@ void stopTaskID(word id)
 }
 # 45 "state_test.c" 2
 
-# 1 "state_test.h" 1
-# 19 "state_test.h"
+# 1 "state.h" 1
+# 18 "state.h"
 typedef enum _tVelDir
 {
  velEither = -1,
@@ -856,11 +856,12 @@ typedef enum _tVelType
 # 47 "state_test.c" 2
 
 
-const int driveStateCount = 3; typedef enum _tStatesdrive { driveIdle, driveBreak, driveManual }tStatesdrive; tStatesdrive driveState = driveIdle; bool driveBlocked = false; float driveVelSafetyThresh = -1; tVelDir driveVelSafetyDir = -1; unsigned long driveTimeout; float driveVel; int drivePower; int driveVelSafetyCount = 0; unsigned long driveStateStartTime = 0; unsigned long driveStateCycCount = 0; bool driveLogs = 0; void driveStateChange(int stateIn, bool await = 0, long timeout = -1, float velSafetyThresh = -1, tVelDir velDir = -1, float arg1In = -1, int arg2In = -1) { if (driveState != stateIn) { driveState = stateIn; driveBlocked = await; writeDebugStreamLine("Await?%d, machineBlocked?%d", await, driveBlocked); unsigned long curTime = npgmtime; if (timeout <= 0) { driveTimeout = 0; } else { driveTimeout = ( timeout + curTime ); } driveVelSafetyCount = 0; driveStateStartTime = curTime; driveStateCycCount = 0; driveVelSafetyThresh = velSafetyThresh; driveVelSafetyDir = velDir; driveVel = arg1In; drivePower = arg2In; writeDebugStreamLine ("%d" "drive" "State:%d, TO:%d velS:%f, %d, %d", npgmTime, driveState, drivetimeout, driveVelSafetyThresh, driveVel, drivePower); writeDebugStreamLine("Before await - Await?%d, machineBlocked?%d", await, driveBlocked); if (await) while (driveBlocked) { sleep(10); }; } } void driveVelSafetyCheck (tVelType velType = velSensor) { if (driveVelSafetyThresh != -1 && driveVelSafetyThresh != 0) { if (driveVelSafetyDir == velEither || driveVelSafetyDir == velUp) driveVelSafetyThresh = abs(driveVelSafetyThresh); else if (driveVelSafetyDir == velDown) driveVelSafetyThresh = -1 * abs(driveVelSafetyThresh); tHog(); float out = 0; bool goodVel = false; switch (velType) { case velSensor: velocityCheck(trackL); out = gSensor[trackL].velocity; goodVel = true; break; case velLocalY: out = gVelocity.localY; break; case velAngle: out = gVelocity.a; goodVel = true; break; } unsigned long curTime = npgmTime; if (goodVel && curTime-driveStateStartTime > 75) { if (driveVelSafetyDir == velEither) { if ( abs(out) < abs(driveVelSafetyThresh) ) { driveVelSafetyCount ++; if(driveLogs) writeDebugStreamLine("%d:""drive""velSafety trip(either)%f", npgmtime, out); } } else { if ( (sgn(driveVelSafetyThresh) == 1)? (out < driveVelSafetyThresh) : (out > driveVelSafetyThresh) ) { driveVelSafetyCount ++; if(driveLogs) writeDebugStreamLine("%d:""drive""velSafety trip(dir)%f", npgmtime, out); } } } } } void driveSafetyCheck(int timedOutState = driveIdle, float driveVel = -1, int drivePower = -1) { bool timedOut = false; bool velSafety = false; if (!( (driveTimeout <= 0)? 1 : (npgmTime < driveTimeout) )) timedOut = true; if (driveVelSafetyCount >= 10) velSafety = true; if (velSafety || timedOut) { writeDebugStreamLine("%d" "drive" "safety: Timedout? %d at %d VelSafety? %d", npgmTime, timedout, driveTimeout, velSafety); driveStateChange(timedOutState, false, driveVel, drivePower); } }
 
-void foo (int a, int b, int c, int d); const int fooArgCount = 4; int fooArg1 = -1; int fooArg2 = -1; int fooArg3 = -1; int fooArg4 = -1;
-int bar (int a, int b, int c, int d); int barRet; const int barArgCount = 4; int barArg1 = -1; int barArg2 = -1; int barArg3 = -1; int barArg4 = -1;
-typedef enum _tFuncStatesdrive { drivefoo = driveStateCount, drivebar, driveb, drivec, drived }tFuncStatesdrive; const int fooLoc = driveStateCount + 0; const int barLoc = driveStateCount + 1; const int bLoc = driveStateCount + 2; const int cLoc = driveStateCount + 3; const int dLoc = driveStateCount + 4;
+const int driveStateCount = 3; typedef enum _tStatesdrive { driveIdle, driveBreak, driveManual }tStatesdrive; tStatesdrive driveState = driveIdle; bool driveBlocked = false; float driveVelSafetyThresh = -1; tVelDir driveVelSafetyDir = -1; unsigned long driveTimeout; float driveVel; int drivePower; int driveVelSafetyCount = 0; unsigned long driveStateStartTime = 0; unsigned long driveStateCycCount = 0; bool driveLogs = 0; void driveStateChange(int stateIn, bool await = 0, long timeout = -1, float velSafetyThresh = -1, tVelDir velDir = -1, float arg1In = -1, int arg2In = -1) { if (driveState != stateIn) { driveState = stateIn; driveBlocked = await; unsigned long curTime = npgmtime; if (timeout <= 0) { driveTimeout = 0; } else { driveTimeout = ( timeout + curTime ); } driveVelSafetyCount = 0; driveStateStartTime = curTime; driveStateCycCount = 0; driveVelSafetyThresh = velSafetyThresh; driveVelSafetyDir = velDir; driveVel = arg1In; drivePower = arg2In; writeDebugStreamLine ("%d" "drive" "State:%d, TO:%d velS:%f, %d, %d", npgmTime, driveState, drivetimeout, driveVelSafetyThresh, driveVel, drivePower); if (await) while (driveBlocked) sleep(10); } void driveVelSafetyCheck (tVelType velType = velSensor) { if (driveVelSafetyThresh != -1 && driveVelSafetyThresh != 0) { if (driveVelSafetyDir == velEither || driveVelSafetyDir == velUp) driveVelSafetyThresh = abs(driveVelSafetyThresh); else if (driveVelSafetyDir == velDown) driveVelSafetyThresh = -1 * abs(driveVelSafetyThresh); tHog(); float out = 0; bool goodVel = false; switch (velType) { case velSensor: { velocityCheck(trackL); out = gSensor[trackL].velocity; goodVel = true; break; } case velLocalY: { out = gVelocity.localY; goodVel = true; break; } case velAngle: { out = gVelocity.a; goodVel = true; break; } } unsigned long curTime = npgmTime; if (goodVel && curTime-driveStateStartTime > 75) { if (driveVelSafetyDir == velEither) { if ( abs(out) < abs(driveVelSafetyThresh) ) { driveVelSafetyCount ++; if(driveLogs) writeDebugStreamLine("%d:""drive""velSafety trip(either)%f", npgmtime, out); } } else { if ( (sgn(driveVelSafetyThresh) == 1)? (out < driveVelSafetyThresh) : (out > driveVelSafetyThresh) ) { driveVelSafetyCount ++; if(driveLogs) writeDebugStreamLine("%d:""drive""velSafety trip(dir)%f", npgmtime, out); } } } } } void driveSafetyCheck(int timedOutState = driveIdle, float driveVel = -1, int drivePower = -1) { bool timedOut = false; bool velSafety = false; if (!( (driveTimeout <= 0)? 1 : (npgmTime < driveTimeout) )) timedOut = true; if (driveVelSafetyCount >= 10) velSafety = true; if (velSafety || timedOut) { writeDebugStreamLine("%d" "drive" "safety: Timedout? %d at %d VelSafety? %d", npgmTime, timedout, driveTimeout, velSafety); driveStateChange(timedOutState, false, driveVel, drivePower); } }
+
+PREP_FUNC_STATE_VOID_4(void, foo, int, a, int, b, int, c, int, d);
+PREP_FUNC_STATE_4(int, bar, int, a, int, b, int, c, int, d);
+ADD_FUNCS_TO_MACHINE_5(drive, foo, bar, b, c, d);
 
 void foo(int a, int b, int c, int d)
 {
@@ -894,8 +895,8 @@ task driveSet()
     driveBlocked = false;
     break;
 
-   case (fooLoc): { int curState = driveState; driveBlocked = true; foo(fooArg1, fooArg2, fooArg3, fooArg4); driveSafetyCheck(driveIdle); if (driveState == curState) driveStateChange(driveIdle); break; };
-   case (barLoc): { int curState = driveState; driveBlocked = true; barRet = bar(barArg1, barArg2, barArg3, barArg4); driveSafetyCheck(driveIdle); if (driveState == curState) driveStateChange(driveIdle, 0); break; };
+   ADD_FUNC_TO_SWITCH_VOID_4(foo, drive, driveIdle, driveIdle);
+   ADD_FUNC_TO_SWITCH_4(bar, drive, driveIdle, driveIdle);
   }
   sleep(10);
  }
@@ -904,10 +905,10 @@ task driveSet()
 void driveCode()
 {
  writeDebugStreamLine("Log drive %d", driveLogs);
- fooArg1 = 3000; fooArg2 = 2; fooArg3 = 3; fooArg4 = 4;
+ ASSIGN_FUNC_STATE_4(foo, 3000, 2, 3, 4);
  driveStateChange(drivefoo, 1, 7000);
 
- barArg1 = 9; barArg2 = 2; barArg3 = 3; barArg4 = 4;
+ ASSIGN_FUNC_STATE_4(bar, 9, 2, 3, 4);
  driveStateChange(drivebar, 1, 2000);
  if(driveLogs) writeDebugStreamLine("%d a = %d", npgmtime, barRet);
 }
