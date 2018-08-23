@@ -43,8 +43,11 @@ void followLineVec(float x, float y, byte power, tMttMode mode, bool correction,
 		float softExit = fabs(deltaY/4.5) + 1;
 
 		//Correction-Turn Variables
-		float offset = S_DISTANCE_IN+4.0;
+		float offset = S_DISTANCE_IN+6.0;
 		sLine followLine;
+
+		sCycleData cycle;
+		initCycle(cycle, 40, "followLine");
 
 		LOG(auto)("%dStart FollowLine to (%f,%f),a:%f. Offset:%f. softExit:%f", npgmtime, deltaX, deltaY, a, offset, softExit);
 
@@ -77,7 +80,7 @@ void followLineVec(float x, float y, byte power, tMttMode mode, bool correction,
 				}
 			}
 			throttle = LIM_TO_VAL(abs(throttle) * facingDir, 127);
-			LOG(auto)("\t Facing%d, Drive throttle mode:%d, Pwr%f", facingDir, mode, throttle);
+			//LOG(auto)("\t Facing%d, Drive throttle mode:%d, Pwr%f", facingDir, mode, throttle);
 
 			if (correction)
 			{
@@ -109,10 +112,10 @@ void followLineVec(float x, float y, byte power, tMttMode mode, bool correction,
 				LOG(auto)("\t\tErrorPos:(%f,%f),hyp(%f)", error.vector.x, error.vector.y, error.hypotenuse);
 
 
-				if (fabs(errorVal) <= 1)
+				if (fabs(errorVal) <= 2)
 					turn = 0;
 				else
-					turn = LIM_TO_VAL( ((float)5.5 * (exp(0.2 * errorVal))), 127); //turn = 3.6(e^(0.2x))
+					turn = LIM_TO_VAL( ((float)3.5 * (exp(0.2 * errorVal))), 127); //turn = 3.5(e^(0.2x))
 
 				turn *= facingDir;
 
@@ -156,7 +159,8 @@ void followLineVec(float x, float y, byte power, tMttMode mode, bool correction,
 
 			setDrive(left,right);
 			tRelease();
-			sleep(10);
+
+			endCycle(cycle);
 		} WHILE(drive, ( fabs(currentLocalPos.vector.y) > ((stopType & stopSoft)? softExit : 0.8) ));
 
 		LOG(auto)("%d Done LineFollow(%f, %f)", npgmtime, gPosition.x, gPosition.y);
@@ -176,7 +180,7 @@ void followLineVec(float x, float y, byte power, tMttMode mode, bool correction,
 			{
 				throttle = facingDir * -6;
 				setDrive(throttle, throttle);
-				LOG(auto)("%d LocalPos:(%f,%f), %d, %d, pow:%d",npgmtime, currentLocalPos.vector.x, currentLocalPos.vector.y, facingDir, dir, throttle);
+				//LOG(auto)("%d LocalPos:(%f,%f), %d, %d, pow:%d",npgmtime, currentLocalPos.vector.x, currentLocalPos.vector.y, facingDir, dir, throttle);
 
 				sleep(10);
 			}
@@ -265,7 +269,7 @@ void followLine(float x, float y, byte power, tMttMode mode, bool correction, tS
 
 			if (correction)
 			{
-				const float turnBase = 1.42;
+				//const float turnBase = 1.42;
 
 				offsetPos(offsetGlobalVector.x, offsetGlobalVector.y, offset);
 				if (abs(currentLocalVector.y) <= (offset+2))
@@ -281,7 +285,7 @@ void followLine(float x, float y, byte power, tMttMode mode, bool correction, tS
 				if (fabs(errorX) <= 1)
 					turn = 0;
 				else
-					turn = LIM_TO_VAL( ((float)5.5 * (exp(0.2 * errorX))), 127); //turn = 5(e^(0.2x))
+					turn = LIM_TO_VAL( ((float)3.5 * (exp(0.2 * errorX))), 127); //turn = 3.5(e^(0.2x))
 
 				turn *= facingDir;
 
