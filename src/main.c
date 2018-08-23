@@ -171,6 +171,7 @@ void handleDrive()
 void setLift(word val)
 {
 gMotor[liftR].power = gMotor[liftL].power = LIM_TO_VAL(val, 127);
+
 }
 
 CREATE_MACHINE_5(lift, liftPoti, Idle, Hold, Manual, Move, MoveSimple, int, Target, int, Power)

@@ -11,13 +11,25 @@ void followLineVec(float x, float y, byte power, tMttMode mode, bool correction,
 	if (facingDir)
 	{
 		//Vectors & Magnitudes - relative to the end coordinate
-		sTrianglePos currentLocalPos; constructTrianglePos(currentLocalPos, gPosition.x - x, gPosition.y - y);
+		sTrianglePos currentLocalPos; //constructTrianglePos(currentLocalPos, gPosition.x - x, gPosition.y - y);
+		bool invertAxes = false;
+		float deltaX = gPosition.x - x;
+		float deltaY = gPosition.y - y;
+		/*
+		if (deltaX > deltaY)
+		{
+			invertAxes = true;
+			float temp = deltaX;
+			deltaX = deltaY;
+			deltaY = temp;
+		}
+		*/
 		sTrianglePos offsetLocalPos;
 		sTrianglePos targetLocalPos;
 		sTrianglePos error;
 
 		//Angle of the line we are following - relative to vertical
-		const float a = atan2(currentLocalPos.vector.x, currentLocalPos.vector.y);
+		const float a = atan2(deltaX, deltaY);
 		const float cosA = cos(a);
 		const float sinA = sin(a);
 
@@ -49,7 +61,10 @@ void followLineVec(float x, float y, byte power, tMttMode mode, bool correction,
 			*/
 
 			//Construct triangle connecting end point and robot position
-			constructTrianglePos(currentLocalPos, gPosition.x - x, gPosition.y - y);
+			if (!invertAxes)
+				constructTrianglePos(currentLocalPos, gPosition.x - x, gPosition.y - y);
+			else
+				constructTrianglePos(currentLocalPos, gPosition.y - y, gPosition.x - x);
 
 			switch (mode)
 			{
@@ -84,10 +99,11 @@ void followLineVec(float x, float y, byte power, tMttMode mode, bool correction,
 				}
 
 				//Construct triangle connecting end point and offset position
-				offsetLocalPos.hypotenuse = currentLocalPos.hypotenuse - offset;
-				offsetLocalPos.vector.x = sin(gPosition.a) * offsetLocalPos.hypotenuse;
-				offsetLocalPos.vector.y = cos(gPosition.a) * offsetLocalPos.hypotenuse;
-				LOG(drive)("\t\tOffsetPos:(%f,%f),hyp(%f)", offsetLocalPos.vector.x, offsetLocalPos.vector.y, offsetLocalPos.hypotenuse);
+				sVector localOffset;
+				localOffset.x = offset * sin(gPosition.a);
+				localOffset.y = offset * cos(gPosition.a);
+				constructTrianglePos(offsetLocalPos, currentLocalPos.vector.x+localOffset.x, currentLocalPos.vector.y+localOffset.y);
+				LOG(drive)("\t\tOffsetPos:(%f,%f),hyp(%f), localOffset(%f,%f)", offsetLocalPos.vector.x, offsetLocalPos.vector.y, offsetLocalPos.hypotenuse, localOffset.x, localOffset.y);
 
 				//Construct triangle connecting end point and target position
 				targetLocalPos.hypotenuse = offsetLocalPos.hypotenuse;
@@ -156,7 +172,11 @@ void followLineVec(float x, float y, byte power, tMttMode mode, bool correction,
 		if (stopType & stopSoft)
 		{
 			//Construct triangle connecting end point and robot position
-			constructTrianglePos(currentLocalPos, gPosition.x - x, gPosition.y - y);
+			if (!invertAxes)
+				constructTrianglePos(currentLocalPos, gPosition.x - x, gPosition.y - y);
+			else
+				constructTrianglePos(currentLocalPos, gPosition.y - y, gPosition.x - x);
+			//
 
 			LOG(drive)("%d Starting LineFollow stopSoft(%f,%f), vel:%f", npgmtime, gPosition.x, gPosition.y, gVelocity.localY);
 
