@@ -32,6 +32,7 @@ sVector gTargetLast;
 //void sweepTurnToTarget(float x, float y, float a, float r, tTurnDir turnDir, byte power, bool slow = true);
 
 /* Movement Functions */
+//PREP_FUNC_STATE_VOID_8(void, followLineVec, float, xIn, float, yIn, float, x, float, y, byte, power, tMttMode, mode, bool, correction, tStopType, stopType);
 PREP_FUNC_STATE_VOID_6(void, followLineVec, float, x, float, y, byte, power, tMttMode, mode, bool, correction, tStopType, stopType);
 PREP_FUNC_STATE_VOID_6(void, followLine, float, x, float, y, byte, power, tMttMode, mode, bool, correction, tStopType, stopType);
 PREP_FUNC_STATE_VOID_6(void, moveToTargetSimple, float, x, float, y, byte, power, tMttMode, mode, bool, correction, bool, harshStop);

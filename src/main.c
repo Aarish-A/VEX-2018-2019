@@ -571,7 +571,7 @@ if (RISING(BTN_MOBILE_MIDDLE))
 
 void startTasks()
 {
-	resetPositionFull(gPosition, 0, 0, 0);
+	//resetPositionFull(gPosition, 0, 0, 0);
 
 	tStart(autoMotorSensorUpdateTask);
 
@@ -626,29 +626,39 @@ updateSensorInputs();
 //handleLcd();
 }
 
+task simulatePosChange()
+{
+	//float x, y;
+	float m = 1;
+	float b = 1;
+
+	for (gPosition.x = 0; gPosition.x < 144; gPosition.x++)
+	{
+		gPosition.y = m*gPosition.x + b;
+		writeDebugStreamLine("%d Pos:(%f,%f)", npgmtime, gPosition.x, gPosition.y);
+		sleep(100);
+	}
+}
+
 task autonomous()
 {
 	startTasks();
 	writeDebugStreamLine("%d Start Autonomous, %d", npgmtime, nBatteryLevel);
 
-	sCycleData auto;
-	initCycle(auto, 10, "auto");
-	while(true)
-	{
-		do{
-				//writeDebugStreamLine("Wait for push");
-				sleep(10);
-			}while(!gSensor[limArm]);
-		ASSIGN_FUNC_STATE_6(followLineVec, 0, 35, 60, mttProportional, true, (stopSoft | stopHarsh));
-		driveStateChange(drivefollowLineVec, true, 2000, 0.3, velEither);
-		endCycle(auto);
-	}
+
+	tStart(simulatePosChange);
+	ASSIGN_FUNC_STATE_6(followLineVec, 0, 35, 60, mttProportional, true, (stopSoft | stopHarsh));
+	driveStateChange(drivefollowLineVec, true, 2000, 0.3, velEither);
+	tStop(simulatePosChange);
+
+	sleep(60000);
 
 	stopTasks();
 }
 
 task usercontrol()
 {
+	writeDebugStream("%d Start Usercontrol", npgmtime);
 	sCycleData cycle;
 	initCycle(cycle, 10, "usercontrol");
 

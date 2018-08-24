@@ -57,14 +57,14 @@ task main()
 
 	while (true)
 	{
-		while (DISABLED) { disabled(); wait1Msec(25); }
+		//while (DISABLED) { disabled(); wait1Msec(25); }
 
 		if (AUTONOMOUS)
 		{
 			startTask(autonomous);
 
 			// Waiting for autonomous phase to end
-			while (AUTONOMOUS && !DISABLED)
+			while (AUTONOMOUS/* && !DISABLED*/)
 			{
 				if (!bVEXNETActive)
 				{
