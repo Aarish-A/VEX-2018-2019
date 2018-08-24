@@ -20,6 +20,7 @@ void followLineVec(float x, float y, byte power, tMttMode mode, bool correction,
 			deltaY = temp;
 		}
 
+	writeDebugStreamLine("%dFollowLine, invertAxes?%d, to (%f, %f)", invertAxes, deltaX, deltaY);
 	if (facingDir && fabs(deltaY) > 4)
 	{
 		//Vectors & Magnitudes - relative to the end coordinate
@@ -29,7 +30,7 @@ void followLineVec(float x, float y, byte power, tMttMode mode, bool correction,
 		sTrianglePos error;
 
 		//Angle of the line we are following - relative to vertical
-		const float a = atan2(deltaX, deltaY);
+		const float a = atan2(invertAxes? deltaY: deltaX, invertAxes? deltaX: deltaY);
 		const float cosA = cos(a);
 		const float sinA = sin(a);
 
@@ -42,6 +43,7 @@ void followLineVec(float x, float y, byte power, tMttMode mode, bool correction,
 
 		//Correction-Turn Variables
 		float offset = S_DISTANCE_IN+8.0;
+		float curLineAngle;
 		sLine followLine;
 		tTurnDir turnDir;
 
@@ -59,6 +61,7 @@ void followLineVec(float x, float y, byte power, tMttMode mode, bool correction,
 				constructTrianglePos(currentLocalPos, gPosition.x - x, gPosition.y - y);
 			else
 				constructTrianglePos(currentLocalPos, gPosition.y - y, gPosition.x - x);
+			curLineAngle = aTan2(invertAxes? currentLocalPos.vector.y:currentLocalPos.vector.x,invertAxes? currentLocalPos.vector.x:currentLocalPos.vector.y);
 
 			switch (mode)
 			{
@@ -117,34 +120,29 @@ void followLineVec(float x, float y, byte power, tMttMode mode, bool correction,
 					turn = LIM_TO_VAL( ((float)5.5 * (exp(0.2 * errorVal))), 127); //turn = 4.5(e^(0.2x))
 				turn *= facingDir;
 
+				turnDir = facingDir *( (fmod(gPosition.a - curLineAngle, PI * 2) < PI)? ccw : cw );
 
 				//byte dir = sgn(currentLocalPos.vector.x) * sgn(currentLocalPos.vector.y) * facingDir;
 				//if (abs(simplifyAngle(gPosition.a)) > pi/4 && abs(simplifyAngle(gPosition.a)) < 0.75*pi)
 				//	dir *= -1; //Toggle dir if we are horizontal
-				switch(dir)
+				switch(turnDir)
 				{
-					case (-1): // turn left
+					case (ccw): // turn left
 					{
 						//LOG(auto)("turn right");
 						right = LIM_TO_VAL(throttle + turn, 127);
 						left = MIN_LIM_TO_VAL(right - (2*turn), 5, throttle);
 						break;
 					}
-					case(1): // turn right
+					case(cw): // turn right
 					{
 						//LOG(auto)("turn left");
 						left = LIM_TO_VAL(throttle + turn, 127);
 						right = MIN_LIM_TO_VAL(left - (2*turn), 5, throttle);
 						break;
 					}
-					case(0): //straight
-					{
-						//LOG(auto)("turn straight");
-						right = left = throttle;
-						break;
-					}
 				}
-			LOG(auto)("%d Err:%f, D:%f,LocalPos:(%f,%f), vel:%f f:%f t:%f, l:%d r:%d, trttle:%d, trn:%d",npgmtime, error.hypotenuse, currentLocalPos.hypotenuse, currentLocalPos.vector.x, currentLocalPos.vector.y, gVelocity.localY, facingDir, dir, left, right, throttle, turn);
+			LOG(auto)("%d Err:%f, D:%f,LocalPos:(%f,%f), vel:%f f:%f t:%f, l:%d r:%d, trttle:%d, trn:%d",npgmtime, error.hypotenuse, currentLocalPos.hypotenuse, currentLocalPos.vector.x, currentLocalPos.vector.y, gVelocity.localY, facingDir, turnDir, left, right, throttle, turn);
 			//LOG(auto)("%d Err:%f, LocalPos:(%f,%f), OffsetPos(%f,%f), TargPos(%f,%f), vel:%f, l:%d r:%d, trttle:%d, trn:%d",npgmtime, error.hypotenuse, currentLocalPos.vector.x, currentLocalPos.vector.y, offsetLocalPos.vector.x, offsetLocalPos.vector.y, targetLocalPos.vector.x, targetLocalPos.vector.y, gVelocity.localY, facingDir, dir, errorVal, left, right, throttle, turn);
 			}
 			else
@@ -472,10 +470,10 @@ void moveToTargetSimple(float x, float y, byte power, tMttMode mode, bool correc
 					turn = LIM_TO_VAL(pow(turnBase, fabs(turnLocalVector.x)), 127) * facingDir;
 
 				//if (driveStateCycCount == 1)
-				if (fmod(a - gPosition.a, PI * 2) > PI) turnDir = ccw; else turnDir = cw;
-				//dir = sgn(turnLocalVector.x) * sgn(turnLocalVector.y) * facingDir;
-				//if (abs(turnLocalVector.x) < 2) //when within two inches of target, go straight
-					//dir = 0;
+				//if (fmod(a - gPosition.a, PI * 2) > PI) turnDir = ccw; else turnDir = cw;
+				dir = sgn(turnLocalVector.x) * sgn(turnLocalVector.y) * facingDir;
+				if (abs(turnLocalVector.x) < 2) //when within two inches of target, go straight
+					dir = 0;
 
 				switch(dir)
 				{
