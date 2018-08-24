@@ -33,7 +33,7 @@
 
 
 # 1 "state.h" 1
-# 13 "state.h"
+# 18 "state.h"
 typedef enum _tVelDir
 {
  velEither = -1,
@@ -967,7 +967,7 @@ void setDrive(word left, word right)
  gMotor[driveR1].power = gMotor[driveR2].power = (abs(right) > (127) ? (127) * sgn(right) : (right));
 }
 
-const int driveStateCount = 3; typedef enum _tStatesdrive { driveIdle, driveBreak, driveManual, drivestate3, drivestate4 }tStatesdrive; tStatesdrive driveState = driveIdle; float driveVelSafetyThresh = -1; tVelDir driveVelSafetyDir = -1; unsigned long driveTimeout; float driveVel; int drivePower; int driveVelSafetyCount = 0; unsigned long driveStateStartTime = 0; unsigned long driveStateCycCount = 0; bool driveLogs = 0; void driveStateChange(int stateIn, long timeout = -1, float velSafetyThresh = -1, tVelDir velDir = -1, float arg1In = -1, int arg2In = -1) { if (driveState != stateIn) { unsigned long curTime = npgmtime; if (timeout <= 0) { driveTimeout = 0; } else { driveTimeout = ( timeout + curTime ); } driveVelSafetyCount = 0; driveStateStartTime = curTime; driveStateCycCount = 0; driveVelSafetyThresh = velSafetyThresh; driveVelSafetyDir = velDir; driveState = stateIn; driveVel = arg1In; drivePower = arg2In; writeDebugStreamLine ("%d" "drive" "State:%d, TO:%d velS:%f, %d, %d", npgmTime, driveState, drivetimeout, driveVelSafetyThresh, driveVel, drivePower); } } void driveVelSafetyCheck (tVelType velType = velSensor) { if (driveVelSafetyThresh != -1 && driveVelSafetyThresh != 0) { if (driveVelSafetyDir == velEither || driveVelSafetyDir == velUp) driveVelSafetyThresh = abs(driveVelSafetyThresh); else if (driveVelSafetyDir == velDown) driveVelSafetyThresh = -1 * abs(driveVelSafetyThresh); tHog(); float out = 0; bool goodVel = false; switch (velType) { case velSensor: { velocityCheck(trackL); out = gSensor[trackL].velocity; goodVel = true; break; } case velLocalY: { out = ( gVelocity.x * (float) sin(gPosition.a) )+ (gVelocity.y * (float) cos(gPosition.a)); if(driveLogs) writeDebugStreamLine("%d:""drive""velSafety out locY= %f", npgmtime, out); goodVel = true; break; } case velAngle: { out = gVelocity.a; goodVel = true; break; } } unsigned long curTime = npgmTime; if (goodVel && curTime-driveStateStartTime > 75) { if (driveVelSafetyDir == velEither) { if ( abs(out) < abs(driveVelSafetyThresh) ) { driveVelSafetyCount ++; if(driveLogs) writeDebugStreamLine("%d:""drive""velSafety trip(either)%f", npgmtime, out); } } else { if ( (sgn(driveVelSafetyThresh) == 1)? (out < driveVelSafetyThresh) : (out > driveVelSafetyThresh) ) { driveVelSafetyCount ++; if(driveLogs) writeDebugStreamLine("%d:""drive""velSafety trip(dir)%f", npgmtime, out); } } } } } void driveSafetyCheck(int timedOutState = driveIdle, float driveVel = -1, int drivePower = -1) { bool timedOut = false; bool velSafety = false; if (!( (driveTimeout <= 0)? 1 : (npgmTime < driveTimeout) )) timedOut = true; if (driveVelSafetyCount >= 10) velSafety = true; if (velSafety || timedOut) { writeDebugStreamLine("%d" "drive" "safety: Timedout? %d at %d VelSafety? %d", npgmTime, timedout, driveTimeout, velSafety); driveStateChange(timedOutState, driveVel, drivePower); } }
+const int driveStateCount = 3; typedef enum _tStatesdrive { driveIdle, driveBreak, driveManual }tStatesdrive; tStatesdrive driveState = driveIdle; bool driveBlocked = false; float driveVelSafetyThresh = -1; tVelDir driveVelSafetyDir = -1; unsigned long driveTimeout; float driveVel; int drivePower; int driveVelSafetyCount = 0; unsigned long driveStateStartTime = 0; unsigned long driveStateCycCount = 0; bool driveLogs = 0; void driveStateChange(int stateIn, bool await = 0, long timeout = -1, float velSafetyThresh = -1, tVelDir velDir = -1, float arg1In = -1, int arg2In = -1) { if (driveState != stateIn) { driveState = stateIn; driveBlocked = await; unsigned long curTime = npgmtime; if (timeout <= 0) { driveTimeout = 0; } else { driveTimeout = ( timeout + curTime ); } driveVelSafetyCount = 0; driveStateStartTime = curTime; driveStateCycCount = 0; driveVelSafetyThresh = velSafetyThresh; driveVelSafetyDir = velDir; driveVel = arg1In; drivePower = arg2In; writeDebugStreamLine ("%d" "drive" "State:%d, TO:%d velS:%f, %d, %d", npgmTime, driveState, drivetimeout, driveVelSafetyThresh, driveVel, drivePower); if (await) while (driveBlocked) sleep(10); } } void driveVelSafetyCheck (tVelType velType = velSensor) { if (driveVelSafetyThresh != -1 && driveVelSafetyThresh != 0) { if (driveVelSafetyDir == velEither || driveVelSafetyDir == velUp) driveVelSafetyThresh = abs(driveVelSafetyThresh); else if (driveVelSafetyDir == velDown) driveVelSafetyThresh = -1 * abs(driveVelSafetyThresh); tHog(); float out = 0; bool goodVel = false; switch (velType) { case velSensor: { velocityCheck(trackL); out = gSensor[trackL].velocity; goodVel = true; break; } case velLocalY: { out = gVelocity.localY; goodVel = true; break; } case velAngle: { out = gVelocity.a; goodVel = true; break; } } unsigned long curTime = npgmTime; if (goodVel && curTime-driveStateStartTime > 75) { if (driveVelSafetyDir == velEither) { if ( abs(out) < abs(driveVelSafetyThresh) ) { driveVelSafetyCount ++; if(driveLogs) writeDebugStreamLine("%d:""drive""velSafety trip(either)%f", npgmtime, out); } } else { if ( (sgn(driveVelSafetyThresh) == 1)? (out < driveVelSafetyThresh) : (out > driveVelSafetyThresh) ) { driveVelSafetyCount ++; if(driveLogs) writeDebugStreamLine("%d:""drive""velSafety trip(dir)%f", npgmtime, out); } } } } } void driveSafetyCheck(int timedOutState = driveIdle, float driveVel = -1, int drivePower = -1) { bool timedOut = false; bool velSafety = false; if (!( (driveTimeout <= 0)? 1 : (npgmTime < driveTimeout) )) timedOut = true; if (driveVelSafetyCount >= 10) velSafety = true; if (velSafety || timedOut) { writeDebugStreamLine("%d" "drive" "safety: Timedout? %d at %d VelSafety? %d", npgmTime, timedout, driveTimeout, velSafety); driveStateChange(timedOutState, false, driveVel, drivePower); } }
 
 # 1 "auto.c" 1
 
@@ -1229,7 +1229,7 @@ void applyHarshStop()
  updateMotors();
 
  unsigned long startTime = npgmtime;
- while( ( (driveTimeout <= 0)? 1 : (npgmTime < driveTimeout) ) && driveVelSafetyCount < 10 && ((npgmtime-startTime) < 150) )
+ driveBlocked = true; while( ( (driveTimeout <= 0)? 1 : (npgmTime < driveTimeout) ) && driveVelSafetyCount < 10 && ((npgmtime-startTime) < 150) )
   sleep(10);
 
  setDrive(0, 0);
@@ -1290,7 +1290,7 @@ void followLine(float x, float y, byte power, tMttMode mode, bool correction, tS
  if (facingDir)
  {
   sVector currentLocalVector;
-  if ((gPosition.x - x) == 0 && correction)
+  if ((gPosition.x - x) == 0)
    correction = 0;
 
 
@@ -1299,10 +1299,11 @@ void followLine(float x, float y, byte power, tMttMode mode, bool correction, tS
 
 
   const float propKP = 6.0;
+  float softExit = 3;
 
 
   sVector offsetGlobalVector;
-  float offset = 7.0;
+  float offset = 5.0;
   sLine followLine;
   if (correction)
   {
@@ -1317,7 +1318,7 @@ void followLine(float x, float y, byte power, tMttMode mode, bool correction, tS
   do
   {
    driveVelSafetyCheck(velLocalY); driveStateCycCount++;
-
+# 48 "drive_algs.c"
    currentLocalVector.x = gPosition.x - x;
    currentLocalVector.y = gPosition.y - y;
 
@@ -1346,22 +1347,21 @@ void followLine(float x, float y, byte power, tMttMode mode, bool correction, tS
    {
     const float turnBase = 1.42;
 
-    if (abs(currentLocalVector.y) <= offset)
+    offsetPos(offsetGlobalVector.x, offsetGlobalVector.y, offset);
+    if (abs(currentLocalVector.y) <= (offset+2))
     {
-     offset = abs(currentLocalVector.y) - 0.2;
-     if(driveLogs) writeDebugStreamLine("/t/t Offset Rest - %f", offset);
+     offset = abs(currentLocalVector.y) - softExit;
+     if(driveLogs) writeDebugStreamLine("\t\t Offset Reset - %f", offset);
     }
 
-    offsetPos(offsetGlobalVector.x, offsetGlobalVector.y, offset);
-
     float targX = ( ((float)offsetGlobalVector.y - followLine.b) / followLine.m );
-    float errorX = fabs(targX - gPosition.x);
+    float errorX = fabs(offsetGlobalVector.x - targX);
 
 
-    if (fabs(errorX) < 1)
+    if (fabs(errorX) <= 1)
      turn = 0;
     else
-     turn = (abs(((float)5 * (exp(0.2 * errorX)))) > (127) ? (127) * sgn(((float)5 * (exp(0.2 * errorX)))) : (((float)5 * (exp(0.2 * errorX)))));
+     turn = (abs(((float)5.5 * (exp(0.2 * errorX)))) > (127) ? (127) * sgn(((float)5.5 * (exp(0.2 * errorX)))) : (((float)5.5 * (exp(0.2 * errorX)))));
 
     turn *= facingDir;
 
@@ -1393,7 +1393,7 @@ void followLine(float x, float y, byte power, tMttMode mode, bool correction, tS
      }
     }
 
-   if(driveLogs) writeDebugStreamLine("%d LocalPos:(%f,%f), OffsetPos(%f,%f), %d, %d, t:%f l:%d r:%d, trttle:%d, trn:%d",npgmtime, currentLocalVector.x, currentLocalVector.y, targX, offsetGlobalVector.y, facingDir, dir, errorX, left, right, throttle, turn);
+   if(driveLogs) writeDebugStreamLine("%d LocalPos:(%f,%f), targ:%f - projx:%f = error%f, vel:%f, %d, %d, t:%f l:%d r:%d, trttle:%d, trn:%d",npgmtime, currentLocalVector.x, currentLocalVector.y, targX, offsetGlobalVector.x, errorX, gVelocity.localY, facingDir, dir, errorX, left, right, throttle, turn);
    }
    else
    {
@@ -1406,7 +1406,7 @@ void followLine(float x, float y, byte power, tMttMode mode, bool correction, tS
    setDrive(left,right);
 
    sleep(10);
-  } while( ( (driveTimeout <= 0)? 1 : (npgmTime < driveTimeout) ) && driveVelSafetyCount < 10 && (( abs(currentLocalVector.y) > ((stopType & stopSoft)? 3 : 0.8) )) );
+  } while( ( (driveTimeout <= 0)? 1 : (npgmTime < driveTimeout) ) && driveVelSafetyCount < 10 && (( abs(currentLocalVector.y) > ((stopType & stopSoft)? softExit : 0.8) )) ); driveBlocked = true;
 
   if(driveLogs) writeDebugStreamLine("%d Done LineFollow(%f, %f)", npgmtime, gPosition.x, gPosition.y);
 
@@ -1417,7 +1417,7 @@ void followLine(float x, float y, byte power, tMttMode mode, bool correction, tS
 
    if(driveLogs) writeDebugStreamLine("%d Starting LineFollow stopSoft(%f,%f), vel:%f", npgmtime, gPosition.x, gPosition.y, gVelocity.localY);
 
-   while( ( (driveTimeout <= 0)? 1 : (npgmTime < driveTimeout) ) && driveVelSafetyCount < 10 && (abs(currentLocalVector.y) > 0.6 && abs(gVelocity.localY) > 0.3) )
+   driveBlocked = true; while( ( (driveTimeout <= 0)? 1 : (npgmTime < driveTimeout) ) && driveVelSafetyCount < 10 && (abs(currentLocalVector.y) > 0.6 && abs(gVelocity.localY) > 0.3) )
    {
     throttle = facingDir * -6;
     setDrive(throttle, throttle);
@@ -1460,7 +1460,7 @@ void turnToFace(float x, float y, tFacingDir facingDir, tStopType stopType)
  else
   setDrive(90, 90);
 
- while( ( (driveTimeout <= 0)? 1 : (npgmTime < driveTimeout) ) && driveVelSafetyCount < 10 && ((facingCoord(x, y, 0.2) != facingDir)) )
+ driveBlocked = true; while( ( (driveTimeout <= 0)? 1 : (npgmTime < driveTimeout) ) && driveVelSafetyCount < 10 && ((facingCoord(x, y, 0.2) != facingDir)) )
  {
   sleep(10);
  }
@@ -1590,7 +1590,7 @@ void moveToTargetSimple(float x, float y, byte power, tMttMode mode, bool correc
    if(driveLogs) writeDebugStreamLine("loc coord:(%f,%f), %d, %d, t:%f l:%d r:%d, throttle:%d, turn:%d", currentLocalVector.x, currentLocalVector.y, facingDir, dir, turnLocalVector.x, left, right, throttle, turn);
 
    sleep(10);
-  } while( ( (driveTimeout <= 0)? 1 : (npgmTime < driveTimeout) ) && driveVelSafetyCount < 10 && ((abs(currentLocalVector.y) > 0.8)) );
+  } driveBlocked = true; while( ( (driveTimeout <= 0)? 1 : (npgmTime < driveTimeout) ) && driveVelSafetyCount < 10 && ((abs(currentLocalVector.y) > 0.8)) );
   if(driveLogs) writeDebugStreamLine("%d (%f, %f)", npgmtime, gPosition.x, gPosition.y);
 
   if (harshStop)
@@ -1678,7 +1678,7 @@ void moveToTarget(float x, float y, float xs, float ys, byte power, byte startPo
    case mttCascading:
    const float kB = 2.8;
    const float kP = 2.0;
-# 415 "drive_algs.c"
+# 425 "drive_algs.c"
     float vTarget = 45 * (1 - exp(0.07 * (currentPosVector.y + dropEarly)));
     finalPower = round(kB * vTarget + kP * (vTarget - vel)) * sgn(power);
     break;
@@ -1707,7 +1707,7 @@ void moveToTarget(float x, float y, float xs, float ys, byte power, byte startPo
   vel = _sin * gVelocity.x + _cos * gVelocity.y;
 
   endCycle(cycle);
- } while( ( (driveTimeout <= 0)? 1 : (npgmTime < driveTimeout) ) && driveVelSafetyCount < 10 && ((currentPosVector.y < -dropEarly - (((vel * ((stopType & stopSoft) ? 0.175 : 0.098))) > (decelEarly) ? ((vel * ((stopType & stopSoft) ? 0.175 : 0.098))) : (decelEarly)))) );
+ } while( ( (driveTimeout <= 0)? 1 : (npgmTime < driveTimeout) ) && driveVelSafetyCount < 10 && ((currentPosVector.y < -dropEarly - (((vel * ((stopType & stopSoft) ? 0.175 : 0.098))) > (decelEarly) ? ((vel * ((stopType & stopSoft) ? 0.175 : 0.098))) : (decelEarly)))) ); driveBlocked = true;
 
  if(driveLogs) writeDebugStreamLine("%f %f", currentPosVector.y, vel);
 
@@ -1724,7 +1724,7 @@ void moveToTarget(float x, float y, float xs, float ys, byte power, byte startPo
   vel = _sin * gVelocity.x + _cos * gVelocity.y;
 
   endCycle(cycle);
- } while( ( (driveTimeout <= 0)? 1 : (npgmTime < driveTimeout) ) && driveVelSafetyCount < 10 && ((currentPosVector.y < -dropEarly - (vel * ((stopType & stopSoft) ? 0.175 : 0.098)))) );
+ }while( ( (driveTimeout <= 0)? 1 : (npgmTime < driveTimeout) ) && driveVelSafetyCount < 10 && ((currentPosVector.y < -dropEarly - (vel * ((stopType & stopSoft) ? 0.175 : 0.098)))) ); driveBlocked = true;
 
  if (stopType & stopSoft)
  {
@@ -1740,7 +1740,7 @@ void moveToTarget(float x, float y, float xs, float ys, byte power, byte startPo
    vel = _sin * gVelocity.x + _cos * gVelocity.y;
 
    endCycle(cycle);
-  } while( ( (driveTimeout <= 0)? 1 : (npgmTime < driveTimeout) ) && driveVelSafetyCount < 10 && ((vel > 7 && currentPosVector.y < 0)) );
+  } while( ( (driveTimeout <= 0)? 1 : (npgmTime < driveTimeout) ) && driveVelSafetyCount < 10 && ((vel > 7 && currentPosVector.y < 0)) ); driveBlocked = true;
  }
 
  if (stopType & stopHarsh)
@@ -1774,7 +1774,7 @@ void turnToAngleNewAlg(float a, tTurnDir turnDir, float fullRatio, byte coastPow
   a = gPosition.a + fmod(a - gPosition.a, PI * 2);
   endFull = gPosition.a * (1 - fullRatio) + a * fullRatio;
   setDrive(127, -127);
-  while( ( (driveTimeout <= 0)? 1 : (npgmTime < driveTimeout) ) && driveVelSafetyCount < 10 && ((gPosition.a < endFull)) )
+  driveBlocked = true; while( ( (driveTimeout <= 0)? 1 : (npgmTime < driveTimeout) ) && driveVelSafetyCount < 10 && ((gPosition.a < endFull)) )
   {
    driveVelSafetyCheck()
    if (-1 != -1)
@@ -1791,7 +1791,7 @@ void turnToAngleNewAlg(float a, tTurnDir turnDir, float fullRatio, byte coastPow
   }
   setDrive(coastPower, -coastPower);
   timeStart = nPgmTime;
-  while( ( (driveTimeout <= 0)? 1 : (npgmTime < driveTimeout) ) && driveVelSafetyCount < 10 && ((gPosition.a < a - degToRad(stopOffsetDeg))) )
+  driveBlocked = true; while( ( (driveTimeout <= 0)? 1 : (npgmTime < driveTimeout) ) && driveVelSafetyCount < 10 && ((gPosition.a < a - degToRad(stopOffsetDeg))) )
   {
    if (-1 != -1)
    {
@@ -1817,7 +1817,7 @@ void turnToAngleNewAlg(float a, tTurnDir turnDir, float fullRatio, byte coastPow
   a = gPosition.a - fmod(gPosition.a - a, PI * 2);
   endFull = gPosition.a * (1 - fullRatio) + a * fullRatio;
   setDrive(-127, 127);
-  while( ( (driveTimeout <= 0)? 1 : (npgmTime < driveTimeout) ) && driveVelSafetyCount < 10 && ((gPosition.a > endFull)) )
+  driveBlocked = true; while( ( (driveTimeout <= 0)? 1 : (npgmTime < driveTimeout) ) && driveVelSafetyCount < 10 && ((gPosition.a > endFull)) )
   {
    driveVelSafetyCheck(velAngle); driveStateCycCount++;
    if (-1 != -1)
@@ -1833,7 +1833,7 @@ void turnToAngleNewAlg(float a, tTurnDir turnDir, float fullRatio, byte coastPow
   }
   setDrive(-coastPower, coastPower);
   timeStart = npgmTime;
-  while( ( (driveTimeout <= 0)? 1 : (npgmTime < driveTimeout) ) && driveVelSafetyCount < 10 && ((gPosition.a > a + degToRad(stopOffsetDeg))) )
+  driveBlocked = true; while( ( (driveTimeout <= 0)? 1 : (npgmTime < driveTimeout) ) && driveVelSafetyCount < 10 && ((gPosition.a > a + degToRad(stopOffsetDeg))) )
   {
    if (-1 != -1)
    {
@@ -1878,7 +1878,7 @@ void turnToTargetNewAlg(float x, float y, tTurnDir turnDir, float fullRatio, byt
   endFull = gPosition.a * (1 - fullRatio) + target * fullRatio;
   if(driveLogs) writeDebugStreamLine("%f %f", radToDeg(target), radToDeg(endFull));
   setDrive(127, -127);
-  while( ( (driveTimeout <= 0)? 1 : (npgmTime < driveTimeout) ) && driveVelSafetyCount < 10 && ((gPosition.a < endFull )) )
+  driveBlocked = true; while( ( (driveTimeout <= 0)? 1 : (npgmTime < driveTimeout) ) && driveVelSafetyCount < 10 && ((gPosition.a < endFull )) )
   {
    driveVelSafetyCheck(velAngle); driveStateCycCount++;
    if (-1 != -1)
@@ -1894,7 +1894,7 @@ void turnToTargetNewAlg(float x, float y, tTurnDir turnDir, float fullRatio, byt
   }
   setDrive(coastPower, -coastPower);
   timeStart = npgmTime;
-  while( ( (driveTimeout <= 0)? 1 : (npgmTime < driveTimeout) ) && driveVelSafetyCount < 10 && ((gPosition.a < nearAngle(atan2(x - gPosition.x, y - gPosition.y) + offset, target) - degToRad(stopOffsetDeg))) )
+  driveBlocked = true; while( ( (driveTimeout <= 0)? 1 : (npgmTime < driveTimeout) ) && driveVelSafetyCount < 10 && ((gPosition.a < nearAngle(atan2(x - gPosition.x, y - gPosition.y) + offset, target) - degToRad(stopOffsetDeg))) )
   {
    if (-1 != -1)
    {
@@ -1921,7 +1921,7 @@ void turnToTargetNewAlg(float x, float y, tTurnDir turnDir, float fullRatio, byt
   endFull = gPosition.a * (1 - fullRatio) + (target) * fullRatio;
   if(driveLogs) writeDebugStreamLine("%f %f", radToDeg(target), radToDeg(endFull));
   setDrive(-127, 127);
-  while( ( (driveTimeout <= 0)? 1 : (npgmTime < driveTimeout) ) && driveVelSafetyCount < 10 && ((gPosition.a > endFull)) )
+  driveBlocked = true; while( ( (driveTimeout <= 0)? 1 : (npgmTime < driveTimeout) ) && driveVelSafetyCount < 10 && ((gPosition.a > endFull)) )
   {
    driveVelSafetyCheck(velAngle); driveStateCycCount++;
    if (-1 != -1)
@@ -1937,7 +1937,7 @@ void turnToTargetNewAlg(float x, float y, tTurnDir turnDir, float fullRatio, byt
   }
   setDrive(-coastPower, coastPower);
   timeStart = nPgmTime;
-  while( ( (driveTimeout <= 0)? 1 : (npgmTime < driveTimeout) ) && driveVelSafetyCount < 10 && ((gPosition.a > nearAngle(atan2(x - gPosition.x, y - gPosition.y) + offset, target) + degToRad(stopOffsetDeg))) )
+  driveBlocked = true; while( ( (driveTimeout <= 0)? 1 : (npgmTime < driveTimeout) ) && driveVelSafetyCount < 10 && ((gPosition.a > nearAngle(atan2(x - gPosition.x, y - gPosition.y) + offset, target) + degToRad(stopOffsetDeg))) )
   {
    if (-1 != -1)
    {
@@ -2053,7 +2053,7 @@ void sweepTurnToTarget(float x, float y, float a, float r, tTurnDir turnDir, byt
    }
 
    endCycle(cycle);
-  } while( ( (driveTimeout <= 0)? 1 : (npgmTime < driveTimeout) ) && driveVelSafetyCount < 10 && (((power > 0 ? gPosition.a : (gPosition.a + PI)) - a < (slow ? -0.1 : -0.15))) );
+  } while( ( (driveTimeout <= 0)? 1 : (npgmTime < driveTimeout) ) && driveVelSafetyCount < 10 && (((power > 0 ? gPosition.a : (gPosition.a + PI)) - a < (slow ? -0.1 : -0.15))) ); driveBlocked = true;
   break;
  case ccw:
   vector.y = 0;
@@ -2112,7 +2112,7 @@ void sweepTurnToTarget(float x, float y, float a, float r, tTurnDir turnDir, byt
    }
 
    endCycle(cycle);
-  } while( ( (driveTimeout <= 0)? 1 : (npgmTime < driveTimeout) ) && driveVelSafetyCount < 10 && (((power > 0 ? gPosition.a : (gPosition.a + PI)) - a > (slow ? 0.1 : 0.15))) );
+  } while( ( (driveTimeout <= 0)? 1 : (npgmTime < driveTimeout) ) && driveVelSafetyCount < 10 && (((power > 0 ? gPosition.a : (gPosition.a + PI)) - a > (slow ? 0.1 : 0.15))) ); driveBlocked = true;
   break;
  }
  setDrive(0, 0);
@@ -2135,7 +2135,7 @@ task driveSet()
    {
     setDrive(0,0);
 
-    driveStateCycCount++
+    driveStateCycCount++;
     break;
    }
    case driveBreak:
@@ -2219,7 +2219,7 @@ void setLift(word val)
 gMotor[liftR].power = gMotor[liftL].power = (abs(val) > (127) ? (127) * sgn(val) : (val));
 }
 
-const int liftStateCount = 5; typedef enum _tStateslift { liftIdle, liftHold, liftManual, liftMove, liftMoveSimple }tStateslift; tStateslift liftState = liftIdle; float liftVelSafetyThresh = -1; tVelDir liftVelSafetyDir = -1; unsigned long liftTimeout; int liftTarget; int liftPower; int liftVelSafetyCount = 0; unsigned long liftStateStartTime = 0; unsigned long liftStateCycCount = 0; bool liftLogs = 0; void liftStateChange(int stateIn, long timeout = -1, float velSafetyThresh = -1, tVelDir velDir = -1, int arg1In = -1, int arg2In = -1) { if (liftState != stateIn) { unsigned long curTime = npgmtime; if (timeout <= 0) { liftTimeout = 0; } else { liftTimeout = ( timeout + curTime ); } liftVelSafetyCount = 0; liftStateStartTime = curTime; liftStateCycCount = 0; liftVelSafetyThresh = velSafetyThresh; liftVelSafetyDir = velDir; liftState = stateIn; liftTarget = arg1In; liftPower = arg2In; writeDebugStreamLine ("%d" "lift" "State:%d, TO:%d velS:%f, %d, %d", npgmTime, liftState, lifttimeout, liftVelSafetyThresh, liftTarget, liftPower); } } void liftVelSafetyCheck (tVelType velType = velSensor) { if (liftVelSafetyThresh != -1 && liftVelSafetyThresh != 0) { if (liftVelSafetyDir == velEither || liftVelSafetyDir == velUp) liftVelSafetyThresh = abs(liftVelSafetyThresh); else if (liftVelSafetyDir == velDown) liftVelSafetyThresh = -1 * abs(liftVelSafetyThresh); tHog(); float out = 0; bool goodVel = false; switch (velType) { case velSensor: { velocityCheck(liftPoti); out = gSensor[liftPoti].velocity; goodVel = true; break; } case velLocalY: { out = ( gVelocity.x * (float) sin(gPosition.a) )+ (gVelocity.y * (float) cos(gPosition.a)); if(liftLogs) writeDebugStreamLine("%d:""lift""velSafety out locY= %f", npgmtime, out); goodVel = true; break; } case velAngle: { out = gVelocity.a; goodVel = true; break; } } unsigned long curTime = npgmTime; if (goodVel && curTime-liftStateStartTime > 75) { if (liftVelSafetyDir == velEither) { if ( abs(out) < abs(liftVelSafetyThresh) ) { liftVelSafetyCount ++; if(liftLogs) writeDebugStreamLine("%d:""lift""velSafety trip(either)%f", npgmtime, out); } } else { if ( (sgn(liftVelSafetyThresh) == 1)? (out < liftVelSafetyThresh) : (out > liftVelSafetyThresh) ) { liftVelSafetyCount ++; if(liftLogs) writeDebugStreamLine("%d:""lift""velSafety trip(dir)%f", npgmtime, out); } } } } } void liftSafetyCheck(int timedOutState = liftIdle, int liftTarget = -1, int liftPower = -1) { bool timedOut = false; bool velSafety = false; if (!( (liftTimeout <= 0)? 1 : (npgmTime < liftTimeout) )) timedOut = true; if (liftVelSafetyCount >= 10) velSafety = true; if (velSafety || timedOut) { writeDebugStreamLine("%d" "lift" "safety: Timedout? %d at %d VelSafety? %d", npgmTime, timedout, liftTimeout, velSafety); liftStateChange(timedOutState, liftTarget, liftPower); } }
+const int liftStateCount = 5; typedef enum _tStateslift { liftIdle, liftHold, liftManual, liftMove, liftMoveSimple }tStateslift; tStateslift liftState = liftIdle; bool liftBlocked = false; float liftVelSafetyThresh = -1; tVelDir liftVelSafetyDir = -1; unsigned long liftTimeout; int liftTarget; int liftPower; int liftVelSafetyCount = 0; unsigned long liftStateStartTime = 0; unsigned long liftStateCycCount = 0; bool liftLogs = 0; void liftStateChange(int stateIn, bool await = 0, long timeout = -1, float velSafetyThresh = -1, tVelDir velDir = -1, int arg1In = -1, int arg2In = -1) { if (liftState != stateIn) { liftState = stateIn; liftBlocked = await; unsigned long curTime = npgmtime; if (timeout <= 0) { liftTimeout = 0; } else { liftTimeout = ( timeout + curTime ); } liftVelSafetyCount = 0; liftStateStartTime = curTime; liftStateCycCount = 0; liftVelSafetyThresh = velSafetyThresh; liftVelSafetyDir = velDir; liftTarget = arg1In; liftPower = arg2In; writeDebugStreamLine ("%d" "lift" "State:%d, TO:%d velS:%f, %d, %d", npgmTime, liftState, lifttimeout, liftVelSafetyThresh, liftTarget, liftPower); if (await) while (liftBlocked) sleep(10); } } void liftVelSafetyCheck (tVelType velType = velSensor) { if (liftVelSafetyThresh != -1 && liftVelSafetyThresh != 0) { if (liftVelSafetyDir == velEither || liftVelSafetyDir == velUp) liftVelSafetyThresh = abs(liftVelSafetyThresh); else if (liftVelSafetyDir == velDown) liftVelSafetyThresh = -1 * abs(liftVelSafetyThresh); tHog(); float out = 0; bool goodVel = false; switch (velType) { case velSensor: { velocityCheck(liftPoti); out = gSensor[liftPoti].velocity; goodVel = true; break; } case velLocalY: { out = gVelocity.localY; goodVel = true; break; } case velAngle: { out = gVelocity.a; goodVel = true; break; } } unsigned long curTime = npgmTime; if (goodVel && curTime-liftStateStartTime > 75) { if (liftVelSafetyDir == velEither) { if ( abs(out) < abs(liftVelSafetyThresh) ) { liftVelSafetyCount ++; if(liftLogs) writeDebugStreamLine("%d:""lift""velSafety trip(either)%f", npgmtime, out); } } else { if ( (sgn(liftVelSafetyThresh) == 1)? (out < liftVelSafetyThresh) : (out > liftVelSafetyThresh) ) { liftVelSafetyCount ++; if(liftLogs) writeDebugStreamLine("%d:""lift""velSafety trip(dir)%f", npgmtime, out); } } } } } void liftSafetyCheck(int timedOutState = liftIdle, int liftTarget = -1, int liftPower = -1) { bool timedOut = false; bool velSafety = false; if (!( (liftTimeout <= 0)? 1 : (npgmTime < liftTimeout) )) timedOut = true; if (liftVelSafetyCount >= 10) velSafety = true; if (velSafety || timedOut) { writeDebugStreamLine("%d" "lift" "safety: Timedout? %d at %d VelSafety? %d", npgmTime, timedout, liftTimeout, velSafety); liftStateChange(timedOutState, false, liftTarget, liftPower); } }
 task liftSet()
 {
  sCycleData lift;
@@ -2235,6 +2235,7 @@ task liftSet()
    }
   case 1:
    {
+    liftBlocked = 0;
     if (gSensor[liftPoti].value < (800 + 50))
      setLift(!gSensor[limLift].value ? -15 : -90);
     else if (gSensor[liftPoti].value > ((800 + 1930) - 100))
@@ -2245,6 +2246,7 @@ task liftSet()
    }
   case 2:
    {
+    liftBlocked = 0;
     short joy = gJoy[CH2].cur;
     setLift(joy);
 
@@ -2339,7 +2341,7 @@ void setArm(word val)
 gMotor[arm].power = (abs(val) > (127) ? (127) * sgn(val) : (val));
 }
 
-const int armStateCount = 5; typedef enum _tStatesarm { armIdle, armHold, armManual, armMove, armMoveSimple }tStatesarm; tStatesarm armState = armIdle; float armVelSafetyThresh = -1; tVelDir armVelSafetyDir = -1; unsigned long armTimeout; int armTarget; int armPower; int armVelSafetyCount = 0; unsigned long armStateStartTime = 0; unsigned long armStateCycCount = 0; bool armLogs = 0; void armStateChange(int stateIn, long timeout = -1, float velSafetyThresh = -1, tVelDir velDir = -1, int arg1In = -1, int arg2In = -1) { if (armState != stateIn) { unsigned long curTime = npgmtime; if (timeout <= 0) { armTimeout = 0; } else { armTimeout = ( timeout + curTime ); } armVelSafetyCount = 0; armStateStartTime = curTime; armStateCycCount = 0; armVelSafetyThresh = velSafetyThresh; armVelSafetyDir = velDir; armState = stateIn; armTarget = arg1In; armPower = arg2In; writeDebugStreamLine ("%d" "arm" "State:%d, TO:%d velS:%f, %d, %d", npgmTime, armState, armtimeout, armVelSafetyThresh, armTarget, armPower); } } void armVelSafetyCheck (tVelType velType = velSensor) { if (armVelSafetyThresh != -1 && armVelSafetyThresh != 0) { if (armVelSafetyDir == velEither || armVelSafetyDir == velUp) armVelSafetyThresh = abs(armVelSafetyThresh); else if (armVelSafetyDir == velDown) armVelSafetyThresh = -1 * abs(armVelSafetyThresh); tHog(); float out = 0; bool goodVel = false; switch (velType) { case velSensor: { velocityCheck(armPoti); out = gSensor[armPoti].velocity; goodVel = true; break; } case velLocalY: { out = ( gVelocity.x * (float) sin(gPosition.a) )+ (gVelocity.y * (float) cos(gPosition.a)); if(armLogs) writeDebugStreamLine("%d:""arm""velSafety out locY= %f", npgmtime, out); goodVel = true; break; } case velAngle: { out = gVelocity.a; goodVel = true; break; } } unsigned long curTime = npgmTime; if (goodVel && curTime-armStateStartTime > 75) { if (armVelSafetyDir == velEither) { if ( abs(out) < abs(armVelSafetyThresh) ) { armVelSafetyCount ++; if(armLogs) writeDebugStreamLine("%d:""arm""velSafety trip(either)%f", npgmtime, out); } } else { if ( (sgn(armVelSafetyThresh) == 1)? (out < armVelSafetyThresh) : (out > armVelSafetyThresh) ) { armVelSafetyCount ++; if(armLogs) writeDebugStreamLine("%d:""arm""velSafety trip(dir)%f", npgmtime, out); } } } } } void armSafetyCheck(int timedOutState = armIdle, int armTarget = -1, int armPower = -1) { bool timedOut = false; bool velSafety = false; if (!( (armTimeout <= 0)? 1 : (npgmTime < armTimeout) )) timedOut = true; if (armVelSafetyCount >= 10) velSafety = true; if (velSafety || timedOut) { writeDebugStreamLine("%d" "arm" "safety: Timedout? %d at %d VelSafety? %d", npgmTime, timedout, armTimeout, velSafety); armStateChange(timedOutState, armTarget, armPower); } }
+const int armStateCount = 5; typedef enum _tStatesarm { armIdle, armHold, armManual, armMove, armMoveSimple }tStatesarm; tStatesarm armState = armIdle; bool armBlocked = false; float armVelSafetyThresh = -1; tVelDir armVelSafetyDir = -1; unsigned long armTimeout; int armTarget; int armPower; int armVelSafetyCount = 0; unsigned long armStateStartTime = 0; unsigned long armStateCycCount = 0; bool armLogs = 0; void armStateChange(int stateIn, bool await = 0, long timeout = -1, float velSafetyThresh = -1, tVelDir velDir = -1, int arg1In = -1, int arg2In = -1) { if (armState != stateIn) { armState = stateIn; armBlocked = await; unsigned long curTime = npgmtime; if (timeout <= 0) { armTimeout = 0; } else { armTimeout = ( timeout + curTime ); } armVelSafetyCount = 0; armStateStartTime = curTime; armStateCycCount = 0; armVelSafetyThresh = velSafetyThresh; armVelSafetyDir = velDir; armTarget = arg1In; armPower = arg2In; writeDebugStreamLine ("%d" "arm" "State:%d, TO:%d velS:%f, %d, %d", npgmTime, armState, armtimeout, armVelSafetyThresh, armTarget, armPower); if (await) while (armBlocked) sleep(10); } } void armVelSafetyCheck (tVelType velType = velSensor) { if (armVelSafetyThresh != -1 && armVelSafetyThresh != 0) { if (armVelSafetyDir == velEither || armVelSafetyDir == velUp) armVelSafetyThresh = abs(armVelSafetyThresh); else if (armVelSafetyDir == velDown) armVelSafetyThresh = -1 * abs(armVelSafetyThresh); tHog(); float out = 0; bool goodVel = false; switch (velType) { case velSensor: { velocityCheck(armPoti); out = gSensor[armPoti].velocity; goodVel = true; break; } case velLocalY: { out = gVelocity.localY; goodVel = true; break; } case velAngle: { out = gVelocity.a; goodVel = true; break; } } unsigned long curTime = npgmTime; if (goodVel && curTime-armStateStartTime > 75) { if (armVelSafetyDir == velEither) { if ( abs(out) < abs(armVelSafetyThresh) ) { armVelSafetyCount ++; if(armLogs) writeDebugStreamLine("%d:""arm""velSafety trip(either)%f", npgmtime, out); } } else { if ( (sgn(armVelSafetyThresh) == 1)? (out < armVelSafetyThresh) : (out > armVelSafetyThresh) ) { armVelSafetyCount ++; if(armLogs) writeDebugStreamLine("%d:""arm""velSafety trip(dir)%f", npgmtime, out); } } } } } void armSafetyCheck(int timedOutState = armIdle, int armTarget = -1, int armPower = -1) { bool timedOut = false; bool velSafety = false; if (!( (armTimeout <= 0)? 1 : (npgmTime < armTimeout) )) timedOut = true; if (armVelSafetyCount >= 10) velSafety = true; if (velSafety || timedOut) { writeDebugStreamLine("%d" "arm" "safety: Timedout? %d at %d VelSafety? %d", npgmTime, timedout, armTimeout, velSafety); armStateChange(timedOutState, false, armTarget, armPower); } }
 task armSet()
 {
 sCycleData arm;
@@ -2352,11 +2354,13 @@ while(true)
  {
  case 0:
   {
+   armBlocked = 0;
    setArm(0);
    break;
   }
  case 1:
   {
+  armBlocked = 0;
    if (gSensor[armPoti].value < ((2700 - 1450) + 50))
     setArm(gSensor[limArm].value ? -15 : -40);
    else
@@ -2365,6 +2369,7 @@ while(true)
   }
  case 2:
   {
+  armBlocked = 0;
    short joy = -1 * (gJoy[CH1].cur);
    velocityCheck(armPoti);
    if(armLogs) writeDebugStreamLine("power: %d, vel: %f", joy, gSensor[armPoti].velocity);
@@ -2392,7 +2397,7 @@ while(true)
     float pKP = 30.0;
     float targVel, power;
 
-    while( ( (driveTimeout <= 0)? 1 : (npgmTime < driveTimeout) ) && driveVelSafetyCount < 10 && (((dir == 1)? (gSensor[armPoti].value < firstTarg) : (gSensor[armPoti].value > firstTarg))) )
+    driveBlocked = true; while( ( (driveTimeout <= 0)? 1 : (npgmTime < driveTimeout) ) && driveVelSafetyCount < 10 && (((dir == 1)? (gSensor[armPoti].value < firstTarg) : (gSensor[armPoti].value > firstTarg))) )
     {
     targVel = vKP * (armTarget - gSensor[armPoti].value);
      velocityCheck(armPoti);
@@ -2441,7 +2446,7 @@ while(true)
     armPower = abs(armPower) * dir;
     if(armLogs) writeDebugStreamLine("move: set power %d, dir %d, poti %d", armPower, dir, gSensor[armPoti].value);
     setArm(armPower);
-    while( ( (armTimeout <= 0)? 1 : (npgmTime < armTimeout) ) && armVelSafetyCount < 10 && ((dir == 1)? (gSensor[armPoti].value < armTarget) : (gSensor[armPoti].value > armTarget)) )
+    armBlocked = true; while( ( (armTimeout <= 0)? 1 : (npgmTime < armTimeout) ) && armVelSafetyCount < 10 && ((dir == 1)? (gSensor[armPoti].value < armTarget) : (gSensor[armPoti].value > armTarget)) )
      sleep(10);
    }
    break;
@@ -2499,11 +2504,13 @@ while (true)
  {
  case 0:
   {
+   mobileBlocked = 0;
    setMobile(0);
    break;
   }
  case 1:
   {
+  mobileBlocked = 0;
    setMobile(gSensor[mobilePoti].value < 1550? -5 : 5);
    break;
   }

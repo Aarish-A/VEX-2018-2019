@@ -1,5 +1,11 @@
+<<<<<<< HEAD
 f = open("..\..\src\\func_to_state.h", "w")
 maxFuncNum = 9
+=======
+f = open('..\..\src\\func_to_state.h', 'w')
+#f = open('..\..\src\state.h', 'w')
+maxFuncNum = 8
+>>>>>>> async-changes
 maxParamNum = 13
 
 
@@ -37,13 +43,22 @@ f.write("/*\t Auto-Generated Macros to Use Funcs w/ up to %d Paramaters \t*/" %m
 f.write("" + "\n")
 for pNum in range (0, maxParamNum+1):
 	f.write("/* Macros for %d Param Functions */" %pNum + "\n")
+	#NON-VOID FUNCTIONS
 	if pNum is not 0:
 		f.write("//Create global variables for all args of a func - TO BE CALLED IN HEADER" + "\n")
-		f.write("#define PREP_FUNC_STATE_%d(func" %pNum) 
+		f.write("#define PREP_FUNC_STATE_%d(funcType, func" %pNum)
 		for i in range (1, pNum+1):
-			f.write(", type%d" %i)
-		f.write(") \\" + "\n") 
+			f.write(", type%d, arg%d" %(i, i))
+		f.write(") \\" + "\n")
 
+		f.write("funcType func (")
+		for i in range(1, pNum + 1):
+			f.write("type%d arg%d" % (i, i))
+			if (i is  not pNum):
+				f.write(", ")
+		f.write("); \\" + "\n")
+
+		f.write("funcType func##Ret; \\ \n")
 		f.write("const int func##ArgCount = %d; \\" %pNum + "\n")
 		for i in range(1, pNum+1):
 			f.write("type%d func##Arg%d = -1" %(i, i) )
@@ -52,6 +67,29 @@ for pNum in range (0, maxParamNum+1):
 			else:
 				f.write("; \\ \n")
 		f.write("" + "\n")
+	#VOID FUNCTIONS
+		if pNum is not 0:
+			f.write("//Create global variables for all args of a func - TO BE CALLED IN HEADER" + "\n")
+			f.write("#define PREP_FUNC_STATE_VOID_%d(funcType, func" % pNum)
+			for i in range(1, pNum + 1):
+				f.write(", type%d, arg%d" % (i, i))
+			f.write(") \\" + "\n")
+
+			f.write("funcType func (")
+			for i in range(1, pNum + 1):
+				f.write("type%d arg%d" % (i, i))
+				if (i is not pNum):
+					f.write(", ")
+			f.write("); \\" + "\n")
+
+			f.write("const int func##ArgCount = %d; \\" % pNum + "\n")
+			for i in range(1, pNum + 1):
+				f.write("type%d func##Arg%d = -1" % (i, i))
+				if i is pNum:
+					f.write("\n")
+				else:
+					f.write("; \\ \n")
+			f.write("" + "\n")
 		
 		f.write("//Assign to all func args - TO BE CALLED RIGHT BEFORE PUTTING MACHINE INTO STATE" + "\n")
 		f.write("#define ASSIGN_FUNC_STATE_%d(func" %pNum) 
@@ -78,11 +116,25 @@ for pNum in range (0, maxParamNum+1):
 	f.write(")" + "\n")
 	f.write("" + "\n")
 
+	#NON-VOID FUNCTIONS
 	f.write("#define ADD_FUNC_TO_SWITCH_%d(func, machine, nextState, safetyState) \\" %pNum + "\n")
 	f.write("case (func##Loc): \\" + "\n")
 	f.write("{ \\" + "\n")
 	f.write("	int curState = machine##State; \\" + "\n")
-	f.write("	CALL_FUNC_STATE_%d(func); \\" %pNum + "\n")
+	f.write("	machine##Blocked = true; \\ \n")
+	f.write("	func##Ret = CALL_FUNC_STATE_%d(func); \\" %pNum + "\n")
+	f.write("	machine##SafetyCheck(safetyState); \\" + "\n")
+	f.write("	if (machine##State == curState) \\" + "\n")
+	f.write("		machine##StateChange(nextState); \\" + "\n")
+	f.write("	break; \\" + "\n")
+	f.write("}" + "\n")
+	#VOID FUNCTIONS
+	f.write("#define ADD_FUNC_TO_SWITCH_VOID_%d(func, machine, nextState, safetyState) \\" % pNum + "\n")
+	f.write("case (func##Loc): \\" + "\n")
+	f.write("{ \\" + "\n")
+	f.write("	int curState = machine##State; \\" + "\n")
+	f.write("	machine##Blocked = true; \\ \n")
+	f.write("	CALL_FUNC_STATE_%d(func); \\" % pNum + "\n")
 	f.write("	machine##SafetyCheck(safetyState); \\" + "\n")
 	f.write("	if (machine##State == curState) \\" + "\n")
 	f.write("		machine##StateChange(nextState); \\" + "\n")

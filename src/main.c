@@ -82,13 +82,15 @@ task driveSet()
 		{
 			case driveIdle: //0:
 			{
+				driveBlocked = 0;
 				setDrive(0,0);
 
-				driveStateCycCount++
+				driveStateCycCount++;
 				break;
 			}
 			case driveBreak: //1:
 			{
+				driveBlocked = 0;
 				float startVelL, startVelR;
 
 				const float velThresh = 0.015;
@@ -119,6 +121,7 @@ task driveSet()
 			}
 			case driveManual: //2:
 			{
+				driveBlocked = 0;
 				//float angleToTen = atan2( (gPosition.x - 0), (gPosition.y - 10) );
 				setDrive((LIM_TO_VAL((gJoy[JOY_THROTTLE].cur + DRIVE_TURN), 127)), (LIM_TO_VAL((gJoy[JOY_THROTTLE].cur - DRIVE_TURN), 127)));
 				driveStateCycCount++;
@@ -129,6 +132,7 @@ task driveSet()
 
 				break;
 			}
+<<<<<<< HEAD
 			//ADD_FUNC_TO_SWITCH_4(driveFuncTest, drive, driveBreak, driveIdle)
 			ADD_FUNC_TO_SWITCH_6(followLineVec, drive, driveIdle, driveIdle)
 			ADD_FUNC_TO_SWITCH_6(followLine, drive, driveIdle, driveIdle)
@@ -138,6 +142,16 @@ task driveSet()
 			ADD_FUNC_TO_SWITCH_7(turnToAngleNewAlg, drive, driveBreak, driveIdle)
 			ADD_FUNC_TO_SWITCH_9(turnToTargetNewAlg, drive, driveBreak, driveIdle)
 			ADD_FUNC_TO_SWITCH_7(sweepTurnToTarget, drive, driveBreak, driveIdle)
+=======
+			//ADD_FUNC_TO_SWITCH_VOID_4(driveFuncTest, drive, driveBreak, driveIdle)
+			ADD_FUNC_TO_SWITCH_VOID_6(followLine, drive, driveIdle, driveIdle)
+			ADD_FUNC_TO_SWITCH_VOID_6(moveToTargetSimple, drive, driveIdle, driveIdle)
+			ADD_FUNC_TO_SWITCH_VOID_12(moveToTarget, drive, driveIdle, driveIdle)
+			ADD_FUNC_TO_SWITCH_VOID_12(moveToTargetDis, drive, driveBreak, driveIdle)
+			ADD_FUNC_TO_SWITCH_VOID_7(turnToAngleNewAlg, drive, driveBreak, driveIdle)
+			ADD_FUNC_TO_SWITCH_VOID_9(turnToTargetNewAlg, drive, driveBreak, driveIdle)
+			ADD_FUNC_TO_SWITCH_VOID_7(sweepTurnToTarget, drive, driveBreak, driveIdle)
+>>>>>>> async-changes
 		}
 		endCycle(drive);
 	}
@@ -188,11 +202,13 @@ task liftSet()
 		{
 		case 0: //idle
 			{
+				liftBlocked = 0;
 				setLift(0);
 				break;
 			}
 		case 1: //hold
 			{
+				liftBlocked = 0;
 				if (gSensor[liftPoti].value < LIFT_HOLD_DOWN_THRESHOLD) //Lift is at bottom
 					setLift(!gSensor[limLift].value ? -15 : -90);
 				else if (gSensor[liftPoti].value > LIFT_HOLD_UP_THRESHOLD) //Lift is at top
@@ -203,6 +219,7 @@ task liftSet()
 			}
 		case 2: //manual
 			{
+				liftBlocked = 0;
 				short joy = gJoy[JOY_LIFT].cur;
 				setLift(joy);
 
@@ -325,11 +342,13 @@ while(true)
 	{
 	case 0: //idle
 		{
+			armBlocked = 0;
 			setArm(0);
 			break;
 		}
 	case 1: //hold
 		{
+			armBlocked = 0;
 			if (gSensor[armPoti].value < ARM_HOLD_DOWN_THRESHOLD) //Arm is at bottom
 				setArm(gSensor[limArm].value ? -15 : -40);
 			else
@@ -338,6 +357,7 @@ while(true)
 		}
 	case 2: //manual
 		{
+			armBlocked = 0;
 			short joy = -1 * (gJoy[JOY_ARM].cur);
 			velocityCheck(armPoti);
 			LOG(arm)("power: %d, vel: %f", joy, gSensor[armPoti].velocity);
@@ -483,11 +503,13 @@ while (true)
 	{
 	case 0: //idle
 		{
+			armBlocked = 0;
 			setMobile(0);
 			break;
 		}
 	case 1: //hold
 		{
+			armBlocked = 0;
 			setMobile(gSensor[mobilePoti].value < MOBILE_HALFWAY? -5 : 5);
 			break;
 		}

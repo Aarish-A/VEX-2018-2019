@@ -3,12 +3,17 @@
 /* Universal State Macros */ 
 #define NOT_T_O(machineIn) ( (machineIn##Timeout <= 0)? 1 : (npgmTime < machineIn##Timeout) ) 
  
-#define WHILE(machineIn, condition) while( NOT_T_O(machineIn) && machineIn##VelSafetyCount < 10 && (condition) ) 
+#define WHILE(machineIn, condition) machineIn##Blocked = true; \ 
+	while( NOT_T_O(machineIn) && machineIn##VelSafetyCount < 10 && (condition) ) 
+ 
+#define DO_WHILE(machineIn, condition) while( NOT_T_O(machineIn) && machineIn##VelSafetyCount < 10 && (condition) ); \ 
+	machineIn##Blocked = true 
  
 #define LOG(machineIn) if(machineIn##Logs) writeDebugStreamLine 
  
 #define VEL_CHECK_INC(machineIn, safetyType) machineIn##VelSafetyCheck(safetyType); \ 
 machineIn##StateCycCount++ 
+#define MACHINE_AWAIT(machineIn) while (machineIn##Blocked) sleep(10) 
  
 typedef enum _tVelDir 
 { 
@@ -35,14 +40,13 @@ typedef enum _tVelType
 const int machine##StateCount = 3; \
 typedef enum _tStates##machine \
 { \
-	machine##state0, \
-	machine##state1, \
-	machine##state2, \
-	machine##state3, \
-	machine##state4 \
+	machine##state0, \ 
+	machine##state1, \ 
+	machine##state2 \
 }tStates##machine; \
 \
 tStates##machine machine##State = machine##state0; \
+bool machine##Blocked =  false; \ 
 float machine##VelSafetyThresh = -1; \
 tVelDir machine##VelSafetyDir = -1; \
 unsigned long machine##Timeout; \
@@ -52,10 +56,12 @@ int machine##VelSafetyCount = 0; \
 unsigned long machine##StateStartTime = 0; \
 unsigned long machine##StateCycCount = 0; \
 bool machine##Logs = 0; \
-void machine##StateChange(int stateIn, long timeout = -1, float velSafetyThresh = -1, tVelDir velDir = -1, type1 arg1In = -1, type2 arg2In = -1) \
+void machine##StateChange(int stateIn, bool await = 0, long timeout = -1, float velSafetyThresh = -1, tVelDir velDir = -1, type1 arg1In = -1, type2 arg2In = -1) \
 { \
 	if (machine##State != stateIn) \
 	{ \
+		machine##State = stateIn; \
+		machine##Blocked = await; \ 
 		unsigned long curTime = npgmtime; \
 		if (timeout <= 0) \
 		{ \
@@ -71,10 +77,10 @@ void machine##StateChange(int stateIn, long timeout = -1, float velSafetyThresh 
 		machine##StateCycCount = 0; \
 		machine##VelSafetyThresh = velSafetyThresh; \
 		machine##VelSafetyDir = velDir; \
-		machine##State = stateIn; \
 		machine##arg1Name = arg1In; \
 		machine##arg2Name = arg2In;  \
 		writeDebugStreamLine ("%d" #machine "State:%d, TO:%d velS:%f, %d, %d", npgmTime, machine##State, machine##timeout, machine##VelSafetyThresh, machine##arg1Name, machine##arg2Name); \
+		if (await) MACHINE_AWAIT(machine); \ 
 	} \
 } \
 \
@@ -101,8 +107,7 @@ void machine##VelSafetyCheck (tVelType velType = velSensor) \
 			} \ 
 			case velLocalY: \ 
 			{ \ 
-				out = ( gVelocity.x * (float) sin(gPosition.a) )+ (gVelocity.y * (float) cos(gPosition.a)); \ 
-				if(machine##Logs) writeDebugStreamLine("%d:"#machine"velSafety out locY= %f", npgmtime, out); \ 
+				out = gVelocity.localY; \ 
 				goodVel = true; \ 
 				break; \ 
 			} \ 
@@ -148,7 +153,7 @@ void machine##SafetyCheck(int timedOutState = machine##state0, type1 machine##ar
 		if (velSafety || timedOut) \
 		{ \
 			writeDebugStreamLine("%d" #machine "safety: Timedout? %d at %d VelSafety? %d", npgmTime, timedout, machine##Timeout, velSafety); \
-			machine##StateChange(timedOutState, machine##arg1Name, machine##arg2Name); \
+			machine##StateChange(timedOutState, false, machine##arg1Name, machine##arg2Name); \
 		} \
 }  
 
@@ -157,14 +162,14 @@ void machine##SafetyCheck(int timedOutState = machine##state0, type1 machine##ar
 const int machine##StateCount = 4; \
 typedef enum _tStates##machine \
 { \
-	machine##state0, \
-	machine##state1, \
-	machine##state2, \
-	machine##state3, \
-	machine##state4 \
+	machine##state0, \ 
+	machine##state1, \ 
+	machine##state2, \ 
+	machine##state3 \
 }tStates##machine; \
 \
 tStates##machine machine##State = machine##state0; \
+bool machine##Blocked =  false; \ 
 float machine##VelSafetyThresh = -1; \
 tVelDir machine##VelSafetyDir = -1; \
 unsigned long machine##Timeout; \
@@ -174,10 +179,12 @@ int machine##VelSafetyCount = 0; \
 unsigned long machine##StateStartTime = 0; \
 unsigned long machine##StateCycCount = 0; \
 bool machine##Logs = 0; \
-void machine##StateChange(int stateIn, long timeout = -1, float velSafetyThresh = -1, tVelDir velDir = -1, type1 arg1In = -1, type2 arg2In = -1) \
+void machine##StateChange(int stateIn, bool await = 0, long timeout = -1, float velSafetyThresh = -1, tVelDir velDir = -1, type1 arg1In = -1, type2 arg2In = -1) \
 { \
 	if (machine##State != stateIn) \
 	{ \
+		machine##State = stateIn; \
+		machine##Blocked = await; \ 
 		unsigned long curTime = npgmtime; \
 		if (timeout <= 0) \
 		{ \
@@ -193,10 +200,10 @@ void machine##StateChange(int stateIn, long timeout = -1, float velSafetyThresh 
 		machine##StateCycCount = 0; \
 		machine##VelSafetyThresh = velSafetyThresh; \
 		machine##VelSafetyDir = velDir; \
-		machine##State = stateIn; \
 		machine##arg1Name = arg1In; \
 		machine##arg2Name = arg2In;  \
 		writeDebugStreamLine ("%d" #machine "State:%d, TO:%d velS:%f, %d, %d", npgmTime, machine##State, machine##timeout, machine##VelSafetyThresh, machine##arg1Name, machine##arg2Name); \
+		if (await) MACHINE_AWAIT(machine); \ 
 	} \
 } \
 \
@@ -223,8 +230,7 @@ void machine##VelSafetyCheck (tVelType velType = velSensor) \
 			} \ 
 			case velLocalY: \ 
 			{ \ 
-				out = ( gVelocity.x * (float) sin(gPosition.a) )+ (gVelocity.y * (float) cos(gPosition.a)); \ 
-				if(machine##Logs) writeDebugStreamLine("%d:"#machine"velSafety out locY= %f", npgmtime, out); \ 
+				out = gVelocity.localY; \ 
 				goodVel = true; \ 
 				break; \ 
 			} \ 
@@ -270,7 +276,7 @@ void machine##SafetyCheck(int timedOutState = machine##state0, type1 machine##ar
 		if (velSafety || timedOut) \
 		{ \
 			writeDebugStreamLine("%d" #machine "safety: Timedout? %d at %d VelSafety? %d", npgmTime, timedout, machine##Timeout, velSafety); \
-			machine##StateChange(timedOutState, machine##arg1Name, machine##arg2Name); \
+			machine##StateChange(timedOutState, false, machine##arg1Name, machine##arg2Name); \
 		} \
 }  
 
@@ -279,14 +285,15 @@ void machine##SafetyCheck(int timedOutState = machine##state0, type1 machine##ar
 const int machine##StateCount = 5; \
 typedef enum _tStates##machine \
 { \
-	machine##state0, \
-	machine##state1, \
-	machine##state2, \
-	machine##state3, \
+	machine##state0, \ 
+	machine##state1, \ 
+	machine##state2, \ 
+	machine##state3, \ 
 	machine##state4 \
 }tStates##machine; \
 \
 tStates##machine machine##State = machine##state0; \
+bool machine##Blocked =  false; \ 
 float machine##VelSafetyThresh = -1; \
 tVelDir machine##VelSafetyDir = -1; \
 unsigned long machine##Timeout; \
@@ -296,10 +303,12 @@ int machine##VelSafetyCount = 0; \
 unsigned long machine##StateStartTime = 0; \
 unsigned long machine##StateCycCount = 0; \
 bool machine##Logs = 0; \
-void machine##StateChange(int stateIn, long timeout = -1, float velSafetyThresh = -1, tVelDir velDir = -1, type1 arg1In = -1, type2 arg2In = -1) \
+void machine##StateChange(int stateIn, bool await = 0, long timeout = -1, float velSafetyThresh = -1, tVelDir velDir = -1, type1 arg1In = -1, type2 arg2In = -1) \
 { \
 	if (machine##State != stateIn) \
 	{ \
+		machine##State = stateIn; \
+		machine##Blocked = await; \ 
 		unsigned long curTime = npgmtime; \
 		if (timeout <= 0) \
 		{ \
@@ -315,10 +324,10 @@ void machine##StateChange(int stateIn, long timeout = -1, float velSafetyThresh 
 		machine##StateCycCount = 0; \
 		machine##VelSafetyThresh = velSafetyThresh; \
 		machine##VelSafetyDir = velDir; \
-		machine##State = stateIn; \
 		machine##arg1Name = arg1In; \
 		machine##arg2Name = arg2In;  \
 		writeDebugStreamLine ("%d" #machine "State:%d, TO:%d velS:%f, %d, %d", npgmTime, machine##State, machine##timeout, machine##VelSafetyThresh, machine##arg1Name, machine##arg2Name); \
+		if (await) MACHINE_AWAIT(machine); \ 
 	} \
 } \
 \
@@ -345,8 +354,7 @@ void machine##VelSafetyCheck (tVelType velType = velSensor) \
 			} \ 
 			case velLocalY: \ 
 			{ \ 
-				out = ( gVelocity.x * (float) sin(gPosition.a) )+ (gVelocity.y * (float) cos(gPosition.a)); \ 
-				if(machine##Logs) writeDebugStreamLine("%d:"#machine"velSafety out locY= %f", npgmtime, out); \ 
+				out = gVelocity.localY; \ 
 				goodVel = true; \ 
 				break; \ 
 			} \ 
@@ -392,7 +400,7 @@ void machine##SafetyCheck(int timedOutState = machine##state0, type1 machine##ar
 		if (velSafety || timedOut) \
 		{ \
 			writeDebugStreamLine("%d" #machine "safety: Timedout? %d at %d VelSafety? %d", npgmTime, timedout, machine##Timeout, velSafety); \
-			machine##StateChange(timedOutState, machine##arg1Name, machine##arg2Name); \
+			machine##StateChange(timedOutState, false, machine##arg1Name, machine##arg2Name); \
 		} \
 }  
 
@@ -401,14 +409,16 @@ void machine##SafetyCheck(int timedOutState = machine##state0, type1 machine##ar
 const int machine##StateCount = 6; \
 typedef enum _tStates##machine \
 { \
-	machine##state0, \
-	machine##state1, \
-	machine##state2, \
-	machine##state3, \
-	machine##state4 \
+	machine##state0, \ 
+	machine##state1, \ 
+	machine##state2, \ 
+	machine##state3, \ 
+	machine##state4, \ 
+	machine##state5 \
 }tStates##machine; \
 \
 tStates##machine machine##State = machine##state0; \
+bool machine##Blocked =  false; \ 
 float machine##VelSafetyThresh = -1; \
 tVelDir machine##VelSafetyDir = -1; \
 unsigned long machine##Timeout; \
@@ -418,10 +428,12 @@ int machine##VelSafetyCount = 0; \
 unsigned long machine##StateStartTime = 0; \
 unsigned long machine##StateCycCount = 0; \
 bool machine##Logs = 0; \
-void machine##StateChange(int stateIn, long timeout = -1, float velSafetyThresh = -1, tVelDir velDir = -1, type1 arg1In = -1, type2 arg2In = -1) \
+void machine##StateChange(int stateIn, bool await = 0, long timeout = -1, float velSafetyThresh = -1, tVelDir velDir = -1, type1 arg1In = -1, type2 arg2In = -1) \
 { \
 	if (machine##State != stateIn) \
 	{ \
+		machine##State = stateIn; \
+		machine##Blocked = await; \ 
 		unsigned long curTime = npgmtime; \
 		if (timeout <= 0) \
 		{ \
@@ -437,10 +449,10 @@ void machine##StateChange(int stateIn, long timeout = -1, float velSafetyThresh 
 		machine##StateCycCount = 0; \
 		machine##VelSafetyThresh = velSafetyThresh; \
 		machine##VelSafetyDir = velDir; \
-		machine##State = stateIn; \
 		machine##arg1Name = arg1In; \
 		machine##arg2Name = arg2In;  \
 		writeDebugStreamLine ("%d" #machine "State:%d, TO:%d velS:%f, %d, %d", npgmTime, machine##State, machine##timeout, machine##VelSafetyThresh, machine##arg1Name, machine##arg2Name); \
+		if (await) MACHINE_AWAIT(machine); \ 
 	} \
 } \
 \
@@ -467,8 +479,7 @@ void machine##VelSafetyCheck (tVelType velType = velSensor) \
 			} \ 
 			case velLocalY: \ 
 			{ \ 
-				out = ( gVelocity.x * (float) sin(gPosition.a) )+ (gVelocity.y * (float) cos(gPosition.a)); \ 
-				if(machine##Logs) writeDebugStreamLine("%d:"#machine"velSafety out locY= %f", npgmtime, out); \ 
+				out = gVelocity.localY; \ 
 				goodVel = true; \ 
 				break; \ 
 			} \ 
@@ -514,7 +525,7 @@ void machine##SafetyCheck(int timedOutState = machine##state0, type1 machine##ar
 		if (velSafety || timedOut) \
 		{ \
 			writeDebugStreamLine("%d" #machine "safety: Timedout? %d at %d VelSafety? %d", npgmTime, timedout, machine##Timeout, velSafety); \
-			machine##StateChange(timedOutState, machine##arg1Name, machine##arg2Name); \
+			machine##StateChange(timedOutState, false, machine##arg1Name, machine##arg2Name); \
 		} \
 }  
 
@@ -523,14 +534,17 @@ void machine##SafetyCheck(int timedOutState = machine##state0, type1 machine##ar
 const int machine##StateCount = 7; \
 typedef enum _tStates##machine \
 { \
-	machine##state0, \
-	machine##state1, \
-	machine##state2, \
-	machine##state3, \
-	machine##state4 \
+	machine##state0, \ 
+	machine##state1, \ 
+	machine##state2, \ 
+	machine##state3, \ 
+	machine##state4, \ 
+	machine##state5, \ 
+	machine##state6 \
 }tStates##machine; \
 \
 tStates##machine machine##State = machine##state0; \
+bool machine##Blocked =  false; \ 
 float machine##VelSafetyThresh = -1; \
 tVelDir machine##VelSafetyDir = -1; \
 unsigned long machine##Timeout; \
@@ -540,10 +554,12 @@ int machine##VelSafetyCount = 0; \
 unsigned long machine##StateStartTime = 0; \
 unsigned long machine##StateCycCount = 0; \
 bool machine##Logs = 0; \
-void machine##StateChange(int stateIn, long timeout = -1, float velSafetyThresh = -1, tVelDir velDir = -1, type1 arg1In = -1, type2 arg2In = -1) \
+void machine##StateChange(int stateIn, bool await = 0, long timeout = -1, float velSafetyThresh = -1, tVelDir velDir = -1, type1 arg1In = -1, type2 arg2In = -1) \
 { \
 	if (machine##State != stateIn) \
 	{ \
+		machine##State = stateIn; \
+		machine##Blocked = await; \ 
 		unsigned long curTime = npgmtime; \
 		if (timeout <= 0) \
 		{ \
@@ -559,10 +575,10 @@ void machine##StateChange(int stateIn, long timeout = -1, float velSafetyThresh 
 		machine##StateCycCount = 0; \
 		machine##VelSafetyThresh = velSafetyThresh; \
 		machine##VelSafetyDir = velDir; \
-		machine##State = stateIn; \
 		machine##arg1Name = arg1In; \
 		machine##arg2Name = arg2In;  \
 		writeDebugStreamLine ("%d" #machine "State:%d, TO:%d velS:%f, %d, %d", npgmTime, machine##State, machine##timeout, machine##VelSafetyThresh, machine##arg1Name, machine##arg2Name); \
+		if (await) MACHINE_AWAIT(machine); \ 
 	} \
 } \
 \
@@ -589,8 +605,7 @@ void machine##VelSafetyCheck (tVelType velType = velSensor) \
 			} \ 
 			case velLocalY: \ 
 			{ \ 
-				out = ( gVelocity.x * (float) sin(gPosition.a) )+ (gVelocity.y * (float) cos(gPosition.a)); \ 
-				if(machine##Logs) writeDebugStreamLine("%d:"#machine"velSafety out locY= %f", npgmtime, out); \ 
+				out = gVelocity.localY; \ 
 				goodVel = true; \ 
 				break; \ 
 			} \ 
@@ -636,7 +651,7 @@ void machine##SafetyCheck(int timedOutState = machine##state0, type1 machine##ar
 		if (velSafety || timedOut) \
 		{ \
 			writeDebugStreamLine("%d" #machine "safety: Timedout? %d at %d VelSafety? %d", npgmTime, timedout, machine##Timeout, velSafety); \
-			machine##StateChange(timedOutState, machine##arg1Name, machine##arg2Name); \
+			machine##StateChange(timedOutState, false, machine##arg1Name, machine##arg2Name); \
 		} \
 }  
 
@@ -645,14 +660,18 @@ void machine##SafetyCheck(int timedOutState = machine##state0, type1 machine##ar
 const int machine##StateCount = 8; \
 typedef enum _tStates##machine \
 { \
-	machine##state0, \
-	machine##state1, \
-	machine##state2, \
-	machine##state3, \
-	machine##state4 \
+	machine##state0, \ 
+	machine##state1, \ 
+	machine##state2, \ 
+	machine##state3, \ 
+	machine##state4, \ 
+	machine##state5, \ 
+	machine##state6, \ 
+	machine##state7 \
 }tStates##machine; \
 \
 tStates##machine machine##State = machine##state0; \
+bool machine##Blocked =  false; \ 
 float machine##VelSafetyThresh = -1; \
 tVelDir machine##VelSafetyDir = -1; \
 unsigned long machine##Timeout; \
@@ -662,10 +681,12 @@ int machine##VelSafetyCount = 0; \
 unsigned long machine##StateStartTime = 0; \
 unsigned long machine##StateCycCount = 0; \
 bool machine##Logs = 0; \
-void machine##StateChange(int stateIn, long timeout = -1, float velSafetyThresh = -1, tVelDir velDir = -1, type1 arg1In = -1, type2 arg2In = -1) \
+void machine##StateChange(int stateIn, bool await = 0, long timeout = -1, float velSafetyThresh = -1, tVelDir velDir = -1, type1 arg1In = -1, type2 arg2In = -1) \
 { \
 	if (machine##State != stateIn) \
 	{ \
+		machine##State = stateIn; \
+		machine##Blocked = await; \ 
 		unsigned long curTime = npgmtime; \
 		if (timeout <= 0) \
 		{ \
@@ -681,10 +702,10 @@ void machine##StateChange(int stateIn, long timeout = -1, float velSafetyThresh 
 		machine##StateCycCount = 0; \
 		machine##VelSafetyThresh = velSafetyThresh; \
 		machine##VelSafetyDir = velDir; \
-		machine##State = stateIn; \
 		machine##arg1Name = arg1In; \
 		machine##arg2Name = arg2In;  \
 		writeDebugStreamLine ("%d" #machine "State:%d, TO:%d velS:%f, %d, %d", npgmTime, machine##State, machine##timeout, machine##VelSafetyThresh, machine##arg1Name, machine##arg2Name); \
+		if (await) MACHINE_AWAIT(machine); \ 
 	} \
 } \
 \
@@ -711,8 +732,7 @@ void machine##VelSafetyCheck (tVelType velType = velSensor) \
 			} \ 
 			case velLocalY: \ 
 			{ \ 
-				out = ( gVelocity.x * (float) sin(gPosition.a) )+ (gVelocity.y * (float) cos(gPosition.a)); \ 
-				if(machine##Logs) writeDebugStreamLine("%d:"#machine"velSafety out locY= %f", npgmtime, out); \ 
+				out = gVelocity.localY; \ 
 				goodVel = true; \ 
 				break; \ 
 			} \ 
@@ -758,6 +778,6 @@ void machine##SafetyCheck(int timedOutState = machine##state0, type1 machine##ar
 		if (velSafety || timedOut) \
 		{ \
 			writeDebugStreamLine("%d" #machine "safety: Timedout? %d at %d VelSafety? %d", npgmTime, timedout, machine##Timeout, velSafety); \
-			machine##StateChange(timedOutState, machine##arg1Name, machine##arg2Name); \
+			machine##StateChange(timedOutState, false, machine##arg1Name, machine##arg2Name); \
 		} \
 }  
