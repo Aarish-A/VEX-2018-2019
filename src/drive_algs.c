@@ -61,7 +61,7 @@ void followLineVec(float x, float y, byte power, tMttMode mode, bool correction,
 				constructTrianglePos(currentLocalPos, gPosition.x - x, gPosition.y - y);
 			else
 				constructTrianglePos(currentLocalPos, gPosition.y - y, gPosition.x - x);
-			curLineAngle = aTan2(invertAxes? currentLocalPos.vector.y:currentLocalPos.vector.x,invertAxes? currentLocalPos.vector.x:currentLocalPos.vector.y);
+			curLineAngle = aTan2(-1*facingDir*(invertAxes? currentLocalPos.vector.y:currentLocalPos.vector.x),-1*facingDir*(invertAxes? currentLocalPos.vector.x:currentLocalPos.vector.y));
 
 			switch (mode)
 			{
