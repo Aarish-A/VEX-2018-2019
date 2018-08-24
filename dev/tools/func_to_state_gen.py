@@ -1,13 +1,6 @@
-<<<<<<< HEAD
-f = open("..\..\src\\func_to_state.h", "w")
-maxFuncNum = 9
-=======
 f = open('..\..\src\\func_to_state.h', 'w')
-#f = open('..\..\src\state.h', 'w')
-maxFuncNum = 8
->>>>>>> async-changes
+maxFuncNum = 10
 maxParamNum = 13
-
 
 f.write("/*\t Auto-Generated Macros to Add Up to %d Funcs to a Machine \t*/" %maxFuncNum + "\n")
 f.write("/*\t TO BE CALLED IN HEADER \t*/" + "\n")

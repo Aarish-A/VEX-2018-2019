@@ -307,6 +307,7 @@ task autoMotorSensorUpdateTask()
 	initCycle(cycle, 10, "auto motor/sensor");
 	while (true)
 	{
+		nBatteryLevel = nImmediateBatteryLevel;
 		updateMotors();
 		updateSensorInputs();
 		updateSensorOutputs();

@@ -39,11 +39,11 @@ void followLineVec(float x, float y, byte power, tMttMode mode, bool correction,
 		byte dir;
 
 		//Drive Variables
-		const float propKP = 6.0;
+		const float propKP = 6.6;
 		float softExit = fabs(deltaY/4.5) + 1;
 
 		//Correction-Turn Variables
-		float offset = S_DISTANCE_IN+6.0;
+		float offset = S_DISTANCE_IN+8.0;
 		sLine followLine;
 
 		sCycleData cycle;
@@ -73,8 +73,8 @@ void followLineVec(float x, float y, byte power, tMttMode mode, bool correction,
 				}
 				case mttProportional:
 				{
-					throttle = LIM_TO_VAL((currentLocalPos.vector.y * propKP), 127);
-					if (fabs(currentLocalPos.vector.y) < 5)
+					throttle = LIM_TO_VAL((currentLocalPos.hypotenuse * propKP), 127);
+					if (fabs(currentLocalPos.hypotenuse) < 5)
 						LIM_TO_VAL_SET(throttle, 15);
 					break;
 				}
@@ -112,10 +112,10 @@ void followLineVec(float x, float y, byte power, tMttMode mode, bool correction,
 				LOG(auto)("\t\tErrorPos:(%f,%f),hyp(%f)", error.vector.x, error.vector.y, error.hypotenuse);
 
 
-				if (fabs(errorVal) <= 2)
+				if (fabs(errorVal) <= 1.5)
 					turn = 0;
 				else
-					turn = LIM_TO_VAL( ((float)3.5 * (exp(0.2 * errorVal))), 127); //turn = 3.5(e^(0.2x))
+					turn = LIM_TO_VAL( ((float)5.5 * (exp(0.2 * errorVal))), 127); //turn = 4.5(e^(0.2x))
 
 				turn *= facingDir;
 
@@ -136,7 +136,7 @@ void followLineVec(float x, float y, byte power, tMttMode mode, bool correction,
 					{
 						//LOG(auto)("turn left");
 						left = LIM_TO_VAL(throttle + turn, 127);
-						right = MIN_LIM_TO_VAL(right - (2*turn), 5, throttle);
+						right = MIN_LIM_TO_VAL(left - (2*turn), 5, throttle);
 						break;
 					}
 					case(0): //straight
@@ -161,7 +161,7 @@ void followLineVec(float x, float y, byte power, tMttMode mode, bool correction,
 			tRelease();
 
 			endCycle(cycle);
-		} WHILE(drive, ( fabs(currentLocalPos.vector.y) > ((stopType & stopSoft)? softExit : 0.8) ));
+		} DO_WHILE(drive, ( fabs(currentLocalPos.hypotenuse) > ((stopType & stopSoft)? softExit : 0.8) ));
 
 		LOG(auto)("%d Done LineFollow(%f, %f)", npgmtime, gPosition.x, gPosition.y);
 
