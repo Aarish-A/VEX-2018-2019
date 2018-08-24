@@ -11,15 +11,14 @@ void followLineVec(float x, float y, byte power, tMttMode mode, bool correction,
 	bool invertAxes = false;
 	float deltaX = gPosition.x - x;
 	float deltaY = gPosition.y - y;
-		/*
-		if (deltaX > deltaY)
+
+		if (fabs(deltaX) > fabs(deltaY))
 		{
 			invertAxes = true;
 			float temp = deltaX;
 			deltaX = deltaY;
 			deltaY = temp;
 		}
-		*/
 
 	if (facingDir && fabs(deltaY) > 4)
 	{
@@ -36,7 +35,6 @@ void followLineVec(float x, float y, byte power, tMttMode mode, bool correction,
 
 		//General Variables
 		word throttle, turn, left, right;
-		byte dir;
 
 		//Drive Variables
 		const float propKP = 6.6;
@@ -45,6 +43,7 @@ void followLineVec(float x, float y, byte power, tMttMode mode, bool correction,
 		//Correction-Turn Variables
 		float offset = S_DISTANCE_IN+8.0;
 		sLine followLine;
+		tTurnDir turnDir;
 
 		sCycleData cycle;
 		initCycle(cycle, 40, "followLine");
@@ -73,8 +72,8 @@ void followLineVec(float x, float y, byte power, tMttMode mode, bool correction,
 				}
 				case mttProportional:
 				{
-					throttle = LIM_TO_VAL((currentLocalPos.hypotenuse * propKP), 127);
-					if (fabs(currentLocalPos.hypotenuse) < 5)
+					throttle = LIM_TO_VAL((currentLocalPos.vector.y * propKP), 127);
+					if (fabs(currentLocalPos.vector.y) < 5)
 						LIM_TO_VAL_SET(throttle, 15);
 					break;
 				}
@@ -116,23 +115,22 @@ void followLineVec(float x, float y, byte power, tMttMode mode, bool correction,
 					turn = 0;
 				else
 					turn = LIM_TO_VAL( ((float)5.5 * (exp(0.2 * errorVal))), 127); //turn = 4.5(e^(0.2x))
-
 				turn *= facingDir;
 
-				//if (abs(errorVal) > 6 && abs(throttle) > 65)
-				//	throttle /= 2;
 
-				byte dir = sgn(currentLocalPos.vector.x) * sgn(currentLocalPos.vector.y) * facingDir;
+				//byte dir = sgn(currentLocalPos.vector.x) * sgn(currentLocalPos.vector.y) * facingDir;
+				//if (abs(simplifyAngle(gPosition.a)) > pi/4 && abs(simplifyAngle(gPosition.a)) < 0.75*pi)
+				//	dir *= -1; //Toggle dir if we are horizontal
 				switch(dir)
 				{
-					case (-1): // turn right
+					case (-1): // turn left
 					{
 						//LOG(auto)("turn right");
 						right = LIM_TO_VAL(throttle + turn, 127);
 						left = MIN_LIM_TO_VAL(right - (2*turn), 5, throttle);
 						break;
 					}
-					case(1): // turn left
+					case(1): // turn right
 					{
 						//LOG(auto)("turn left");
 						left = LIM_TO_VAL(throttle + turn, 127);
@@ -161,7 +159,7 @@ void followLineVec(float x, float y, byte power, tMttMode mode, bool correction,
 			tRelease();
 
 			endCycle(cycle);
-		} DO_WHILE(drive, ( fabs(currentLocalPos.hypotenuse) > ((stopType & stopSoft)? softExit : 0.8) ));
+		} DO_WHILE(drive, ( fabs(currentLocalPos.vector.y) > ((stopType & stopSoft)? softExit : 0.8) ));
 
 		LOG(auto)("%d Done LineFollow(%f, %f)", npgmtime, gPosition.x, gPosition.y);
 
@@ -474,9 +472,8 @@ void moveToTargetSimple(float x, float y, byte power, tMttMode mode, bool correc
 					turn = LIM_TO_VAL(pow(turnBase, fabs(turnLocalVector.x)), 127) * facingDir;
 
 				//if (driveStateCycCount == 1)
-				dir = sgn(turnLocalVector.x) * sgn(turnLocalVector.y) * facingDir;
-				//LOG(auto)("gTurn:%f, lTurn:%f, dir:%d, turn:%d", turnGlobalVector.x, turnLocalVector.x, dir, turn);
-
+				if (fmod(a - gPosition.a, PI * 2) > PI) turnDir = ccw; else turnDir = cw;
+				//dir = sgn(turnLocalVector.x) * sgn(turnLocalVector.y) * facingDir;
 				//if (abs(turnLocalVector.x) < 2) //when within two inches of target, go straight
 					//dir = 0;
 

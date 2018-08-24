@@ -27,9 +27,9 @@
 /* Enumerations */
 typedef enum _turnDir
 {
-	cw,
-	ccw,
-	ch
+	ccw = -1,
+	ch,
+	cw
 } tTurnDir;
 
 typedef enum _facingDir
