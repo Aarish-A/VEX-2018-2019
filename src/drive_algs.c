@@ -11,15 +11,14 @@ void followLineVec(float x, float y, byte power, tMttMode mode, bool correction,
 	bool invertAxes = false;
 	float deltaX = gPosition.x - x;
 	float deltaY = gPosition.y - y;
-		/*
-		if (deltaX > deltaY)
-		{
-			invertAxes = true;
-			float temp = deltaX;
-			deltaX = deltaY;
-			deltaY = temp;
-		}
-		*/
+	if (deltaX > deltaY)
+	{
+		invertAxes = true;
+		float temp = deltaX;
+		deltaX = deltaY;
+		deltaY = temp;
+	}
+
 
 	if (facingDir && fabs(deltaY) > 4)
 	{
@@ -50,6 +49,7 @@ void followLineVec(float x, float y, byte power, tMttMode mode, bool correction,
 		initCycle(cycle, 40, "followLine");
 
 		LOG(auto)("%dStart FollowLine to (%f,%f),a:%f. Offset:%f. softExit:%f", npgmtime, deltaX, deltaY, a, offset, softExit);
+		LOG(auto)("%dStart FollowLine to (%f,%f),a:%f. InvertAxes?%d Offset:%f. softExit:%f", npgmtime, deltaX, deltaY, a, invertAxes, offset, softExit);
 
 		do
 		{
@@ -74,7 +74,7 @@ void followLineVec(float x, float y, byte power, tMttMode mode, bool correction,
 				case mttProportional:
 				{
 					throttle = LIM_TO_VAL((currentLocalPos.hypotenuse * propKP), 127);
-					if (fabs(currentLocalPos.hypotenuse) < 5)
+					if (fabs(currentLocalPos.vector.y) < 5)
 						LIM_TO_VAL_SET(throttle, 15);
 					break;
 				}
@@ -125,14 +125,14 @@ void followLineVec(float x, float y, byte power, tMttMode mode, bool correction,
 				byte dir = sgn(currentLocalPos.vector.x) * sgn(currentLocalPos.vector.y) * facingDir;
 				switch(dir)
 				{
-					case (-1): // turn right
+					case (-1): // turn left
 					{
 						//LOG(auto)("turn right");
 						right = LIM_TO_VAL(throttle + turn, 127);
 						left = MIN_LIM_TO_VAL(right - (2*turn), 5, throttle);
 						break;
 					}
-					case(1): // turn left
+					case(1): // turn right
 					{
 						//LOG(auto)("turn left");
 						left = LIM_TO_VAL(throttle + turn, 127);
@@ -161,7 +161,7 @@ void followLineVec(float x, float y, byte power, tMttMode mode, bool correction,
 			tRelease();
 
 			endCycle(cycle);
-		} DO_WHILE(drive, ( fabs(currentLocalPos.hypotenuse) > ((stopType & stopSoft)? softExit : 0.8) ));
+		} DO_WHILE(drive, ( fabs(currentLocalPos.vector.y) > ((stopType & stopSoft)? softExit : 0.8) ));
 
 		LOG(auto)("%d Done LineFollow(%f, %f)", npgmtime, gPosition.x, gPosition.y);
 
