@@ -146,7 +146,7 @@ void followLineVec(float x, float y, byte power, tMttMode mode, bool correction,
 						break;
 					}
 				}
-			LOG(auto)("%d Err:%f, LocalPos:(%f,%f), vel:%f f:%f t:%f, l:%d r:%d, trttle:%d, trn:%d",npgmtime, error.hypotenuse, currentLocalPos.vector.x, currentLocalPos.vector.y, gVelocity.localY, facingDir, dir, left, right, throttle, turn);
+			LOG(auto)("%d Err:%f, D:%f,LocalPos:(%f,%f), vel:%f f:%f t:%f, l:%d r:%d, trttle:%d, trn:%d",npgmtime, error.hypotenuse, currentLocalPos.hypotenuse, currentLocalPos.vector.x, currentLocalPos.vector.y, gVelocity.localY, facingDir, dir, left, right, throttle, turn);
 			//LOG(auto)("%d Err:%f, LocalPos:(%f,%f), OffsetPos(%f,%f), TargPos(%f,%f), vel:%f, l:%d r:%d, trttle:%d, trn:%d",npgmtime, error.hypotenuse, currentLocalPos.vector.x, currentLocalPos.vector.y, offsetLocalPos.vector.x, offsetLocalPos.vector.y, targetLocalPos.vector.x, targetLocalPos.vector.y, gVelocity.localY, facingDir, dir, errorVal, left, right, throttle, turn);
 			}
 			else
