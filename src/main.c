@@ -66,7 +66,7 @@ void setDrive(word left, word right)
 
 CREATE_MACHINE_3(drive, trackL, Idle, Break, Manual, float, Vel, int, Power)
 //#include "driveTest.c"
-bool autoLogs = 1;
+bool autoLogs = 0;
 #include "auto.c"
 #include "drive_algs.h"
 #include "drive_algs.c"
@@ -571,9 +571,9 @@ if (RISING(BTN_MOBILE_MIDDLE))
 
 void startTasks()
 {
-	//resetPositionFull(gPosition, 0, 0, 0);
+	resetPositionFull(gPosition, 0, 0, -pi/30);
 
-	tStart(autoMotorSensorUpdateTask);
+	//tStart(autoMotorSensorUpdateTask);
 
 	tStart(driveSet);
 	tStart(liftSet);
@@ -586,7 +586,7 @@ void stopTasks()
 {
 	tStop(trackPositionTask);
 
-	tStop(autoMotorSensorUpdateTask);
+	//tStop(autoMotorSensorUpdateTask);
 
 	tStop(driveSet);
 	tStop(liftSet);
@@ -628,15 +628,15 @@ updateSensorInputs();
 
 task simulatePosChange()
 {
-	//float x, y;
+	//float enc
 	float m = 1;
 	float b = 1;
 
-	for (gPosition.x = 0; gPosition.x < 144; gPosition.x++)
+	for (long enc = 0; enc < 100000000; enc+=10)
 	{
-		gPosition.y = m*gPosition.x + b;
-		writeDebugStreamLine("%d Pos:(%f,%f)", npgmtime, gPosition.x, gPosition.y);
-		sleep(100);
+		gSensor[trackL].value = gSensor[trackR].value = enc;
+		//writeDebugStreamLine("%d Pos:(%f,%f)a:%f. %d %d", npgmtime, gPosition.x, gPosition.y, gPosition.a, gSensor[trackL].value, enc);
+		sleep(5);
 	}
 }
 
@@ -648,7 +648,7 @@ task autonomous()
 
 	tStart(simulatePosChange);
 	ASSIGN_FUNC_STATE_6(followLineVec, 0, 35, 60, mttProportional, true, (stopSoft | stopHarsh));
-	driveStateChange(drivefollowLineVec, true, 2000, 0.3, velEither);
+	driveStateChange(drivefollowLineVec, true, 3000);//, 0.3, velEither);
 	tStop(simulatePosChange);
 
 	sleep(60000);

@@ -49,6 +49,7 @@ void trackPosition(int left, int right, int back, sPos& position)
 	position.x += h2 * cosP; // cos(x) = cos(-x)
 
 	position.a = position.aStart + ( ((float)(LTurn - RTurn)) / ((float)(L_DISTANCE_IN + R_DISTANCE_IN)) );
+	//writeDebugStreamLine("%d Update Pos(%f,%f)%f, %f,%f", npgmtime, position.x, position.y, position.a, L,R);
 }
 
 void resetPosition(sPos& position)
@@ -99,7 +100,7 @@ task trackPositionTask()
 		updateSensorInput(trackB);
 		trackPosition(gSensor[trackL].value, gSensor[trackR].value, gSensor[trackB].value, gPosition);
 		trackVelocity(gPosition, gVelocity);
-		sleep(1);
+		sleep(10);
 	}
 }
 

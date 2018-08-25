@@ -48,7 +48,7 @@ void followLineVec(float x, float y, byte power, tMttMode mode, bool correction,
 		tTurnDir turnDir;
 
 		sCycleData cycle;
-		initCycle(cycle, 40, "followLine");
+		initCycle(cycle, 10, "followLine");
 
 		LOG(auto)("%dStart FollowLine to (%f,%f),a:%f. Offset:%f. softExit:%f", npgmtime, deltaX, deltaY, a, offset, softExit);
 
@@ -143,6 +143,7 @@ void followLineVec(float x, float y, byte power, tMttMode mode, bool correction,
 					}
 				}
 			LOG(auto)("%d Err:%f, D:%f,LocalPos:(%f,%f), vel:%f f:%f t:%f, l:%d r:%d, trttle:%d, trn:%d",npgmtime, error.hypotenuse, currentLocalPos.hypotenuse, currentLocalPos.vector.x, currentLocalPos.vector.y, gVelocity.localY, facingDir, turnDir, left, right, throttle, turn);
+			writeDebugStreamLine("%f, %f, %f, %f, %f, %f, %f, %f, %f", currentLocalPos.vector.x, currentLocalPos.vector.y, offsetLocalPos.vector.x, offsetLocalPos.vector.y, targetLocalPos.vector.x, targetLocalPos.vector.y, error.vector.x, error.vector.y, error.hypotenuse);
 			//LOG(auto)("%d Err:%f, LocalPos:(%f,%f), OffsetPos(%f,%f), TargPos(%f,%f), vel:%f, l:%d r:%d, trttle:%d, trn:%d",npgmtime, error.hypotenuse, currentLocalPos.vector.x, currentLocalPos.vector.y, offsetLocalPos.vector.x, offsetLocalPos.vector.y, targetLocalPos.vector.x, targetLocalPos.vector.y, gVelocity.localY, facingDir, dir, errorVal, left, right, throttle, turn);
 			}
 			else
