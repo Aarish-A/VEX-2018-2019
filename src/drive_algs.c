@@ -1,4 +1,5 @@
 /* Functions */
+bool autoLogs = 0;
 
 //TODO: Test Offset Calc
 //TODO: Make local y be delta x - if delta x is larger than delta y

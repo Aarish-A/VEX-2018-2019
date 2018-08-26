@@ -66,7 +66,6 @@ void setDrive(word left, word right)
 
 CREATE_MACHINE_3(drive, trackL, Idle, Break, Manual, float, Vel, int, Power)
 //#include "driveTest.c"
-bool autoLogs = 1;
 #include "auto.c"
 #include "drive_algs.h"
 #include "drive_algs.c"
