@@ -20,7 +20,7 @@ void followLineVec(float x, float y, byte power, tMttMode mode, bool correction,
 			deltaY = temp;
 		}
 
-	writeDebugStreamLine("%dFollowLine, invertAxes?%d, to (%f, %f)", invertAxes, deltaX, deltaY);
+	writeDebugStreamLine("%dFollowLine, invertAxes?%d, to (%f, %f)", npgmtime, invertAxes, deltaX, deltaY);
 	if (facingDir && fabs(deltaY) > 4)
 	{
 		//Vectors & Magnitudes - relative to the end coordinate
@@ -89,7 +89,7 @@ void followLineVec(float x, float y, byte power, tMttMode mode, bool correction,
 				const float turnBase = 1.42;
 				tHog();
 				//Make offset value smaller as when we are close to the target
-				if (abs(currentLocalPos.vector.y) <= (offset+2))
+				if (fabs(currentLocalPos.vector.y) <= (offset+2))
 				{
 					offset = abs(currentLocalPos.vector.y) - softExit;
 					LOG(auto)("\t\t Offset Reset - %f", offset);
@@ -120,7 +120,7 @@ void followLineVec(float x, float y, byte power, tMttMode mode, bool correction,
 					turn = LIM_TO_VAL( ((float)5.5 * (exp(0.2 * errorVal))), 127); //turn = 4.5(e^(0.2x))
 				turn *= facingDir;
 
-				turnDir = facingDir *( (fmod(gPosition.a - curLineAngle, PI * 2) < PI)? ccw : cw );
+				turnDir = facingDir *( (fmod(curLineAngle - gPosition.a, PI * 2) > PI)? ccw : cw );
 
 				//byte dir = sgn(currentLocalPos.vector.x) * sgn(currentLocalPos.vector.y) * facingDir;
 				//if (abs(simplifyAngle(gPosition.a)) > pi/4 && abs(simplifyAngle(gPosition.a)) < 0.75*pi)
@@ -143,6 +143,7 @@ void followLineVec(float x, float y, byte power, tMttMode mode, bool correction,
 					}
 				}
 			LOG(auto)("%d Err:%f, D:%f,LocalPos:(%f,%f), vel:%f f:%f t:%f, l:%d r:%d, trttle:%d, trn:%d",npgmtime, error.hypotenuse, currentLocalPos.hypotenuse, currentLocalPos.vector.x, currentLocalPos.vector.y, gVelocity.localY, facingDir, turnDir, left, right, throttle, turn);
+			writeDebugStreamLIne("gPos(%f,%f)a:%f,curA:%f, turn:%d", gPosition.x, gPosition.y, gPosition.a, curLineAngle, turnDir);
 			writeDebugStreamLine("%f, %f, %f, %f, %f, %f, %f, %f, %f", currentLocalPos.vector.x, currentLocalPos.vector.y, offsetLocalPos.vector.x, offsetLocalPos.vector.y, targetLocalPos.vector.x, targetLocalPos.vector.y, error.vector.x, error.vector.y, error.hypotenuse);
 			//LOG(auto)("%d Err:%f, LocalPos:(%f,%f), OffsetPos(%f,%f), TargPos(%f,%f), vel:%f, l:%d r:%d, trttle:%d, trn:%d",npgmtime, error.hypotenuse, currentLocalPos.vector.x, currentLocalPos.vector.y, offsetLocalPos.vector.x, offsetLocalPos.vector.y, targetLocalPos.vector.x, targetLocalPos.vector.y, gVelocity.localY, facingDir, dir, errorVal, left, right, throttle, turn);
 			}

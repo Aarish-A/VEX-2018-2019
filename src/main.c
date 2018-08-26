@@ -571,7 +571,7 @@ if (RISING(BTN_MOBILE_MIDDLE))
 
 void startTasks()
 {
-	resetPositionFull(gPosition, 0, 0, -pi/30);
+	resetPositionFull(gPosition, 20, 34, -pi/2);
 
 	//tStart(autoMotorSensorUpdateTask);
 
