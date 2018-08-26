@@ -1,5 +1,6 @@
 /* Functions */
 bool autoLogs = 0;
+bool excelLogs = 1;
 
 //TODO: Test Offset Calc
 //TODO: Make local y be delta x - if delta x is larger than delta y
@@ -54,7 +55,7 @@ void followLineVec(float x, float y, byte power, tMttMode mode, bool correction,
 		initCycle(cycle, 40, "followLine");
 
 		LOG(auto)("%dStart FollowLine to (%f,%f),a:%f. Offset:%f. softExit:%f", npgmtime, deltaX, deltaY, a, offset, softExit);
-
+		LOG(excel)("%dStart FollowLine to (%f,%f),a:%f. Offset:%f. softExit:%f", npgmtime, deltaX, deltaY, a, offset, softExit);
 		do
 		{
 			VEL_CHECK_INC(drive, velLocalY);
@@ -176,6 +177,8 @@ void followLineVec(float x, float y, byte power, tMttMode mode, bool correction,
 		} DO_WHILE(drive, ( fabs(currentLocalPos.vector.y) > ((stopType & stopSoft)? softExit : 0.8) ));
 
 		LOG(auto)("%d Done LineFollow(%f, %f)", npgmtime, gPosition.x, gPosition.y);
+		LOG(excel)("gPos(%f,%f)a:%f,curA:%f, turn:%d", gPosition.x, gPosition.y, gPosition.a, curLineAngle, turnDir);
+		LOG(excel)("%f, %f, %f, %f, %f, %f, %f, %f, %f", currentLocalPos.vector.x, currentLocalPos.vector.y, offsetLocalPos.vector.x, offsetLocalPos.vector.y, targetLocalPos.vector.x, targetLocalPos.vector.y, error.vector.x, error.vector.y, error.hypotenuse);
 
 		if (stopType & stopSoft)
 		{
