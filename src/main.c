@@ -638,8 +638,8 @@ task autonomous()
 				//writeDebugStreamLine("Wait for push");
 				sleep(10);
 			}while(!gSensor[limArm]);
-		ASSIGN_FUNC_STATE_6(followLineVec, 0, 35, 60, mttProportional, true, (stopSoft | stopHarsh));
-		driveStateChange(drivefollowLineVec, true, 2000, 0.3, velEither);
+		ASSIGN_FUNC_STATE_6(followLineVec, 0, 90, 60, mttProportional, true, (stopSoft | stopHarsh));
+		driveStateChange(drivefollowLineVec, true, 3000, 0.2, velEither);
 		endCycle(auto);
 	}
 

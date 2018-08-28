@@ -11,6 +11,8 @@
  
 #define LOG(machineIn) if(machineIn##Logs) writeDebugStreamLine 
  
+#define LOG_2(machine1, machine2) if(machine1##Logs || machine2##Logs) writeDebugStreamLine 
+ 
 #define VEL_CHECK_INC(machineIn, safetyType) machineIn##VelSafetyCheck(safetyType); \ 
 machineIn##StateCycCount++ 
 #define MACHINE_AWAIT(machineIn) while (machineIn##Blocked) sleep(10) 

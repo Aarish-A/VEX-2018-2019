@@ -161,6 +161,8 @@ void followLineVec(float x, float y, byte power, tMttMode mode, bool correction,
 				}
 			LOG(auto)("%d Err:%f, D:%f,LocalPos:(%f,%f), vel:%f f:%f t:%f, l:%d r:%d, trttle:%d, trn:%d",npgmtime, error.hypotenuse, currentLocalPos.hypotenuse, currentLocalPos.vector.x, currentLocalPos.vector.y, gVelocity.localY, facingDir, turnDir, left, right, throttle, turn);
 			//LOG(auto)("%d Err:%f, LocalPos:(%f,%f), OffsetPos(%f,%f), TargPos(%f,%f), vel:%f, l:%d r:%d, trttle:%d, trn:%d",npgmtime, error.hypotenuse, currentLocalPos.vector.x, currentLocalPos.vector.y, offsetLocalPos.vector.x, offsetLocalPos.vector.y, targetLocalPos.vector.x, targetLocalPos.vector.y, gVelocity.localY, facingDir, dir, errorVal, left, right, throttle, turn);
+			LOG(excel)("left:%d,right%d,throttle%d, turn%d",left, right, throttle, turn);
+			LOG(excel)("%f, %f, %f, %f, %f, %f, %f, %f, %f", currentLocalPos.vector.x, currentLocalPos.vector.y, offsetLocalPos.vector.x, offsetLocalPos.vector.y, targetLocalPos.vector.x, targetLocalPos.vector.y, error.vector.x, error.vector.y, error.hypotenuse);
 			}
 			else
 			{
@@ -178,7 +180,6 @@ void followLineVec(float x, float y, byte power, tMttMode mode, bool correction,
 
 		LOG(auto)("%d Done LineFollow(%f, %f)", npgmtime, gPosition.x, gPosition.y);
 		LOG(excel)("gPos(%f,%f)a:%f,curA:%f, turn:%d", gPosition.x, gPosition.y, gPosition.a, curLineAngle, turnDir);
-		LOG(excel)("%f, %f, %f, %f, %f, %f, %f, %f, %f", currentLocalPos.vector.x, currentLocalPos.vector.y, offsetLocalPos.vector.x, offsetLocalPos.vector.y, targetLocalPos.vector.x, targetLocalPos.vector.y, error.vector.x, error.vector.y, error.hypotenuse);
 
 		if (stopType & stopSoft)
 		{
@@ -208,7 +209,7 @@ void followLineVec(float x, float y, byte power, tMttMode mode, bool correction,
 		else
 			setDrive(0,0);
 
-		LOG(auto)("%d After harsh stop:(%f, %f)", npgmtime, gPosition.x, gPosition.y);
+		LOG_2(auto, excel)("%d After harsh stop:(%f, %f)", npgmtime, gPosition.x, gPosition.y);
 	}
 }
 
