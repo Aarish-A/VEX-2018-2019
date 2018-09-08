@@ -134,7 +134,7 @@ task driveSet()
 			}
 
 			//ADD_FUNC_TO_SWITCH_VOID_4(driveFuncTest, drive, driveBreak, driveIdle)
-			ADD_FUNC_TO_SWITCH_VOID_6(followLineVec, drive, driveIdle, driveIdle)
+			ADD_FUNC_TO_SWITCH_VOID_7(followLineVec, drive, driveIdle, driveIdle)
 			ADD_FUNC_TO_SWITCH_VOID_6(followLine, drive, driveIdle, driveIdle)
 			ADD_FUNC_TO_SWITCH_VOID_6(moveToTargetSimple, drive, driveIdle, driveIdle)
 			ADD_FUNC_TO_SWITCH_VOID_12(moveToTarget, drive, driveIdle, driveIdle)
@@ -151,7 +151,7 @@ void handleDrive()
 	if (RISING(BTN_DRIVE_TEST))
 	{
 		LOG(drive)("Btn_Drive_Test Pressed");
-		ASSIGN_FUNC_STATE_6(followLineVec, 0, 35, 60, mttProportional, true, (stopSoft | stopHarsh));
+		ASSIGN_FUNC_STATE_7(followLineVec, 0, 35, 25, 60, mttProportional, true, (stopSoft | stopHarsh));
 		driveStateChange(drivefollowLineVec, 2000, 0.3, velEither);
 
 		//ASSIGN_FUNC_STATE_6(moveToTargetSimple, 0, 10, 60, mttProportional, true, true);
@@ -638,7 +638,7 @@ task autonomous()
 				//writeDebugStreamLine("Wait for push");
 				sleep(10);
 			}while(!gSensor[limArm]);
-		ASSIGN_FUNC_STATE_6(followLineVec, 0, 90, 60, mttProportional, true, (stopSoft | stopHarsh));
+		ASSIGN_FUNC_STATE_7(followLineVec, 0, 90, 35, 60, mttProportional, true, (stopSoft | stopHarsh));
 		driveStateChange(drivefollowLineVec, true, 3000, 0.2, velEither);
 		endCycle(auto);
 	}

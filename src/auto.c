@@ -125,11 +125,13 @@ void resetPositionFull(sPos& position, float x, float y, float a)
 }
 
 /* Vector Translation Functions */
-void constructTrianglePos(sTrianglePos& pos, float x, float y)
+void constructTrianglePos(sTrianglePos& pos, float x, float y, bool findAngle)
 {
 	pos.vector.x = x;
 	pos.vector.y = y;
 	pos.hypotenuse = sqrt((x * x) + (y * y));
+	if (findAngle)
+		pos.a = atan2(x, y);
 }
 
 void vectorToPolar(sVector& vector, sPolar& polar)

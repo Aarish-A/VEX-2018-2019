@@ -14,7 +14,7 @@
 // The length of an array
 #define ARR_LEN(array) (sizeof(array) / sizeof(array[0]))
 
-// Swaps any integral type
+// Swaps any integral types
 #define SWAP(x, y) { x = x ^ y; y = x ^ y; x = x ^ y; }
 
 // Checks the bit in a bitmap
