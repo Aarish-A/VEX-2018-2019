@@ -307,6 +307,8 @@ task autoMotorSensorUpdateTask()
 {
 	sCycleData cycle;
 	initCycle(cycle, 10, "auto motor/sensor");
+	writeDebugStreamLine("%d Start autoMotorSensorUpdateTask", npgmtime);
+
 	while (true)
 	{
 		nBatteryLevel = nImmediateBatteryLevel;

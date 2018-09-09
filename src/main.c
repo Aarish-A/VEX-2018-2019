@@ -157,8 +157,11 @@ CREATE_MACHINE_3(drive, trackL, Idle, Break, Manual, float, Vel, int, Power)
 //	}
 //}
 #define SHOOTER_GEAR_RATIO 1.0
-#define SHOOTER_RELOAD_VAL (360.0*GEAR_RATIO)
+#define SHOOTER_RELOAD_VAL (360.0*SHOOTER_GEAR_RATIO)
 #define SHOOTER_LOAD_POS 90
+int shooterShotCount = 0;
+float shooterOffset = 30;
+float shooterBreakKp = -15.0;
 
 void setShooter(word val)
 {
@@ -166,9 +169,11 @@ void setShooter(word val)
 
 }
 
-CREATE_MACHINE_3(shooter, shooterEnc, Idle, Shoot, Load, int, shotCount, int, Power);
+CREATE_MACHINE_3(shooter, shooterEnc, Idle, Shoot, Load, int, target, int, Power);
 task shooterSet()
 {
+	shooterShotCount = 0;
+
 	sCycleData cycle;
 	initCycle(cycle, 10, "lift");
 	while (true)
@@ -184,7 +189,34 @@ task shooterSet()
 		case shooterShoot: //1:
 			{
 				shooterBlocked = 1;
+				unsigned long startTime = npgmtime;
+
+				setShooter(127);
+				float target = shooterShotCount * SHOOTER_RELOAD_VAL;
+				writeDebugStreamLine("%d Start shot%d %f %d %d", npgmtime, shooterShotCount, target, gSensor[shooterEnc].value, shooterOffset);
+				while( gSensor[shooterEnc].value < (target-shooterOffset) ) //Spin 1 rotation
+				{
+					writeDebugStreamLine("%d sC:%d, targ:%f, Sensor:%d", nPgmTime, shooterShotCount, target-shooterOffset, gSensor[shooterEnc].value);
+					sleep(10);
+				}
+				setShooter(0);
 				shooterShotCount++;
+
+				//writeDebugStreamLine("%d Start break %d. Val:%d", npgmtime, shooterShotCount, gSensor[shooterEnc].value);
+
+				//do //Break
+				//{
+				//	velocityCheck(shooterEnc);
+				//	int power = LIM_TO_VAL(shooterBreakKp * abs(gSensor[shooterEnc].velocity), 127);
+				//	setShooter(power);
+
+				//	writeDebugStreamLine("%d Break%d. Val:%d. Pow:%d", npgmtime, shooterShotCount, gSensor[shooterEnc].value, power);
+				//} while(gSensor[shooterEnc].value < target && gSensor[shooterEnc].velocity > 0.02);
+
+				setShooter(0);
+				unsigned long timeElpsd = npgmtime - startTime;
+				writeDebugStreamLine("%d Done Move %d. Val:%d. Time%d", npgmtime, shooterShotCount, gSensor[shooterEnc].value, timeElpsd);
+
 				break;
 			}
 		case shooterLoad: //2:
@@ -204,13 +236,15 @@ void handleShooter() //Decide which state to put machine in
 
 	if (RISING(BTN_SHOOT))
 	{
-		if (shooterShotCount == 0 && gSensor[shooterEnc].value < (SHOOTER_LOAD_POS-10)
-			shooterStateChange(shooterLoad, 400, 0.2, velUp);
-		else
-		{
-			shooterStateChange(shooterShoot, 500, 0.2, velUp);
-			shooterStateChange(shooterLoad, 400, 0.2, velUp);
-		}
+		//if (shooterShotCount == 0 && gSensor[shooterEnc].value < (SHOOTER_LOAD_POS-10)
+		//	shooterStateChange(shooterLoad, 400, 0.2, velUp);
+		//else
+		//{
+		//	shooterStateChange(shooterShoot, 500, 0.2, velUp);
+		//	shooterStateChange(shooterLoad, 400, 0.2, velUp);
+		//}
+		writeDebugStreamLine("%d Button pressed", npgmtime);
+		shooterStateChange(shooterShoot, 500, 0.2, velUp);
 	}
 
 }
@@ -220,7 +254,7 @@ void startTasks()
 {
 	resetPositionFull(gPosition, 0, 0, 0);
 
-	tStart(autoMotorSensorUpdateTask);
+	//tStart(autoMotorSensorUpdateTask);
 
 	//tStart(driveSet);
 	tStart(shooterSet);
@@ -231,7 +265,7 @@ void stopTasks()
 {
 	tStop(trackPositionTask);
 
-	tStop(autoMotorSensorUpdateTask);
+	//tStop(autoMotorSensorUpdateTask);
 
 	//tStop(driveSet);
 	tStop(shooterSet);
@@ -252,6 +286,7 @@ void startup()
 
 	gJoy[JOY_THROTTLE].deadzone = 15;
 	gJoy[JOY_TURN].deadzone = 15;
+
 }
 
 void disabled()
@@ -281,7 +316,12 @@ task usercontrol()
 	sCycleData cycle;
 	initCycle(cycle, 10, "usercontrol");
 
-	startTasks();
+	resetQuadratureEncoder(shooterEnc);
+	//gSensor[shooterEnc].value = 0;
+	writeDebugStream("%d Start usercontrol",npgmtime);
+
+	//startTasks();
+	tStart(shooterSet);
 
 	while (true)
 	{
@@ -297,5 +337,6 @@ task usercontrol()
 
 		endCycle(cycle);
 	}
-	stopTasks();
+	tStop(shooterSet);
+	//stopTasks();
 }
