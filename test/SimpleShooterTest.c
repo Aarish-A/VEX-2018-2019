@@ -39,13 +39,15 @@ void setShooter(word val)
 task main()
 {
 	//startTask(printEnc);
+	int nBatteryLevel = nImmediateBatteryLevel;
+	writeDebugStream("%d Battery: %d", npgmtime, nBatteryLevel);
 	int shooterShotCount = 0;
 	SensorValue[shooterEnc] = 0;
 
 	bool button, lstButton;
 	writeDebugStreamLine("Start");
 	const float breakKp = -25.0;
-	float shooterBreakOffset = 7;
+	float shooterBreakOffset = 6;
 	while (true)
 	{
 		button = vexRT[Btn6U];
@@ -53,12 +55,13 @@ task main()
 		if (button && !lstButton)
 		{
 			setShooter(127);
-			writeDebugStreamLine("Start");
+			writeDebugStreamLine("Setup shot %d", shooterShotCount);
 			while (SensorValue[shooterEnc] < ((360 * shooterShotCount) + 90)) sleep(10);
 			writeDebugStreamLine("loc:%d", SensorValue[shooterEnc]);
 			setShooter(13);
 
-			sleep(1000);
+			while (!vexRT[Btn6U]) sleep(10);
+
 			shooterShotCount++;
 			int target = shooterShotCount * SHOOTER_RELOAD_VAL;
 			setShooter(127);
