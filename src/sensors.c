@@ -160,7 +160,7 @@ void velocityCheck(tSensors sen, int offset)
 			}
 			if (!outOfBounds)
 			{
-				ubyte curPointLoc, lstPointLoc;
+				ubyte curPointLoc, lstPointLoc, lstVelHead, lstVelTail;
 				bool normalCalc = true;
 				if (!(offset <= 0 || offset >= SENSOR_DATA_POINT_COUNT)) normalCalc = false;
 
@@ -168,6 +168,9 @@ void velocityCheck(tSensors sen, int offset)
 				{
 					curPointLoc = s.arrHead;
 					lstPointLoc = s.arrTail;
+
+					lstVelHead = ((s.arrHead)==0? (SENSOR_DATA_POINT_COUNT - 1):(s.arrHead-1));
+					lstVelTail = lstPointLoc;
 				}
 				else
 				{
@@ -176,29 +179,24 @@ void velocityCheck(tSensors sen, int offset)
 						lstPointLoc = SENSOR_DATA_POINT_COUNT - offset;
 					else
 						lstPointLoc = s.arrHead-offset;
+
+					lstVelHead = ((curPointLoc)==0? (SENSOR_DATA_POINT_COUNT - 1):(curPointLoc-1));
+					lstVelTail = ((lstPointLoc)==0? (SENSOR_DATA_POINT_COUNT - 1):(lstPointLoc-1));
 				}
 
 				unsigned long tDif = (s.dataPointArr[curPointLoc].timestamp - s.dataPointArr[lstPointLoc].timestamp);
-				if( tDif <= 0 )
+				unsigned long tLstDif = (s.dataPointArr[lstVelHead].timestamp - s.dataPointArr[lstVelHead].timestamp);
+				if( tDif <= 0 || tLstDif <= 0)
 				{
-					writeDebugStreamLine("%d SENSOR PORT%d VEL TIMESTAMP ERROR - head:%d t=%d, tail:%d t=%d", nPgmTime, sen - port1 + 1, s.arrHead, s.dataPointArr[curPointLoc].timestamp, s.arrTail, s.dataPointArr[lstPointLoc].timestamp);
+					writeDebugStreamLine("%d SENSOR PORT%d VEL TIMESTAMP ERROR - head:%d t=%d, tail:%d t=%d", nPgmTime, sen - port1 + 1, curPointLoc, s.dataPointArr[curPointLoc].timestamp, lstPointLoc, s.dataPointArr[lstPointLoc].timestamp);
 				}
 				else
 				{
 					//Calc lst velocity
-					if (normalCalc)
-					{
-						ubyte lstVelHead = ((s.arrHead)==0? (SENSOR_DATA_POINT_COUNT - 1):(s.arrHead-1));
-						s.lstVelocity = (float)(s.dataPointArr[lstVelHead].value - s.dataPointArr[lstPointLoc].value) / (float)(s.dataPointArr[lstVelHead].timestamp - s.dataPointArr[lstPointLoc].timestamp);
-					}
-					else
-					{
-						ubyte lstVelHead = ((curPointLoc)==0? (SENSOR_DATA_POINT_COUNT - 1):(curPointLoc-1));
-						ubyte lstVelTail = ((lstPointLoc)==0? (SENSOR_DATA_POINT_COUNT - 1):(lstPointLoc-1));
-						s.lstVelocity = (float)(s.dataPointArr[lstVelHead].value - s.dataPointArr[lstVelTail].value) / (float)(s.dataPointArr[lstVelHead].timestamp - s.dataPointArr[lstVelTail].timestamp);
-					}
+					s.lstVelocity = (float)(s.dataPointArr[lstVelHead].value - s.dataPointArr[lstVelTail].value) / (float)(s.dataPointArr[lstVelHead].timestamp - s.dataPointArr[lstVelTail].timestamp);
 					if (abs(s.lstVelocity) < 0.0035)
 						s.lstVelocity = 0;
+
 					//Calc velocity
 					s.velocity = (float)(s.dataPointArr[curPointLoc].value - s.dataPointArr[lstPointLoc].value) / (float)(tDif)
 					if (abs(s.velocity) < 0.0035)
