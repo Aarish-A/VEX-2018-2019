@@ -20,10 +20,8 @@ task printEnc()
 {
 	while (true)
 	{
-		bool sen = SensorValue[shooterEnc];
-
 		datalogDataGroupStart();
-		datalogAddValue(1, sen);
+		datalogAddValue(1, SensorValue[shooterEnc]);
 		datalogAddValue(2, gPow);
 		datalogDataGroupEnd();
 

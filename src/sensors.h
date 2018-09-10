@@ -1,5 +1,5 @@
 /* Defines */
-#define SENSOR_DATA_POINT_COUNT 30
+#define SENSOR_DATA_POINT_COUNT 20
 
 /* Enumerations */
 typedef enum _tSensorClass
@@ -66,7 +66,7 @@ bool correctBtnIn(tSensors sen); // Call this function to interpret a sensor set
 void setupDgtIn(tSensors sen, int min, int max); // Setup a sensor to be interpreted as a boolean using a custom range
 void setupInvertedSen(tSensors sen); // Setup a sensor to be interpreted as a boolean and inverted
 void resetQuadratureEncoder(tSensors sen); // Reset a quadrature encoder
-void velocityCheck(tSensors sen); // Check the velocity of a sensor
+void velocityCheck(tSensors sen, int offset = -1); // Check the velocity of a sensor
 void startSensor(tSensors sen); // Set a sensors starting value
 void startSensors(); // Set all the sensors starting value
 

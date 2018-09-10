@@ -69,8 +69,8 @@ task main()
 
 	bool button, lstButton;
 	writeDebugStreamLine("Start");
-	const float breakKp = -53.0;
-	float shooterBreakOffset = 105.0;
+	const float breakKp = -20.0;
+	float shooterBreakOffset = 60.0;
 	while (true)
 	{
 		//button = vexRT[Btn6U];
@@ -89,7 +89,7 @@ task main()
 
 			do //Break
 			{
-				velocityCheck(shooterEnc);
+				velocityCheck(shooterEnc, 2);
 				float value = gSensor[shooterEnc].value;
 				float velocity = gSensor[shooterEnc].velocity;
 
@@ -98,7 +98,7 @@ task main()
 				writeDebugStreamLine("%d loc:%d vel:%f, pow:%f", npgmtime, value, velocity, power);
 
 				sleep(10);
-			} while(gSensor[shooterEnc].velocity > 0.02); //gSensor[shooterEnc].value < target &&
+			} while(gSensor[shooterEnc].velocity > 0.5); //gSensor[shooterEnc].value < target &&
 
 			setShooter(0);
 			writeDebugStreamLine("%dEnd %d(t:%d), %d", nPgmTime, shooterShotCount, target, gSensor[shooterEnc].value);
