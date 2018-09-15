@@ -1,18 +1,19 @@
 /* Functions */
-bool autoLogs = 0;
+bool autoLogs = 1;
 bool excelLogs = 1;
 
-//TODO: Test Offset Calc
-//TODO: Make local y be delta x - if delta x is larger than delta y
-//TODO: Make the while loop end when abs(currentLocalPos.hypotenuse) < 0.5
+//TODO: Check angle calc - doesn't make sense
+//TODO: If angle is less than 3 and deltaX is within 5 inches, then, turn /= 5
+//TODO: Use offset for moveToTargetAngle?
 
 void  moveToTargetAngle(float x, float y, byte power, tMttMode mode, bool correction, tStopType stopType)
 {
 	byte facingDir = facingCoord(x,y,1.13);
-
 	float deltaY = gPosition.y-y;
+	LOG(auto)("DeltaY:%f, fabs(deltaY):%f", deltaY, fabs(deltaY));
 	if (facingDir && fabs(deltaY)>4 )
 	{
+		LOG(auto)("%d Start movement", npgmtime);
 		//Vectors & Magnitudes - relative to the end coordinate
 		sTrianglePos currentLocalPos; //constructTrianglePos(currentLocalPos, gPosition.x - x, gPosition.y - y);
 		sTrianglePos offsetLocalPos;
@@ -30,81 +31,107 @@ void  moveToTargetAngle(float x, float y, byte power, tMttMode mode, bool correc
 		tTurnDir turnDir;
 		//const float turnKP = 5.0;
 
-		sCycleData cycle;
-		initCycle(cycle, 40, "followLine");
+		sCycleData driveAlg;
+		initCycle(driveAlg, 40, "moveToTargetAngle");
 
-		if (facingDir && fabs(deltaY) > 4)
+		LOG(auto)("softExit%f", softExit);
+
+		do
 		{
-			do
+			VEL_CHECK_INC(drive, velLocalY);
+			tHog();
+			constructTrianglePos(currentLocalPos, gPosition.x - x, gPosition.y - y, true);
+			//LOG(auto)("%d Loop moveTotargetAngle", npgmtime);
+
+			switch (mode)
 			{
-				VEL_CHECK_INC(drive, velLocalY);
-				constructTrianglePos(currentLocalPos, gPosition.y - y, gPosition.x - x, true);
-				tHog();
-
-				switch (mode)
+			case mttSimple:
 				{
-				case mttSimple:
-					{
-						if (fabs(currentLocalPos.vector.y) > 3)
-							throttle = abs(power) * facingDir;
-						else
-							throttle = 7 * facingDir;
-						break;
-					}
-				case mttProportional:
-					{
-						throttle = LIM_TO_VAL((currentLocalPos.vector.y * propKP), 127);
-						if (fabs(currentLocalPos.vector.y) < 5)
-							LIM_TO_VAL_SET(throttle, 15);
-						break;
-					}
+					if (fabs(currentLocalPos.vector.y) > 3)
+						throttle = abs(power) * facingDir;
+					else
+						throttle = 7 * facingDir;
+					break;
 				}
-				throttle = LIM_TO_VAL(abs(throttle) * facingDir, 127);
-
-				if (correction)
+			case mttProportional:
 				{
-					if (fmod(currentLocalPos.a - gPosition.a, PI * 2) < PI) turnDir = ccw; else turnDir = cw;
-					turnDir *= facingDir;
-					if (abs(turnDir) < 0.05) turnDir = 0;
-
-					float angleErr = nearAngle(currentLocalPos.a, gPosition.a) - gPosition.a;
-
-					float turn = LIM_TO_VAL(10.0 * exp(angleErr), 127) * facingDir;
-
-					switch(turnDir)
-					{
-					case (ccw): // turn left
-						//LOG(auto)("turn right");
-						right = LIM_TO_VAL(throttle + turn, 127);
-						left = MIN_LIM_TO_VAL(right - (2*turn), 5, throttle);
-						break;
-					case(cw): // turn right
-						//LOG(auto)("turn left");
-						left = LIM_TO_VAL(throttle + turn, 127);
-						right = MIN_LIM_TO_VAL(left - (2*turn), 5, throttle);
-						break;
-					case(0): //straight
-						//LOG(auto)("turn straight");
-						right = left = throttle;
-						break;
-					}
+					throttle = LIM_TO_VAL((currentLocalPos.vector.y * propKP), 127);
+					if (fabs(currentLocalPos.vector.y) < 5)
+						LIM_TO_VAL_SET(throttle, 15);
+					break;
 				}
-				else
+			}
+			throttle = LIM_TO_VAL(abs(throttle) * facingDir, 127);
+
+			if (correction)
+			{
+				if (fmod(currentLocalPos.a - gPosition.a, PI * 2) < PI) turnDir = ccw; else turnDir = cw;
+				turnDir *= facingDir;
+				if (fabs(currentLocalPos.vector.x) < 2.5) turnDir = 0; //If we are within an acceptable range, don't correct
+
+				float angleErr = nearAngle(currentLocalPos.a, gPosition.a) - gPosition.a;
+
+				float turn = LIM_TO_VAL(10.0 * exp(fabs(0.6*angleErr)), 127) * facingDir;
+
+				switch(turnDir)
 				{
-					left = right = throttle;
+				case (ccw): // turn left
+					//LOG(auto)("turn right");
+					right = LIM_TO_VAL(throttle + turn, 127);
+					left = MIN_LIM_TO_VAL(right - (2*turn), 5, throttle);
+					break;
+				case(cw): // turn right
+					//LOG(auto)("turn left");
+					left = LIM_TO_VAL(throttle + turn, 127);
+					right = MIN_LIM_TO_VAL(left - (2*turn), 5, throttle);
+					break;
+				case(0): //straight
+					//LOG(auto)("turn straight");
+					right = left = throttle;
+					break;
 				}
 
-				LIM_TO_VAL_SET(left, 127);
-				LIM_TO_VAL_SET(right, 127);
+				LOG(auto)("%d err:%f, D:%f,LocalPos:(%f,%f), f:%f t:%f, l:%d r:%d, trttle:%d, trn:%d",npgmtime, angleErr, currentLocalPos.hypotenuse, currentLocalPos.vector.x, currentLocalPos.vector.y, facingDir, turnDir, left, right, throttle, turn);
+			}
+			else
+			{
+				left = right = throttle;
+			}
 
-				setDrive(left,right);
-				tRelease();
+			LIM_TO_VAL_SET(left, 127);
+			LIM_TO_VAL_SET(right, 127);
 
-				endCycle(cycle);
-			}DO_WHILE(drive, ( fabs(currentLocalPos.vector.y) > ((stopType & stopSoft)? softExit : 0.8) ));
+			setDrive(left,right);
 
+			//LOG(auto)("fabs(distance):%f, softExit:%f", fabs(currentLocalPos.vector.y), softExit);
+			tRelease();
+
+			endCycle(driveAlg);
+		}DO_WHILE(drive, ( fabs(currentLocalPos.vector.y) > ((stopType & stopSoft)? softExit : 0.8) ));
+
+		if (stopType & stopSoft)
+		{
+			LOG(auto)("%d Starting moveToTargetAngle stopSoft(%f,%f), vel:%f", npgmtime, gPosition.x, gPosition.y, gVelocity.localY);
+
+			WHILE(drive, fabs(currentLocalPos.vector.y) > 0.6 && fabs(gVelocity.localY) > 0.3)
+			{
+				throttle = facingDir * -6;
+				setDrive(throttle, throttle);
+				sleep(10);
+			}
 		}
+
+		LOG(auto)("%d Done LineFollow stopSoft(%f, %f)", npgmtime, gPosition.x, gPosition.y);
+
+		if (stopHarsh & stopType)
+			applyHarshStop();
+		else
+			setDrive(0,0);
+
+		LOG_2(auto, excel)("%d After harsh stop:(%f, %f)", npgmtime, gPosition.x, gPosition.y);
+
 	}
+
 }
 
 void followLineVec(float x, float y, float offsetA, byte power, tMttMode mode, bool correction, tStopType stopType)

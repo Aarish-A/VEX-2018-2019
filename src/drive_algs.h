@@ -32,6 +32,7 @@ sVector gTargetLast;
 //void sweepTurnToTarget(float x, float y, float a, float r, tTurnDir turnDir, byte power, bool slow = true);
 
 /* Movement Functions */
+PREP_FUNC_STATE_VOID_6(void, moveToTargetAngle, float, x, float, y, byte, power, tMttMode, mode, bool, correction, tStopType, stopType);
 PREP_FUNC_STATE_VOID_7(void, followLineVec, float, x, float, y, float, offsetA, byte, power, tMttMode, mode, bool, correction, tStopType, stopType);
 PREP_FUNC_STATE_VOID_6(void, followLine, float, x, float, y, byte, power, tMttMode, mode, bool, correction, tStopType, stopType);
 PREP_FUNC_STATE_VOID_6(void, moveToTargetSimple, float, x, float, y, byte, power, tMttMode, mode, bool, correction, bool, harshStop);
@@ -44,4 +45,4 @@ PREP_FUNC_STATE_VOID_7(void, turnToAngleNewAlg, float, a, tTurnDir, turnDir, flo
 PREP_FUNC_STATE_VOID_9(void, turnToTargetNewAlg, float, x, float, y, tTurnDir, turnDir, float, fullRatio, byte, coastPower, float, stopOffsetDeg, bool, mogo, bool, harshStop, float, offset);
 PREP_FUNC_STATE_VOID_7(void, sweepTurnToTarget, float, x, float, y, float, a, float, r, tTurnDir, turnDir, byte, power, bool, slow);
 
-ADD_FUNCS_TO_MACHINE_9(drive, followLineVec, followLine, moveToTargetSimple, moveToTarget, moveToTargetDis, turnToFace, turnToAngleNewAlg, turnToTargetNewAlg, sweepTurnToTarget);
+ADD_FUNCS_TO_MACHINE_10(drive, moveToTargetAngle, followLineVec, followLine, moveToTargetSimple, moveToTarget, moveToTargetDis, turnToFace, turnToAngleNewAlg, turnToTargetNewAlg, sweepTurnToTarget);
