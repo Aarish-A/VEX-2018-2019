@@ -132,97 +132,99 @@ task driveSet()
 void handleDrive()
 {
 	if (!gJoy[JOY_THROTTLE}.cur && !gJoy[JOY_TURN].cur && driveState == driveManual)
-{
-	driveStateChange(driveBreak, false, 150);
+	{
+		driveStateChange(driveBreak, false, 150);
+	}
+	else if(gJoy[JOY_THROTTLE}.cur || gJoy[JOY_TURN].cur)
+	{
+		driveStateChange(driveManual);
+	}
 }
-else if(gJoy[JOY_THROTTLE}.cur || gJoy[JOY_TURN].cur)
-{
-driveStateChange(driveManual);
-}
-}
+
+
 
 void startTasks()
 {
-resetPositionFull(gPosition, 0, 0, 0);
+	resetPositionFull(gPosition, 0, 0, 0);
 
-//tStart(autoMotorSensorUpdateTask);
+	//tStart(autoMotorSensorUpdateTask);
 
-tStart(driveSet);
+	tStart(driveSet);
 
 }
 
 void stopTasks()
 {
-tStop(trackPositionTask);
+	tStop(trackPositionTask);
 
-//tStop(autoMotorSensorUpdateTask);
+	//tStop(autoMotorSensorUpdateTask);
 
-tStop(driveSet);
+	tStop(driveSet);
 }
 
 void startup()
 {
-clearDebugStream();
-setupSensors();
-setupMotors();
-setupJoysticks();
-tInit();
+	clearDebugStream();
+	setupSensors();
+	setupMotors();
+	setupJoysticks();
+	tInit();
 
-//Setup Joysticks & Buttons
-enableJoystick(JOY_THROTTLE);
-enableJoystick(JOY_TURN);
-enableJoystick(BTN_SHOOT);
+	//Setup Joysticks & Buttons
+	enableJoystick(JOY_THROTTLE);
+	enableJoystick(JOY_TURN);
+	enableJoystick(BTN_SHOOT);
 
-gJoy[JOY_THROTTLE].deadzone = 15;
-gJoy[JOY_TURN].deadzone = 15;
+	gJoy[JOY_THROTTLE].deadzone = 15;
+	gJoy[JOY_TURN].deadzone = 15;
 
 }
 
 void disabled()
 {
-updateSensorInputs();
-//selectAuto();
-//handleLcd();
+	updateSensorInputs();
+	//selectAuto();
+	//handleLcd();
 }
 
 task autonomous()
 {
-tStart(autoMotorSensorUpdateTask);
-startTasks();
-writeDebugStreamLine("%d Start Autonomous, %d", npgmtime, nBatteryLevel);
+	tStart(autoMotorSensorUpdateTask);
+	startTasks();
+	writeDebugStreamLine("%d Start Autonomous, %d", npgmtime, nBatteryLevel);
 
-sCycleData auto;
-initCycle(auto, 10, "auto");
-while(true)
-{
-endCycle(auto);
-}
+	sCycleData auto;
+	initCycle(auto, 10, "auto");
+	while(true)
+	{
+		endCycle(auto);
+	}
 
-tStop(autoMotorSensorUpdateTask);
-stopTasks();
+	tStop(autoMotorSensorUpdateTask);
+	stopTasks();
 }
 
 task usercontrol()
 {
-sCycleData cycle;
-initCycle(cycle, 10, "usercontrol");
+	sCycleData cycle;
+	initCycle(cycle, 10, "usercontrol");
 
-writeDebugStream("%d Start usercontrol",npgmtime);
+	writeDebugStream("%d Start usercontrol",npgmtime);
 
-startTasks();
+	startTasks();
 
-while (true)
-{
-updateJoysticks();
-updateMotors();
-updateSensorInputs();
-updateSensorOutputs();
+	while (true)
+	{
+		updateJoysticks();
+		updateMotors();
+		updateSensorInputs();
+		updateSensorOutputs();
 
-handleDrive();
+		handleDrive();
 
-//setMobileState();
+		//setMobileState();
 
-endCycle(cycle);
-}
-stopTasks();
+		endCycle(cycle);
+	}
+	stopTasks();
 }
