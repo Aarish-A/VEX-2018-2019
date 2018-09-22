@@ -50,7 +50,7 @@
 /* Example of how to use state.h and func_to_state.h libraries */
 CREATE_MACHINE_3(drive, trackL, Idle, Break, Manual, float, Vel, int, Power); //Used in main.c file to create a state machine that has two variables it looks at (in this case, float driveVel and float drivePower)
 																																							//The sensor that you pass it (trackL in this example), is used by the safety functions for velocity-safety-checking
-																																							//CREATE_MACHINE_3(machine, sensor, state0, state1, state2, type1, arg1Name, type2, arg2Name)
+																																							//CREATE_MACHINE_stateCount(machine, sensor, state0, state1, state2, ..stateX, type1, arg1Name, type2, arg2Name);
 
 /* ///////////////////////////////////////////////////////////////////////////////////////////////////////// */
 /* Used to declare a function in its respective header file */
@@ -116,8 +116,6 @@ void driveCode() //Arbitrary sequence of actions that is executed in main task
 																				//If await is set to true, it will wait for the state machine to exit the state you put it in, before executing the next line of code
 																				//If a value other than -1 is passed to timeout and velSafetyThresh, the machine will return to its safetyState (defined with CREATE_MACHINE_3) if either of the safeties are tripped
 																				//Last two arguments let you pass arguments to the state machine. These are used when entering a non-function-state state, that used the stateMachineArguments
-
-
 
 	//TODO:
 		//In the driveStateChange function calls, try changing await to 0. See how the output compares
