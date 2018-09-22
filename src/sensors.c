@@ -197,12 +197,12 @@ void velocityCheck(tSensors sen, int offset)
 				{
 					//Calc lst velocity
 					s.lstVelocity = (float)(s.dataPointArr[lstVelHead].value - s.dataPointArr[lstVelTail].value) / (float)(s.dataPointArr[lstVelHead].timestamp - s.dataPointArr[lstVelTail].timestamp);
-					if (abs(s.lstVelocity) < 0.0035)
+					if ((normalCalc || offset > 7) && abs(s.lstVelocity) < 0.0035)
 						s.lstVelocity = 0;
 
 					//Calc velocity
 					s.velocity = (float)(s.dataPointArr[curPointLoc].value - s.dataPointArr[lstPointLoc].value) / (float)(tDif)
-					if (abs(s.velocity) < 0.0035)
+					if ((normalCalc || offset > 7) && abs(s.velocity) < 0.0035)
 						s.velocity = 0;
 				}
 			}
@@ -237,14 +237,17 @@ void setupSensors()
 		gSensor[i].velocity = 0;
 		//gSensor[i].velGood = false;
 
-		for (ubyte j = 0; j < SENSOR_DATA_POINT_COUNT; ++j)
+		if (SensorType(gSensor[i]) == sensorPotentiometer || SensorType(gSensor[i]) == sensorQuadEncoder)
 		{
-			gSensor[i].dataPointArr[j].timestamp = 0;
-			gSensor[i].dataPointArr[j].value = 0;
+			for (ubyte j = 0; j < SENSOR_DATA_POINT_COUNT; ++j)
+			{
+				gSensor[i].dataPointArr[j].timestamp = 0;
+				gSensor[i].dataPointArr[j].value = 0;
+			}
+			gSensor[i].arrHead = 0;
+			gSensor[i].arrTail = 0;
+			gSensor[i].dataCount = 0;
 		}
-		gSensor[i].arrHead = 0;
-		gSensor[i].arrTail = 0;
-		gSensor[i].dataCount = 0;
 
 #ifdef MOTOR_SENSOR_LOGS
 		gSensor[i].rawDatalog = -1;
