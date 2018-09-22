@@ -186,13 +186,12 @@ void velocityCheck(tSensors sen, int offset)
 
 				unsigned long tDif = (s.dataPointArr[curPointLoc].timestamp - s.dataPointArr[lstPointLoc].timestamp);
 				unsigned long tLstDif = (s.dataPointArr[lstVelHead].timestamp - s.dataPointArr[lstVelTail].timestamp);
-				if(tDif <= 0)
+				if(tDif <= 0 || tLstDif <= 0)
 				{
-					writeDebugStreamLine("%d SENSOR PORT%d VEL TIMESTAMP ERROR - head:%d t=%d, tail:%d t=%d", nPgmTime, sen - port1 + 1, curPointLoc, s.dataPointArr[curPointLoc].timestamp, lstPointLoc, s.dataPointArr[lstPointLoc].timestamp);
-				}
-				else if (tLstDif <= 0)
-				{
-					writeDebugStreamLine("%d SENSOR PORT%d LST_VEL TIMESTAMP ERROR - lstVelHead:%d t=%d, lsVelTail:%d t=%d", nPgmTime, sen - port1 + 1, curPointLoc, s.dataPointArr[lstVelHead].timestamp, lstPointLoc, s.dataPointArr[lstVelTail].timestamp);
+					if(tDif <= 0)
+						writeDebugStreamLine("%d SENSOR PORT%d VEL TIMESTAMP ERROR - head:%d t=%d, tail:%d t=%d", nPgmTime, sen - port1 + 1, curPointLoc, s.dataPointArr[curPointLoc].timestamp, lstPointLoc, s.dataPointArr[lstPointLoc].timestamp);
+					if (tLstDif <= 0)
+						writeDebugStreamLine("%d SENSOR PORT%d LST_VEL TIMESTAMP ERROR - lstVelHead:%d t=%d, lsVelTail:%d t=%d", nPgmTime, sen - port1 + 1, curPointLoc, s.dataPointArr[lstVelHead].timestamp, lstPointLoc, s.dataPointArr[lstVelTail].timestamp);
 				}
 				else
 				{
