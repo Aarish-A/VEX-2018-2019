@@ -19,7 +19,7 @@ task main()
 		buttonDown = vexRT[btn6d];
 
 
-		writeDebugStreamLine("spindir=%d", spinDir);
+		//writeDebugStreamLine("spindir=%d", spinDir);
 		if (buttonUp && !lstButtonUp)
 		{
 			if (spinDir != spinStop)
@@ -29,7 +29,10 @@ task main()
 		}
 		if (buttonDown && !lstButtonDown)
 		{
-			spinDir = spinDown;
+			if (spinDir != spinStop)
+				spinDir = spinStop;
+			else
+				spinDir = spinDown;
 		}
 
 		switch (spinDir)
