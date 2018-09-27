@@ -201,7 +201,7 @@ void velocityCheck(tSensors sen, int offset)
 						s.lstVelocity = 0;
 
 					//Calc velocity
-					s.velocity = (float)(s.dataPointArr[curPointLoc].value - s.dataPointArr[lstPointLoc].value) / (float)(tDif)
+					s.velocity = (float)(s.dataPointArr[curPointLoc].value - s.dataPointArr[lstPointLoc].value) / (float)(tDif);
 					if ((normalCalc || offset > 7) && abs(s.velocity) < 0.0035)
 						s.velocity = 0;
 				}
