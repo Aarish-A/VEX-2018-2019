@@ -1,6 +1,7 @@
 #pragma config(Sensor, dgtl1,  trackL,         sensorQuadEncoder)
 #pragma config(Sensor, dgtl3,  trackR,         sensorQuadEncoder)
 #pragma config(Sensor, dgtl5,  trackB,         sensorQuadEncoder)
+#pragma config(Motor,  port2,           intake,        tmotorVex393TurboSpeed_MC29, openLoop)
 #pragma config(Motor,  port3,           driveLP,       tmotorVex393TurboSpeed_MC29, openLoop, reversed)
 #pragma config(Motor,  port4,           driveLS,       tmotorVex393TurboSpeed_MC29, openLoop)
 #pragma config(Motor,  port7,           driveRP,       tmotorVex393TurboSpeed_MC29, openLoop)
@@ -141,6 +142,53 @@ void handleDrive()
 	}
 }
 
+CREATE_MACHINE_3(intake, trackL, Stop, Up, Down, int, Dir, int, Power);
+#define INTAKE_UP_POWER 127
+#define INTAKE_DOWN_POWER -127
+
+task intakeSet()
+{
+	intakeLogs = 1; // Toggle Logging
+
+	sCycleData cycle;
+	initCycle(cycle, 10, "drive");
+	while (true)
+	{
+		switch(intakeState)
+		{
+			case intakeStop:
+				gMotor[intake].power = 0;
+				break;
+			case intakeUp:
+				gMotor[intake].power = INTAKE_UP_POWER;
+				break;
+			case intakeDown:
+				gMotor[intake].power = INTAKE_DOWN_POWER;
+				break;
+		}
+		endCycle(cycle);
+	}
+}
+void handleIntake()
+{
+		if (RISING(BTN_INTAKE_UP))
+		{
+			LOG(intake)("%d Intake Up Pressed", npgmtime);
+			if (intakeState != intakeStop)
+				intakeStateChange(intakeStop, false);
+			else
+				intakeStateChange(intakeUp, false);
+		}
+		else if (RISING(BTN_INTAKE_DOWN))
+		{
+			LOG(intake)("%d Intake Down Pressed", npgmtime);
+			if (intakeState != intakeStop)
+				intakeStateChange(intakeStop, false);
+			else
+				intakeStateChange(intakeDown, false);
+		}
+}
+
 
 
 void startTasks()
@@ -150,7 +198,7 @@ void startTasks()
 	//tStart(autoMotorSensorUpdateTask);
 
 	tStart(driveSet);
-
+	tStart(intakeSet);
 }
 
 void stopTasks()
@@ -160,6 +208,7 @@ void stopTasks()
 	//tStop(autoMotorSensorUpdateTask);
 
 	tStop(driveSet);
+	tStop(intakeSet);
 }
 
 void startup()
@@ -173,6 +222,8 @@ void startup()
 	//Setup Joysticks & Buttons
 	enableJoystick(JOY_THROTTLE);
 	enableJoystick(JOY_TURN);
+	enableJoystick(BTN_INTAKE_UP);
+	enableJoystick(BTN_INTAKE_DOWN);
 	enableJoystick(BTN_SHOOT);
 
 	gJoy[JOY_THROTTLE].deadzone = 15;
@@ -221,6 +272,7 @@ task usercontrol()
 		updateSensorOutputs();
 
 		handleDrive();
+		handleIntake();
 
 		//setMobileState();
 
