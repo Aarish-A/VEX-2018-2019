@@ -6,5 +6,5 @@
 #define BTN_INTAKE_UP Btn6U
 #define BTN_INTAKE_DOWN Btn6D
 
-/* Puncher */
-#define BTN_SHOOT Btn7U
+/* Shooter */
+#define BTN_SHOOT Btn5U
