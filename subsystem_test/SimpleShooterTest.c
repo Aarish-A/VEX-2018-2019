@@ -62,21 +62,23 @@ task main()
 			setShooter(127);
 			writeDebugStreamLine("Setup shot #%d encoder start= %d", shooterShotCount,SensorValue[shooterEnc]);
 			int target = shooterShotCount * SHOOTER_RELOAD_VAL;
-
+			unsigned long reloadStartTime = npgmtime;
 			while (SensorValue[shooterEnc] < (target + 145)) {
 				sleep(100);
 				writeDebugStreamLine("Enc: %d", SensorValue[shooterEnc]);
 			}
 			writeDebugStreamLine("Enc: %d", SensorValue[shooterEnc]);
+			writeDebugStreamLine("Reload time = %d", npgmtime-reloadStartTime);
 			setShooter(11);
 
 			while (!vexRT[Btn6U]) sleep(10);
 
-			if( SensorValue[ballDetector] > 1000) {
+			if(SensorValue[ballDetector] > 1000)
+			{
 				setShooter(0);
 			}
-			else{
-
+			else
+			{
 				shooterShotCount++;
 				target = shooterShotCount * SHOOTER_RELOAD_VAL;
 				setShooter(127);
