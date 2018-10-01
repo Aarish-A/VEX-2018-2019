@@ -94,6 +94,8 @@ task intakeTask()
 	}
 }
 
+int shooterShotCount;
+
 void setShooter(word val)
 {
 	//gMotor[shooterA].power = gMotor[shooterB].power = LIM_TO_VAL(val, 127);
@@ -101,6 +103,18 @@ void setShooter(word val)
 	gMotor[shooterA].power = gMotor[shooterRevSplit].power = LIM_TO_VAL(val, 127);
 }
 
+void reloadShooter()
+{
+	int target = shooterShotCount * SHOOTER_RELOAD_VAL;
+	unsigned long reloadStartTime = npgmtime;
+	while (gSensor[shooterEnc].value < (target + 145)) {
+		sleep(100);
+		writeDebugStreamLine("Enc: %d", gSensor[shooterEnc].value);
+	}
+	writeDebugStreamLine("Enc: %d", gSensor[shooterEnc].value);
+	writeDebugStreamLine("Reload time = %d", npgmtime-reloadStartTime);
+	setShooter(11);
+}
 
 task shooterTask()
 {
@@ -108,7 +122,7 @@ task shooterTask()
 	clearDebugStream();
 	int nBatteryLevel = nImmediateBatteryLevel;
 	writeDebugStream("%d Battery: %d", nPgmTime, nBatteryLevel);
-	int shooterShotCount = 0;
+	shooterShotCount = 0;
 	gSensor[shooterEnc].value = 0;
 
 	word button, lstButton;
@@ -124,16 +138,12 @@ task shooterTask()
 			setShooter(127);
 			writeDebugStreamLine("Setup shot #%d encoder start= %d", shooterShotCount,gSensor[shooterEnc].value);
 			int target = shooterShotCount * SHOOTER_RELOAD_VAL;
-			unsigned long reloadStartTime = npgmtime;
-			while (gSensor[shooterEnc].value < (target + 145)) {
-				sleep(100);
-				writeDebugStreamLine("Enc: %d", gSensor[shooterEnc].value);
-			}
-			writeDebugStreamLine("Enc: %d", gSensor[shooterEnc].value);
-			writeDebugStreamLine("Reload time = %d", npgmtime-reloadStartTime);
-			setShooter(11);
 
-			while (!vexRT[Btn5U]) sleep(10);
+			if (gSensor[shooterEnc].value < (target+90)) //Should only get triggered when shooterShotCount == 0
+			{
+				reloadShooter();
+				while (!vexRT[Btn5U]) sleep(10);
+			}
 
 			if(gSensor[ballDetector].value > 1000)
 			{
@@ -157,6 +167,7 @@ task shooterTask()
 				setShooter(0);
 				writeDebugStreamLine("Hold done at %d, Tgt: %d, Enc: %d, Err: %d", nPgmTime, target, gSensor[shooterEnc].value, target - gSensor[shooterEnc].value);
 				//writeDebugStreamLine("%dStart break %d, %d", npgmtime, shooterShotCount, gSensor[shooterEnc].value);
+				reloadShooter();
 			}
 		}
 		lstButton = button;
