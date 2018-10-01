@@ -34,7 +34,7 @@ task printEnc()
 	while (true)
 	{
 		datalogDataGroupStart();
-		datalogAddValue(1, SensorValue[shooterEnc]);
+		datalogAddValue(1, gSensor[shooterEnc].value);
 		datalogAddValue(2, gShooterPow);
 		datalogDataGroupEnd();
 
@@ -109,14 +109,12 @@ task shooterTask()
 	int nBatteryLevel = nImmediateBatteryLevel;
 	writeDebugStream("%d Battery: %d", nPgmTime, nBatteryLevel);
 	int shooterShotCount = 0;
-	resetQuadratureEncoder(shooterEnc);
+	gSensor[shooterEnc].value = 0;
 
 	word button, lstButton;
 	writeDebugStreamLine("Start");
 	const float breakKp = -25.0;
 	float shooterBreakOffset = 6;
-
-	bool resetBackwards = false;
 	while (true)
 	{
 		button = vexRT[Btn5U];
@@ -124,77 +122,38 @@ task shooterTask()
 		if (button && !lstButton)
 		{
 			setShooter(127);
-			writeDebugStreamLine("Setup shot #%d encoder start= %d", shooterShotCount,SensorValue[shooterEnc]);
+			writeDebugStreamLine("Setup shot #%d encoder start= %d", shooterShotCount,gSensor[shooterEnc].value);
 			int target = shooterShotCount * SHOOTER_RELOAD_VAL;
-
-			while (SensorValue[shooterEnc] < (target + 145)) {
+			unsigned long reloadStartTime = npgmtime;
+			while (gSensor[shooterEnc].value < (target + 145)) {
 				sleep(100);
-				writeDebugStreamLine("Enc: %d", SensorValue[shooterEnc]);
+				writeDebugStreamLine("Enc: %d", gSensor[shooterEnc].value);
 			}
-			writeDebugStreamLine("Enc: %d", SensorValue[shooterEnc]);
-			setShooter(SHOOTER_RELOAD_HOLD);
+			writeDebugStreamLine("Enc: %d", gSensor[shooterEnc].value);
+			writeDebugStreamLine("Reload time = %d", npgmtime-reloadStartTime);
+			setShooter(11);
 
 			while (!vexRT[Btn5U]) sleep(10);
 
 			if(SensorValue[ballDetector] > 1000)
 			{
 				setShooter(0);
-				writeDebugStreamLine("%d No Ball", npgmtime);
-				resetBackwards = true;
-			}
-			else if (SensorValue[ballDetector] >= 250 && SensorValue[ballDetector] <= 252)
-			{
-				setShooter(0);
-				writeDebugStreamLine("%d Shooter Detector Unplugged", npgmtime);
-				resetBackwards = true;
 			}
 			else
 			{
 				shooterShotCount++;
 				target = shooterShotCount * SHOOTER_RELOAD_VAL;
 				setShooter(127);
-				unsigned long shootStartTime = npgmtime;
-				writeDebugStreamLine("Fired shot #%d at %d, Tgt: %d, Enc: %d, Err: %d", shooterShotCount, nPgmTime, SensorValue[shooterEnc], target, target - SensorValue[shooterEnc]);
-				while (SensorValue[shooterEnc] < (target-shooterBreakOffset) &&  SensorValue[ballDetector] < 1000 && npgmtime-shootStartTime < 500) sleep(10);
-				writeDebugStreamLine("Forwards done at %d, Enc: %d", nPgmTime, SensorValue[shooterEnc]);
+				writeDebugStreamLine("Fired shot #%d at %d, Tgt: %d, Enc: %d, Err: %d", shooterShotCount, nPgmTime, gSensor[shooterEnc].value, target, target - gSensor[shooterEnc].value);
+				while (gSensor[shooterEnc].value < (target-shooterBreakOffset) &&  SensorValue[ballDetector] < 1000) sleep(10);
+				writeDebugStreamLine("Forwards done at %d, Enc: %d", nPgmTime, gSensor[shooterEnc].value);
 				setShooter(-22);
 				sleep(80);
-				writeDebugStreamLine("Break done at %d, Enc: %d", nPgmTime, SensorValue[shooterEnc]);
+				writeDebugStreamLine("Break done at %d, Enc: %d", nPgmTime, gSensor[shooterEnc].value);
 				setShooter(0);
-				writeDebugStreamLine("Hold done at %d, Tgt: %d, Enc: %d, Err: %d", nPgmTime, target, SensorValue[shooterEnc], target - SensorValue[shooterEnc]);
-				//writeDebugStreamLine("%dStart break %d, %d", npgmtime, shooterShotCount, SensorValue[shooterEnc]);
-
-				resetBackwards = false;
+				writeDebugStreamLine("Hold done at %d, Tgt: %d, Enc: %d, Err: %d", nPgmTime, target, gSensor[shooterEnc].value, target - gSensor[shooterEnc].value);
+				//writeDebugStreamLine("%dStart break %d, %d", npgmtime, shooterShotCount, gSensor[shooterEnc].value);
 			}
-		}
-		else
-		{
-			int senValLst, senVal;
-			float senVelocity;
-			unsigned long senTimeLst, senTime;
-			senVal = SensorValue[shooterEnc];
-			senTime = npgmtime;
-
-			senVelocity = senVal-senValLst/senTime-senTimeLst;
-			float offsetKp=1.27;
-			int acceptableRange=9;
-			word power;
-			int offsetFromReset = SensorValue[shooterEnc]%360;
-			velocityCheck(shooterEnc);
-			writeDebugStreamLine("%d offsetFromReset:%d, pow:%d, vel:%f ", npgmtime, offsetFromReset, power, gSensor[shooterEnc].velocity);
-			if (offsetFromReset >acceptableRange && offsetFromReset<360-acceptableRange && abs(gSensor[shooterEnc].velocity)<0.02)
-			{
-				if(offsetFromReset>180 && !resetBackwards) power = (offsetKp*(356-offsetFromReset));
-				else power=(-1*offsetKp*offsetFromReset);
-			}
-			else
-			{
-				power=0;
-			}
-			setShooter(power);
-
-			senValLst = senVal;
-			senTimeLst = senTime;
 		}
 		lstButton = button;
 
