@@ -105,9 +105,12 @@ void setShooter(word val)
 
 void reloadShooter()
 {
+	setShooter(127);
+	writeDebugStreamLine("Setup shot #%d encoder start= %d", shooterShotCount,gSensor[shooterEnc].value);
 	int target = shooterShotCount * SHOOTER_RELOAD_VAL;
 	unsigned long reloadStartTime = npgmtime;
-	while (gSensor[shooterEnc].value < (target + 145)) {
+	while (gSensor[shooterEnc].value < (target + 145))
+	{
 		sleep(100);
 		writeDebugStreamLine("Enc: %d", gSensor[shooterEnc].value);
 	}
@@ -135,10 +138,7 @@ task shooterTask()
 
 		if (button && !lstButton)
 		{
-			setShooter(127);
-			writeDebugStreamLine("Setup shot #%d encoder start= %d", shooterShotCount,gSensor[shooterEnc].value);
 			int target = shooterShotCount * SHOOTER_RELOAD_VAL;
-
 			if (gSensor[shooterEnc].value < (target+90)) //Should only get triggered when shooterShotCount == 0
 			{
 				reloadShooter();
