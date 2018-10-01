@@ -188,7 +188,7 @@ task shooterSafety
 			highValStartTime = 0;
 
 		unsigned long elpsdTime = npgmtime - highValStartTime;
-		if (highValStartTime != 0 && elpsdTime > 700)
+		if (highValStartTime != 0 && elpsdTime > 1200)
 		{
 			setShooter(0);
 			stopTask(shooterTask);
