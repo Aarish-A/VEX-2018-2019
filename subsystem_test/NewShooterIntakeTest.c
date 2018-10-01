@@ -177,6 +177,26 @@ task shooterTask()
 	//stopTask(printEnc);
 }
 
+task shooterSafety
+{
+	unsigned long highValStartTime = 0;
+	while (true)
+	{
+		if (abs(gMotor[shooterA].power) >= 110 || abs(gMotor[shooterRevSplit].power) >= 110)
+			highValStartTime = npgmtime;
+		else
+			highValStartTime = 0;
+
+		unsigned long elpsdTime = npgmtime - highValStartTime;
+		if (highValStartTime != 0 && elpsdTime > 700)
+		{
+			setShooter(0);
+			stopTask(shooterTask);
+		}
+		sleep(10);
+	}
+}
+
 task updateVals()
 {
 	writeDebugStreamLine("%d Start update", npgmtime);
