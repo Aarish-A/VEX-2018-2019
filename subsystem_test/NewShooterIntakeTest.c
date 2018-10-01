@@ -135,9 +135,13 @@ task shooterTask()
 
 			while (!vexRT[Btn5U]) sleep(10);
 
-			if(SensorValue[ballDetector] > 1000)
+			if(gSensor[ballDetector].value > 1000)
 			{
-				setShooter(0);
+				writeDebugStreamLine("%d No Ball - Shot Cancelled");
+			}
+			else if(gSensor[ballDetector].value >= 250 & gSensor[ballDetector].value <= 252)
+			{
+				writeDebugStreamLine("%d Ball Detector Unplugged - Shot Cancelled");
 			}
 			else
 			{
@@ -145,7 +149,7 @@ task shooterTask()
 				target = shooterShotCount * SHOOTER_RELOAD_VAL;
 				setShooter(127);
 				writeDebugStreamLine("Fired shot #%d at %d, Tgt: %d, Enc: %d, Err: %d", shooterShotCount, nPgmTime, gSensor[shooterEnc].value, target, target - gSensor[shooterEnc].value);
-				while (gSensor[shooterEnc].value < (target-shooterBreakOffset) &&  SensorValue[ballDetector] < 1000) sleep(10);
+				while (gSensor[shooterEnc].value < (target-shooterBreakOffset) &&  gSensor[ballDetector].value < 1000) sleep(10);
 				writeDebugStreamLine("Forwards done at %d, Enc: %d", nPgmTime, gSensor[shooterEnc].value);
 				setShooter(-22);
 				sleep(80);
