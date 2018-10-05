@@ -1,0 +1,122 @@
+18 Battery: 7269Start
+19 Battery: 7269Start
+Setup shot #0 encoder start= 0
+Enc: 145
+Reload time = 320
+24076 Shot Start
+Fired shot #1 at 24076, Tgt: 179, Enc: 360, Err: 181
+24616 Shot done accelerating: Time: 540 Pos:367 
+24616 Break
+24626 Break
+	24626 Ball hit: Time: 550
+24636 Break
+	24636 Ball hit: Time: 560
+24646 Break
+	24646 Ball hit: Time: 570
+24656 Break
+	24656 Ball hit: Time: 580
+24666 Break
+	24666 Ball hit: Time: 590
+24676 Break
+	24676 Ball hit: Time: 600
+24686 Break
+	24686 Ball hit: Time: 610
+Break done at 24696, Enc: 386
+Hold done at 24696, Tgt: 360, Enc: 386, Err: -26
+Setup shot #1 encoder start= 386
+Enc: 510
+Reload time = 310
+25056 Total Shot Time:980
+ No Ball - Shot Cancelled
+25106 Shot Start
+Fired shot #2 at 25106, Tgt: 530, Enc: 720, Err: 190
+25116 Ball gone: Time: 10
+25226 Shot Start
+Fired shot #2 at 25226, Tgt: 515, Enc: 720, Err: 205
+25316 Ball gone: Time: 90
+Setup shot #1 encoder start= 489
+Enc: 511
+Reload time = 190
+25616 Shot Start
+Fired shot #2 at 25616, Tgt: 511, Enc: 720, Err: 209
+26166 Shot done accelerating: Time: 550 Pos:727 
+26166 Break
+	26166 Ball hit: Time: 550
+26176 Break
+	26176 Ball hit: Time: 560
+26186 Break
+	26186 Ball hit: Time: 570
+26196 Break
+	26196 Ball hit: Time: 580
+26206 Break
+	26206 Ball hit: Time: 590
+26216 Break
+	26216 Ball hit: Time: 600
+26226 Break
+	26226 Ball hit: Time: 610
+26236 Break
+	26236 Ball hit: Time: 620
+Break done at 26246, Enc: 761
+Hold done at 26246, Tgt: 720, Enc: 761, Err: -41
+Setup shot #2 encoder start= 761
+Enc: 867
+Reload time = 260
+26556 Total Shot Time:940
+ No Ball - Shot Cancelled
+Setup shot #2 encoder start= 778
+Enc: 865
+Reload time = 240
+371533 Shot Start
+Fired shot #3 at 371533, Tgt: 892, Enc: 1080, Err: 188
+372143 Shot done accelerating: Time: 610 Pos:1088 
+372143 Break
+	372143 Ball hit: Time: 610
+372153 Break
+	372153 Ball hit: Time: 620
+372163 Break
+	372163 Ball hit: Time: 630
+372173 Break
+	372173 Ball hit: Time: 640
+372183 Break
+	372183 Ball hit: Time: 650
+372193 Break
+	372193 Ball hit: Time: 660
+372203 Break
+	372203 Ball hit: Time: 670
+372213 Break
+	372213 Ball hit: Time: 680
+Break done at 372223, Enc: 1117
+Hold done at 372223, Tgt: 1080, Enc: 1117, Err: -37
+Setup shot #3 encoder start= 1117
+Enc: 1229
+Reload time = 290
+372563 Total Shot Time:1030
+ No Ball - Shot Cancelled
+372583 Shot Start
+Fired shot #4 at 372583, Tgt: 1236, Enc: 1440, Err: 204
+372593 Ball gone: Time: 10
+372703 Shot Start
+Fired shot #4 at 372703, Tgt: 1241, Enc: 1440, Err: 199
+373433 Shot done accelerating: Time: 730 Pos:1449 
+373433 Break
+	373433 Ball hit: Time: 730
+373443 Break
+	373443 Ball hit: Time: 740
+373453 Break
+	373453 Ball hit: Time: 750
+373463 Break
+	373463 Ball hit: Time: 760
+373473 Break
+	373473 Ball hit: Time: 770
+373483 Break
+	373483 Ball hit: Time: 780
+373493 Break
+	373493 Ball hit: Time: 790
+373503 Break
+	373503 Ball hit: Time: 800
+Break done at 373513, Enc: 1481
+Hold done at 373513, Tgt: 1440, Enc: 1481, Err: -41
+Setup shot #4 encoder start= 1481
+Enc: 1585
+Reload time = 260
+373823 Total Shot Time:1120

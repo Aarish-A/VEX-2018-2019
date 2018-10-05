@@ -29,8 +29,8 @@
 //#define LIM_TO_VAL(input, val) (abs(input) > (val) ? (val) * sgn(input) : (input))
 #define SHOOTER_GEAR_RATIO 1.0
 #define SHOOTER_RELOAD_VAL (360.0*SHOOTER_GEAR_RATIO)
-#define SHOOTER_RELOAD_HOLD 0//11
-#define SHOOTER_RELOAD_POS 50//145
+#define SHOOTER_RELOAD_HOLD 11
+#define SHOOTER_RELOAD_POS 145
 
 int gShooterPow;
 /*
@@ -124,6 +124,19 @@ void reloadShooter()
 	setShooter(SHOOTER_RELOAD_HOLD);
 }
 
+task shooterMonitor()
+{
+	while (true)
+	{
+		datalogDataGroupStart();
+		//datalogAddValue(1, gSensor[shooterEnc].value);
+		//datalogAddValue(2, gSensor[ballDetector].value);
+		datalogAddValue(3, gMotor[shooterA].power);
+		datalogDataGroupEnd();
+		sleep(10);
+	}
+}
+
 task shooterTask()
 {
 	//startTask(printEnc);
@@ -138,13 +151,15 @@ task shooterTask()
 	float shooterBreakOffset = 6;
 
 	bool shotTargReached = false;
+
+	bool cancelledPrint = false;
 	while (true)
 	{
 
 		if (vexRt[BTN_SHOOT])//RISING(BTN_SHOOT) )
 		{
 			int target = shooterShotCount * SHOOTER_RELOAD_VAL;
-			if (gSensor[shooterEnc].value < (target+90)) //Should only get triggered when shooterShotCount == 0
+			if (gSensor[shooterEnc].value < (target+SHOOTER_RELOAD_POS-10)) //Should only get triggered when shooterShotCount == 0
 			{
 				reloadShooter();
 				while (!vexRT[BTN_SHOOT]) sleep(10);
@@ -152,14 +167,23 @@ task shooterTask()
 
 			if(gSensor[ballDetector].value > 1000)
 			{
-				writeDebugStreamLine("%d No Ball - Shot Cancelled");
+				if (!cancelledPrint)
+				{
+					writeDebugStreamLine("%d No Ball - Shot Cancelled");
+					cancelledPrint = true;
+				}
 			}
 			else if(gSensor[ballDetector].value >= 250 & gSensor[ballDetector].value <= 252)
 			{
-				writeDebugStreamLine("%d Ball Detector Unplugged - Shot Cancelled");
+				if (!cancelledPrint)
+				{
+					writeDebugStreamLine("%d Ball Detector Unplugged - Shot Cancelled");
+					cancelledPrint = true;
+				}
 			}
 			else
 			{
+				cancelledPrint = false;
 				unsigned long shotStartTime = npgmtime;
 				writeDebugStreamLine("%d Shot Start", npgmtime);
 				shooterShotCount++;
@@ -168,18 +192,22 @@ task shooterTask()
 				writeDebugStreamLine("Fired shot #%d at %d, Tgt: %d, Enc: %d, Err: %d", shooterShotCount, nPgmTime, gSensor[shooterEnc].value, target, target - gSensor[shooterEnc].value);
 
 				shotTargReached = ( gSensor[shooterEnc].value > (target-shooterBreakOffset) );
-				while (!shotTargReached &&  gSensor[ballDetector].value < 1000)
+				while (!shotTargReached && (gSensor[shooterEnc].value < (target-80) || gSensor[shooterEnc].value > (target-15) || gSensor[ballDetector].value < 1000))
 				{
 					shotTargReached = ( gSensor[shooterEnc].value > (target-shooterBreakOffset) );
+
+					unsigned long timeElpsd = npgmtime-shotStartTime;
 
 					sleep(10);
 				}
 				if (!shotTargReached)
 				{
-					writeDebugStreamLine("%d Ball gone: Time: %d", npgmtime, npgmtime-shotStartTime);
+					writeDebugStreamLine("%d Ball gone: Val:%d, Time: %d Pos:%d, Targ:%d ", npgmtime, gSensor[ballDetector].value, npgmtime-shotStartTime, gSensor[shooterEnc].value, target);
 					setShooter(-90);
 					sleep(100);
 					setShooter(0);
+					shooterShotCount--;
+					PlayTone(300, 50);
 				}
 				else
 				{
@@ -200,7 +228,7 @@ task shooterTask()
 					setShooter(0);
 					writeDebugStreamLine("Hold done at %d, Tgt: %d, Enc: %d, Err: %d", nPgmTime, target, gSensor[shooterEnc].value, target - gSensor[shooterEnc].value);
 					//writeDebugStreamLine("%dStart break %d, %d", npgmtime, shooterShotCount, gSensor[shooterEnc].value);
-					sleep(50);
+					//sleep(50);
 					reloadShooter();
 					writeDebugStreamLine("%d Total Shot Time:%d", npgmtime, npgmtime-shotStartTime);
 				}
@@ -228,6 +256,13 @@ task shooterSafety
 			setShooter(0);
 			stopTask(shooterTask);
 		}
+
+		//Datalog
+		datalogDataGroupStart();
+		datalogAddValue(1, gSensor[shooterEnc].value);
+		datalogAddValue(2, gSensor[ballDetector].value);
+		datalogDataGroupEnd();
+
 		sleep(10);
 	}
 }
@@ -265,7 +300,9 @@ task main()
 
 	startTask(intakeTask);
 	startTask(shooterTask);
+	startTask(shooterMonitor);
 	while(true) sleep(10);
 	stopTask(shooterTask);
 	stopTask(intakeTask);
+	stopTask(shooterMonitor);
 }
