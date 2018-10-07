@@ -199,13 +199,13 @@ void velocityCheck(tSensors sen, int offset)
 				{
 					//Calc lst velocity
 					s.lstVelocity = (float)(s.dataPointArr[lstVelHead].value - s.dataPointArr[lstVelTail].value) / (float)(s.dataPointArr[lstVelHead].timestamp - s.dataPointArr[lstVelTail].timestamp);
-					if ((normalCalc || offset > 7) && abs(s.lstVelocity) < 0.0035)
-						s.lstVelocity = 0;
+					//if ((normalCalc || offset > 7) && abs(s.lstVelocity) < 0.0035)
+					//	s.lstVelocity = 0;
 
 					//Calc velocity
 					s.velocity = (float)(s.dataPointArr[curPointLoc].value - s.dataPointArr[lstPointLoc].value) / (float)(tDif);
-					if ((normalCalc || offset > 7) && abs(s.velocity) < 0.0035)
-						s.velocity = 0;
+					//if ((normalCalc || offset > 7) && abs(s.velocity) < 0.0035)
+					//	s.velocity = 0;
 				}
 			}
 		}
