@@ -300,7 +300,7 @@ void moveAngler(int target)
 	float lstDistance = distance;
 			float kP = (distance < 0)? 0.08 : 0.12;
 			float kD = (distance < 0)? 0.5 : 0.2;
-			int bias = 9;
+			int bias = 11;
 			unsigned long startTime = npgmtime;
 			do
 			{
