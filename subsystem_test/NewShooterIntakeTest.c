@@ -171,6 +171,10 @@ task shooterTask()
 
 	bool cancelledPrint = false;
 	shootTrigger = false;
+
+	sleep(100);
+	reloadShooter();
+
 	while (true)
 	{
 
