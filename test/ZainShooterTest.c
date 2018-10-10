@@ -16,6 +16,7 @@ const int gPresetAngles[3] = {ANGLE_FLAT,ANGLE_MID,ANGLE_TOP};
 int curPos = 0;
 int shotCount = 0;
 bool cancelled = false;
+bool gReadytoAngle = false;
 void setShooter(int shootSpeed)
 {
 	motor[shooterA]=motor[shooterRevSplit]=shootSpeed;
@@ -38,7 +39,7 @@ task shooterTask()
 	while(true)
 	{
 		cancelled = false;
-		if(vexRT[Btn6U])
+		if(true)
 		{
 			int target = shotCount * SHOOTER_RELOAD_VAL;
 			if (SensorValue[shooterEnc] < (target+SHOOTER_RELOAD_POS-10)) //Should only get triggered when shooterShotCount == 0
@@ -61,8 +62,36 @@ task shooterTask()
 					cancelled = true;
 				}
 			}
+			gReadytoAngle = true;
 			setShooter(SHOOTER_RELOAD_HOLD);
 		}
+	}
+}
+task intakeAngler()
+{
+	for (int i =0; i<3; i++)
+	{
+		if(SensorValue[anglerPoti]<gPresetAngles[i])
+		{
+			curPos=i-1;
+			writeDebugStreamLine("Assigned position of int curPos is %d", i);
+			break;
+		}
+	}
+
+	float kp = 0.15;
+	int target=gPresetAngles[curPos+1];
+	float error;
+	bool BtnAngleUp, BtnAngleUpLst, BtnAngleDown, BtnAngleDownLst;
+	while(!gReadytoAngle){sleep(10);}
+	while(SensorValue[anglerPoti]<target-150)
+	{
+		error = target-SensorValue[anglerPoti];
+		motor[angler] = error*kp;
+	}
+	while(SensorValue[anglerPoti]<target)
+	{
+		motor[angler] = -15;
 	}
 }
 task main()
@@ -71,27 +100,5 @@ task main()
 	//if(SensorValue[anglerPoti]<gPresetAngles[1]) curPos = 1;
 	//if(SensorValue[anglerPoti]<gPresetAngles[2]) curPos = 2;
 	startTask(shooterTask);
-	bool BtnAngleUp, BtnAngleUpLst, BtnAngleDown, BtnAngleDownLst;
-	while(true)
-	{
-		BtnAngleUp = vexRT[Btn5U];
-		BtnAngleDown = vexRT[Btn5D];
-		if(BtnAngleUp && !BtnAngleUpLst)
-		{
-			if(curPos!=3)
-			{
-				while(SensorValue[anglerPoti]<gPresetAngles[curPos+1]-100)
-				{
-					motor[angler] = 75;
-				}
-				while(SensorValue[anglerPoti]<gPresetAngles[curPos+1])
-				{
-					motor[angler] = -15;
-				}
-				motor[angler] = 0;
-				curPos+=1;
-			}
-		}
-		BtnAngleUpLst = BtnAngleUp;
-	}
+	startTask(intakeAngler);
 }
