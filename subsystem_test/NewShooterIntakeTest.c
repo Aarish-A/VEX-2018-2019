@@ -207,7 +207,7 @@ task shooterTask()
 			if (gSensor[shooterEnc].value < (target+SHOOTER_RELOAD_POS-10)) //Should only get triggered when shooterShotCount == 0
 			{
 				reloadShooter();
-				while (!vexRT[BTN_SHOOT]) sleep(10);
+				while (!vexRT[BTN_SHOOT] && !shootTrigger) sleep(10);
 			}
 
 			//if(gSensor[ballDetector].value > 1000)
@@ -309,7 +309,7 @@ void moveAngler(int target)
 				int power = distance * kP + bias + der;
 				setAngler(power);
 				velocityCheck(anglerPoti);
-				writeDebugStreamLine("%d Vel:%f, Der: %f, Angler Power: %d, Loc: %d, Targ: %d", npgmtime, gSensor[anglerPoti].velocity, der, power, gSensor[anglerPoti].value, target);
+				//writeDebugStreamLine("%d Vel:%f, Der: %f, Angler Power: %d, Loc: %d, Targ: %d", npgmtime, gSensor[anglerPoti].velocity, der, power, gSensor[anglerPoti].value, target);
 
 				lstDistance = distance;
 				sleep(10);
