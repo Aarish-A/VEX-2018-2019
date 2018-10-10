@@ -154,6 +154,7 @@ task shooterMonitor()
 	}
 }
 bool shootTrigger;
+//bool secondShot;
 task shooterTask()
 {
 	//startTask(printEnc);
@@ -171,46 +172,50 @@ task shooterTask()
 
 	bool cancelledPrint = false;
 	shootTrigger = false;
+	bool secondShot = false;
+	unsigned long secondShotTimer;
 	while (true)
 	{
 
 		if (shootTrigger || vexRt[BTN_SHOOT])//RISING(BTN_SHOOT) )
 		{
-			if (shooterShotCount == 0)
-			{
-				setShooter(20);
-				int endPos = gSensor[shooterEnc].value;
-				unsigned long endTime = npgmtime;
-				while((gSensor[shooterEnc].value - endPos) < 13 && (npgmtime-endTime) < 300) sleep(10);
-				setShooter(-15);
-				sleep(500);
-				do
-				{
-					tHog();
-					velocityCheck(shooterEnc);
-					sleep(10);
-					writeDebugStreamLine("%d, sR-%d, s-%d, vel - %f", npgmtime, SensorValue[shooterEnc], gSensor[shooterEnc].value, gSensor[shooterEnc].velocity);
-					tRelease();
-				} while(gSensor[shooterEnc].velocity <= -0.001 || gSensor[shooterEnc].lstVelocity <= -0.001)
-				endPos = gSensor[shooterEnc].value;
-				endTime = npgmtime;
-				setShooter(30);
-				while((gSensor[shooterEnc].value - endPos) < 32 && (npgmtime-endTime) < 400) sleep(10);
-				setShooter(-27);
-				sleep(50);
-				setShooter(0);
-				sleep(100);
-				resetQuadratureEncoder(shooterEnc);
-			}
+			//if (shooterShotCount == 0)
+			//{
+			//	setShooter(20);
+			//	int endPos = gSensor[shooterEnc].value;
+			//	unsigned long endTime = npgmtime;
+			//	while((gSensor[shooterEnc].value - endPos) < 13 && (npgmtime-endTime) < 300) sleep(10);
+			//	setShooter(-15);
+			//	sleep(500);
+			//	do
+			//	{
+			//		tHog();
+			//		velocityCheck(shooterEnc);
+			//		sleep(10);
+			//		writeDebugStreamLine("%d, sR-%d, s-%d, vel - %f", npgmtime, SensorValue[shooterEnc], gSensor[shooterEnc].value, gSensor[shooterEnc].velocity);
+			//		tRelease();
+			//	} while(gSensor[shooterEnc].velocity <= -0.001 || gSensor[shooterEnc].lstVelocity <= -0.001)
+			//	endPos = gSensor[shooterEnc].value;
+			//	endTime = npgmtime;
+			//	setShooter(30);
+			//	while((gSensor[shooterEnc].value - endPos) < 32 && (npgmtime-endTime) < 400) sleep(10);
+			//	setShooter(-27);
+			//	sleep(50);
+			//	setShooter(0);
+			//	sleep(100);
+			//	resetQuadratureEncoder(shooterEnc);
+			//}
+
+			if (secondShot && (npgmtime-secondShotTimer) > 150) secondShot = false;
 
 			int target = shooterShotCount * SHOOTER_RELOAD_VAL;
 			if (gSensor[shooterEnc].value < (target+SHOOTER_RELOAD_POS-10)) //Should only get triggered when shooterShotCount == 0
 			{
 				reloadShooter();
-				while (!vexRT[BTN_SHOOT]) sleep(10);
+				while (!vexRT[BTN_SHOOT] && !shootTrigger) sleep(10);
 			}
 
-			if(gSensor[ballDetector].value > 1000)
+			if(gSensor[ballDetector].value > 1000 && !secondShot)
 			{
 				if (!cancelledPrint)
 				{
@@ -218,7 +223,7 @@ task shooterTask()
 					cancelledPrint = true;
 				}
 			}
-			else if(gSensor[ballDetector].value >= 250 & gSensor[ballDetector].value <= 252)
+			else if(gSensor[ballDetector].value >= 250 && gSensor[ballDetector].value <= 252)
 			{
 				if (!cancelledPrint)
 				{
@@ -237,7 +242,7 @@ task shooterTask()
 				writeDebugStreamLine("Fired shot #%d at %d, Tgt: %d, Enc: %d, Err: %d", shooterShotCount, nPgmTime, gSensor[shooterEnc].value, target, target - gSensor[shooterEnc].value);
 
 				shotTargReached = ( gSensor[shooterEnc].value > (target-shooterBreakOffset) );
-				while (!shotTargReached && (gSensor[shooterEnc].value < (target-80) || gSensor[shooterEnc].value > (target-15) || gSensor[ballDetector].value < 1000))
+				while (!shotTargReached && (gSensor[shooterEnc].value < (target-55) || gSensor[shooterEnc].value > (target-15) || gSensor[ballDetector].value < 1000))
 				{
 					shotTargReached = ( gSensor[shooterEnc].value > (target-shooterBreakOffset) );
 
@@ -279,6 +284,18 @@ task shooterTask()
 					writeDebugStreamLine("%d Shoot Trigger False - shot end", npgmtime);
 					reloadShooter();
 					writeDebugStreamLine("%d Total Shot Time:%d", npgmtime, npgmtime-shotStartTime);
+
+					if (secondShot)
+					{
+						secondShot = false;
+						secondShotTimer = 0;
+					}
+					else
+					{
+						secondShot = true;
+						secondShotTimer = npgmtime;
+						writeDebugStreamLine("%d Set shot %d - secondShot flag", npgmtime, shooterShotCount);
+					}
 				}
 			}
 		}
@@ -293,14 +310,17 @@ void setAngler(word val)
 	gMotor[angler].power = LIM_TO_VAL(val, 127);
 }
 
-void moveAngler(int target)
+void moveAngler(int target, int shotStartOffset = -1)
 {
+	writeDebugStreamLine("%d Start angler movement to %d", npgmtime, target);
 	float distance = target - gSensor[anglerPoti].value;
 	float lstDistance = distance;
 			float kP = (distance < 0)? 0.08 : 0.12;
 			float kD = (distance < 0)? 0.5 : 0.2;
-			int bias = 9;
+			int bias = 11;
 			unsigned long startTime = npgmtime;
+
+			unsigned long startShotTime = 0;
 			do
 			{
 				distance = target - gSensor[anglerPoti].value;
@@ -308,20 +328,34 @@ void moveAngler(int target)
 				int power = distance * kP + bias + der;
 				setAngler(power);
 				velocityCheck(anglerPoti);
-				writeDebugStreamLine("%d Vel:%f, Der: %f, Angler Power: %d, Loc: %d, Targ: %d", npgmtime, gSensor[anglerPoti].velocity, der, power, gSensor[anglerPoti].value, target);
+				//writeDebugStreamLine("%d Vel:%f, Der: %f, Angler Power: %d, Loc: %d, Targ: %d", npgmtime, gSensor[anglerPoti].velocity, der, power, gSensor[anglerPoti].value, target);
 
 				lstDistance = distance;
 				sleep(10);
-			} while (abs(distance) > 50 && (npgmtime-startTime < 600));
+
+				if (shotStartOffset != -1 && abs(distance) < abs(shotStartOffset) && !shootTrigger && startShotTime == 0) //(nPgmTime-startTime) > secondShotStart && !setSecondShot)
+				{
+					startShotTime = npgmtime;
+					shootTrigger = true;
+					writeDebugStreamLine("%d Angler set secondShot = true", npgmtime);
+				}
+				if (npgmtime-startShotTime > 400) shootTrigger = false;
+
+			} while (abs(distance) > 50 && (npgmtime-startTime < 700));
 			startTime = npgmtime;
 			do
 			{
 				velocityCheck(anglerPoti);
 				setAngler(gSensor[anglerPoti].velocity * (distance<0? -13 : -7));
+				if (npgmtime-startShotTime > 400) shootTrigger = false;
 			} while(abs(gSensor[anglerPoti].velocity) > 0.001 && (npgmtime-startTime) < 80);
-			setAngler(0);
+			setAngler(9);
 
 			writeDebugStreamLine("%d Done angle Vel:%f, Loc: %d, Targ: %d", npgmtime, gSensor[anglerPoti].velocity, gSensor[anglerPoti].value, target);
+
+			startTime = npgmtime;
+			//if (shotStartOffset != -1)// && (npgmtime - startTime) > 150)
+			//	secondShot = false;
 }
 
 task intakeAnglerTask()
@@ -331,12 +365,14 @@ task intakeAnglerTask()
 		//writeDebugStreamLine("%d, Angler: %d", npgmtime, gSensor[anglerPoti].value);
 		if (RISING(BTN_ANGLER_TEST))
 		{
+			int startBallCount;
 			unsigned long startTime = npgmtime;
 			writeDebugStreamLine("%d Start Double Shot", npgmtime);
-			shootTrigger = true;
+			moveAngler(750, 1800);
+			if (!shootTrigger) shootTrigger = true;
 			while (shootTrigger == true) sleep(10);
 			writeDebugStreamLine("%d Done first shot", npgmtime);
-			moveAngler(1500);
+			moveAngler(1500, 1800);
 			shootTrigger = true;
 			while (shootTrigger == true) sleep(10);
 			writeDebugStreamLine("%d Double Shot took %d", npgmtime, npgmtime-startTime);
