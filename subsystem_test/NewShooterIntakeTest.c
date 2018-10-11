@@ -206,7 +206,6 @@ task shooterTask()
 			//	sleep(100);
 			//	resetQuadratureEncoder(shooterEnc);
 			//}
-
 			int target = shooterShotCount * SHOOTER_RELOAD_VAL;
 			if (gSensor[shooterEnc].value < (target+SHOOTER_RELOAD_POS-10)) //Should only get triggered when shooterShotCount == 0
 			{
@@ -296,6 +295,35 @@ task shooterTask()
 void setAngler(word val)
 {
 	gMotor[angler].power = LIM_TO_VAL(val, 127);
+}
+
+void moveAnglerSimple(int target)
+{
+	float percentFull = 0.85;
+	float percentDecel = 0.95;
+	int decelSpeed = 68;
+	bool BtnAngleUp, BtnAngleUpLst;
+	while(SensorValue[anglerPoti]<(percentFull*target))
+	{
+		motor[angler] = 127
+		sleep(10);
+	}
+	while(SensorValue[anglerPoti]<(percentDecel*target))
+	{
+		int error = target-SensorValue[anglerPoti];
+		motor[angler] = error*0.3;
+		sleep(10);
+	}
+	while(SensorValue[anglerPoti]<target)
+	{
+		motor[angler] = -20;
+		sleep(10);
+	}
+
+	sleep(100);
+	motor[angler] = 15;
+	sleep(300);
+	writeDebugStreamLine("Intake Podi Value: %d",SensorValue[anglerPoti]);
 }
 
 void moveAngler(int target)
