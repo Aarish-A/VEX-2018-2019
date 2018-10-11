@@ -43,8 +43,8 @@
 //#define LIM_TO_VAL(input, val) (abs(input) > (val) ? (val) * sgn(input) : (input))
 #define SHOOTER_GEAR_RATIO 1.0
 #define SHOOTER_RELOAD_VAL (360.0*SHOOTER_GEAR_RATIO)
-#define SHOOTER_RELOAD_HOLD 11
-#define SHOOTER_RELOAD_POS 145
+#define SHOOTER_RELOAD_HOLD 0//11
+#define SHOOTER_RELOAD_POS 110//145
 
 int gShooterPow;
 /*
@@ -173,7 +173,7 @@ task shooterTask()
 	shootTrigger = false;
 
 	sleep(100);
-	reloadShooter();
+	//reloadShooter();
 
 	while (true)
 	{
@@ -241,7 +241,7 @@ task shooterTask()
 				writeDebugStreamLine("Fired shot #%d at %d, Tgt: %d, Enc: %d, Err: %d", shooterShotCount, nPgmTime, gSensor[shooterEnc].value, target, target - gSensor[shooterEnc].value);
 
 				shotTargReached = ( gSensor[shooterEnc].value > (target-shooterBreakOffset) );
-				while (!shotTargReached && (gSensor[shooterEnc].value < (target-80) || gSensor[shooterEnc].value > (target-15) || gSensor[ballDetector].value < 1000))
+				while (!shotTargReached && (gSensor[shooterEnc].value < (target-55) || gSensor[shooterEnc].value > (target-15) || gSensor[ballDetector].value < 1000))
 				{
 					shotTargReached = ( gSensor[shooterEnc].value > (target-shooterBreakOffset) );
 
@@ -253,7 +253,7 @@ task shooterTask()
 				{
 					writeDebugStreamLine("%d Ball gone: Val:%d, Time: %d Pos:%d, Targ:%d ", npgmtime, gSensor[ballDetector].value, npgmtime-shotStartTime, gSensor[shooterEnc].value, target);
 					setShooter(-90);
-					sleep(100);
+					sleep(75);
 					setShooter(0);
 					shooterShotCount--;
 					PlayTone(300, 50);
@@ -303,26 +303,29 @@ void moveAnglerSimple(int target)
 	float percentDecel = 0.95;
 	int decelSpeed = 68;
 	bool BtnAngleUp, BtnAngleUpLst;
+
+	setAngler(127);
 	while(SensorValue[anglerPoti]<(percentFull*target))
 	{
-		motor[angler] = 127
-		sleep(10);
-	}
-	while(SensorValue[anglerPoti]<(percentDecel*target))
-	{
-		int error = target-SensorValue[anglerPoti];
-		motor[angler] = error*0.3;
-		sleep(10);
-	}
-	while(SensorValue[anglerPoti]<target)
-	{
-		motor[angler] = -20;
 		sleep(10);
 	}
 
-	sleep(100);
-	motor[angler] = 15;
-	sleep(300);
+	while(SensorValue[anglerPoti]<(percentDecel*target))
+	{
+		int error = target-SensorValue[anglerPoti];
+		setAngler(error*0.3);
+		sleep(10);
+	}
+
+	setAngler(-20);
+	while(SensorValue[anglerPoti]<target)
+	{
+		sleep(10);
+	}
+
+	sleep(50);
+	setAngler(15);
+	//sleep(300);
 	writeDebugStreamLine("Intake Podi Value: %d",SensorValue[anglerPoti]);
 }
 
@@ -364,13 +367,14 @@ task intakeAnglerTask()
 		//writeDebugStreamLine("%d, Angler: %d", npgmtime, gSensor[anglerPoti].value);
 		if (RISING(BTN_ANGLER_TEST))
 		{
-			unsigned long startTime = npgmtime;
 			writeDebugStreamLine("%d Start Double Shot", npgmtime);
 			shootTrigger = true;
+			moveAngler(1300);
 			while (shootTrigger == true) sleep(10);
+			unsigned long startTime = npgmtime;
 			writeDebugStreamLine("%d Done first shot", npgmtime);
 			shootTrigger = true;
-			moveAngler(1500);
+			moveAngler(900);
 			while (shootTrigger == true) sleep(10);
 			writeDebugStreamLine("%d Double Shot took %d", npgmtime, npgmtime-startTime);
 		}

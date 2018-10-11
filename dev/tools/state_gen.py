@@ -88,7 +88,6 @@ for cnt in range (minPNum, maxPNum+1):
 	f.write("{ \\" + "\n" )
 	f.write("	if (machine##State != stateIn) \\" + "\n" )
 	f.write("	{ \\" + "\n" )
-	f.write("		machine##State = stateIn; \\" + "\n" )
 	f.write("		machine##Blocked = await; \\ \n")
 	f.write("		unsigned long curTime = npgmtime; \\" + "\n" )
 	f.write("		if (timeout <= 0) \\" + "\n" )
@@ -107,7 +106,10 @@ for cnt in range (minPNum, maxPNum+1):
 	f.write("		machine##VelSafetyDir = velDir; \\" + "\n" )
 	f.write("		machine##arg1Name = arg1In; \\" + "\n" )
 	f.write("		machine##arg2Name = arg2In;  \\" + "\n" )
+
 	f.write("		writeDebugStreamLine (\"%d\" #machine \"State:%d, TO:%d velS:%f, %d, %d\", npgmTime, machine##State, machine##timeout, machine##VelSafetyThresh, machine##arg1Name, machine##arg2Name); \\" + "\n" )
+	f.write("		machine##State = stateIn; \\" + "\n")
+
 	f.write("		if (await) MACHINE_AWAIT(machine); \\ \n")
 	f.write("	} \\" + "\n" )
 	f.write("} \\" + "\n" )

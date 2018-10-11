@@ -62,7 +62,6 @@ void machine##StateChange(int stateIn, bool await = 0, long timeout = -1, float 
 { \
 	if (machine##State != stateIn) \
 	{ \
-		machine##State = stateIn; \
 		machine##Blocked = await; \ 
 		unsigned long curTime = npgmtime; \
 		if (timeout <= 0) \
@@ -82,6 +81,7 @@ void machine##StateChange(int stateIn, bool await = 0, long timeout = -1, float 
 		machine##arg1Name = arg1In; \
 		machine##arg2Name = arg2In;  \
 		writeDebugStreamLine ("%d" #machine "State:%d, TO:%d velS:%f, %d, %d", npgmTime, machine##State, machine##timeout, machine##VelSafetyThresh, machine##arg1Name, machine##arg2Name); \
+		machine##State = stateIn; \
 		if (await) MACHINE_AWAIT(machine); \ 
 	} \
 } \
@@ -185,7 +185,6 @@ void machine##StateChange(int stateIn, bool await = 0, long timeout = -1, float 
 { \
 	if (machine##State != stateIn) \
 	{ \
-		machine##State = stateIn; \
 		machine##Blocked = await; \ 
 		unsigned long curTime = npgmtime; \
 		if (timeout <= 0) \
@@ -205,6 +204,7 @@ void machine##StateChange(int stateIn, bool await = 0, long timeout = -1, float 
 		machine##arg1Name = arg1In; \
 		machine##arg2Name = arg2In;  \
 		writeDebugStreamLine ("%d" #machine "State:%d, TO:%d velS:%f, %d, %d", npgmTime, machine##State, machine##timeout, machine##VelSafetyThresh, machine##arg1Name, machine##arg2Name); \
+		machine##State = stateIn; \
 		if (await) MACHINE_AWAIT(machine); \ 
 	} \
 } \
@@ -309,7 +309,6 @@ void machine##StateChange(int stateIn, bool await = 0, long timeout = -1, float 
 { \
 	if (machine##State != stateIn) \
 	{ \
-		machine##State = stateIn; \
 		machine##Blocked = await; \ 
 		unsigned long curTime = npgmtime; \
 		if (timeout <= 0) \
@@ -329,6 +328,7 @@ void machine##StateChange(int stateIn, bool await = 0, long timeout = -1, float 
 		machine##arg1Name = arg1In; \
 		machine##arg2Name = arg2In;  \
 		writeDebugStreamLine ("%d" #machine "State:%d, TO:%d velS:%f, %d, %d", npgmTime, machine##State, machine##timeout, machine##VelSafetyThresh, machine##arg1Name, machine##arg2Name); \
+		machine##State = stateIn; \
 		if (await) MACHINE_AWAIT(machine); \ 
 	} \
 } \
@@ -434,7 +434,6 @@ void machine##StateChange(int stateIn, bool await = 0, long timeout = -1, float 
 { \
 	if (machine##State != stateIn) \
 	{ \
-		machine##State = stateIn; \
 		machine##Blocked = await; \ 
 		unsigned long curTime = npgmtime; \
 		if (timeout <= 0) \
@@ -454,6 +453,7 @@ void machine##StateChange(int stateIn, bool await = 0, long timeout = -1, float 
 		machine##arg1Name = arg1In; \
 		machine##arg2Name = arg2In;  \
 		writeDebugStreamLine ("%d" #machine "State:%d, TO:%d velS:%f, %d, %d", npgmTime, machine##State, machine##timeout, machine##VelSafetyThresh, machine##arg1Name, machine##arg2Name); \
+		machine##State = stateIn; \
 		if (await) MACHINE_AWAIT(machine); \ 
 	} \
 } \
@@ -560,7 +560,6 @@ void machine##StateChange(int stateIn, bool await = 0, long timeout = -1, float 
 { \
 	if (machine##State != stateIn) \
 	{ \
-		machine##State = stateIn; \
 		machine##Blocked = await; \ 
 		unsigned long curTime = npgmtime; \
 		if (timeout <= 0) \
@@ -580,6 +579,7 @@ void machine##StateChange(int stateIn, bool await = 0, long timeout = -1, float 
 		machine##arg1Name = arg1In; \
 		machine##arg2Name = arg2In;  \
 		writeDebugStreamLine ("%d" #machine "State:%d, TO:%d velS:%f, %d, %d", npgmTime, machine##State, machine##timeout, machine##VelSafetyThresh, machine##arg1Name, machine##arg2Name); \
+		machine##State = stateIn; \
 		if (await) MACHINE_AWAIT(machine); \ 
 	} \
 } \
@@ -687,7 +687,6 @@ void machine##StateChange(int stateIn, bool await = 0, long timeout = -1, float 
 { \
 	if (machine##State != stateIn) \
 	{ \
-		machine##State = stateIn; \
 		machine##Blocked = await; \ 
 		unsigned long curTime = npgmtime; \
 		if (timeout <= 0) \
@@ -707,6 +706,7 @@ void machine##StateChange(int stateIn, bool await = 0, long timeout = -1, float 
 		machine##arg1Name = arg1In; \
 		machine##arg2Name = arg2In;  \
 		writeDebugStreamLine ("%d" #machine "State:%d, TO:%d velS:%f, %d, %d", npgmTime, machine##State, machine##timeout, machine##VelSafetyThresh, machine##arg1Name, machine##arg2Name); \
+		machine##State = stateIn; \
 		if (await) MACHINE_AWAIT(machine); \ 
 	} \
 } \

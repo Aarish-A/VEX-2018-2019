@@ -16,7 +16,9 @@
 
 int nBatteryLevel;
 
-//#define FORCE_AUTO 1
+#define IGNORE_DISABLE 1
+
+#define FORCE_AUTO 1
 
 #define DATALOG_BATTERY -1
 
@@ -52,8 +54,8 @@ int nBatteryLevel;
 void setDrive(word left, word right)
 {
 	//writeDebugStreamLine("%d l:%d, r:%d", npgmtime, left, right);
-	gMotor[driveLP].power = gMotor[driveLS].power = LIM_TO_VAL(left, 127);
-	gMotor[driveRP].power = gMotor[driveRS].power = LIM_TO_VAL(right, 127);
+	gMotor[driveLY].power = gMotor[driveL].power = LIM_TO_VAL(left, 127);
+	gMotor[driveRY].power = gMotor[driveR].power = LIM_TO_VAL(right, 127);
 }
 
 CREATE_MACHINE_3(drive, trackL, Idle, Break, Manual, float, Vel, int, Power);
@@ -205,7 +207,7 @@ int shooterShotCount;
 
 void setShooter(word val)
 {
-	motor[shooterA] = motor[shooterRevSplit] = LIM_TO_VAL(val, 127);
+	motor[shooter] = motor[shooterY] = LIM_TO_VAL(val, 127);
 }
 
 task shooterSet()
@@ -237,6 +239,10 @@ task shooterSet()
 				setShooter(0);
 				break;
 			case shooterReload:
+				shooterTimeout = 10;
+
+				writeDebugStreamLine("Shooter TO: %d", shooterTimeout);
+
 				setShooter(127);
 				LOG(shooter)("Setup shot #%d encoder start= %d", shooterShotCount,gSensor[shooterEnc].value);
 				int target = shooterShotCount * SHOOTER_RELOAD_VAL;
@@ -393,13 +399,18 @@ task autonomous()
 	startTasks();
 	writeDebugStreamLine("%d Start Autonomous, %d", npgmtime, nBatteryLevel);
 
+	startTasks();
+	sleep(100);
+	writeDebugStreamLine("%d Starting", npgmtime);
+	shooterStateChange(shooterReload);
+
 	sCycleData cycle;
 	initCycle(cycle, 10, "auto");
 	while(true)
 	{
 		endCycle(cycle);
 	}
-
+	stopTasks();
 	tStop(autoMotorSensorUpdateTask);
 	stopTasks();
 }
