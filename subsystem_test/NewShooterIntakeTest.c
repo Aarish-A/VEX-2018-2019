@@ -164,30 +164,7 @@ task shooterTask()
 
 		if (vexRt[BTN_SHOOT])//RISING(BTN_SHOOT) )
 		{
-			/*
-			if (shooterShotCount == 0)
-			{
-				setShooter(20);
-				sleep(200);
-				setShooter(-30);
-				sleep(50);
-				do
-				{
-					tHog();
-					velocityCheck(shooterEnc, 10);
-					sleep(10);
-					writeDebugStreamLine("%d, sR-%d, s-%d, vel - %f", npgmtime, SensorValue[shooterEnc], gSensor[shooterEnc].value, gSensor[shooterEnc].velocity);
-					tRelease();
-				} while(gSensor[shooterEnc].velocity <= -0.0001 || gSensor[shooterEnc].lstVelocity <= -0.0001)
-				int endPos = gSensor[shooterEnc].value;
-				setShooter(30);
-				while((gSensor[shooterEnc].value - endPos) < 32) sleep(10);
-				setShooter(-30);
-				sleep(50);
-				setShooter(0);
-				sleep(20);
-				resetQuadratureEncoder(shooterEnc);
-			} */
+
 
 			int target = shooterShotCount * SHOOTER_RELOAD_VAL;
 			if (gSensor[shooterEnc].value < (target+SHOOTER_RELOAD_POS-10)) //Should only get triggered when shooterShotCount == 0
