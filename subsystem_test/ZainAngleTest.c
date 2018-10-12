@@ -25,7 +25,7 @@ int gShooterPow;
 int shooterShotCount;
 task angleChange()
 {
-	int target = 1230;
+	int target = 1500;
 float percentFull = 0.85;
 float percentDecel = 0.95;
 int decelSpeed = 68;
@@ -49,13 +49,13 @@ int decelSpeed = 68;
 
 	sleep(100);
 	motor[angler] = 15;
-	//sleep(300);
+	sleep(300);
 	writeDebugStreamLine("Intake Podi Value: %d",SensorValue[anglerPoti]);
 	return;
 }
 task angleChangeB()
 {
-	int target = 1050;
+	int target = 1000;
 float percentFull = 0.85;
 float percentDecel = 0.95;
 int decelSpeed = 68;
@@ -79,7 +79,7 @@ int decelSpeed = 68;
 
 	sleep(100);
 	motor[angler] = 15;
-	//sleep(300);
+	sleep(300);
 	writeDebugStreamLine("Intake Podi Value: %d",SensorValue[anglerPoti]);
 	return;
 }
@@ -136,16 +136,15 @@ task shooterTask()
 				while (!vexRT[BTN_SHOOT]) sleep(10);
 			}
 
-			//if(SensorValue[ballDetector] > 1000)
-			//{
-			//	if (!cancelledPrint)
-			//	{
-			//		writeDebugStreamLine("%d No Ball - Shot Cancelled");
-			//		cancelledPrint = true;
-			//	}
-			//}
-			//else
-			if(SensorValue[ballDetector] >= 250 & SensorValue[ballDetector] <= 252)
+			if(SensorValue[ballDetector] > 1000)
+			{
+				if (!cancelledPrint)
+				{
+					writeDebugStreamLine("%d No Ball - Shot Cancelled");
+					cancelledPrint = true;
+				}
+			}
+			else if(SensorValue[ballDetector] >= 250 & SensorValue[ballDetector] <= 252)
 			{
 				if (!cancelledPrint)
 				{
