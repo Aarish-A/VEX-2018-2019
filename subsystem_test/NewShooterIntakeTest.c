@@ -292,38 +292,6 @@ task shooterTask()
 	//stopTask(printEnc);
 }
 
-
-//task shooterSafety
-//{
-//	unsigned long highValStartTime = 0;
-//	while (true)
-//	{
-//		if (abs(gMotor[shooter].power) >= 100 || abs(gMotor[shooterY].power) >= 100)
-//			highValStartTime = npgmtime;
-//		else
-//			highValStartTime = 0;
-
-//		unsigned long elpsdTime = npgmtime - highValStartTime;
-//		if (highValStartTime != 0 && elpsdTime > 1200)
-//		{
-//			setShooter(0);
-//			stopTask(updateVals);
-//			stopTask(shooterTask);
-//			motor[angler] = 0;
-
-//			sleep(500);
-//		}
-
-//		//Datalog
-//		datalogDataGroupStart();
-//		datalogAddValue(1, gSensor[shooterEnc].value);
-//		datalogAddValue(2, gSensor[ballDetector].value);
-//		datalogDataGroupEnd();
-
-//		sleep(10);
-//	}
-//}
-
 void setAngler(word val)
 {
 	gMotor[angler].power = LIM_TO_VAL(val, 127);
@@ -417,6 +385,7 @@ task intakeAnglerTask()
 		else
 		{
 			setAngler(9);
+			setShooter(127);
 		}
 		sleep(10);
 	}
@@ -459,6 +428,41 @@ task updateVals()
 	}
 }
 
+task shooterSafety
+{
+	int highValCount = 0;
+	while (true)
+	{
+		//if (abs(Motor[shooter]) >= 100 || abs(Motor[shooterY]) >= 100)
+		if (abs(gMotor[shooter].power) >= 100 || abs(gMotor[shooterY].power) >= 100)
+		{
+			writeDebugStreamLine("%d High val");
+			highValCount++;
+		}
+		else
+			highValCount = 0;
+
+		if (highValCount > 12)
+		{
+			setShooter(0);
+			stopTask(shooterTask);
+			stopTask(updateVals);
+			motor[angler] = 0;
+
+			sleep(500);
+		}
+
+		//Datalog
+		datalogDataGroupStart();
+		datalogAddValue(1, gSensor[shooterEnc].value);
+		datalogAddValue(2, gSensor[ballDetector].value);
+		datalogDataGroupEnd();
+
+		sleep(10);
+	}
+}
+
+
 task main()
 {
 	clearDebugStream();
@@ -481,12 +485,14 @@ task main()
 	startTask(intakeAnglerTask);
 	startTask(intakeTask);
 	startTask(shooterTask);
-	//startTask(shooterSafety);
+	startTask(shooterSafety);
 	startTask(driveTask);
 	while(true) sleep(10);
 	stopTask(intakeAnglerTask);
 	stopTask(shooterTask);
 	stopTask(intakeTask);
-	//stopTask(shooterSafety);
+	stopTask(shooterSafety);
 	stopTask(driveTask);
+
+	stopTask(updateVals);
 }
