@@ -43,8 +43,8 @@
 //#define LIM_TO_VAL(input, val) (abs(input) > (val) ? (val) * sgn(input) : (input))
 #define SHOOTER_GEAR_RATIO 1.0
 #define SHOOTER_RELOAD_VAL (360.0*SHOOTER_GEAR_RATIO)
-#define SHOOTER_RELOAD_HOLD 0//11
-#define SHOOTER_RELOAD_POS 110//145
+#define SHOOTER_RELOAD_HOLD 11
+#define SHOOTER_RELOAD_POS 145
 
 int gShooterPow;
 /*
@@ -78,7 +78,7 @@ task intakeTask()
 		//buttonUp = vexRT[BTN_INTAKE_UP];
 		//buttonDown = vexRT[BTN_INTAKE_DOWN];
 
-		//writeDebugStreamLine("spindir=%d", spinDir);
+		////writeDebugStreamLine("spindir=%d", spinDir);
 		if (RISING(BTN_INTAKE_UP))
 		{
 			if (spinDir != spinStop)
@@ -97,15 +97,15 @@ task intakeTask()
 		switch (spinDir)
 		{
 			case spinStop:
-				//writeDebugStreamLine("%d Spin stop", npgmtime);
+				////writeDebugStreamLine("%d Spin stop", npgmtime);
 				motor[intake] = 0;
 				break;
 			case spinUp:
-				//writeDebugStreamLine("%d Spin up", npgmtime);
+				////writeDebugStreamLine("%d Spin up", npgmtime);
 				motor[intake] = 127;
 				break;
 			case spinDown:
-				//writeDebugStreamLine("%d Spin down", npgmtime);
+				////writeDebugStreamLine("%d Spin down", npgmtime);
 				motor[intake] = -127;
 				break;
 		}
@@ -128,16 +128,16 @@ void setShooter(word val)
 void reloadShooter()
 {
 	setShooter(127);
-	writeDebugStreamLine("Setup shot #%d encoder start= %d", shooterShotCount,gSensor[shooterEnc].value);
+	//writeDebugStreamLine("Setup shot #%d encoder start= %d", shooterShotCount,gSensor[shooterEnc].value);
 	int target = shooterShotCount * SHOOTER_RELOAD_VAL;
 	unsigned long reloadStartTime = npgmtime;
 	while (gSensor[shooterEnc].value < (target + SHOOTER_RELOAD_POS))
 	{
 		sleep(10);
-		//writeDebugStreamLine("Enc: %d", gSensor[shooterEnc].value);
+		////writeDebugStreamLine("Enc: %d", gSensor[shooterEnc].value);
 	}
-	writeDebugStreamLine("Enc: %d", gSensor[shooterEnc].value);
-	writeDebugStreamLine("Reload time = %d", npgmtime-reloadStartTime);
+	//writeDebugStreamLine("Enc: %d", gSensor[shooterEnc].value);
+	//writeDebugStreamLine("Reload time = %d", npgmtime-reloadStartTime);
 	setShooter(SHOOTER_RELOAD_HOLD);
 }
 
@@ -163,7 +163,7 @@ task shooterTask()
 	shooterShotCount = 0;
 	resetQuadratureEncoder(shooterEnc);
 
-	writeDebugStreamLine("Start");
+	//writeDebugStreamLine("Start");
 	const float breakKp = -25.0;
 	float shooterBreakOffset = 6;
 
@@ -193,7 +193,7 @@ task shooterTask()
 			//		tHog();
 			//		velocityCheck(shooterEnc);
 			//		sleep(10);
-			//		writeDebugStreamLine("%d, sR-%d, s-%d, vel - %f", npgmtime, SensorValue[shooterEnc], gSensor[shooterEnc].value, gSensor[shooterEnc].velocity);
+			//		//writeDebugStreamLine("%d, sR-%d, s-%d, vel - %f", npgmtime, SensorValue[shooterEnc], gSensor[shooterEnc].value, gSensor[shooterEnc].velocity);
 			//		tRelease();
 			//	} while(gSensor[shooterEnc].velocity <= -0.001 || gSensor[shooterEnc].lstVelocity <= -0.001)
 			//	endPos = gSensor[shooterEnc].value;
@@ -217,7 +217,7 @@ task shooterTask()
 			//{
 			//	if (!cancelledPrint)
 			//	{
-			//		writeDebugStreamLine("%d No Ball - Shot Cancelled");
+			//		//writeDebugStreamLine("%d No Ball - Shot Cancelled");
 			//		cancelledPrint = true;
 			//	}
 			//}
@@ -226,7 +226,7 @@ task shooterTask()
 			{
 				if (!cancelledPrint)
 				{
-					writeDebugStreamLine("%d Ball Detector Unplugged - Shot Cancelled");
+					//writeDebugStreamLine("%d Ball Detector Unplugged - Shot Cancelled");
 					cancelledPrint = true;
 				}
 			}
@@ -238,7 +238,7 @@ task shooterTask()
 				shooterShotCount++;
 				target = shooterShotCount * SHOOTER_RELOAD_VAL;
 				setShooter(127);
-				writeDebugStreamLine("Fired shot #%d at %d, Tgt: %d, Enc: %d, Err: %d", shooterShotCount, nPgmTime, gSensor[shooterEnc].value, target, target - gSensor[shooterEnc].value);
+				//writeDebugStreamLine("Fired shot #%d at %d, Tgt: %d, Enc: %d, Err: %d", shooterShotCount, nPgmTime, gSensor[shooterEnc].value, target, target - gSensor[shooterEnc].value);
 
 				shotTargReached = ( gSensor[shooterEnc].value > (target-shooterBreakOffset) );
 				while (!shotTargReached && (gSensor[shooterEnc].value < (target-55) || gSensor[shooterEnc].value > (target-15) || gSensor[ballDetector].value < 1000))
@@ -251,7 +251,7 @@ task shooterTask()
 				}
 				if (!shotTargReached)
 				{
-					writeDebugStreamLine("%d Ball gone: Val:%d, Time: %d Pos:%d, Targ:%d ", npgmtime, gSensor[ballDetector].value, npgmtime-shotStartTime, gSensor[shooterEnc].value, target);
+					//writeDebugStreamLine("%d Ball gone: Val:%d, Time: %d Pos:%d, Targ:%d ", npgmtime, gSensor[ballDetector].value, npgmtime-shotStartTime, gSensor[shooterEnc].value, target);
 					setShooter(-90);
 					sleep(75);
 					setShooter(0);
@@ -261,28 +261,28 @@ task shooterTask()
 				}
 				else
 				{
-					writeDebugStreamLine("%d Shot done accelerating: Time: %d Pos:%d ", npgmtime, npgmtime-shotStartTime, gSensor[shooterEnc].value);
+					//writeDebugStreamLine("%d Shot done accelerating: Time: %d Pos:%d ", npgmtime, npgmtime-shotStartTime, gSensor[shooterEnc].value);
 					setShooter(-22);
 					unsigned long startBreakTime = npgmtime;
 					while ((npgmtime-startBreakTime) < 80)
 					{
-						writeDebugStreamLine("%d Break", npgmtime);
+						//writeDebugStreamLine("%d Break", npgmtime);
 						if (gSensor[ballDetector].value > 2000)
 						{
-							writeDebugStreamLine("	%d Ball hit: Time: %d", npgmtime, npgmtime-shotStartTime);
+							//writeDebugStreamLine("	%d Ball hit: Time: %d", npgmtime, npgmtime-shotStartTime);
 						}
 						sleep(10);
 					}
 					//sleep(80);
-					writeDebugStreamLine("Break done at %d, Enc: %d", nPgmTime, gSensor[shooterEnc].value);
+					//writeDebugStreamLine("Break done at %d, Enc: %d", nPgmTime, gSensor[shooterEnc].value);
 					setShooter(0);
-					writeDebugStreamLine("Hold done at %d, Tgt: %d, Enc: %d, Err: %d", nPgmTime, target, gSensor[shooterEnc].value, target - gSensor[shooterEnc].value);
-					//writeDebugStreamLine("%dStart break %d, %d", npgmtime, shooterShotCount, gSensor[shooterEnc].value);
+					//writeDebugStreamLine("Hold done at %d, Tgt: %d, Enc: %d, Err: %d", nPgmTime, target, gSensor[shooterEnc].value, target - gSensor[shooterEnc].value);
+					////writeDebugStreamLine("%dStart break %d, %d", npgmtime, shooterShotCount, gSensor[shooterEnc].value);
 					//sleep(50);
 					shootTrigger = false;
 					writeDebugStreamLine("%d Shoot Trigger False - shot end", npgmtime);
 					reloadShooter();
-					writeDebugStreamLine("%d Total Shot Time:%d", npgmtime, npgmtime-shotStartTime);
+					//writeDebugStreamLine("%d Total Shot Time:%d", npgmtime, npgmtime-shotStartTime);
 				}
 			}
 		}
@@ -291,6 +291,38 @@ task shooterTask()
 	}
 	//stopTask(printEnc);
 }
+
+
+//task shooterSafety
+//{
+//	unsigned long highValStartTime = 0;
+//	while (true)
+//	{
+//		if (abs(gMotor[shooter].power) >= 100 || abs(gMotor[shooterY].power) >= 100)
+//			highValStartTime = npgmtime;
+//		else
+//			highValStartTime = 0;
+
+//		unsigned long elpsdTime = npgmtime - highValStartTime;
+//		if (highValStartTime != 0 && elpsdTime > 1200)
+//		{
+//			setShooter(0);
+//			stopTask(updateVals);
+//			stopTask(shooterTask);
+//			motor[angler] = 0;
+
+//			sleep(500);
+//		}
+
+//		//Datalog
+//		datalogDataGroupStart();
+//		datalogAddValue(1, gSensor[shooterEnc].value);
+//		datalogAddValue(2, gSensor[ballDetector].value);
+//		datalogDataGroupEnd();
+
+//		sleep(10);
+//	}
+//}
 
 void setAngler(word val)
 {
@@ -326,7 +358,7 @@ void moveAnglerSimple(int target)
 	sleep(50);
 	setAngler(15);
 	//sleep(300);
-	writeDebugStreamLine("Intake Podi Value: %d",SensorValue[anglerPoti]);
+	//writeDebugStreamLine("Intake Podi Value: %d",SensorValue[anglerPoti]);
 }
 
 void moveAngler(int target)
@@ -364,19 +396,19 @@ task intakeAnglerTask()
 {
 	while (true)
 	{
-		//writeDebugStreamLine("%d, Angler: %d", npgmtime, gSensor[anglerPoti].value);
+		////writeDebugStreamLine("%d, Angler: %d", npgmtime, gSensor[anglerPoti].value);
 		if (RISING(BTN_ANGLER_TEST))
 		{
-			writeDebugStreamLine("%d Start Double Shot", npgmtime);
+			//writeDebugStreamLine("%d Start Double Shot", npgmtime);
 			shootTrigger = true;
-			moveAngler(1300);
+			moveAngler(1250);
 			while (shootTrigger == true) sleep(10);
 			unsigned long startTime = npgmtime;
-			writeDebugStreamLine("%d Done first shot", npgmtime);
+			//writeDebugStreamLine("%d Done first shot", npgmtime);
 			shootTrigger = true;
-			moveAngler(900);
+			moveAngler(1030);
 			while (shootTrigger == true) sleep(10);
-			writeDebugStreamLine("%d Double Shot took %d", npgmtime, npgmtime-startTime);
+			//writeDebugStreamLine("%d Double Shot took %d", npgmtime, npgmtime-startTime);
 		}
 		else if (abs(gJoy[JOY_ANGLER].cur) > 10 && (gSensor[anglerPoti].value > 510 && gSensor[anglerPoti].value < 3037))
 		{
@@ -411,7 +443,7 @@ task driveTask()
 
 task updateVals()
 {
-	writeDebugStreamLine("%d Start update", npgmtime);
+	//writeDebugStreamLine("%d Start update", npgmtime);
 	sCycleData cycle;
 	initCycle(cycle, 10, "UpdateVals");
 	while (true)
@@ -421,7 +453,7 @@ task updateVals()
 		updateMotors();
 		updateSensorInputs();
 		updateSensorOutputs();
-		//writeDebugStreamLine("Update-shooter:%d", gSensor[shooterEnc].value);
+		////writeDebugStreamLine("Update-shooter:%d", gSensor[shooterEnc].value);
 		tRelease();
 		endCycle(cycle);
 	}
@@ -449,12 +481,12 @@ task main()
 	startTask(intakeAnglerTask);
 	startTask(intakeTask);
 	startTask(shooterTask);
-	startTask(shooterMonitor);
+	//startTask(shooterSafety);
 	startTask(driveTask);
 	while(true) sleep(10);
 	stopTask(intakeAnglerTask);
 	stopTask(shooterTask);
 	stopTask(intakeTask);
-	stopTask(shooterMonitor);
+	//stopTask(shooterSafety);
 	stopTask(driveTask);
 }

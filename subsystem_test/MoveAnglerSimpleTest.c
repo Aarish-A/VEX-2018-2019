@@ -62,7 +62,7 @@ task main()
 
 		if (bttn && !bttnLst)
 		{
-			moveAnglerSimple(2000);
+			moveAnglerSimple(1400);
 		}
 		else
 		{
