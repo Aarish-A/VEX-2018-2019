@@ -49,8 +49,8 @@ int decelSpeed = 68;
 
 	sleep(100);
 	motor[angler] = 15;
+	writeDebugStreamLine("Intake Podi Value: %d",Senso	rValue[anglerPoti]);
 	sleep(300);
-	writeDebugStreamLine("Intake Podi Value: %d",SensorValue[anglerPoti]);
 	return;
 }
 task angleChangeB()
@@ -79,8 +79,8 @@ int decelSpeed = 68;
 
 	sleep(100);
 	motor[angler] = 15;
-	sleep(300);
 	writeDebugStreamLine("Intake Podi Value: %d",SensorValue[anglerPoti]);
+	sleep(300);
 	return;
 }
 void setShooter(int shootSpeed)

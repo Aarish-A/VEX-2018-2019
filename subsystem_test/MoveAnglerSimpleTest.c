@@ -21,36 +21,106 @@ void setAngler(word val)
 	motor[angler] = LIM_TO_VAL(val, 127);
 }
 
+void moveAngler(int target)
+{
+	int bias  = 15;
+	float kP = 0.5;
+
+
+}
+
 void moveAnglerSimple(int target)
 {
-	float percentFull = 0.85;
+	unsigned long moveStartTime = npgmtime;
+	float percentFull = 0.40;
 	float percentDecel = 0.95;
+	float percentBreak = 0.98;
 	int decelSpeed = 68;
 	bool BtnAngleUp, BtnAngleUpLst;
 
-	setAngler(127);
-	while(SensorValue[anglerPoti]<(percentFull*target))
+	int bias = 7;
+
+	int dir = sgn(target - SensorValue[anglerPoti]);
+
+	if (dir == 1)
 	{
+		setAngler(127);
+		while(SensorValue[anglerPoti]<(percentFull*target))
+		{
+			sleep(10);
+		}
+
+		unsigned long decelStartTime = npgmtime;
+		while(SensorValue[anglerPoti]<(percentDecel*target))
+		{
+			int error = target-SensorValue[anglerPoti];
+			setAngler((error*0.22));
+
+			sleep(10);
+		}
+
+		//while(SensorValue[anglerPoti] < (target*percentBreak))
+		//{
+		//	setAngler(-20);
+		//	sleep(10);
+		//}
+		setAngler(-20);
+		int sen = 0;
+		int lstSen = 0;
+		unsigned long time, lstTime, tElpsdTime;
+		unsigned long startBreakTime = npgmtime;
+		float vel;
+		do
+		{
+			time = npgmtime;
+			sen = SensorValue[anglerPoti];
+
+			int dif = (sen-lstSen);
+			unsigned long elpsdTime = time - lstTime;
+			writeDebugStreamLine("%d time: %d, dif:%d, cur:%d - lst:%d v:%f", npgmtime, elpsdTime, dif, sen, lstSen, dif/elpsdTime);
+
+			if (elpsdTime > 0)
+				vel = (float)(dif)/(elpsdTime);
+			else
+				vel =  0;
+
+			int power = vel * -7;
+			setAngler(power);
+
+			lstSen = sen;
+			writeDebugStreamLine("%d Break, vel: %f, pow: %d", npgmtime, vel, power);
+			lstTime = time;
+			sleep(10);
+
+			tElpsdTime = npgmtime - startBreakTime;
+		}while (SensorValue[anglerPoti] < (target*percentBreak) && vel >= -0.0001 && tElpsdTime < 100 );
+
+		setAngler(9);
+		sleep(300);
+		writeDebugStreamLine("Intake Podi Value: %d",SensorValue[anglerPoti]);
+	}
+	writeDebugStreamLine("Move took %d", npgmtime-moveStartTime);
+
+}
+
+void moveAngler(int target)
+{ // power down while distance > vel * K, break
+	int bias = 10;
+	int kP = 0.05;
+
+	setAngler(-25);
+	unsigned long startTime = npgmtime;
+	while((npgmtime-startTime) < 250 && SensorValue[anglerPoti] > (target + 300)) sleep(10);
+
+	while(SensorValue[anglerPoti] > (target + 10))
+	{
+		float power = ((target - SensorValue[anglerPoti]) * kP) + bias;
+		setAngler(power);
 		sleep(10);
 	}
+	setAngler(12);
+	//break?
 
-	while(SensorValue[anglerPoti]<(percentDecel*target))
-	{
-		int error = target-SensorValue[anglerPoti];
-		setAngler(error*0.3);
-		sleep(10);
-	}
-
-	setAngler(-20);
-	while(SensorValue[anglerPoti]<target)
-	{
-		sleep(10);
-	}
-
-	sleep(100);
-	motor[angler] = 15;
-	//sleep(300);
-	writeDebugStreamLine("Intake Podi Value: %d",SensorValue[anglerPoti]);
 }
 
 task main()
@@ -62,7 +132,8 @@ task main()
 
 		if (bttn && !bttnLst)
 		{
-			moveAnglerSimple(1400);
+			//moveAnglerSimple(1200); //1200, 1060
+			moveAnglerSimple(1200);
 		}
 		else
 		{
