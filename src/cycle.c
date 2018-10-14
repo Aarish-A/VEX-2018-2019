@@ -16,8 +16,13 @@ void endCycle(sCycleData& data)
 	unsigned long now = nPgmTime;
 	data.time = now - data.startTime;
 	if (data.time <= data.period)
+	{
 		sleep(data.period - data.time);
-	//else if (data.time > data.period)
-	//	writeDebugStreamLine("%d Cycle Took %d instead of %d", npgmtime, data.time, data.period);
+	}
+	else if (data.time > data.period)
+	{
+		//writeDebugStream(data.name);
+		writeDebugStreamLine(" %d Cycle Took %d instead of %d", nPgmTime, data.time, data.period);
+	}
 	data.startTime = nPgmTime;
 }
