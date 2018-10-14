@@ -4,7 +4,7 @@
 #define NOT_T_O(machineIn) ( (machineIn##Timeout <= 0)? 1 : (npgmTime < machineIn##Timeout) ) 
  
 #define WHILE(machineIn, condition) machineIn##Blocked = true; \ 
-	while( NOT_T_O(machineIn) && machineIn##VelSafetyCount < 10 && (condition) ) 
+	while( (NOT_T_O(machineIn) && machineIn##VelSafetyCount < 10) && (condition) ) 
  
 #define DO_WHILE(machineIn, condition) while( NOT_T_O(machineIn) && machineIn##VelSafetyCount < 10 && (condition) ); \ 
 	machineIn##Blocked = true 
@@ -62,6 +62,7 @@ void machine##StateChange(int stateIn, bool await = 0, long timeout = -1, float 
 { \
 	if (machine##State != stateIn) \
 	{ \
+	tHog(); \ 
 		machine##Blocked = await; \ 
 		unsigned long curTime = npgmtime; \
 		if (timeout <= 0) \
@@ -80,8 +81,9 @@ void machine##StateChange(int stateIn, bool await = 0, long timeout = -1, float 
 		machine##VelSafetyDir = velDir; \
 		machine##arg1Name = arg1In; \
 		machine##arg2Name = arg2In;  \
-		writeDebugStreamLine ("%d" #machine "State:%d, TO:%d velS:%f, %d, %d", npgmTime, machine##State, machine##timeout, machine##VelSafetyThresh, machine##arg1Name, machine##arg2Name); \
+		writeDebugStreamLine ("%d %d" #machine "State:%d, TO:%d velS:%f, %d, %d", npgmTime, curTime, machine##State, machine##timeout, machine##VelSafetyThresh, machine##arg1Name, machine##arg2Name); \
 		machine##State = stateIn; \
+	tRelease(); \ 
 		if (await) MACHINE_AWAIT(machine); \ 
 	} \
 } \
@@ -140,11 +142,13 @@ void machine##VelSafetyCheck (tVelType velType = velSensor) \
 					} \
 				} \
 		} \ 
+		tRelease(); \ 
 	} \
 } \
 \
-void machine##SafetyCheck(int timedOutState = machine##state0, type1 machine##arg1Name = -1, type2 machine##arg2Name = -1) \
+bool machine##SafetyCheck(int timedOutState = machine##state0, type1 machine##arg1Name = -1, type2 machine##arg2Name = -1) \
 { \
+		tHog(); \
 		bool timedOut = false; \
 		bool velSafety = false; \
 		if (!NOT_T_O(machine)) \
@@ -156,7 +160,13 @@ void machine##SafetyCheck(int timedOutState = machine##state0, type1 machine##ar
 		{ \
 			writeDebugStreamLine("%d" #machine "safety: Timedout? %d at %d VelSafety? %d", npgmTime, timedout, machine##Timeout, velSafety); \
 			machine##StateChange(timedOutState, false, machine##arg1Name, machine##arg2Name); \
+			return true; \
 		} \
+		else \
+		{ \
+			return false; \
+		} \
+		tRelease(); \
 }  
 
 /*	Macro for Machine w/ 4 States	*/
@@ -185,6 +195,7 @@ void machine##StateChange(int stateIn, bool await = 0, long timeout = -1, float 
 { \
 	if (machine##State != stateIn) \
 	{ \
+	tHog(); \ 
 		machine##Blocked = await; \ 
 		unsigned long curTime = npgmtime; \
 		if (timeout <= 0) \
@@ -203,8 +214,9 @@ void machine##StateChange(int stateIn, bool await = 0, long timeout = -1, float 
 		machine##VelSafetyDir = velDir; \
 		machine##arg1Name = arg1In; \
 		machine##arg2Name = arg2In;  \
-		writeDebugStreamLine ("%d" #machine "State:%d, TO:%d velS:%f, %d, %d", npgmTime, machine##State, machine##timeout, machine##VelSafetyThresh, machine##arg1Name, machine##arg2Name); \
+		writeDebugStreamLine ("%d %d" #machine "State:%d, TO:%d velS:%f, %d, %d", npgmTime, curTime, machine##State, machine##timeout, machine##VelSafetyThresh, machine##arg1Name, machine##arg2Name); \
 		machine##State = stateIn; \
+	tRelease(); \ 
 		if (await) MACHINE_AWAIT(machine); \ 
 	} \
 } \
@@ -263,11 +275,13 @@ void machine##VelSafetyCheck (tVelType velType = velSensor) \
 					} \
 				} \
 		} \ 
+		tRelease(); \ 
 	} \
 } \
 \
-void machine##SafetyCheck(int timedOutState = machine##state0, type1 machine##arg1Name = -1, type2 machine##arg2Name = -1) \
+bool machine##SafetyCheck(int timedOutState = machine##state0, type1 machine##arg1Name = -1, type2 machine##arg2Name = -1) \
 { \
+		tHog(); \
 		bool timedOut = false; \
 		bool velSafety = false; \
 		if (!NOT_T_O(machine)) \
@@ -279,7 +293,13 @@ void machine##SafetyCheck(int timedOutState = machine##state0, type1 machine##ar
 		{ \
 			writeDebugStreamLine("%d" #machine "safety: Timedout? %d at %d VelSafety? %d", npgmTime, timedout, machine##Timeout, velSafety); \
 			machine##StateChange(timedOutState, false, machine##arg1Name, machine##arg2Name); \
+			return true; \
 		} \
+		else \
+		{ \
+			return false; \
+		} \
+		tRelease(); \
 }  
 
 /*	Macro for Machine w/ 5 States	*/
@@ -309,6 +329,7 @@ void machine##StateChange(int stateIn, bool await = 0, long timeout = -1, float 
 { \
 	if (machine##State != stateIn) \
 	{ \
+	tHog(); \ 
 		machine##Blocked = await; \ 
 		unsigned long curTime = npgmtime; \
 		if (timeout <= 0) \
@@ -327,8 +348,9 @@ void machine##StateChange(int stateIn, bool await = 0, long timeout = -1, float 
 		machine##VelSafetyDir = velDir; \
 		machine##arg1Name = arg1In; \
 		machine##arg2Name = arg2In;  \
-		writeDebugStreamLine ("%d" #machine "State:%d, TO:%d velS:%f, %d, %d", npgmTime, machine##State, machine##timeout, machine##VelSafetyThresh, machine##arg1Name, machine##arg2Name); \
+		writeDebugStreamLine ("%d %d" #machine "State:%d, TO:%d velS:%f, %d, %d", npgmTime, curTime, machine##State, machine##timeout, machine##VelSafetyThresh, machine##arg1Name, machine##arg2Name); \
 		machine##State = stateIn; \
+	tRelease(); \ 
 		if (await) MACHINE_AWAIT(machine); \ 
 	} \
 } \
@@ -387,11 +409,13 @@ void machine##VelSafetyCheck (tVelType velType = velSensor) \
 					} \
 				} \
 		} \ 
+		tRelease(); \ 
 	} \
 } \
 \
-void machine##SafetyCheck(int timedOutState = machine##state0, type1 machine##arg1Name = -1, type2 machine##arg2Name = -1) \
+bool machine##SafetyCheck(int timedOutState = machine##state0, type1 machine##arg1Name = -1, type2 machine##arg2Name = -1) \
 { \
+		tHog(); \
 		bool timedOut = false; \
 		bool velSafety = false; \
 		if (!NOT_T_O(machine)) \
@@ -403,7 +427,13 @@ void machine##SafetyCheck(int timedOutState = machine##state0, type1 machine##ar
 		{ \
 			writeDebugStreamLine("%d" #machine "safety: Timedout? %d at %d VelSafety? %d", npgmTime, timedout, machine##Timeout, velSafety); \
 			machine##StateChange(timedOutState, false, machine##arg1Name, machine##arg2Name); \
+			return true; \
 		} \
+		else \
+		{ \
+			return false; \
+		} \
+		tRelease(); \
 }  
 
 /*	Macro for Machine w/ 6 States	*/
@@ -434,6 +464,7 @@ void machine##StateChange(int stateIn, bool await = 0, long timeout = -1, float 
 { \
 	if (machine##State != stateIn) \
 	{ \
+	tHog(); \ 
 		machine##Blocked = await; \ 
 		unsigned long curTime = npgmtime; \
 		if (timeout <= 0) \
@@ -452,8 +483,9 @@ void machine##StateChange(int stateIn, bool await = 0, long timeout = -1, float 
 		machine##VelSafetyDir = velDir; \
 		machine##arg1Name = arg1In; \
 		machine##arg2Name = arg2In;  \
-		writeDebugStreamLine ("%d" #machine "State:%d, TO:%d velS:%f, %d, %d", npgmTime, machine##State, machine##timeout, machine##VelSafetyThresh, machine##arg1Name, machine##arg2Name); \
+		writeDebugStreamLine ("%d %d" #machine "State:%d, TO:%d velS:%f, %d, %d", npgmTime, curTime, machine##State, machine##timeout, machine##VelSafetyThresh, machine##arg1Name, machine##arg2Name); \
 		machine##State = stateIn; \
+	tRelease(); \ 
 		if (await) MACHINE_AWAIT(machine); \ 
 	} \
 } \
@@ -512,11 +544,13 @@ void machine##VelSafetyCheck (tVelType velType = velSensor) \
 					} \
 				} \
 		} \ 
+		tRelease(); \ 
 	} \
 } \
 \
-void machine##SafetyCheck(int timedOutState = machine##state0, type1 machine##arg1Name = -1, type2 machine##arg2Name = -1) \
+bool machine##SafetyCheck(int timedOutState = machine##state0, type1 machine##arg1Name = -1, type2 machine##arg2Name = -1) \
 { \
+		tHog(); \
 		bool timedOut = false; \
 		bool velSafety = false; \
 		if (!NOT_T_O(machine)) \
@@ -528,7 +562,13 @@ void machine##SafetyCheck(int timedOutState = machine##state0, type1 machine##ar
 		{ \
 			writeDebugStreamLine("%d" #machine "safety: Timedout? %d at %d VelSafety? %d", npgmTime, timedout, machine##Timeout, velSafety); \
 			machine##StateChange(timedOutState, false, machine##arg1Name, machine##arg2Name); \
+			return true; \
 		} \
+		else \
+		{ \
+			return false; \
+		} \
+		tRelease(); \
 }  
 
 /*	Macro for Machine w/ 7 States	*/
@@ -560,6 +600,7 @@ void machine##StateChange(int stateIn, bool await = 0, long timeout = -1, float 
 { \
 	if (machine##State != stateIn) \
 	{ \
+	tHog(); \ 
 		machine##Blocked = await; \ 
 		unsigned long curTime = npgmtime; \
 		if (timeout <= 0) \
@@ -578,8 +619,9 @@ void machine##StateChange(int stateIn, bool await = 0, long timeout = -1, float 
 		machine##VelSafetyDir = velDir; \
 		machine##arg1Name = arg1In; \
 		machine##arg2Name = arg2In;  \
-		writeDebugStreamLine ("%d" #machine "State:%d, TO:%d velS:%f, %d, %d", npgmTime, machine##State, machine##timeout, machine##VelSafetyThresh, machine##arg1Name, machine##arg2Name); \
+		writeDebugStreamLine ("%d %d" #machine "State:%d, TO:%d velS:%f, %d, %d", npgmTime, curTime, machine##State, machine##timeout, machine##VelSafetyThresh, machine##arg1Name, machine##arg2Name); \
 		machine##State = stateIn; \
+	tRelease(); \ 
 		if (await) MACHINE_AWAIT(machine); \ 
 	} \
 } \
@@ -638,11 +680,13 @@ void machine##VelSafetyCheck (tVelType velType = velSensor) \
 					} \
 				} \
 		} \ 
+		tRelease(); \ 
 	} \
 } \
 \
-void machine##SafetyCheck(int timedOutState = machine##state0, type1 machine##arg1Name = -1, type2 machine##arg2Name = -1) \
+bool machine##SafetyCheck(int timedOutState = machine##state0, type1 machine##arg1Name = -1, type2 machine##arg2Name = -1) \
 { \
+		tHog(); \
 		bool timedOut = false; \
 		bool velSafety = false; \
 		if (!NOT_T_O(machine)) \
@@ -654,7 +698,13 @@ void machine##SafetyCheck(int timedOutState = machine##state0, type1 machine##ar
 		{ \
 			writeDebugStreamLine("%d" #machine "safety: Timedout? %d at %d VelSafety? %d", npgmTime, timedout, machine##Timeout, velSafety); \
 			machine##StateChange(timedOutState, false, machine##arg1Name, machine##arg2Name); \
+			return true; \
 		} \
+		else \
+		{ \
+			return false; \
+		} \
+		tRelease(); \
 }  
 
 /*	Macro for Machine w/ 8 States	*/
@@ -687,6 +737,7 @@ void machine##StateChange(int stateIn, bool await = 0, long timeout = -1, float 
 { \
 	if (machine##State != stateIn) \
 	{ \
+	tHog(); \ 
 		machine##Blocked = await; \ 
 		unsigned long curTime = npgmtime; \
 		if (timeout <= 0) \
@@ -705,8 +756,9 @@ void machine##StateChange(int stateIn, bool await = 0, long timeout = -1, float 
 		machine##VelSafetyDir = velDir; \
 		machine##arg1Name = arg1In; \
 		machine##arg2Name = arg2In;  \
-		writeDebugStreamLine ("%d" #machine "State:%d, TO:%d velS:%f, %d, %d", npgmTime, machine##State, machine##timeout, machine##VelSafetyThresh, machine##arg1Name, machine##arg2Name); \
+		writeDebugStreamLine ("%d %d" #machine "State:%d, TO:%d velS:%f, %d, %d", npgmTime, curTime, machine##State, machine##timeout, machine##VelSafetyThresh, machine##arg1Name, machine##arg2Name); \
 		machine##State = stateIn; \
+	tRelease(); \ 
 		if (await) MACHINE_AWAIT(machine); \ 
 	} \
 } \
@@ -765,11 +817,13 @@ void machine##VelSafetyCheck (tVelType velType = velSensor) \
 					} \
 				} \
 		} \ 
+		tRelease(); \ 
 	} \
 } \
 \
-void machine##SafetyCheck(int timedOutState = machine##state0, type1 machine##arg1Name = -1, type2 machine##arg2Name = -1) \
+bool machine##SafetyCheck(int timedOutState = machine##state0, type1 machine##arg1Name = -1, type2 machine##arg2Name = -1) \
 { \
+		tHog(); \
 		bool timedOut = false; \
 		bool velSafety = false; \
 		if (!NOT_T_O(machine)) \
@@ -781,5 +835,11 @@ void machine##SafetyCheck(int timedOutState = machine##state0, type1 machine##ar
 		{ \
 			writeDebugStreamLine("%d" #machine "safety: Timedout? %d at %d VelSafety? %d", npgmTime, timedout, machine##Timeout, velSafety); \
 			machine##StateChange(timedOutState, false, machine##arg1Name, machine##arg2Name); \
+			return true; \
 		} \
+		else \
+		{ \
+			return false; \
+		} \
+		tRelease(); \
 }  

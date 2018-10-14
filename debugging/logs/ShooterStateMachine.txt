@@ -1,0 +1,66 @@
+2015 Start usercontrolResetting position 0.000000 0.000000 0.000000 | 0.000000 0.000000 0.000000
+2015 Reset Encoder
+2016 Reset Encoder
+2016 Reset Encoder
+2019 Reset Encoder
+2031"shooter"State:0, TO:0 velS:-1.000000, -1, -1
+2400 SENSOR PORT15 LST_VEL TIMESTAMP ERROR - lstVelHead:9 t=2377, lsVelTail:10 t=2393
+2659 Reset Shooter to -8
+2659 Reset Encoder
+2659"shooter"State:5, TO:0 velS:-1.000000, -1, -1
+Setup shot #0 encoder start= 0
+2659 check: 1, val: 0, targ:0, 190
+Reload time = 341
+3000"shooter"State:2, TO:0 velS:-1.000000, -1, -1
+6526"shooter"State:3, TO:0 velS:-1.000000, -1, -1
+Start shot #1 at 6530, Tgt: 318, Enc: 405, Err: 87
+6710 Shot done accelerating: Time: 180 Pos:406 
+6710 Break
+6720 Break
+6730 Break
+6740 Break
+6750 Break
+6760 Break
+6770 Break
+6780 Break
+6790, Shot done in 260ms, Tgt: 405, Enc: 436, Err: -31
+6790"shooter"State:4, TO:0 velS:-1.000000, -1, -1
+Setup shot #1 encoder start= 436
+6790 check: 1, val: 436, targ:405, 190
+Reload time = 304
+7094"shooter"State:2, TO:0 velS:-1.000000, -1, -1
+37540"shooter"State:3, TO:0 velS:-1.000000, -1, -1
+Start shot #2 at 37544, Tgt: 942, Enc: 810, Err: -132
+37544 Shot done accelerating: Time: 0 Pos:942 
+37544 Break
+37554 Break
+37564 Break
+37574 Break
+37584 Break
+37594 Break
+37604 Break
+37614 Break
+37624, Shot done in 80ms, Tgt: 810, Enc: 941, Err: -131
+37624"shooter"State:4, TO:0 velS:-1.000000, -1, -1
+Setup shot #2 encoder start= 941
+37625 check: 1, val: 941, targ:810, 190
+37705:"shooter"velSafety trip(dir)0.020833
+Reload time = 171
+37795"shooter"State:2, TO:0 velS:-1.000000, -1, -1
+43661"shooter"State:3, TO:0 velS:-1.000000, -1, -1
+Start shot #3 at 43665, Tgt: 1192, Enc: 1215, Err: 23
+43745 Shot done accelerating: Time: 80 Pos:1216 
+43745 Break
+43755 Break
+43765 Break
+43775 Break
+43785 Break
+43795 Break
+43805 Break
+43815 Break
+43825, Shot done in 160ms, Tgt: 1215, Enc: 1248, Err: -33
+43825"shooter"State:4, TO:0 velS:-1.000000, -1, -1
+Setup shot #3 encoder start= 1248
+43826 check: 1, val: 1248, targ:1215, 190
+Reload time = 305
+44131"shooter"State:2, TO:0 velS:-1.000000, -1, -1
