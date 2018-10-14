@@ -417,13 +417,13 @@ task updateVals()
 	initCycle(cycle, 10, "UpdateVals");
 	while (true)
 	{
-		tHog();
+		hogCPU();
 		updateJoysticks();
 		updateMotors();
 		updateSensorInputs();
 		updateSensorOutputs();
 		////writeDebugStreamLine("Update-shooter:%d", gSensor[shooterEnc].value);
-		tRelease();
+		releaseCPU();
 		endCycle(cycle);
 	}
 }

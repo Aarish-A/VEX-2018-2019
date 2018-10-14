@@ -4,19 +4,20 @@
 task main()
 {
 	clearDebugStream();
-int target = 1500;
-float percentFull = 0.85;
-float percentDecel = 0.95;
-int decelSpeed = 68;
-	bool BtnAngleUp, BtnAngleUpLst;
-	while(SensorValue[anglerPoti]<(percentFull*target))
+	int target = 1500;
+	int fullSpeed = 75;
+	float percentFull = 0.75;
+	float percentDecel = 0.9;
+	float kp = 0.04;
+	int gError = target-SensorValue[anglerPoti];
+	while(SensorValue[anglerPoti]<(percentFull*target)
 	{
-		motor[angler] = 127
+		motor[angler] = fullSpeed;
 	}
 	while(SensorValue[anglerPoti]<(percentDecel*target))
 	{
 		int error = target-SensorValue[anglerPoti];
-		motor[angler] = error*0.3;
+		motor[angler] = error*kp;
 	}
 	while(SensorValue[anglerPoti]<target)
 	{

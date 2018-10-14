@@ -116,7 +116,7 @@ void moveAnglerSimple(int target)
 void moveAngler(int target)
 { // power down while distance > vel * K, then break
 	int bias = 13;//12;
-	float kP = 0.05;
+	float kP = 0.043;
 
 	setAngler(-25);
 	int sen =  gSensor[anglerPoti].value;
@@ -168,7 +168,17 @@ void moveAngler(int target)
 	sleep(50);
 	setAngler(12);
 	//break?
+}
 
+void moveAnglerConstant(int target)
+{
+	setAngler(-30)
+	while (gSensor[anglerPoti].value > (target + 200)) sleep(10);
+	writeDebugStreamLine("%d Sen:%d", npgmtime, gSensor[anglerPoti].value);
+	setAngler(30);
+	unsigned long startTime = npgmtime;
+	while (gSensor[anglerPoti].value > (target + 15) && (npgmtime-startTime) < 150) sleep(10);
+	setAngler(10);
 }
 
 task updateVals()
@@ -178,11 +188,11 @@ task updateVals()
 	initCycle(cycle, 10, "UpdateVals");
 	while (true)
 	{
-		tHog();
+		hogCPU();
 		updateSensorInputs();
 		updateSensorOutputs();
 		////writeDebugStreamLine("Update-shooter:%d", gSensor[shooterEnc].value);
-		tRelease();
+		releaseCPU();
 		endCycle(cycle);
 	}
 }
@@ -202,7 +212,8 @@ task main()
 		if (bttn && !bttnLst)
 		{
 			//moveAnglerSimple(1200); //1200, 1060
-			moveAngler(1200);
+			//moveAngler(1200);
+			moveAnglerConstant(1060);
 		}
 		else if (abs(vexRT[JOY_ANGLER]) > 10 && (gSensor[anglerPoti].value > 510 && gSensor[anglerPoti].value < 3037))
 		{
