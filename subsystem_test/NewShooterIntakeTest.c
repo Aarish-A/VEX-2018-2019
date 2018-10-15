@@ -477,7 +477,7 @@ task updateVals()
 		////writeDebugStreamLine("Update-shooter:%d", gSensor[shooterEnc].value);
 		tRelease();
 		endCycle(cycle);
-		if ((npgmTime - startTime) > 10) writeDebugStreamLine("%d Update Vals took %dms", (npgmTime-startTime));
+		if ((npgmTime - startTime) > 10) writeDebugStreamLine("%d ERROR Update Vals took %dms", (npgmTime-startTime));
 	}
 }
 
