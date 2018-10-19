@@ -134,7 +134,7 @@ void setupInvertedSen(tSensors sen)
 void resetQuadratureEncoder(tSensors sen)
 {
 	//PlayTone(700, 50);
-	writeDebugStreamLine("%d Reset Encoder", npgmtime);
+	writeDebugStreamLine("%d Reset Encoder", nPgmTime);
 	gSensor[sen].value = 0;
 	SensorValue[sen] = 0;
 }
