@@ -62,7 +62,9 @@ void tRelease()
 #define SHOOTER_RELOAD_HOLD 0//11
 #define SHOOTER_RELOAD_POS (145 + RESET_OFFSET)
 
-#define BALL_DETECTED (gSensor[ballDetector].value < 1000 && (gSensor[ballDetector].value < 246 || gSensor[ballDetector].value > 252))
+#define BD_UNPLUGGED (gSensor[ballDetector].value >= 246 && gSensor[ballDetector].value <= 252)
+
+#define BALL_DETECTED (gSensor[ballDetector].value < 1000 && (!BD_UNPLUGGED))
 
 void killShooter();
 
@@ -266,7 +268,7 @@ task shooterTask()
 					cancelledPrint = true;
 				}
 			}
-			else if(gSensor[ballDetector].value >= 246 && gSensor[ballDetector].value <= 252)
+			else if(BD_UNPLUGGED)
 			{
 				if (!cancelledPrint)
 				{
