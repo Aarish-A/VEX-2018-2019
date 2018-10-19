@@ -90,7 +90,7 @@ bool moving (int moveAmnt, unsigned long accelTime, unsigned long timeOut, sSens
 	else
 	{
 		writeDebugStreamLine("%d TimedOut: Hasn't moved %d w/in %d ms. At%d", npgmtime, moveAmnt, accelTime, sen.value);
-		if (sen == gSensor[shooterEnc]) killShooter();
+		//if (sen == gSensor[shooterEnc]) killShooter();
 		return false;
 	}
 }
@@ -417,36 +417,54 @@ void moveAngler(int target)
 
 void moveAnglerP(int target)
 {
-	float kP = 0.12;
+	float kP = 0.07;
 	float distance = target - gSensor[anglerPoti].value;
 	float lstDistance = distance;
 
 	unsigned long startTime = npgmtime;
+
+	float dropOut;
 
 	sCycleData anglerMove;
 	initCycle(anglerMove, 10, "anglerMove");
 	do
 	{
 		distance = target - gSensor[anglerPoti].value;
-		setAngler(distance * kP);
+		float power = distance*kP;
+		setAngler(power);
+
+		velocityCheck(anglerPoti);
+		float vel = gSensor[anglerPoti].velocity;
+		//dropOut = 130 - (vel*40);
+		dropOut = vel*70;
+		writeDebugStreamLine("%d Angler D:%d, Pow:%f, Vel:%f, DO: %f", npgmtime, distance, power, vel, dropout);
 
 		endCycle(anglerMove);
-	} while (abs(distance) > 50 && (npgmtime-startTime < 600))
+	} while (abs(distance) > dropOut && ((npgmtime-startTime) < 1500))
 
-	setAngler(sgn(distance) * -10);
-	sleep(60);
+	int anglerStart = gSensor[anglerPoti].value;
+	writeDEbugStreamLine("%d Done angler move to %d", npgmtime, gSensor[anglerPoti].value);
+	setAngler(sgn(distance) * -17);
+	sleep(100);
 
 	setAngler(ANGLER_HOLD_POWER);
+	writeDEbugStreamLine("%d Done angler break to %d. BOffset:%d", npgmtime, gSensor[anglerPoti].value, gSensor[anglerPoti].value-anglerStart);
 }
 
 task intakeAnglerTask()
 {
+	moveAnglerP(1250);
+	sleep(300);
+	writeDebugStreamLine("%d, Pos:%d", npgmtime, gSensor[anglerPoti].value);
+	setAngler(0);
 	while (true)
 	{
 		////writeDebugStreamLine("%d, Angler: %d", npgmtime, gSensor[anglerPoti].value);
 		if (RISING(BTN_ANGLER_TEST))
 		{
+			moveAnglerP(1250);
 			//writeDebugStreamLine("%d Start Double Shot", npgmtime);
+				/*
 			shootTrigger = true;
 			moveAnglerP(1250);
 			while (shootTrigger == true) sleep(10);
@@ -455,6 +473,7 @@ task intakeAnglerTask()
 			shootTrigger = true;
 			moveAnglerP(1030);
 			while (shootTrigger == true) sleep(10);
+				*/
 			//writeDebugStreamLine("%d Double Shot took %d", npgmtime, npgmtime-startTime);
 		}
 		else if (abs(gJoy[JOY_ANGLER].cur) > 10 && (gSensor[anglerPoti].value > 510 && gSensor[anglerPoti].value < 3037))
