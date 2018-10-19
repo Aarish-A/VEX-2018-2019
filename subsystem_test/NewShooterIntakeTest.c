@@ -343,6 +343,8 @@ task shooterTask()
 	//stopTask(printEnc);
 }
 
+#define ANGLER_HOLD_POWER 9
+
 void setAngler(word val)
 {
 	gMotor[angler].power = LIM_TO_VAL(val, 127);
@@ -386,7 +388,7 @@ void moveAngler(int target)
 	float lstDistance = distance;
 			float kP = (distance < 0)? 0.08 : 0.12;
 			float kD = (distance < 0)? 0.5 : 0.2;
-			int bias = 11;
+			int bias = ANGLER_HOLD_POWER + 2;
 			unsigned long startTime = npgmtime;
 			do
 			{
@@ -406,9 +408,33 @@ void moveAngler(int target)
 				velocityCheck(anglerPoti);
 				setAngler(gSensor[anglerPoti].velocity * (distance<0? -13 : -7));
 			} while(abs(gSensor[anglerPoti].velocity) > 0.001 && (npgmtime-startTime) < 80);
-			setAngler(9);
+			setAngler(ANGLER_HOLD_POWER);
 
 			writeDebugStreamLine("%d Done angle Vel:%f, Loc: %d, Targ: %d", npgmtime, gSensor[anglerPoti].velocity, gSensor[anglerPoti].value, target);
+}
+
+void moveAnglerP(int target)
+{
+	float kP = 0.12;
+	float distance = target - gSensor[anglerPoti].value;
+	float lstDistance = distance;
+
+	unsigned long startTime = npgmtime;
+
+	sCycleData anglerMove;
+	initCycle(anglerMove, 10, "anglerMove");
+	do
+	{
+		distance = target - gSensor[anglerPoti].value;
+		setAngler(distance * kP);
+
+		endCycle(anglerMove);
+	} while (abs(distance) > 50 && (npgmtime-startTime < 600))
+
+	setAngler(sgn(distance) * -10);
+	sleep(60);
+
+	setAngler(ANGLER_HOLD_POWER);
 }
 
 task intakeAnglerTask()
@@ -420,12 +446,12 @@ task intakeAnglerTask()
 		{
 			//writeDebugStreamLine("%d Start Double Shot", npgmtime);
 			shootTrigger = true;
-			moveAngler(1250);
+			moveAnglerP(1250);
 			while (shootTrigger == true) sleep(10);
 			unsigned long startTime = npgmtime;
 			//writeDebugStreamLine("%d Done first shot", npgmtime);
 			shootTrigger = true;
-			moveAngler(1030);
+			moveAnglerP(1030);
 			while (shootTrigger == true) sleep(10);
 			//writeDebugStreamLine("%d Double Shot took %d", npgmtime, npgmtime-startTime);
 		}
@@ -435,7 +461,7 @@ task intakeAnglerTask()
 		}
 		else
 		{
-			setAngler(9);
+			setAngler(ANGLER_HOLD_POWER);
 			//setShooter(127);
 		}
 		sleep(10);
