@@ -417,38 +417,35 @@ void moveAngler(int target)
 
 void moveAnglerP(int target)
 {
-	float kP = 0.07;
+	float kP = 0.08;
 	float distance = target - gSensor[anglerPoti].value;
 	float lstDistance = distance;
 
 	unsigned long startTime = nPgmTime;
 
-	float dropOut;
+	float vel;
+	int velLowCount = 0;
 
 	sCycleData anglerMove;
 	initCycle(anglerMove, 10, "anglerMove");
 	do
 	{
 		distance = target - gSensor[anglerPoti].value;
-		float power = distance*kP;
+		float power = distance * kP + ANGLER_HOLD_POWER;
 		setAngler(power);
 
 		velocityCheck(anglerPoti);
-		float vel = gSensor[anglerPoti].velocity;
-		//dropOut = 130 - (vel*40);
-		dropOut = vel*70;
-		writeDebugStreamLine("%d Angler D:%d, Pow:%f, Vel:%f, DO: %f", nPgmTime, distance, power, vel, dropOut);
+		vel = gSensor[anglerPoti].velocity;
+		if (abs(vel) < 0.1) velLowCount++;
+		else velLowCount = 0;
+		writeDebugStreamLine("%d Angler D: %d, Pow: %f, Vel: %f, Vlc: %d", nPgmTime, distance, power, vel, velLowCount);
 
 		endCycle(anglerMove);
-	} while (abs(distance) > dropOut && ((nPgmTime-startTime) < 1500));
+	} while (velLowCount < 10 && (nPgmTime - startTime) < 1500);
 
-	int anglerStart = gSensor[anglerPoti].value;
 	writeDebugStreamLine("%d Done angler move to %d", nPgmTime, gSensor[anglerPoti].value);
-	setAngler(sgn(distance) * -17);
-	sleep(100);
 
 	setAngler(ANGLER_HOLD_POWER);
-	writeDebugStreamLine("%d Done angler break to %d. BOffset:%d", nPgmTime, gSensor[anglerPoti].value, gSensor[anglerPoti].value-anglerStart);
 }
 
 task intakeAnglerTask()
@@ -463,6 +460,11 @@ task intakeAnglerTask()
 		if (RISING(BTN_ANGLER_TEST))
 		{
 			moveAnglerP(1250);
+			sleep(2000);
+			setAngler(-70);
+			while (gSensor[anglerPoti].value > 250) sleep(10);
+			setAngler(ANGLER_HOLD_POWER);
+
 			//writeDebugStreamLine("%d Start Double Shot", nPgmTime);
 				/*
 			shootTrigger = true;
