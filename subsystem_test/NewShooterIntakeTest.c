@@ -290,7 +290,7 @@ task shooterTask()
 
 				WHILE_SHOOTER_MOVING(10, 150, 700, !shotTargReached && (gSensor[shooterEnc].value < (target-85) || gSensor[shooterEnc].value > (target-15) || BALL_DETECTED))
 				{
-					//writeDEbugStreamLine("Ball? %d", BALL_DETECTED);
+					//writeDebugStreamLine("Ball? %d", BALL_DETECTED);
 					shotTargReached = ( gSensor[shooterEnc].value > (target-shooterBreakOffset) );
 
 					unsigned long timeElpsd = nPgmTime-shotStartTime;
@@ -417,10 +417,10 @@ void moveAngler(int target)
 
 void moveAnglerP(int target)
 {
-	float kP = 0.08;
 	float distance = target - gSensor[anglerPoti].value;
 	float lstDistance = distance;
 
+	float kP = (distance > 1000)? 0.07 : 0.03;
 	unsigned long startTime = nPgmTime;
 
 	float vel;
@@ -435,6 +435,7 @@ void moveAnglerP(int target)
 		setAngler(power);
 
 		velocityCheck(anglerPoti);
+
 		vel = gSensor[anglerPoti].velocity;
 		if (abs(vel) < 0.1) velLowCount++;
 		else velLowCount = 0;
@@ -451,9 +452,10 @@ void moveAnglerP(int target)
 task intakeAnglerTask()
 {
 	moveAnglerP(1250);
-	sleep(300);
 	writeDebugStreamLine("%d, Pos:%d", nPgmTime, gSensor[anglerPoti].value);
-	setAngler(0);
+	setAngler(-30);
+	sleep(400);
+
 	while (true)
 	{
 		////writeDebugStreamLine("%d, Angler: %d", nPgmTime, gSensor[anglerPoti].value);
@@ -484,7 +486,8 @@ task intakeAnglerTask()
 		}
 		else
 		{
-			setAngler(ANGLER_HOLD_POWER);
+			setAngler(0);
+			//setAngler(ANGLER_HOLD_POWER);
 			//setShooter(127);
 		}
 		sleep(10);
@@ -528,7 +531,6 @@ task updateVals()
 		////writeDebugStreamLine("Update-shooter:%d", gSensor[shooterEnc].value);
 		tRelease();
 		endCycle(cycle);
-		//if ((nPgmTime - startTime) > 10) writeDebugStreamLine("   %d ERROR Update Vals took %dms", nPgmTime, (nPgmTime-startTime));
 	}
 }
 
