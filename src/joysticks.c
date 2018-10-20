@@ -5,7 +5,7 @@ void setupJoysticks()
 		gJoy[i].cur = gJoy[i].lst = 0;
 		gJoy[i].deadzone = -1;
 		gJoy[i].enabled = false;
-		gJoy[i].mirror = -1;
+		gJoy[i].mirror = (TVexJoysticks)-1;
 	}
 }
 

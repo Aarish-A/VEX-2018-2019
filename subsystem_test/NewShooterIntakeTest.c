@@ -81,8 +81,8 @@ while (moving(moveAmntS, accelTimeS, timeOutS, gSensor[shooterEnc]) && (conditio
 
 bool moving (int moveAmnt, unsigned long accelTime, unsigned long timeOut, sSensor& sen)
 {
-	if ((npgmTime < accelTime || sen.value > moveAmnt) && npgmTime < timeOut) return true;
-	else if (npgmTime >= timeOut)
+	if ((nPgmTime < accelTime || sen.value > moveAmnt) && nPgmTime < timeOut) return true;
+	else if (nPgmTime >= timeOut)
 	{
 		writeDebugStreamLine("%d TimedOut past %d", nPgmTime, timeOut);
 		return false;
@@ -249,7 +249,7 @@ task shooterTask()
 	while (true)
 	{
 
-		if (shootTrigger || vexRt[BTN_SHOOT])//RISING(BTN_SHOOT) )
+		if (shootTrigger || vexRT[BTN_SHOOT])//RISING(BTN_SHOOT) )
 		{
 			writeDebugStreamLine("%d Shot Triggered", nPgmTime);
 
@@ -306,7 +306,7 @@ task shooterTask()
 					shooterShotCount--;
 					while (gSensor[shooterEnc].value > (target + SHOOTER_RELOAD_POS)) sleep(10);
 					setShooter(SHOOTER_RELOAD_HOLD);
-					PlayTone(300, 50);
+					playTone(300, 50);
 					shootTrigger = false;
 				}
 				else
@@ -421,7 +421,6 @@ void moveAnglerP(int target)
 	float lstDistance = distance;
 
 	float kP = (distance > 1000)? 0.07 : 0.03;
-
 	unsigned long startTime = nPgmTime;
 
 	float dropOutA, dropOutB;
@@ -450,6 +449,7 @@ void moveAnglerP(int target)
 	sleep(100);
 
 	setAngler(ANGLER_HOLD_POWER);
+
 	sleep(400);
 	writeDebugStreamLine("%d Done angler break to %d. BOffset:%d", nPgmTime, gSensor[anglerPoti].value, gSensor[anglerPoti].value-anglerStart);
 }
@@ -460,6 +460,7 @@ task intakeAnglerTask()
 	writeDebugStreamLine("%d, Pos:%d", nPgmTime, gSensor[anglerPoti].value);
 	setAngler(-30);
 	sleep(400);
+
 	while (true)
 	{
 		////writeDebugStreamLine("%d, Angler: %d", nPgmTime, gSensor[anglerPoti].value);
@@ -530,7 +531,6 @@ task updateVals()
 		////writeDebugStreamLine("Update-shooter:%d", gSensor[shooterEnc].value);
 		tRelease();
 		endCycle(cycle);
-		//if ((npgmTime - startTime) > 10) writeDebugStreamLine("   %d ERROR Update Vals took %dms", nPgmTime, (npgmTime-startTime));
 	}
 }
 
