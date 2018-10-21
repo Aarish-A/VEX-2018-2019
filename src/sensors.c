@@ -183,7 +183,11 @@ void velocityCheck(tSensors sen, int offset)
 						lstPointLoc = s.arrHead-offset;
 
 					lstVelHead = ((curPointLoc)==0? (SENSOR_DATA_POINT_COUNT - 1):(curPointLoc-1));
-					lstVelTail = ((lstPointLoc)==0? (SENSOR_DATA_POINT_COUNT - 1):(lstPointLoc-1));
+					//lstVelTail = ((lstPointLoc)==0? (SENSOR_DATA_POINT_COUNT - 1):(lstPointLoc-1));
+					if ( (lstVelHead - offset) < 0 )
+						lstVelTail = SENSOR_DATA_POINT_COUNT - offset;
+					else
+						lstVelTail = lstVelHead-offset;
 				}
 
 				unsigned long tDif = (s.dataPointArr[curPointLoc].timestamp - s.dataPointArr[lstPointLoc].timestamp);
