@@ -233,14 +233,14 @@ void shooterSafety()
 {
 	unsigned long stateElpsdTime = (npgmtime-gShooterStateTime);
 	int senChange = SensorValue[shooterEnc]-gShooterStateSen;
-	if (gShooterState == shooterReset && ( stateElpsdTime > 2000 || (stateElpsdTime > 150 && senChange < 10) ))
+	if (gShooterState == shooterReset && ( stateElpsdTime > 2000 || (stateElpsdTime > 200 && senChange > 10) ))
 	{
 		writeDebugStreamLine("	%d Shooter State %d TO. SenChange: %d", npgmtime, gShooterState, senChange);
+		hogCPU();
 		stopTask(shooterStateSet);
-		sleep(200);
-		setShooter(0);
 		startTask(shooterStateSet);
 		setShooterState(shooterIdle);
+		releaseCPU();
 	}
 }
 
