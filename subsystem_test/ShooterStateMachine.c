@@ -329,6 +329,22 @@ task driverControl
 			writeDebugStreamLine("%d SECOND SHOT TRIGGERED. # %d", npgmtime, gShooterShotCount);
 		}
 
+		//Angler Controls
+		if (abs(vexRt[Ch2]) > 20)
+		{
+			if (vexRT[Ch2] > 0 && SensorValue[anglerPoti] < ANGLER_POTI_TOP) motor[angler] = vexRT[Ch2];
+			else if (vexRT[Ch2] < 0 && SensorValue[anglerPoti] > ANGLER_POTI_BOTTOM) motor[angler] = vexRT[Ch2];
+		}
+		else
+		{
+			if(SensorValue[anglerPoti] < 800) motor[angler] = -5;
+			else if (SensorValue[anglerPoti] > 800 && SensorValue[anglerPoti] < 1000) motor[angler] = -10;
+			else if (SensorValue[anglerPoti] > 1000 && SensorValue[anglerPoti] < 1500) motor[angler] = 0;
+			else if (SensorValue[anglerPoti] > 1500 && SensorValue[anglerPoti] < 2250) motor[angler] = 8;
+			else if (SensorValue[anglerPoti] > 2250 && SensorValue[anglerPoti] < 2600) motor[angler] = 10;
+			else if (SensorValue[anglerPoti] > 2600 &&	SensorValue[anglerPoti] < 3500) motor[angler] = 5;
+		}
+
 		shootBtnLst = shootBtn;
 		sleep(10);
 	}
