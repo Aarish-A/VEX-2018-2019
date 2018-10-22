@@ -29,7 +29,6 @@
 
 #define RESET_OFFSET 45 //35
 #define SHOOTER_GEAR_RATIO 1.0
-//#define SHOOTER_RELOAD_VAL ((gShooterShotCount*360.0*SHOOTER_GEAR_RATIO) + RESET_OFFSET)
 #define SHOOTER_RELOAD_HOLD 11
 #define SHOOTER_SHOOT_POS ((gShooterShotCount*360.0*SHOOTER_GEAR_RATIO) + RESET_OFFSET)
 #define SHOOTER_NEXT_SHOOT_POS (((1+gShooterShotCount)*360.0*SHOOTER_GEAR_RATIO) + RESET_OFFSET)
@@ -42,34 +41,6 @@
 /* Angler Defines */
 #define ANGLER_POTI_BOTTOM 125
 #define ANGLER_POTI_TOP 3600
-
-
-unsigned long curTimeS, timeOutS, accelTimeS;
-int moveAmntS;
-
-#define WHILE_SHOOTER_MOVING(moveAmt, accelTime, TO, condition) \
-curTimeS = npgmtime; \
-timeOutS = TO + curTimeS; \
-accelTimeS = curTimeS + accelTime; \
-moveAmntS = SensorValue[shooterEnc] + moveAmt; \
-while (moving(moveAmntS, accelTimeS, timeOutS, shooterEnc) && (condition))
-
-
-bool moving (int moveAmnt, unsigned long accelTime, unsigned long timeOut, tSensors sen)
-{
-	if ((npgmTime < accelTime || SensorValue[sen] > moveAmnt) && npgmTime < timeOut) return true;
-	else if (npgmTime >= timeOut)
-	{
-		writeDebugStreamLine("%d TimedOut past %d", npgmtime, timeOut);
-		return false;
-	}
-	else
-	{
-		writeDebugStreamLine("%d TimedOut: Hasn't moved %d w/in %d ms. At%d", npgmtime, moveAmnt, accelTime, SensorValue[sen]);
-		//if (sen == gSensor[shooterEnc]) killShooter();
-		return false;
-	}
-}
 
 typedef enum _tShooterState
 {
@@ -132,13 +103,11 @@ task shooterStateSet()
 				PlayTone(300, 50);
 
 				setShooterState(shooterReload);
-				//setShooterState(shooterIdle);
 				break;
 			case shooterReload:
 				setShooter(127);
 				int target = SHOOTER_RELOAD_POS;
 
-				//WHILE_SHOOTER_MOVING(10, 100, 400, SensorValue[shooterEnc] < (target + SHOOTER_RELOAD_POS))
 				while(SensorValue[shooterEnc] < target)
 				{
 					sleep(10);
@@ -156,15 +125,12 @@ task shooterStateSet()
 				gShooterShotCount++;
 				target = SHOOTER_SHOOT_POS;
 				setShooter(127);
-				//writeDebugStreamLine("Fired shot #%d at %d, Tgt: %d, Enc: %d, Err: %d", gShooterShotCount, nPgmTime, SensorValue[shooterEnc], target, target - SensorValue[shooterEnc]);
 				writeDebugStreamLine("%d Start shot %d: Time: %d Pos:%d ", npgmtime, gShooterShotCount, npgmtime-shotStartTime, SensorValue[shooterEnc]);
 
 				bool shotTargReached = ( SensorValue[shooterEnc] > (target-shooterBreakOffset) );
 
-				//WHILE_SHOOTER_MOVING(10, 150, 700, !shotTargReached && (SensorValue[shooterEnc] < (target-85) || SensorValue[shooterEnc] > (target-15) || BALL_DETECTED))
 				while(!shotTargReached && (SensorValue[shooterEnc] < (target-65) || SensorValue[shooterEnc] > (target-8) || BALL_DETECTED))
 				{
-					//writeDEbugStreamLine("Ball? %d", BALL_DETECTED);
 					shotTargReached = ( SensorValue[shooterEnc] > (target-shooterBreakOffset) );
 
 					unsigned long timeElpsd = npgmtime-shotStartTime;
@@ -174,12 +140,6 @@ task shooterStateSet()
 				if (!shotTargReached)
 				{
 					writeDebugStreamLine("%d Ball gone: Val:%d, Time: %d Pos:%d, Targ:%d ", npgmtime, SensorValue[ballDetector], npgmtime-shotStartTime, SensorValue[shooterEnc], target);
-					//setShooter(-90);
-					//sleep(80);
-					//setShooter(0);
-					//gShooterShotCount--;
-					//while (SensorValue[shooterEnc] > (target + SHOOTER_RELOAD_POS)) sleep(10);
-					//setShooter(SHOOTER_RELOAD_HOLD);
 					gShooterShotCount--;
 					PlayTone(300, 50);
 
@@ -192,15 +152,8 @@ task shooterStateSet()
 					unsigned long startBreakTime = npgmtime;
 					while ((npgmtime-startBreakTime) < 80)
 					{
-						//writeDebugStreamLine("%d Break", npgmtime);
-						if (SensorValue[ballDetector] > 2000)
-						{
-							//writeDebugStreamLine("	%d Ball hit: Time: %d", npgmtime, npgmtime-shotStartTime);
-						}
 						sleep(10);
 					}
-					//sleep(80);
-					//writeDebugStreamLine("Break done at %d, Enc: %d", nPgmTime, SensorValue[shooterEnc]);
 					setShooter(0);
 
 					writeDebugStreamLine("%d Shoot Trigger False - shot end", npgmtime);
@@ -227,7 +180,7 @@ task shooterStateSet()
 					lstPos = pos;
 					lstTime = time;
 					sleep(200);
-				} while(vel < -0.001);// || lstVel < -0.001);
+				} while(vel < -0.001);
 				setShooter(0);
 				sleep(150);
 				writeDEbugStreamLine("%d Reset Shooter from %d", npgmtime, SensorValue[shooterEnc]);

@@ -16,35 +16,13 @@
 
 int nBatteryLevel;
 
-//#define IGNORE_DISABLE 1
-
-//#define FORCE_AUTO 1
-
-#define DATALOG_BATTERY -1
-
-#define CHECK_POTI_JUMPS 1
-#define DRIVE_TURN (gJoy[JOY_TURN].cur - gJoy[JOY_TURN].deadzone * sgn(gJoy[JOY_TURN].cur))
-
-//#include "state_test.h"
-#include "state.h"
-#include "func_to_state.h"
-
 // Year-independent libraries (headers)
-#include "task.h"
-#include "motors.h"
-#include "sensors.h"
-#include "joysticks.h"
-#include "cycle.h"
 #include "utilities.h"
-#include "auto.h"
+#include "cycle.h"
 
 // Year-independent libraries (source)
-#include "task.c"
-#include "motors.c"
-#include "sensors.c"
-#include "joysticks.c"
+//#include "utilities.c"
 #include "cycle.c"
-#include "utilities.c"
 
 // Other includes
 #include "Vex_Competition_Includes_Custom.c"
@@ -54,472 +32,268 @@ int nBatteryLevel;
 void setDrive(word left, word right)
 {
 	//writeDebugStreamLine("%d l:%d, r:%d", npgmtime, left, right);
-	gMotor[driveLY].power = gMotor[driveL].power = LIM_TO_VAL(left, 127);
-	gMotor[driveRY].power = gMotor[driveR].power = LIM_TO_VAL(right, 127);
+	motor[driveLY] = motor[driveL] = LIM_TO_VAL(left, 127);
+	motor[driveRY] = motor[driveR] = LIM_TO_VAL(right, 127);
 }
 
-CREATE_MACHINE_3(drive, trackL, Idle, Break, Manual, float, Vel, int, Power);
-//#include "driveTest.c"
-#include "auto.c"
-#include "drive_algs.h"
-#include "drive_algs.c"
-
-task driveSet()
+/* Intake Controls */
+void setIntake(word power)
 {
-	driveLogs = 0; // Toggle Logging
-
-	sCycleData cycle;
-	initCycle(cycle, 10, "drive");
-	while (true)
-	{
-		//writeDebugStreamLine("%d", driveState);
-		switch(driveState)
-		{
-		case driveIdle: //0:
-			{
-				driveBlocked = 0;
-				setDrive(0,0);
-
-				driveStateCycCount++;
-				break;
-			}
-		case driveBreak: //1:
-			{
-				driveBlocked = 0;
-				float startVelL, startVelR;
-
-				const float velThresh = 0.015;
-				velocityCheck(trackL);
-				velocityCheck(trackR);
-				float left = gSensor[trackL].velocity;
-				float right = gSensor[trackR].velocity;
-				if (driveStateCycCount == 0)
-				{
-					startVelL = left;
-					startVelR = right;
-					LOG(drive)("BreakFirstVel %f, %f", startVelL, startVelR);
-				}
-
-				LOG(drive)("L: %f, r: %f", left, right);
-				if (( abs(left) < velThresh || sgn(left)!=sgn(startVelL) ) && ( abs(right) < velThresh || sgn(right)!=sgn(startVelR) ) )
-				{
-					driveStateChange(driveIdle);
-				}
-				else
-				{
-					setDrive((abs(left) > velThresh? (LIM_TO_VAL(sgn(left) * -50, 12)) : 0), (abs(right) > velThresh? (LIM_TO_VAL(sgn(right) * -50, 12)) : 0) );
-				}
-				driveStateCycCount++;
-
-				driveSafetyCheck(driveIdle);
-				break;
-			}
-		case driveManual: //2:
-			{
-				driveBlocked = 0;
-				//float angleToTen = atan2( (gPosition.x - 0), (gPosition.y - 10) );
-				setDrive((LIM_TO_VAL((gJoy[JOY_THROTTLE].cur + DRIVE_TURN), 127)), (LIM_TO_VAL((gJoy[JOY_THROTTLE].cur - DRIVE_TURN), 127)));
-				driveStateCycCount++;
-
-				LOG(drive)("%d (%f,%f) a:%f", npgmtime, gPosition.x, gPosition.y, gPosition.a);
-
-				break;
-			}
-
-			//ADD_FUNC_TO_SWITCH_VOID_4(driveFuncTest, drive, driveBreak, driveIdle)
-			ADD_FUNC_TO_SWITCH_VOID_7(followLineVec, drive, driveIdle, driveIdle)
-			ADD_FUNC_TO_SWITCH_VOID_6(followLine, drive, driveIdle, driveIdle)
-			ADD_FUNC_TO_SWITCH_VOID_6(moveToTargetSimple, drive, driveIdle, driveIdle)
-			ADD_FUNC_TO_SWITCH_VOID_12(moveToTarget, drive, driveIdle, driveIdle)
-			ADD_FUNC_TO_SWITCH_VOID_12(moveToTargetDis, drive, driveBreak, driveIdle)
-			ADD_FUNC_TO_SWITCH_VOID_7(turnToAngleNewAlg, drive, driveBreak, driveIdle)
-			ADD_FUNC_TO_SWITCH_VOID_9(turnToTargetNewAlg, drive, driveBreak, driveIdle)
-			ADD_FUNC_TO_SWITCH_VOID_7(sweepTurnToTarget, drive, driveBreak, driveIdle)
-		}
-		endCycle(cycle);
-	}
+	motor[intake] = LIM_TO_VAL(power, 127);
 }
-void handleDrive()
+
+/* Angler Controls */
+#define ANGLER_POTI_BOTTOM 125
+#define ANGLER_POTI_TOP 3600
+void setAngler(word power)
 {
-	if (!gJoy[JOY_THROTTLE}.cur && !gJoy[JOY_TURN].cur && driveState == driveManual)
-	{
-		driveStateChange(driveBreak, false, 150);
-	}
-	else if(gJoy[JOY_THROTTLE}.cur || gJoy[JOY_TURN].cur)
-	{
-		driveStateChange(driveManual);
-	}
+	motor[angler] = LIM_TO_VAL(power, 127);
 }
 
-CREATE_MACHINE_3(intake, trackL, Stop, Up, Down, int, Dir, int, Power);
-#define INTAKE_UP_POWER 127
-#define INTAKE_DOWN_POWER -127
-
-task intakeSet()
-{
-	intakeLogs = 1; // Toggle Logging
-
-	sCycleData cycle;
-	initCycle(cycle, 10, "drive");
-	while (true)
-	{
-		switch(intakeState)
-		{
-			case intakeStop:
-				gMotor[intake].power = 0;
-				break;
-			case intakeUp:
-				gMotor[intake].power = INTAKE_UP_POWER;
-				break;
-			case intakeDown:
-				gMotor[intake].power = INTAKE_DOWN_POWER;
-				break;
-		}
-		endCycle(cycle);
-	}
-}
-void handleIntake()
-{
-		if (RISING(BTN_INTAKE_UP))
-		{
-			LOG(intake)("%d Intake Up Pressed", npgmtime);
-			if (intakeState != intakeStop)
-				intakeStateChange(intakeStop, false);
-			else
-				intakeStateChange(intakeUp, false);
-		}
-		else if (RISING(BTN_INTAKE_DOWN))
-		{
-			LOG(intake)("%d Intake Down Pressed", npgmtime);
-			if (intakeState != intakeStop)
-				intakeStateChange(intakeStop, false);
-			else
-				intakeStateChange(intakeDown, false);
-		}
-}
-
-CREATE_MACHINE_6(shooter, shooterEnc, Idle, Break, Reload, Hold, Shoot, Reset, int, Dir, int, Power);
-#define RESET_OFFSET 45
-#define SHOOTER_GEAR_RATIO 1.0
-#define SHOOTER_RELOAD_VAL ((360.0*SHOOTER_GEAR_RATIO) + RESET_OFFSET)
-#define SHOOTER_RELOAD_HOLD 3//11
-#define SHOOTER_RELOAD_POS (145 + RESET_OFFSET)
-
-#define BALL_DETECTED (gSensor[ballDetector].value < 1000 && (gSensor[ballDetector].value < 247 || gSensor[ballDetector].value > 252))
-
-bool resetShooter;
-
-int shooterShotCount;
-
+/* Shooter Controls */
 void setShooter(word val)
 {
-	gMotor[shooter].power = gMotor[shooterY].power = LIM_TO_VAL(val, 127);
+	motor[shooter] = motor[shooterY] = LIM_TO_VAL(val, 127);
 }
 
-task shooterSet()
+#define RESET_OFFSET 45 //35
+#define SHOOTER_GEAR_RATIO 1.0
+#define SHOOTER_RELOAD_HOLD 11
+#define SHOOTER_SHOOT_POS ((gShooterShotCount*360.0*SHOOTER_GEAR_RATIO) + RESET_OFFSET)
+#define SHOOTER_NEXT_SHOOT_POS (((1+gShooterShotCount)*360.0*SHOOTER_GEAR_RATIO) + RESET_OFFSET)
+#define SHOOTER_RELOAD_POS ((SHOOTER_SHOOT_POS) + 145)
+
+#define BD_UNPLUGGED (SensorValue[ballDetector] >= 244 && SensorValue[ballDetector] <= 252)
+
+#define BALL_DETECTED (SensorValue[ballDetector] < 1000 && (!BD_UNPLUGGED))
+
+typedef enum _tShooterState
 {
-	shooterShotCount = 0;
-	float shooterBreakOffset = 6;
+	shooterIdle,
+	shooterBreak,
+	shooterReload,
+	shooterHold,
+	shooterShoot,
+	shooterReset
+} tShooterState;
 
-	resetQuadratureEncoder(shooterEnc);
+tShooterState gShooterState = shooterIdle;
+tShooterState gShooterStateLst;
+unsigned long gShooterStateTime; //Stores the time the shooter state is changed
+int gShooterStateSen;
+bool gShooterKilled = false;
 
-	shooterLogs = 1; // Toggle Logging
+int gShooterShotCount = 0;
+//bool gShooterTimedOut = false;
 
-	unsigned long curTime;
+void setShooterState (tShooterState state)
+{
+	if (state != gShooterState)
+	{
+		gShooterStateLst = gShooterState;
+		gShooterState = state;
 
-	sCycleData cycle;
-	initCycle(cycle, 10, "shooter");
+		gShooterStateTime = npgmtime;
+		gShooterStateSen = SensorValue[shooterEnc];
+		writeDebugStreamLine("%d Shooter State Set %d, Count:%d, Sen:%d, T:%d", nPgmTime, gShooterState, gShooterShotCount, gShooterStateSen, gShooterStateTime);
+	}
+}
+
+task shooterStateSet()
+{
+	writeDebugStreamLine("%d Start Shooter State Machine Task", npgmtime);
+	float shooterBreakOffset = 8;
+
+	SensorValue[shooterEnc] = 0;
+
+	//sCycleData cycle;
+	//initCycle(cycle, 10, "shooter");
 	while (true)
 	{
-		int target = shooterShotCount * SHOOTER_RELOAD_VAL;
-
-		switch(shooterState)
+		switch (gShooterState)
 		{
 			case shooterIdle:
-			{
-				//writeDebugStreamLine("%d Idle", npgmtime);
 				setShooter(0);
 				break;
-			}
 			case shooterBreak:
-			{
-				//shooterShotCount--;
 				setShooter(-90);
 				unsigned long timerStart = npgmtime;
-				WHILE( shooter, (npgmTime-timerStart) < 100 ) sleep(10);
+				while( (npgmTime-timerStart) < 80 ) sleep(10);
 				setShooter(0);
 				PlayTone(300, 50);
 
-				shooterStateChange(shooterIdle);
+				setShooterState(shooterReload);
 				break;
-			}
 			case shooterReload:
-			{
-				if (gSensor[shooterEnc].value < (target + SHOOTER_RELOAD_POS))
+				setShooter(127);
+				int target = SHOOTER_RELOAD_POS;
+
+				while(SensorValue[shooterEnc] < target)
 				{
-					curTime = npgmTime;
-					shooterTimeout = curTime + 450;
-					shooterVelSafetyThresh = 0.03;
-					shooterVelSafetyDir = velUp;
-
-					//writeDebugStreamLine("Shooter TO: %d", shooterTimeout);
-
-					setShooter(127);
-					LOG(shooter)("Setup shot #%d encoder start= %d", shooterShotCount,gSensor[shooterEnc].value);
-					unsigned long reloadStartTime = npgmtime;
-					writeDebugStreamLine("%d check: %d, val: %d, targ:%d, %d", npgmtime, gSensor[shooterEnc].value < (target + SHOOTER_RELOAD_POS), gSensor[shooterEnc].value, target, SHOOTER_RELOAD_POS);
-					WHILE(shooter, gSensor[shooterEnc].value < (target + SHOOTER_RELOAD_POS))
-					{
-						shooterVelSafetyCheck();
-						sleep(10);
-						//LOG(shooter)("Enc: %d", gSensor[shooterEnc].value);
-					}
-					//LOG(shooter)("Enc: %d", gSensor[shooterEnc].value);
-					LOG(shooter)("Reload time = %d", npgmtime-reloadStartTime);
-					setShooter(SHOOTER_RELOAD_HOLD);
+					sleep(10);
 				}
-				if (!shooterSafetyCheck(shooterIdle)) shooterStateChange(shooterHold);
 
+				writeDebugStreamLine("%d Reloaded to %d", npgmtime, SensorValue[shooterEnc]);
+
+				setShooterState(shooterHold);
 				break;
-			}
 			case shooterHold:
-			{
-				//writeDebugStreamLine("%d Hold", npgmtime);
 				setShooter(SHOOTER_RELOAD_HOLD);
 				break;
-			}
 			case shooterShoot:
-			{
-				curTime = npgmTime;
-				shooterTimeout = curTime + 100;
-				shooterVelSafetyThresh = 0.1;
-				shooterVelSafetyDir = velUp;
-
-				LOG(shooter)("%d Start Shooting VelSafety: %f,  TO:%f", npgmtime, shooterVelSafetyThresh, shooterTimeout);
-
 				unsigned long shotStartTime = npgmtime;
-				shooterShotCount++;
-				target = shooterShotCount * SHOOTER_RELOAD_VAL;
+				gShooterShotCount++;
+				target = SHOOTER_SHOOT_POS;
 				setShooter(127);
-				LOG(shooter)("Start shot #%d at %d, Tgt: %d, Enc: %d, Err: %d", shooterShotCount, nPgmTime, gSensor[shooterEnc].value, target, target - gSensor[shooterEnc].value);
+				writeDebugStreamLine("%d Start shot %d: Time: %d Pos:%d ", npgmtime, gShooterShotCount, npgmtime-shotStartTime, SensorValue[shooterEnc]);
 
-				bool shotTargReached = ( gSensor[shooterEnc].value > (target-shooterBreakOffset) );
+				bool shotTargReached = ( SensorValue[shooterEnc] > (target-shooterBreakOffset) );
 
-				curTime = npgmTime;
-				shooterTimeout = curTime + 100;
-				shooterVelSafetyThresh = 0.1;
-				shooterVelSafetyDir = velUp;
-
-				WHILE (shooter, (!shotTargReached && (gSensor[shooterEnc].value < (target-80) || gSensor[shooterEnc].value > (target-15) || BALL_DETECTED)))
+				while(!shotTargReached && (SensorValue[shooterEnc] < (target-65) || SensorValue[shooterEnc] > (target-8) || BALL_DETECTED))
 				{
-					velocityCheck(shooterEnc);
-					LOG(shooter)("%d Shooting. vel:%f, lstVel:%f vT: %f", npgmtime, gSensor[shooterEnc].velocity, gSensor[shooterEnc].lstVelocity, shooterVelSafetyThresh);
-					shotTargReached = ( gSensor[shooterEnc].value > (target-shooterBreakOffset) );
+					shotTargReached = ( SensorValue[shooterEnc] > (target-shooterBreakOffset) );
 
 					unsigned long timeElpsd = npgmtime-shotStartTime;
-					shooterVelSafetyCheck();
+
 					sleep(10);
 				}
 				if (!shotTargReached)
 				{
-					LOG(shooter)("%d Ball gone: Val:%d, Time: %d Pos:%d, Targ:%d ", npgmtime, gSensor[ballDetector].value, npgmtime-shotStartTime, gSensor[shooterEnc].value, target);
-					shooterShotCount--;
-					shooterStateChange(shooterBreak);
+					writeDebugStreamLine("%d Ball gone: Val:%d, Time: %d Pos:%d, Targ:%d ", npgmtime, SensorValue[ballDetector], npgmtime-shotStartTime, SensorValue[shooterEnc], target);
+					gShooterShotCount--;
+					PlayTone(300, 50);
+
+					setShooterState(shooterBreak);
 				}
 				else
 				{
-					LOG(shooter)("%d Shot done accelerating: Time: %d Pos:%d ", npgmtime, npgmtime-shotStartTime, gSensor[shooterEnc].value);
-					setShooter(-22);
+					writeDebugStreamLine("%d Start break: Time: %d Pos:%d ", npgmtime, npgmtime-shotStartTime, SensorValue[shooterEnc]);
+					setShooter(-25);
 					unsigned long startBreakTime = npgmtime;
-					WHILE (drive, (npgmtime-startBreakTime) < 80)
+					while ((npgmtime-startBreakTime) < 80)
 					{
-						//LOG(shooter)("%d Break", npgmtime);
-						//if (gSensor[ballDetector].value > 2000)
-						//{
-						//	LOG(shooter)("	%d Ball hit: Time: %d", npgmtime, npgmtime-shotStartTime);
-						//}
 						sleep(10);
 					}
 					setShooter(0);
-					LOG(shooter)("%d, Shot done in %dms, Tgt: %d, Enc: %d, Err: %d", nPgmTime, npgmtime-shotStartTime, target, gSensor[shooterEnc].value, target - gSensor[shooterEnc].value);
 
-					if (!shooterSafetyCheck(shooterBreak)) shooterStateChange(shooterReload);
+					writeDebugStreamLine("%d Shoot Trigger False - shot end", npgmtime);
+
+					setShooterState(shooterReload);
 				}
 				break;
-			}
-			case shooterReset:
-			{
-				curTime = npgmtime;
-				shooterTimeout = curTime + 3200;
 
-				setShooter(-15);
+			case shooterReset:
+				setShooter(-18);
+				float pos = -1;
+				float lstPos = -1;
 				float vel = -1;
-				float lstVel = -1;
-				sleep(300);
+				unsigned long time = npgmtime;
+				unsigned long lstTime = 0;
+				sleep(250);
 				do
 				{
-					velocityCheck(shooterEnc);
-					vel = gSensor[shooterEnc].velocity;
-					lstVel = gSensor[shooterEnc].lstVelocity;
-					LOG(shooter)("%d Vel:%f, LstVel:%f", npgmtime, vel, lstVel);
-					sleep(10);
-				} DO_WHILE(shooter, vel < -0.001 || lstVel < -0.001);
+					pos = SensorValue[shooterEnc];
+					time = npgmtime;
+
+					vel = (float)(pos-lstPos)/(float)(time-lstTime);
+					writeDebugStreamLine("%d Vel: %f", npgmtime, vel);
+					lstPos = pos;
+					lstTime = time;
+					sleep(200);
+				} while(vel < -0.001);
 				setShooter(0);
 				sleep(150);
-				LOG(shooter)("%d Reset Shooter to %d", npgmtime, gSensor[shooterEnc].value);
+				writeDEbugStreamLine("%d Reset Shooter from %d", npgmtime, SensorValue[shooterEnc]);
 				PlayTone(300, 50);
-				resetQuadratureEncoder(shooterEnc);
+				SensorValue[shooterEnc] = 0;
+				gShooterShotCount = 0;
 				sleep(50);
 
-				//shooterStateChange(shooterIdle);
-				if (!shooterSafetyCheck(shooterIdle)) shooterStateChange(shooterReload);
+				setShooterState(shooterReload);
 				break;
-			}
 		}
-		endCycle(cycle);
+		//endCycle(cycle);
+		sleep(10);
 	}
 }
-void handleShooter()
+
+void shooterSafetySet(tShooterState state)
 {
-	bool buttonHeld = false;
-	bool cancelledPrint = false;
-	int target = shooterShotCount * SHOOTER_RELOAD_VAL;
-	if (shooterShotcount == 0 && !resetShooter)
-	{
-		shooterStateChange(shooterReset);
-		resetShooter = true;
-		//shooterStateChange(shooterReload, true);
-	}
+	//hogCPU();
+	unsigned long stateElpsdTime = (npgmtime-gShooterStateTime);
+	int senChange = SensorValue[shooterEnc]-gShooterStateSen;
+		writeDebugStreamLine("	%d Shooter State Safety %d. TO: %d SenChange: %d", npgmtime, stateElpsdTime, gShooterState, senChange);
+		stopTask(shooterStateSet);
+		startTask(shooterStateSet);
+		setShooterState(state);
+		//releaseCPU();
+}
 
-	if (vexRT[BTN_SHOOT])
+void killShooter()
+{
+	if (!gShooterKilled)
 	{
-		if (gSensor[shooterEnc].value < (target + SHOOTER_RELOAD_POS)) shooterStateChange(shooterReload);
-		else if (shooterState != shooterShoot) shooterStateChange(shooterShoot, false, 400, 0.1, velUp);
-		//shooterStateChange(shooterReload);
-		//if (gSensor[shooterEnc].value < SHOOTER_RELOAD_POS-10))
-		//{
-		//	shooterStateChange(shooterReload); //, false, 1000, 0.0001, velUp);
-		//}
-		//else if(gSensor[ballDetector].value > 1000)
-		//{
-		//	if (!cancelledPrint)
-		//	{
-		//		LOG(shooter)("%d No Ball - Shot Cancelled");
-		//		shooterStateChange(shooterIdle);
-		//		cancelledPrint = true;
-		//	}
-		//}
-		//else if(gSensor[ballDetector].value >= 250 & gSensor[ballDetector].value <= 252)
-		//{
-		//	if (!cancelledPrint)
-		//	{
-		//		LOG(shooter)("%d Ball Detector Unplugged - Shot Cancelled");
-		//		shooterStateChange(shooterIdle);
-		//		cancelledPrint = true;
-		//	}
-		//}
-		//else
-		//{
-		//	shooterStateChange(shooterShoot);
-		//	cancelledPrint = true;
-		//}
+			//hogCPU();
+			gShooterKilled = true;
+			stopTask(shooterStateSet);
+			setShooter(0);
+			writeDebugStreamLine("	%d KILL SHOOTER TASK - Shooter Enc Not Plugged In. State: %d", npgmtime, gShooterState);
+			//releaseCPU();
 	}
 }
 
-int highValCount = 0;
 void shooterSafety()
 {
-		const int highValLimit = 60;
-		//if (abs(Motor[shooter]) >= 100 || abs(Motor[shooterY]) >= 100)
-		if (abs(gMotor[shooter].curPower) >= 100 || abs(gMotor[shooterY].curPower) >= 100)
+	if (!gShooterKilled)
+	{
+		hogCPU();
+		unsigned long stateElpsdTime = (npgmtime-gShooterStateTime);
+		int senChange = SensorValue[shooterEnc]-gShooterStateSen;
+
+		if (gShooterState == shooterReset)
 		{
-			highValCount++;
+			if (stateElpsdTime > 4500) shooterSafetySet(shooterIdle);
+			else if (stateElpsdTime > 100 && senChange > 10) killShooter();
 		}
-		else
-			highValCount = 0;
-
-		if (highValCount > highValLimit)
+		else if (gShooterState == shooterReload)
 		{
-			writeDebugStreamLine("%d KILL SHOOTER - HIGH MOTOR COUNT: %d", npgmtime, highValCount);
-			setShooter(0);
-			stopTask(shooterSet);
-			motor[shooter] = motor[shooterY] = 0;
-
-			sleep(500);
+			if (stateElpsdTime > 500) shooterSafetySet(shooterBreak);
+			else if (stateElpsdTime > 150 && senChange < 10) killShooter();
 		}
+		else if (gShooterState == shooterShoot)
+		{
+			if (stateElpsdTime > 850) shooterSafetySet(shooterBreak);
+			else if (stateElpsdTime > 150 && senChange < 10) killShooter();
+		}
+		releaseCPU();
+	}
 }
 
-void startTasks()
-{
-	resetPositionFull(gPosition, 0, 0, 0);
-
-	//tStart(autoMotorSensorUpdateTask);
-
-	tStart(driveSet);
-	tStart(intakeSet);
-	tStart(shooterSet);
-
-	resetShooter = false;
-}
-
-void stopTasks()
-{
-	tStop(trackPositionTask);
-
-	//tStop(autoMotorSensorUpdateTask);
-
-	tStop(driveSet);
-	tStop(intakeSet);
-	tStop(shooterSet);
-}
 
 void startup()
 {
 	clearDebugStream();
-	setupSensors();
-	setupMotors();
-	setupJoysticks();
-	tInit();
 
 	//Setup Joysticks & Buttons
-	enableJoystick(JOY_THROTTLE);
-	enableJoystick(JOY_TURN);
-	enableJoystick(BTN_INTAKE_UP);
-	enableJoystick(BTN_INTAKE_DOWN);
-	enableJoystick(BTN_SHOOT);
-
-	gJoy[JOY_THROTTLE].deadzone = 15;
-	gJoy[JOY_TURN].deadzone = 15;
 
 }
 
 void disabled()
 {
-	updateSensorInputs();
+	//updateSensorInputs();
+
 	//selectAuto();
 	//handleLcd();
 }
 
 task autonomous()
 {
-	tStart(autoMotorSensorUpdateTask);
-	startTasks();
-	writeDebugStreamLine("%d Start Autonomous, %d", npgmtime, nBatteryLevel);
-
-	startTasks();
-	sleep(100);
-	writeDebugStreamLine("%d Starting", npgmtime);
-	//shooterStateChange(shooterReload);
-
 	sCycleData cycle;
 	initCycle(cycle, 10, "auto");
 	while(true)
 	{
 		endCycle(cycle);
 	}
-	stopTasks();
-	tStop(autoMotorSensorUpdateTask);
-	stopTasks();
 }
 
 task usercontrol()
@@ -528,24 +302,64 @@ task usercontrol()
 	initCycle(cycle, 10, "usercontrol");
 
 	writeDebugStreamLine("%d Start usercontrol",npgmtime);
-	startTasks();
+
+	bool shootBtn = false;
+	bool shootBtnLst = false;
+
+	int lstShotCount = 0;
+	unsigned long lstShotTimer = 0;
+
+	SensorValue[shooterEnc] = 0;
+	startTask(shooterStateSet);
+	setShooterState(shooterReset);
 
 	while (true)
 	{
-		updateJoysticks();
-		updateMotors();
-		updateSensorInputs();
-		updateSensorOutputs();
+		shooterSafety():
 
-		handleDrive();
-		handleIntake();
-		handleShooter();
+		shootBtn = vexRT[BTN_SHOOT];
 
-		shooterSafety();
+		if (shootBtn && !shootBtnLst)
+		{
+			if (SensorValue[shooterEnc] < SHOOTER_RELOAD_POS) setShooterState(shooterReload);
+			else if (gShooterShotCount != 0 && SensorValue[shooterEnc] >= (SHOOTER_NEXT_SHOOT_POS)) shooterSafetySet(shooterReset);
+			else if (BALL_DETECTED)
+			{
+				setShooterState(shooterShoot);
+				lstShotTimer = npgmtime;
+				writeDebugStreamLine("%d FIRST SHOT TRIGGERED. # %d. Angler: %d", npgmtime, gShooterShotCount, SensorValue[anglerPoti]);
+				//if ((npgmtime-secondShotTimer) > 900) secondShotTimer = npgmtime;
+				//else secondShotTimer = 0;
+			}
+		}
 
-		//setMobileState();
+		if (!shootBtn) lstShotTimer = 0;
+		else if (shootBtn && gShooterState == shooterHold && (lstShotTimer != 0 && (nPgmTime-lstShotTimer) < 900))
+		{
+			setShooterState(shooterShoot);
+			lstShotTimer = 0;
+			writeDebugStreamLine("%d SECOND SHOT TRIGGERED. # %d", npgmtime, gShooterShotCount);
+		}
+
+		//Angler Controls
+		if (abs(vexRt[JOY_ANGLER]) > 20)
+		{
+			if (vexRT[JOY_ANGLER] > 0 && SensorValue[anglerPoti] < ANGLER_POTI_TOP) setAngler(vexRT[JOY_ANGLER]);
+			else if (vexRT[JOY_ANGLER] < 0 && SensorValue[anglerPoti] > ANGLER_POTI_BOTTOM) setAngler(vexRT[JOY_ANGLER]);
+		}
+		else
+		{
+			if(SensorValue[anglerPoti] < 800) motor[angler] = -5;
+			else if (SensorValue[anglerPoti] > 800 && SensorValue[anglerPoti] < 1000) motor[angler] = -10;
+			else if (SensorValue[anglerPoti] > 1000 && SensorValue[anglerPoti] < 1500) motor[angler] = 0;
+			else if (SensorValue[anglerPoti] > 1500 && SensorValue[anglerPoti] < 2250) motor[angler] = 8;
+			else if (SensorValue[anglerPoti] > 2250 && SensorValue[anglerPoti] < 2600) motor[angler] = 10;
+			else if (SensorValue[anglerPoti] > 2600 &&	SensorValue[anglerPoti] < 3500) motor[angler] = 5;
+		}
+
+		shootBtnLst = shootBtn;
 
 		endCycle(cycle);
 	}
-	stopTasks();
+	stopTask(shooterStateSet);
 }

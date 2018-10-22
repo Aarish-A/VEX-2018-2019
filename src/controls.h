@@ -6,5 +6,9 @@
 #define BTN_INTAKE_UP Btn6U
 #define BTN_INTAKE_DOWN Btn6D
 
+/* Angler */
+#define JOY_ANGLER Ch2
+#define BTN_ANGLER_TEST Btn5D
+
 /* Shooter */
 #define BTN_SHOOT Btn5U
