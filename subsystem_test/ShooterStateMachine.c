@@ -24,9 +24,6 @@
 #define JOY_ANGLER Ch2
 #define BTN_ANGLER_TEST Btn5D
 
-#define JOY_THROTTLE Ch3
-#define JOY_TURN Ch4
-
 #define RESET_OFFSET 45 //35
 #define SHOOTER_GEAR_RATIO 1.0
 #define SHOOTER_RELOAD_HOLD 11
@@ -37,10 +34,6 @@
 #define BD_UNPLUGGED (SensorValue[ballDetector] >= 244 && SensorValue[ballDetector] <= 252)
 
 #define BALL_DETECTED (SensorValue[ballDetector] < 1000 && (!BD_UNPLUGGED))
-
-/* Angler Defines */
-#define ANGLER_POTI_BOTTOM 125
-#define ANGLER_POTI_TOP 3600
 
 typedef enum _tShooterState
 {
@@ -249,12 +242,55 @@ void shooterSafety()
 	}
 }
 
+/* Angler Controls */
+#define ANGLER_POTI_BOTTOM 125
+#define ANGLER_POTI_TOP 3600
+
+void setAngler(word power)
+{
+	motor[angler] = LIM_TO_VAL(power, 127);
+}
+
+void moveAngler(int target)
+{
+	if (SensorValue[anglerPoti] < target)
+	{
+		unsigned long curTime = npgmtime;
+		int error = 0;
+		int lstError = 0;
+		unsigned long time = npgmtime;
+		unsigned long lstTime = 0;
+		float kP = 0.09;//0.085;
+		float kD = 5.5;
+		while (SensorValue[anglerPoti] < (target-10) && (npgmtime-curTime) < 1500)
+		{
+			time = npgmtime;
+			error = (target - SensorValue[anglerPoti]);
+			float pVal = error * kP;
+			float dVal = (((float)(error-lstError)/(float)(time-lstTime)) * kD);
+			float power = pVal + dVal;
+			setAngler(power);
+			writeDEbugStreamLine("%d error:%d, pVal:%f, dVal:%f, pow: %f", npgmtime, error, pVal, dVal, power);
+
+			lstError = error;
+			lstTime = time;
+			sleep(10);
+		}
+		setAngler(6);
+		writeDEbugStreamLine("	%d Done move to %d. Sen: %d, Err: %d, Took: %d", npgmtime, target, SensorValue[anglerPoti], target-SensorValue[anglerPoti], (npgmtime-curTime));
+		sleep(400);
+		writeDEbugStreamLine("	%d After rest. Targ %d. Sen: %d, Err: %d, Took: %d", npgmtime, target, SensorValue[anglerPoti], target-SensorValue[anglerPoti], (npgmtime-curTime));
+	}
+}
+
+
+/* Driver Control */
 task driverControl
 {
 	bool shootBtn = false;
 	bool shootBtnLst = false;
 
-	int lstShotCount = 0;
+	//int lstShotCount = 0;
 	unsigned long lstShotTimer = 0;
 	while (true)
 	{
@@ -285,17 +321,17 @@ task driverControl
 		//Angler Controls
 		if (abs(vexRt[Ch2]) > 20)
 		{
-			if (vexRT[Ch2] > 0 && SensorValue[anglerPoti] < ANGLER_POTI_TOP) motor[angler] = vexRT[Ch2];
-			else if (vexRT[Ch2] < 0 && SensorValue[anglerPoti] > ANGLER_POTI_BOTTOM) motor[angler] = vexRT[Ch2];
+			if (vexRT[Ch2] > 0 && SensorValue[anglerPoti] < ANGLER_POTI_TOP) setAngler(vexRT[Ch2]);
+			else if (vexRT[Ch2] < 0 && SensorValue[anglerPoti] > ANGLER_POTI_BOTTOM) setAngler(vexRT[Ch2]);
 		}
 		else
 		{
 			if(SensorValue[anglerPoti] < 800) motor[angler] = -5;
-			else if (SensorValue[anglerPoti] > 800 && SensorValue[anglerPoti] < 1000) motor[angler] = -10;
-			else if (SensorValue[anglerPoti] > 1000 && SensorValue[anglerPoti] < 1500) motor[angler] = 0;
-			else if (SensorValue[anglerPoti] > 1500 && SensorValue[anglerPoti] < 2250) motor[angler] = 8;
-			else if (SensorValue[anglerPoti] > 2250 && SensorValue[anglerPoti] < 2600) motor[angler] = 10;
-			else if (SensorValue[anglerPoti] > 2600 &&	SensorValue[anglerPoti] < 3500) motor[angler] = 5;
+			else if (SensorValue[anglerPoti] > 800 && SensorValue[anglerPoti] < 1000) setAngler(-10);
+			else if (SensorValue[anglerPoti] > 1000 && SensorValue[anglerPoti] < 1500) setAngler(0);
+			else if (SensorValue[anglerPoti] > 1500 && SensorValue[anglerPoti] < 2250) setAngler(8);
+			else if (SensorValue[anglerPoti] > 2250 && SensorValue[anglerPoti] < 2600) setAngler(10);
+			else if (SensorValue[anglerPoti] > 2600 &&	SensorValue[anglerPoti] < 3500) setAngler(5);
 		}
 
 		shootBtnLst = shootBtn;
