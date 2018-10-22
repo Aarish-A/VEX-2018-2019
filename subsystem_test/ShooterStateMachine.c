@@ -16,6 +16,7 @@
 
 #define LIM_TO_VAL(input, val) (abs(input) > (val) ? (val) * sgn(input) : (input))
 
+/* Shooter Defines */
 #define BTN_SHOOT Btn5U
 #define BTN_INTAKE_UP Btn6U
 #define BTN_INTAKE_DOWN Btn6D
@@ -26,15 +27,21 @@
 #define JOY_THROTTLE Ch3
 #define JOY_TURN Ch4
 
-#define RESET_OFFSET 45
+#define RESET_OFFSET 45 //35
 #define SHOOTER_GEAR_RATIO 1.0
-#define SHOOTER_RELOAD_VAL ((360.0*SHOOTER_GEAR_RATIO) + RESET_OFFSET)
-#define SHOOTER_RELOAD_HOLD 0//11
-#define SHOOTER_RELOAD_POS (145 + RESET_OFFSET)
+//#define SHOOTER_RELOAD_VAL ((gShooterShotCount*360.0*SHOOTER_GEAR_RATIO) + RESET_OFFSET)
+#define SHOOTER_RELOAD_HOLD 11
+#define SHOOTER_SHOOT_POS ((gShooterShotCount*360.0*SHOOTER_GEAR_RATIO) + RESET_OFFSET)
+#define SHOOTER_NEXT_SHOOT_POS (((1+gShooterShotCount)*360.0*SHOOTER_GEAR_RATIO) + RESET_OFFSET)
+#define SHOOTER_RELOAD_POS ((SHOOTER_SHOOT_POS) + 145)
 
 #define BD_UNPLUGGED (SensorValue[ballDetector] >= 244 && SensorValue[ballDetector] <= 252)
 
 #define BALL_DETECTED (SensorValue[ballDetector] < 1000 && (!BD_UNPLUGGED))
+
+/* Angler Defines */
+#define ANGLER_POTI_BOTTOM 125
+#define ANGLER_POTI_TOP 3600
 
 
 unsigned long curTimeS, timeOutS, accelTimeS;
@@ -103,7 +110,7 @@ void setShooterState (tShooterState state)
 task shooterStateSet()
 {
 	writeDebugStreamLine("%d Start Shooter State Machine Task", npgmtime);
-	float shooterBreakOffset = 6;
+	float shooterBreakOffset = 8;
 
 	//SensorValue[shooterEnc] = 0;
 	SensorValue[shooterEnc] = 0;
@@ -120,18 +127,19 @@ task shooterStateSet()
 			case shooterBreak:
 				setShooter(-90);
 				unsigned long timerStart = npgmtime;
-				while( (npgmTime-timerStart) < 100 ) sleep(10);
+				while( (npgmTime-timerStart) < 80 ) sleep(10);
 				setShooter(0);
 				PlayTone(300, 50);
 
-				setShooterState(shooterIdle);
+				setShooterState(shooterReload);
+				//setShooterState(shooterIdle);
 				break;
 			case shooterReload:
 				setShooter(127);
-				int target = gShooterShotCount * SHOOTER_RELOAD_VAL;
+				int target = SHOOTER_RELOAD_POS;
 
 				//WHILE_SHOOTER_MOVING(10, 100, 400, SensorValue[shooterEnc] < (target + SHOOTER_RELOAD_POS))
-				while(SensorValue[shooterEnc] < (target + SHOOTER_RELOAD_POS))
+				while(SensorValue[shooterEnc] < target)
 				{
 					sleep(10);
 				}
@@ -146,7 +154,7 @@ task shooterStateSet()
 			case shooterShoot:
 				unsigned long shotStartTime = npgmtime;
 				gShooterShotCount++;
-				target = gShooterShotCount * SHOOTER_RELOAD_VAL;
+				target = SHOOTER_SHOOT_POS;
 				setShooter(127);
 				//writeDebugStreamLine("Fired shot #%d at %d, Tgt: %d, Enc: %d, Err: %d", gShooterShotCount, nPgmTime, SensorValue[shooterEnc], target, target - SensorValue[shooterEnc]);
 				writeDebugStreamLine("%d Start shot %d: Time: %d Pos:%d ", npgmtime, gShooterShotCount, npgmtime-shotStartTime, SensorValue[shooterEnc]);
@@ -154,7 +162,7 @@ task shooterStateSet()
 				bool shotTargReached = ( SensorValue[shooterEnc] > (target-shooterBreakOffset) );
 
 				//WHILE_SHOOTER_MOVING(10, 150, 700, !shotTargReached && (SensorValue[shooterEnc] < (target-85) || SensorValue[shooterEnc] > (target-15) || BALL_DETECTED))
-				while(!shotTargReached && (SensorValue[shooterEnc] < (target-90) || SensorValue[shooterEnc] > (target-15) || BALL_DETECTED))
+				while(!shotTargReached && (SensorValue[shooterEnc] < (target-65) || SensorValue[shooterEnc] > (target-8) || BALL_DETECTED))
 				{
 					//writeDEbugStreamLine("Ball? %d", BALL_DETECTED);
 					shotTargReached = ( SensorValue[shooterEnc] > (target-shooterBreakOffset) );
@@ -166,18 +174,21 @@ task shooterStateSet()
 				if (!shotTargReached)
 				{
 					writeDebugStreamLine("%d Ball gone: Val:%d, Time: %d Pos:%d, Targ:%d ", npgmtime, SensorValue[ballDetector], npgmtime-shotStartTime, SensorValue[shooterEnc], target);
-					setShooter(-90);
-					sleep(80);
-					setShooter(0);
+					//setShooter(-90);
+					//sleep(80);
+					//setShooter(0);
+					//gShooterShotCount--;
+					//while (SensorValue[shooterEnc] > (target + SHOOTER_RELOAD_POS)) sleep(10);
+					//setShooter(SHOOTER_RELOAD_HOLD);
 					gShooterShotCount--;
-					while (SensorValue[shooterEnc] > (target + SHOOTER_RELOAD_POS)) sleep(10);
-					setShooter(SHOOTER_RELOAD_HOLD);
 					PlayTone(300, 50);
+
+					setShooterState(shooterBreak);
 				}
 				else
 				{
 					writeDebugStreamLine("%d Start break: Time: %d Pos:%d ", npgmtime, npgmtime-shotStartTime, SensorValue[shooterEnc]);
-					setShooter(-22);
+					setShooter(-25);
 					unsigned long startBreakTime = npgmtime;
 					while ((npgmtime-startBreakTime) < 80)
 					{
@@ -193,9 +204,9 @@ task shooterStateSet()
 					setShooter(0);
 
 					writeDebugStreamLine("%d Shoot Trigger False - shot end", npgmtime);
-				}
 
-				setShooterState(shooterReload);
+					setShooterState(shooterReload);
+				}
 				break;
 
 			case shooterReset:
@@ -298,17 +309,16 @@ task driverControl
 
 		if (shootBtn && !shootBtnLst)
 		{
-			int target = gShooterShotCount * SHOOTER_RELOAD_VAL;
-			if (SensorValue[shooterEnc] < (target+SHOOTER_RELOAD_POS)) setShooterState(shooterReload);
+			if (SensorValue[shooterEnc] < SHOOTER_RELOAD_POS) setShooterState(shooterReload);
+			else if (gShooterShotCount != 0 && SensorValue[shooterEnc] >= (SHOOTER_NEXT_SHOOT_POS)) shooterSafetySet(shooterReset);
 			else if (BALL_DETECTED)
 			{
 				setShooterState(shooterShoot);
 				lstShotTimer = npgmtime;
-				writeDebugStreamLine("%d FIRST SHOT TRIGGERED. # %d", npgmtime, gShooterShotCount);
+				writeDebugStreamLine("%d FIRST SHOT TRIGGERED. # %d. Angler: %d", npgmtime, gShooterShotCount, SensorValue[anglerPoti]);
 				//if ((npgmtime-secondShotTimer) > 900) secondShotTimer = npgmtime;
 				//else secondShotTimer = 0;
 			}
-			else if (gShooterShotCount != 0 && SensorValue[shooterEnc] >= (gShooterShotCount * SHOOTER_RELOAD_VAL)) shooterSafetySet(shooterReset);
 		}
 
 		if (!shootBtn) lstShotTimer = 0;
