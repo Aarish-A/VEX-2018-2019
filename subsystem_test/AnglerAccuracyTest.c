@@ -10,7 +10,7 @@ task main()
 	float percentDecel = 0.9;
 	float kp = 0.04;
 	int gError = target-SensorValue[anglerPoti];
-	while(SensorValue[anglerPoti]<(percentFull*target)
+	while(SensorValue[anglerPoti]<(percentFull*target))
 	{
 		motor[angler] = fullSpeed;
 	}
