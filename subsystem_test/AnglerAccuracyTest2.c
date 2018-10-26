@@ -54,7 +54,7 @@ void moveAngler(int target)
 		//	power = deltaError * 0.15;
 		//}
 
-		/* If the angler passes the target, I is reset, Continue loop for 100ms after target is passed */
+		/* If the angler passes the target, I is reset. Continue loop for 100ms after target is passed */
 		if (error < 0)
 		{
 			cross = false;
@@ -78,10 +78,10 @@ void moveAngler(int target)
 		sleep(10);
 	}
 	writeDebugStreamLine("%d | Finished PID-Loop at %d, Error: %d, Power: %d, Took %d.%d seconds", nPgmTime, SensorValue[anglerPoti], error, motor[angler], (nPgmTime - startTime) / 1000, (nPgmTime - startTime) % 1000);
-	writeDebugStreamLine("Started breaking");
+	writeDebugStreamLine("Started holding");
 	setAngler(-8);
 
-	/* See what the error does after breaking is applied, angler should go to rest in this time */
+	/* See what the error does after holding is applied, angler should go to rest in this time */
 	unsigned long loopTimer = nPgmTime;
 	while((nPgmTime - loopTimer) < 300)
 	{
@@ -97,7 +97,7 @@ task main()
 
 	while(true)
 	{
-		writeDebugStreamLine("press button");
+		writeDebugStreamLine("Press Button");
 
 		/* Move angler to 300 ticks below current position */
 		while(!vexRT[Btn6U]) sleep(10);
