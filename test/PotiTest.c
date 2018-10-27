@@ -7,7 +7,9 @@ task main()
 	{
 		//clearLCDLine(0);
 		//displayLCDNumber(0, 0, SensorValue[sensor]);
+		//datalogDataGroupStart();
 		datalogAddValueWithTimeStamp(0, SensorValue[sensor]);
+		//datalogDataGroupEnd();
 		sleep(10);
 	}
 }
