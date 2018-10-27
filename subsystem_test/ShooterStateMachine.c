@@ -255,8 +255,10 @@ void shooterSafety()
 }
 
 /* Angler Controls */
-#define ANGLER_POTI_BOTTOM  344
-#define ANGLER_POTI_TOP 3770
+#define ANGLER_BOTTOM_POS  330
+#define ANGLER_TOP_POS 3866
+
+#define ANGLER_AXEL_POS (ANGLER_TOP_POS-1850)
 
 void setAngler(word val)
 {
@@ -276,7 +278,7 @@ tAnglerState gAnglerStateLst = gAnglerState;
 unsigned long gAnglerStateTime = nPgmTime;
 int gAnglerStateSen = SensorValue[anglerPoti];
 
-int gAnglerTarget = ANGLER_POTI_BOTTOM;
+int gAnglerTarget = ANGLER_BOTTOM_POS;
 int gAnglerGoodCount = 0;
 
 void setAnglerState (tAnglerState state)
@@ -358,11 +360,17 @@ task anglerStateSet()
 			{
 				if (abs(vexRT[Ch2]) > 20)
 				{
-					if (vexRT[Ch2] > 0 && SensorValue[anglerPoti] < ANGLER_POTI_TOP) setAngler(vexRT[Ch2]);
-					else if (vexRT[Ch2] < 0 && SensorValue[anglerPoti] > ANGLER_POTI_BOTTOM) setAngler(vexRT[Ch2]);
+					if (vexRT[Ch2] > 0 && SensorValue[anglerPoti] < (ANGLER_TOP_POS - 100))
+					{
+						setAngler(vexRT[Ch2]);
+						if (SensorValue[anglerPoti] > ANGLER_AXEL_POS && SensorValue[shooterEnc] > (SHOOTER_RELOAD_POS-10)) goto AnglerHoldTrigger;
+					}
+					else if (vexRT[Ch2] < 0 && SensorValue[anglerPoti] > (ANGLER_BOTTOM_POS + 100)) setAngler(vexRT[Ch2]);
+					else goto AnglerHoldTrigger;
 				}
 				else
 				{
+					AnglerHoldTrigger:
 					setAngler(0);
 					sleep(100);
 					gAnglerTarget = SensorValue[anglerPoti];
@@ -374,64 +382,6 @@ task anglerStateSet()
 		sleep(10);
 	}
 }
-
-
-//void moveAngler(int target)
-//{
-//	writeDebugStreamLine("%d Start move to %d from %d", nPgmTime, target, SensorValue[shooterEnc]);
-//	int anglerGoodCount = 0;
-
-//	float kP = 0.095;//0.09;
-//	float kI = 0.02;
-
-//	setAngler(127);
-//	while (SensorValue[anglerPoti] < (target-100)) sleep(10);
-//	setAngler(0);
-//	//writeDebugStreamLine("%d Done first Move at %d", nPgmTime, SensorVAlue[anglerPoti]);
-
-//	unsigned long time = nPgmTime;
-//	unsigned long timeLst = 0;
-//	unsigned long deltaTime = 0;
-//	unsigned long sen = 0;
-//	unsigned long senLst = 0;
-//	unsigned long deltaSen = 0;
-
-//	float iVal, pVal;
-//	while (anglerGoodCount < 5)
-//	{
-//		time = nPgmTime;
-//		sen = SensorValue[anglerPoti];
-
-//		int error = target - SensorValue[anglerPoti];
-//		float pVal = error * kP;
-
-//		deltaTime = time-timeLst;
-//		deltaSen = sen - senLst;
-//		if (deltaTime <= 0 || abs(deltaSen) > 5 || abs(error) < 35)
-//		{
-//			iVal = 0;
-//		}
-//		else iVal += ( (float)error / (float)(deltaTime) ) * kI;
-
-//		if (abs(deltaSen) < 5 && abs(error) < 35) anglerGoodCount++;
-//		else anglerGoodCount = 0;
-
-//		int power = pVal + iVal;
-
-//		setAngler(power);
-//		//writeDebugStreamLine("%d Sen:%d, Err: %d, pVal:%f, iVal:%f, pow: %f, dT:%d, dS:%d", nPgmTime, SensorValue[anglerPoti], error, pVal, iVal, power, deltaTime, deltaSen);
-
-//		senLst = sen;
-//		timeLst = time;
-
-//		sleep(10);
-//	}
-//	writeDebugStreamLine("%d Done Angle to %d. Sen:%d", nPgmTime, target, SensorValue[anglerPoti]);
-//}
-//task anglerTask()
-//{
-
-//}
 
 /* Driver Control */
 task driverControl
