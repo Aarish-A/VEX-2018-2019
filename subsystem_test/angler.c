@@ -19,15 +19,16 @@ void setAngler(word val)
 	Motor[angler] = LIM_TO_VAL(val, 127);
 }
 
-task main()
+void moveAngler(int target)
 {
-	int target = SensorValue[anglerPoti] - 300; //TOP_FLAG_POS;//MID_FLAG_POS;//=
+	int anglerGoodCount = 0;
+
 	float kP = 0.095;//0.09;
 	float kI = 0.02;
 
-	//setAngler(127);
-	//while (SensorValue[anglerPoti] < (target-300)) sleep(10);
-	//setAngler(0);
+	setAngler(127);
+	while (SensorValue[anglerPoti] < (target-300)) sleep(10);
+	setAngler(0);
 	writeDebugStreamLine("%d Done first Move at %d", npgmtime, SensorVAlue[anglerPoti]);
 
 	unsigned long time = nPgmTime;
@@ -38,7 +39,7 @@ task main()
 	unsigned long deltaSen = 0;
 
 	float iVal, pVal;
-	while (true)
+	while (anglerGoodCount < 5)
 	{
 		time = nPgmTime;
 		sen = SensorValue[anglerPoti];
@@ -48,8 +49,14 @@ task main()
 
 		deltaTime = time-timeLst;
 		deltaSen = sen - senLst;
-		if (deltaTime <= 0 || abs(deltaSen) > 5 || abs(error) < 35) iVal = 0;
+		if (deltaTime <= 0 || abs(deltaSen) > 5 || abs(error) < 35)
+		{
+			iVal = 0;
+		}
 		else iVal += ( (float)error / (float)(deltaTime) ) * kI;
+
+		if (abs(deltaSen) < 5 && abs(error) < 35) anglerGoodCount++;
+		else anglerGoodCount = 0;
 
 		int power = pVal + iVal;
 
@@ -58,7 +65,17 @@ task main()
 
 		senLst = sen;
 		timeLst = time;
+
 		sleep(10);
 	}
+	writeDebugStreamLine("%d Done Angle to %d. Sen:%d", npgmtime, target, SensorValue[anglerPoti]);
+}
+
+task main()
+{
+
+	int target = SensorValue[anglerPoti] + 500; //TOP_FLAG_POS;//MID_FLAG_POS;//=
+	moveAngler(MID_FLAG_POS);
+	moveAngler(TOP_FLAG_POS);
 
 }
