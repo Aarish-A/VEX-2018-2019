@@ -1,0 +1,201 @@
+1 Battery: 8037
+1 Start Shooter State Machine Task
+2 Shooter State Set 5, Count:0, Sen:0, T:2
+261 Vel: -0.095785
+461 Vel: -0.160000
+661 Vel: -0.190000
+861 Vel: -0.180000
+1061 Vel: -0.010000
+1261 Vel: 0.000000
+1611 Reset Shooter from -134
+1661 Shooter State Set 2, Count:0, Sen:0, T:1661
+2051 Reloaded to 190
+2051 Shooter State Set 3, Count:0, Sen:190, T:2051
+3101 Angler State Set 3
+3382 Angler State Set 2
+5291 Angler State Set 3
+5724 Angler State Set 2
+5971 Angler State Set 3
+6114 Angler State Set 2
+6601 Angler State Set 3
+6894 Angler State Set 2
+	7025 Ball Detected. Shooter:214 Angler:1316
+8141 Angler State Set 3
+8374 Angler State Set 2
+8771 Angler State Set 3
+9144 Angler State Set 2
+9641 Angler State Set 1
+9834 Angler State Set 2
+9844 Sen:991, Err: 175, pVal:16.625000, iVal:0.000000: 21.000000, dT:10, dS:17
+9864 Sen:1024, Err: 141, pVal:13.395000, iVal:0.000000, pow: 19.000000, dT:10, dS:17
+9874 Sen:1038, Err: 127, pVal:12.065000, iVal:0.000000, pow: 18.000000, dT:10, dS:14
+9Sen:1116, Err: 49, pVal:4.655000, iVal:0.489364, pow: 11.000000, dT:11, dS:5
+10005 Sen:1120, Err: 45, pVal:4.275000, iVal:0.552364, pow: 10.000000, dT:10, dS:4
+10015 Sen:1124, Err: 41, pVal:3.89500.805000, iVal:-0.026600, pow: 5.000000, dT:10, dS:3
+10115 Sen:1186, Err: -21, pVal:-1.995000, iVal:-0.056000, pow: 4.000000, dT:10, dS:2
+10125 Sen:1187, Err: -22, pVal:-2.090000, iVal:-0.086800, po0205 Sen:1178, Err: -14, pVal:-1.330000, iVal:-0.067200, pow: 5.000000, dT:10, dS:-3
+10215 Sen:1179, Err: -14, pVal:-1.330000, iVal:-0.086800, pow: 5.000000, dT:10, dS:0
+10225 Sen:1177, Err: -12, p00, iVal:-0.121800, pow: 5.000000, dT:10, dS:0
+10345 Sen:1182, Err: -17, pVal:-1.615000, iVal:-0.145600, pow: 5.000000, dT:10, dS:0
+10355 Sen:1182, Err: -17, pVal:-1.615000, iVal:-0.169400, pow: 5.000000, dT:10, dS:0
+10365 Sen:1181, Err: -17, pVal:-1.615000, iVal:-0.193200, pow: 5.000000, dT:10, dS:0
+10375 Sen:1181, Err: -16, pVal:-1.520000, iVal:-0.215600, pow: 5.000000, dT:10, dS:-1
+10385 Sen:1179, Err: -14, pVal:-1.330000, iVal:-0.235200, pow: 5.000000, dT:10, dS:-2
+10395 Sen:1179, Err: -14, pVal:-1.330000, iVal:-0.254800, pow: 5.000000, dT:10, dS:0
+10405 Sen:1178, Err: -13, pVal:-1.235000, iVal:-0.273000, pow: 5.000000, dT:10, dS:-1
+10415 Sen:1178, Err: -13, pVal:-1.235000, iVal:-0.291200, pow: 5.000000, dT:10, dS:0
+10425 Sen:1177, Err: -13, pVal:-1.235000, iVal:-0.309400, pow: 5.000000, dT:10, dS:0
+10435 Sen:1176, Err: -11, pVal:-1.045000, iVal:-0.324800, pow: 5.000000, dT:10, dS:-2
+10445 Sen:1177, Err: -12, pVal:-1.140000, iVal:-0.341600, pow: 5.000000, dT:10, dS:1
+10455 Sen:1178, Err: -13, pVal:-1.235000, iVal:-0.359800, pow: 5.000000, dT:10, dS:1
+10465 Sen:1177, Err: -12, pVal:-1.140000, iVal:-0.376600, pow: 5.000000, dT:10, dS:-1
+10475 Sen:1177, Err: -12, pVal:-1.140000, iVal:-0.393400, pow: 5.000000, dT:10, dS:0
+10485 Sen:1179, Err: -13, pVal:-1.235000, iVal:-0.411600, pow: 5.000000, dT:10, dS:1
+10495 Sen:1179, Err: -14, pVal:-1.330000, iVal:-0.431200, pow: 5.000000, dT:10, dS:1
+10505 Sen:1179, Err: -14, pVal:-1.330000, iVal:-0.450800, pow: 5.000000, dT:10, dS:0
+10515 Sen:1180, Err: -14, pVal:-1.330000, iVal:-0.470400, pow: 5.000000, dT:10, dS:0
+10525 Sen:1179, Err: -14, pVal:-1.330000, iVal:-0.490000, pow: 5.000000, dT:10, dS:0
+10535 Sen:1179, Err: -14, pVal:-1.330000, iVal:-0.509600, pow: 5.000000, dT:10, dS:0
+10545 Sen:1178, Err: -14, pVal:-1.330000, iVal:-0.529200, pow: 5.000000, dT:10, dS:0
+10555 Sen:1179, Err: -14, pVal:-1.330000, iVal:-0.548800, pow: 5.000000, dT:10, dS:0
+10565 Sen:1179, Err: -14, pVal:-1.330000, iVal:-0.568400, pow: 5.000000, dT:10, dS:0
+10575 Sen:1178, Err: -13, pVal:-1.235000, iVal:-0.586600, pow: 5.000000, dT:10, dS:-1
+10585 Sen:1179, Err: -15, pVal:-1.425000, iVal:-0.607600, pow: 4.000000, dT:10, dS:2
+10595 Sen:1179, Err: -14, pVal:-1.330000, iVal:-0.627200, pow: 5.000000, dT:10, dS:-1
+10605 Sen:1178, Err: -13, pVal:-1.235000, iVal:-0.645400, pow: 5.000000, dT:10, dS:-1
+10615 Sen:1178, Err: -13, pVal:-1.235000, iVal:-0.663600, pow: 5.000000, dT:10, dS:0
+10625 Sen:1178, Err: -13, pVal:-1.235000, iVal:-0.681800, pow: 5.000000, dT:10, dS:0
+10635 Sen:1178, Err: -13, pVal:-1.235000, iVal:-0.700000, pow: 5.000000, dT:10, dS:0
+10645 Sen:1178, Err: -13, pVal:-1.235000, iVal:-0.718200, pow: 5.000000, dT:10, dS:0
+10655 Sen:1179, Err: -14, pVal:-1.330000, iVal:-0.737800, pow: 4.000000, dT:10, dS:1
+10665 Sen:1178, Err: -13, pVal:-1.235000, iVal:-0.756000, pow: 5.000000, dT:10, dS:-1
+10675 Sen:1175, Err: -10, pVal:-0.950000, iVal:-0.770000, pow: 5.000000, dT:10, dS:-3
+10681 Start break: Time: 520 Pos:417 
+	10681 Ball Hit. Angler at 1180 holding at 5
+10685 Sen:1181, Err: -16, pVal:-1.520000, iVal:0.000000, pow: 5.000000, dT:10, dS:6
+		10685 Ball Off. Shooter:416 Angler:1182
+10695 Sen:1183, Err: -18, pVal:-1.710000, iVal:-0.025200, pow: 5.000000, dT:10, dS:2
+10705 Sen:1188, Err: -23, pVal:-2.185000, iVal:-0.057400, pow: 4.000000, dT:10, dS:5
+10715 Sen:1209, Err: -4061600, pow: 2.000000, dT:10, dS:1
+10735 Sen:1214, Err: -50, pVal:-4.750000, iVal:-0.131600, pow: 2.000000, dT:10, dS:5
+10745 Sen:1216, Err: -51, pVal:-4.845000, iVal:-0.203000, pow: 1.000000, dT:12, Count:1, Sen:702, T:11491
+11501 Reloaded to 695
+11501 Shooter State Set 3, Count:1, Sen:695, T:11501
+	11511 Second shot failed (ball jumped). Try again
+11561 Shooter State Set 4, Count:1, Sen:66
+12001 Shooter State Set 2, Count:2, Sen:796, T:12001
+12005 Sen:1264, Err: 196, pVal:18.619999, iVal:1.094800, pow: 25.000000, dT:10, dS:-1
+12015 Sen:1265, Err: 195, pVal:18.525000, iVal:1.367800,  iVal:3.854200, pow: 27.000000, dT:10, dS:4
+12115 Sen:1288, Err: 172, pVal:16.340000, iVal:0.000000, pow: 22.000000, dT:10, dS:19
+12125 Sen:1308, Err: 152, pVal:14.440000, iVal:0.000000, pow: 20.00000, pow: 11.000000, dT:10, dS:13
+12195 Sen:1416, Err: 45, pVal:4.275000, iVal:0.000000, pow: 4.000000, dT:10, dS:11
+12205 Sen:1428, Err: 32, pVal:3.040000, iVal:0.000000, pow: 3.000000, dT:10, dS:400, pow: -2.000000, dT:10, dS:5
+12315 Sen:1489, Err: -29, pVal:-2.755000, iVal:-0.077000, pow: -2.000000, dT:10, dS:3
+12325 Sen:1495, Err: -35, pVal:-3.325000, iVal:0.000000, pow: -3.000000, dT:1027, pow: -4.000000, dT:10, dS:0
+12396 Sen:1504, Err: -44, pVal:-4.180000, iVal:-0.406127, pow: -4.000000, dT:10, dS:1
+12406 Sen:1503, Err: -43, pVal:-4.085000, iVal:-0.466327, pow: -4.000000, dT:107, pow: -5.000000, dT:10, dS:-1
+12516 Sen:1507, Err: -47, pVal:-4.465000, iVal:-1.169127, pow: -5.000000, dT:10, dS:1
+12526 Sen:1507, Err: -47, pVal:-4.465000, iVal:-1.234927, pow: -5.000000, dT:107, pow: -6.000000, dT:10, dS:1
+12596 Sen:1507, Err: -47, pVal:-4.465000, iVal:-1.695527, pow: -6.000000, dT:10, dS:-1
+12606 Sen:1506, Err: -46, pVal:-4.370000, iVal:-1.759927, pow: -6.000000, dT:107, pow: -6.000000, dT:10, dS:0
+12706 Sen:1507, Err: -47, pVal:-4.465000, iVal:-2.424927, pow: -6.000000, dT:10, dS:0
+12716 Sen:1508, Err: -48, pVal:-4.560000, iVal:-2.492126, pow: -7.000000, dT:10, -7.000000, dT:10, dS:0
+12786 Sen:1508, Err: -48, pVal:-4.560000, iVal:-2.958326, pow: -7.000000, dT:10, dS:1
+12796 Sen:1508, Err: -48, pVal:-4.560000, iVal:-3.025526, pow: -7.000000, dT:10, dS:0
+1, dT:10, dS:0
+12876 Sen:1508, Err: -48, pVal:-4.560000, iVal:-3.563126, pow: -8.000000, dT:10, dS:0
+12886 Sen:1508, Err: -48, pVal:-4.560000, iVal:-3.630326, pow: -8.000000, dT:10, dS:0
+12896 Sen:1S:0
+12986 Sen:1509, Err: -49, pVal:-4.655000, iVal:-4.309326, pow: -8.000000, dT:10, dS:1
+12996 Sen:1509, Err: -49, pVal:-4.655000, iVal:-4.377926, pow: -9.000000, dT:10, dS:0
+13006 Sen:1508, Err:  Sen:1509, Err: -49, pVal:-4.655000, iVal:-4.855328, pow: -9.000000, dT:10, dS:0
+13076 Sen:1508, Err: -48, pVal:-4.560000, iVal:-4.922528, pow: -9.000000, dT:10, dS:-1
+13086 Sen:1509, Err: -49, pVa8, Err: -48, pVal:-4.560000, iVal:-5.467129, pow: -10.000000, dT:10, dS:-1
+13166 Sen:1509, Err: -49, pVal:-4.655000, iVal:-5.535729, pow: -10.000000, dT:10, dS:1
+13176 Sen:1508, Err: -48, pVal:-4.5, Err: -49, pVal:-4.655000, iVal:-6.014531, pow: -10.000000, dT:10, dS:0
+13246 Sen:1509, Err: -49, pVal:-4.655000, iVal:-6.083131, pow: -10.000000, dT:10, dS:0
+13257 Sen:1509, Err: -49, pVal:-4.655-49, pVal:-4.655000, iVal:-6.624296, pow: -11.000000, dT:10, dS:0
+13337 Sen:1509, Err: -49, pVal:-4.655000, iVal:-6.692896, pow: -11.000000, dT:10, dS:0
+13347 Sen:1509, Err: -49, pVal:-4.655000, iVVal:-4.655000, iVal:-7.171697, pow: -11.000000, dT:10, dS:0
+13417 Sen:1508, Err: -48, pVal:-4.560000, iVal:-7.238897, pow: -11.000000, dT:10, dS:-1
+13427 Sen:1509, Err: -49, pVal:-4.655000, iVal:-71509, Err: -49, pVal:-4.655000, iVal:-7.719099, pow: -12.000000, dT:10, dS:0
+13497 Sen:1509, Err: -49, pVal:-4.655000, iVal:-7.787699, pow: -12.000000, dT:10, dS:0
+13507 Sen:1509, Err: -49, pVal:-4 -12.000000, dT:10, dS:1
+13577 Sen:1509, Err: -49, pVal:-4.655000, iVal:-8.333698, pow: -12.000000, dT:10, dS:0
+13587 Sen:1508, Err: -48, pVal:-4.560000, iVal:-8.400898, pow: -12.000000, dT:10, dS::-1
+13717 Sen:1502, Err: -42, pVal:-3.990000, iVal:-9.252094, pow: -13.000000, dT:10, dS:-1
+13727 Sen:1501, Err: -41, pVal:-3.895000, iVal:-9.309494, pow: -13.000000, dT:10, dS:-1
+13737 Sen:1501, Eal:-9.660892, pow: -12.000000, dT:10, dS:-3
+13807 Sen:1487, Err: -27, pVal:-2.565000, iVal:-9.698692, pow: -12.000000, dT:10, dS:-4
+13817 Sen:1484, Err: -25, pVal:-2.375000, iVal:-9.733692, pow: -1Sen:1470, Err: -10, pVal:-0.950000, iVal:-9.862492, pow: -10.000000, dT:10, dS:-1
+13887 Sen:1470, Err: -10, pVal:-0.950000, iVal:-9.876492, pow: -10.000000, dT:10, dS:0
+13897 Sen:1469, Err: -9, pVaS:-2
+13957 Sen:1464, Err: -5, pVal:-0.475000, iVal:0.000000, pow: 0.000000, dT:10, dS:1
+13967 Sen:1465, Err: -5, pVal:-0.475000, iVal:0.000000, pow: 0.000000, dT:10, dS:0
+13977 Sen:1464, Err: -4, p dS:0
+14057 Sen:1464, Err: -4, pVal:-0.380000, iVal:0.000000, pow: 0.000000, dT:10, dS:0
+14067 Sen:1464, Err: -4, pVal:-0.380000, iVal:0.000000, pow: 0.000000, dT:10, dS:0
+14077 Sen:1464, Err: -4, :0
+14147 Sen:1464, Err: -4, pVal:-0.380000, iVal:0.000000, pow: 0.000000, dT:10, dS:0
+14157 Sen:1464, Err: -4, pVal:-0.380000, iVal:0.000000, pow: 0.000000, dT:10, dS:0
+14167 Sen:1465, Err: -5, pVa0
+14257 Sen:1464, Err: -4, pVal:-0.380000, iVal:0.000000, pow: 0.000000, dT:10, dS:-1
+14267 Sen:1464, Err: -5, pVal:-0.475000, iVal:0.000000, pow: 0.000000, dT:10, dS:1
+14277 Sen:1465, Err: -5, pVa1
+14367 Sen:1464, Err: -4, pVal:-0.380000, iVal:0.000000, pow: 0.000000, dT:10, dS:0
+14377 Sen:1465, Err: -5, pVal:-0.475000, iVal:0.000000, pow: 0.000000, dT:10, dS:1
+14387 Sen:1465, Err: -5, pVal0
+14467 Sen:1464, Err: -4, pVal:-0.380000, iVal:0.000000, pow: 0.000000, dT:10, dS:-1
+14477 Sen:1464, Err: -4, pVal:-0.380000, iVal:0.000000, pow: 0.000000, dT:10, dS:0
+14487 Sen:1464, Err: -4, pVa1
+14577 Sen:1465, Err: -4, pVal:-0.380000, iVal:0.000000, pow: 0.000000, dT:10, dS:0
+14587 Sen:1465, Err: -5, pVal:-0.475000, iVal:0.000000, pow: 0.000000, dT:10, dS:1
+14597 Sen:1464, Err: -5, pVal:-1
+14657 Sen:1465, Err: -5, pVal:-0.475000, iVal:0.000000, pow: 0.000000, dT:10, dS:1
+14667 Sen:1465, Err: -5, pVal:-0.475000, iVal:0.000000, pow: 0.000000, dT:10, dS:0
+14677 Sen:1464, Err: -4, pVal:-0.380000, iVal:0.000000, pow: 0.000000, dT:10, dS:-1
+14687 Sen:1465, Err: -5, pVal:-0.475000, iVal:0.000000, pow: 0.000000, dT:10, dS:1
+14697 Sen:1465, Err: -5, pVal:-0.475000, iVal:0.000000, pow: 0.000000, dT:10, dS:0
+14707 Sen:1465, Err: -5, pVal:-0.475000, iVal:0.000000, pow: 0.000000, dT:10, dS:0
+14717 Sen:1464, Err: -5, pVal:-0.475000, iVal:0.000000, pow: 0.000000, dT:10, dS:0
+14727 Sen:1464, Err: -4, pVal:-0.380000, iVal:0.000000, pow: 0.000000, dT:10, dS:-1
+14737 Sen:1464, Err: -5, pVal:-0.475000, iVal:0.000000, pow: 0.000000, dT:10, dS:1
+14747 Sen:1464, Err: -4, pVal:-0.380000, iVal:0.000000, pow: 0.000000, dT:10, dS:-1
+14757 Sen:1464, Err: -4, pVal:-0.380000, iVal:0.000000, pow: 0.000000, dT:10, dS:0
+14767 Sen:1464, Err: -4, pVal:-0.380000, iVal:0.000000, pow: 0.000000, dT:10, dS:0
+14777 Sen:1464, Err: -5, pVal:-0.475000, iVal:0.000000, pow: 0.000000, dT:10, dS:1
+14787 Sen:1464, Err: -4, pVal:-0.380000, iVal:0.000000, pow: 0.000000, dT:10, dS:-1
+14797 Sen:1464, Err: -5, pVal:-0.475000, iVal:0.000000, pow: 0.000000, dT:10, dS:1
+14807 Sen:1465, Err: -5, pVal:-0.475000, iVal:0.000000, pow: 0.000000, dT:10, dS:0
+14817 Sen:1464, Err: -4, pVal:-0.380000, iVal:0.000000, pow: 0.000000, dT:10, dS:-1
+14827 Sen:1465, Err: -5, pVal:-0.475000, iVal:0.000000, pow: 0.000000, dT:10, dS:1
+14837 Sen:1464, Err: -4, pVal:-0.380000, iVal:0.000000, pow: 0.000000, dT:10, dS:-1
+14847 Sen:1465, Err: -5, pVal:-0.475000, iVal:0.000000, pow: 0.000000, dT:10, dS:1
+14857 Sen:1466, Err: -5, pVal:-0.475000, iVal:0.000000, pow: 0.000000, dT:10, dS:0
+14867 Sen:1464, Err: -4, pVal:-0.380000, iVal:0.000000, pow: 0.000000, dT:10, dS:-1
+14877 Sen:1465, Err: -5, pVal:-0.475000, iVal:0.000000, pow: 0.000000, dT:10, dS:1
+14887 Sen:1464, Err: -5, pVal:-0.475000, iVal:0.000000, pow: 0.000000, dT:10, dS:0
+14897 Sen:1465, Err: -5, pVal:-0.475000, iVal:0.000000, pow: 0.000000, dT:10, dS:0
+14907 Sen:1464, Err: -5, pVal:-0.475000, iVal:0.000000, pow: 0.000000, dT:10, dS:0
+14917 Sen:1465, Err: -5, pVal:-0.475000, iVal:0.000000, pow: 0.000000, dT:10, dS:0
+14927 Sen:1466, Err: -6, pVal:-0.570000, iVal:0.000000, pow: 0.000000, dT:10, dS:1
+14937 Sen:1464, Err: -5, pVal:-0.475000, iVal:0.000000, pow: 0.000000, dT:10, dS:-1
+14947 Sen:1465, Err: -5, pVal:-0.475000, iVal:0.000000, pow: 0.000000, dT:10, dS:0
+14957 Sen:1464, Err: -4, pVal:-0.380000, iVal:0.000000, pow: 0.000000, dT:10, dS:-1
+14967 Sen:1465, Err: -5, pVal:-0.475000, iVal:0.000000, pow: 0.000000, dT:10, dS:1
+14977 Sen:1465, Err: -5, pVal:-0.475000, iVal:0.000000, pow: 0.000000, dT:10, dS:0
+14987 Sen:1465, Err: -5, pVal:-0.475000, iVal:0.000000, pow: 0.000000, dT:10, dS:0
+14997 Sen:1465, Err: -5, pVal:-0.475000, iVal:0.000000, pow: 0.000000, dT:10, dS:0
+15007 Sen:1464, Err: -4, pVal:-0.380000, iVal:0.000000, pow: 0.000000, dT:10, dS:-1
+15017 Sen:1465, Err: -5, pVal:-0.475000, iVal:0.000000, pow: 0.000000, dT:10, dS:1
+15027 Sen:1464, Err: -4, pVal:-0.380000, iVal:0.000000, pow: 0.000000, dT:10, dS:-1
+15037 Sen:1464, Err: -4, pVal:-0.380000, iVal:0.000000, pow: 0.000000, dT:10, dS:0
+15047 Sen:1464, Err: -4, pVal:-0.380000, iVal:0.000000, pow: 0.000000, dT:10, dS:0
+15057 Sen:1465, Err: -5, pVal:-0.475000, iVal:0.000000, pow: 0.000000, dT:10, dS:1
+15067 Sen:1465, Err: -5, pVal:-0.475000, iVal:0.000000, pow: 0.000000, dT:10, dS:0
+15077 Sen:1465, Err: -5, pVal:-0.475000, iVal:0.000000, pow: 0.000000, dT:10, dS:0
+15087 Sen:1465, Err: -5, pVal:-0.475000, iVal:0.000000, pow: 0.000000, dT:10, dS:0
+15097 Sen:1465, Err: -5, pVal:-0.475000, iVal:0.000000, pow: 0.000000, dT:10, dS:0
+15107 Sen:1465, Err: -5, pVal:-0.475000, iVal:0.000000, pow: 0.000000, dT:10, dS:0
+15117 Sen:1465, Err: -5, pVal:-0.475000, iVal:0.000000, pow: 0.000000, dT:10, dS:0
+15127 Sen:1465, Err: -5, pVal:-0.475000, iVal:0.000000, pow: 0.000000, dT:10, dS:0
