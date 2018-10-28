@@ -236,7 +236,7 @@ void killShooter()
 			gShooterKilled = true;
 			stopTask(shooterStateSet);
 			setShooter(0);
-			writeDebugStreamLine("	%d KILL SHOOTER SAFETY state %d Safety %d. TO: %d SenChange: %d, Sen:%d", nPgmTime, gShooterState, stateElpsdTime, senChange, SensorValue[shooterEnc]);
+			writeDebugStreamLine("	%d KILL SHOOTER SAFETY state %d Safety TO: %d SenChange: %d, Sen:%d", nPgmTime, gShooterState, stateElpsdTime, senChange, SensorValue[shooterEnc]);
 			//writeDebugStreamLine("	%d KILL SHOOTER TASK - Shooter Enc Not Plugged In. State: %d", nPgmTime, gShooterState);
 			//tRelease();
 	}
@@ -350,9 +350,11 @@ task anglerStateSet()
 					int targ = gAnglerTarget-200;
 					while(SensorValue[anglerPoti] < targ)
 					{
+						tHog();
 						int error = targ - SensorValue[anglerPoti];
 						float power = error * kP;
 						setAngler(power);
+						tRelease();
 						sleep(10);
 					}
 				}
@@ -372,7 +374,6 @@ task anglerStateSet()
 				deltaSen = sen - senLst;
 				if (deltaTime <= 0 || abs(deltaSen) > 5 || abs(error) < 10 || gAnglerStateLst == anglerManual)
 				{
-
 					iVal = 0;
 				}
 				else iVal += ( (float)error / (float)(deltaTime) ) * kI;
@@ -399,7 +400,7 @@ task anglerStateSet()
 			}
 			case anglerManual:
 			{
-				if (abs(vexRT[Ch2]) > 20)
+				if (abs(vexRT[Ch2]) > 10)
 				{
 					if (vexRT[Ch2] > 0 && SensorValue[anglerPoti] < (ANGLER_TOP_POS - 100))
 					{
@@ -490,32 +491,17 @@ task driverControl
 			setShooterState(shooterShoot);
 			sleep(50);
 			while (gShooterState != shooterHold) sleep(10);
-			if ((gShooterShotCount-startShotCount) < 2)
-			{
-				writeDebugStreamLine("	%d Second shot failed (ball jumped). Try again", nPgmTime);
-				sleep(50);
-				setShooterState(shooterShoot);
-				while (gShooterState != shooterHold) sleep(10);
-			}
-			writeDebugStreamLine("%d Done double point and shoot from back", nPgmTime);
-
-			//moveAngler(1090);//0, -15);
-			//setShooterState(shooterShoot);
-			//while (gShooterState != shooterReload) sleep(10);
-			//writeDebugStreamLine("%d Done First Move Shot (%d). %d More than start", nPgmTime, gShooterShotCount, (gShooterShotCount-curShotCount));
-			//setShooterState(shooterShoot);
-			//moveAngler(1340);//, -18);
-			//while (gShooterState != shooterHold) sleep(10);
-			//if ((gShooterShotCount-curShotCount) < 2)
+			//if ((gShooterShotCount-startShotCount) < 2)
 			//{
+			//	writeDebugStreamLine("	%d Second shot failed (ball jumped). Try again", nPgmTime);
 			//	sleep(50);
 			//	setShooterState(shooterShoot);
 			//	while (gShooterState != shooterHold) sleep(10);
 			//}
-			//writeDebugStreamLine("%d Done Second Shot (%d). %d More than start", nPgmTime, gShooterShotCount, (gShooterShotCount-curShotCount));
-			//moveAngler(1335, -10);
+			writeDebugStreamLine("%d Done double point and shoot from back", nPgmTime);
+
 		}
-		else if (abs(vexRT[Ch2]) > 20)
+		else if (abs(vexRT[Ch2]) > 10)
 		{
 			setAnglerState(anglerManual);
 		}
