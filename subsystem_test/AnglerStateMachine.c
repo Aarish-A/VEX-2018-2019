@@ -60,12 +60,14 @@ typedef enum _tAnglerState
 	anglerManual
 } tAnglerState;
 
+unsigned long gAnglerBtnTime = 0;
+
 tAnglerState gAnglerState = anglerIdle;
 tAnglerState gAnglerStateLst = gAnglerState;
 unsigned long gAnglerStateTime = nPgmTime;
 int gAnglerStateSen = SensorValue[anglerPoti];
 
-int gAnglerTarget = ANGLER_BOTTOM_POS;
+int gAnglerTarget = ANGLER_BOTTOM_POS + 300;
 int gAnglerGoodCount = 0;
 
 void setAnglerState (tAnglerState state)
@@ -132,8 +134,22 @@ task anglerStateSet()
 						tRelease();
 						sleep(10);
 					}
-					setAngler(-20);
-					sleep(100);
+					setAngler(-15);
+					unsigned long startBreakTime = nPgmTime;
+					float vel = 10;
+					do
+					{
+						sen = SensorValue[anglerPoti];
+						time = nPgmTime;
+
+						vel = (float)(sen-senLst)/(float)(time-timeLst);
+
+						writeDebugStreamLine("%d Break. Pos:%d, Vel:%f", nPgmTime, sen, vel);
+						senLst = sen;
+						timeLst = time;
+						sleep(10);
+					} while ((vel > 2.7 && (nPgmTime-startBreakTime) < 100) || (nPgmTime-startBreakTime) < 20);
+					setAngler(0);
 				}
 				setAnglerState(anglerHold);
 				break;
@@ -149,13 +165,13 @@ task anglerStateSet()
 
 				unsigned long deltaTime = time-timeLst;
 				deltaSen = sen - senLst;
-				if (deltaTime <= 0 || abs(deltaSen) > 5 || abs(error) < 10 || gAnglerStateLst == anglerManual)
+				if (deltaTime <= 0 || abs(deltaSen) > 2 || abs(error) < 10)// || gAnglerStateLst == anglerManual)
 				{
 					iVal = 0;
 				}
 				else iVal += ( (float)error / (float)(deltaTime) ) * kI;
 
-				if (abs(deltaSen) < 5 && abs(error) < 20)
+				if (abs(deltaSen) < 5 && abs(error) < 25)
 				{
 					gAnglerGoodCount++;
 					SensorValue[LED1] = 300;
@@ -168,24 +184,26 @@ task anglerStateSet()
 				}
 
 				int power = pVal + iVal;// + 5;
-				if (abs(SensorValue[anglerPoti]-ANGLER_HORIZONTAL_POS) < 250) power+=6;
+				if (SensorValue[anglerPoti] < gAnglerTarget && abs(SensorValue[anglerPoti]-ANGLER_HORIZONTAL_POS) < 250) power+=6;
 
 				setAngler(power);
 
 				//if(gAnglerStateLst == anglerMove)
-				writeDebugStreamLine("%d Sen:%d, Err: %d, pVal:%f, iVal:%f, pow: %f, dT:%d, dS:%d", nPgmTime, SensorValue[anglerPoti], error, pVal, iVal, power, deltaTime, deltaSen);
-				if (gAnglerGoodCount == 5) writeDebugStreamLine("		Done hold to %d in %d ms. vel:%f. Sen:%d", gAnglerTarget, (nPgmTime-gAnglerStateTime), (deltaSen/deltaTime), SensorValue[anglerpoti]);
+				unsigned long tElpsd = (nPgmTime-gAnglerStateTime);
+				if((tElpsd < 100) || (tElpsd > 700 && tElpsd < 850))
+					writeDebugStreamLine("%d Sen:%d, Err: %d, pVal:%f, iVal:%f, pow: %f, dT:%d, dS:%d", nPgmTime, SensorValue[anglerPoti], error, pVal, iVal, power, deltaTime, deltaSen);
+				if (gAnglerGoodCount == 5) writeDebugStreamLine("		%d Done hold to %d in %d ms. vel:%f. Sen:%d", nPgmTime, gAnglerTarget, (nPgmTime-gAnglerBtnTime), (deltaSen/deltaTime), SensorValue[anglerpoti]);
 				senLst = sen;
 				timeLst = time;
 
-				datalogDataGroupStart();
-				datalogAddValue(0, SensorValue[anglerPoti]);
-				datalogAddValue(1, (pVal*10.0));
-				datalogAddValue(2, (iVal*10.0));
-				datalogAddValue(3, gAnglerPower);
-				datalogAddValue(4, SensorValue[shooterEnc]);
-				datalogAddValue(5, SensorValue[ballDetector]);
-				datalogDataGroupEnd();
+				//datalogDataGroupStart();
+				//datalogAddValue(0, SensorValue[anglerPoti]);
+				//datalogAddValue(1, (pVal*10.0));
+				//datalogAddValue(2, (iVal*10.0));
+				//datalogAddValue(3, gAnglerPower);
+				//datalogAddValue(4, SensorValue[shooterEnc]);
+				//datalogAddValue(5, SensorValue[ballDetector]);
+				//datalogDataGroupEnd();
 
 				tRelease();
 				break;
@@ -230,8 +248,11 @@ task anglerStateSet()
 
 task main()
 {
+	clearDebugStream();
+	datalogClear();
 	startTask(anglerStateSet);
 	bool btn, btnLst;
+	sleep(500);
 	while(true)
 	{
 		btn = vexRT[BTN_ANGLER_TEST];
@@ -239,10 +260,25 @@ task main()
 
 		if (btn && !btnLst)
 		{
-			gAnglerTarget = SensorValue[anglerPoti] + 200;
+			writeDebugStreamLine("%d Button Pressed", nPgmTime);
+			//gAnglerTarget = ;
+			//gAnglerGoodCount = 0;
+			//setAnglerState(anglerHold);
 			gAnglerGoodCount = 0;
-			setAnglerState(anglerHold);
+			gAnglerTarget = ANGLER_BACK_MID_FLAG;
+			setAnglerState(anglerMove);
+			gAnglerBtnTime = nPgmTime;
+			while (gAnglerGoodCount < 5) sleep(10);
+			writeDEbugStreamLine("%d Done first move at %d", nPgmTime, SensorValue[anglerPoti]);
+
+			gAnglerGoodCount = 0;
+			gAnglerTarget = ANGLER_BACK_TOP_FLAG;
+			setAnglerState(anglerMove);
+			gAnglerBtnTime = nPgmTime;
+			while (gAnglerGoodCount < 5) sleep(10);
+			writeDEbugStreamLine("%d Done second move at %d", nPgmTime, SensorValue[anglerPoti]);
 		}
+		else if (abs(vexRT[JOY_ANGLER]) > 15) setAnglerState(anglerManual);
 
 		btnLst = btn;
 		sleep(10);

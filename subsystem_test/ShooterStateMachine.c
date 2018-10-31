@@ -134,7 +134,7 @@ task shooterStateSet()
 					sleep(10);
 				}
 
-				writeDebugStreamLine("%d Reloaded to %d", nPgmTime, SensorValue[shooterEnc]);
+				writeDebugStreamLine("%d Reloaded to %d. Targ: %d", nPgmTime, SensorValue[shooterEnc], target);
 
 				setShooterState(shooterHold);
 				break;
@@ -383,8 +383,22 @@ task anglerStateSet()
 						tRelease();
 						sleep(10);
 					}
-					setAngler(-20);
-					sleep(100);
+					setAngler(-15);
+					unsigned long startBreakTime = nPgmTime;
+					float vel = 10;
+					do
+					{
+						sen = SensorValue[anglerPoti];
+						time = nPgmTime;
+
+						vel = (float)(sen-senLst)/(float)(time-timeLst);
+
+						writeDebugStreamLine("%d Break. Pos:%d, Vel:%f", nPgmTime, sen, vel);
+						senLst = sen;
+						timeLst = time;
+						sleep(10);
+					} while ((vel > 2.7 && (nPgmTime-startBreakTime) < 100) || (nPgmTime-startBreakTime) < 20);
+					setAngler(0);
 				}
 				setAnglerState(anglerHold);
 				break;
@@ -400,13 +414,13 @@ task anglerStateSet()
 
 				unsigned long deltaTime = time-timeLst;
 				deltaSen = sen - senLst;
-				if (deltaTime <= 0 || abs(deltaSen) > 5 || abs(error) < 10 || gAnglerStateLst == anglerManual)
+				if (deltaTime <= 0 || abs(deltaSen) > 2 || abs(error) < 10)// || gAnglerStateLst == anglerManual)
 				{
 					iVal = 0;
 				}
 				else iVal += ( (float)error / (float)(deltaTime) ) * kI;
 
-				if (abs(deltaSen) < 5 && abs(error) < 20)
+				if (abs(deltaSen) < 5 && abs(error) < 25)
 				{
 					gAnglerGoodCount++;
 					SensorValue[LED1] = 300;
@@ -419,15 +433,29 @@ task anglerStateSet()
 				}
 
 				int power = pVal + iVal;// + 5;
-				if (abs(SensorValue[anglerPoti]-ANGLER_HORIZONTAL_POS) < 250) power+=6;
+				if (SensorValue[anglerPoti] < gAnglerTarget && abs(SensorValue[anglerPoti]-ANGLER_HORIZONTAL_POS) < 250) power+=6;
 
 				setAngler(power);
 
 				//if(gAnglerStateLst == anglerMove)
+				unsigned long tElpsd = (nPgmTime-gAnglerStateTime);
+
+				//if((tElpsd < 100) || (tElpsd > 700 && tElpsd < 850))
 				//	writeDebugStreamLine("%d Sen:%d, Err: %d, pVal:%f, iVal:%f, pow: %f, dT:%d, dS:%d", nPgmTime, SensorValue[anglerPoti], error, pVal, iVal, power, deltaTime, deltaSen);
 
+				if (gAnglerGoodCount == 5) writeDebugStreamLine("		%d Done hold to %d in %d ms. vel:%f. Sen:%d", nPgmTime, gAnglerTarget, (nPgmTime-gAnglerStateTime), (deltaSen/deltaTime), SensorValue[anglerpoti]);
 				senLst = sen;
 				timeLst = time;
+
+				//datalogDataGroupStart();
+				//datalogAddValue(0, SensorValue[anglerPoti]);
+				//datalogAddValue(1, (pVal*10.0));
+				//datalogAddValue(2, (iVal*10.0));
+				//datalogAddValue(3, gAnglerPower);
+				//datalogAddValue(4, SensorValue[shooterEnc]);
+				//datalogAddValue(5, SensorValue[ballDetector]);
+				//datalogDataGroupEnd();
+
 				tRelease();
 				break;
 			}
@@ -438,7 +466,7 @@ task anglerStateSet()
 					if (vexRT[Ch2] > 0 && SensorValue[anglerPoti] < (ANGLER_TOP_POS - 100))
 					{
 						setAngler(vexRT[Ch2]);
-						if (SensorValue[anglerPoti] > ANGLER_AXEL_POS && SensorValue[shooterEnc] > (SHOOTER_RELOAD_POS-10)) goto AnglerHoldTrigger;
+						//if (SensorValue[anglerPoti] > ANGLER_AXEL_POS && SensorValue[shooterEnc] > (SHOOTER_RELOAD_POS-10)) goto AnglerHoldTrigger;
 					}
 					else if (vexRT[Ch2] < 0 && SensorValue[anglerPoti] > (ANGLER_BOTTOM_POS + 100)) setAngler(vexRT[Ch2]);
 					else goto AnglerHoldTrigger;
@@ -455,16 +483,16 @@ task anglerStateSet()
 			}
 		}
 
-		tHog();
-		datalogDataGroupStart();
-		datalogAddValue(0, SensorValue[anglerPoti]);
-		datalogAddValue(1, (pVal*10.0));
-		datalogAddValue(2, (iVal*10.0));
-		datalogAddValue(3, gAnglerPower);
-		datalogAddValue(4, SensorValue[shooterEnc]);
-		datalogAddValue(5, SensorValue[ballDetector]);
-		datalogDataGroupEnd();
-		tRelease();
+		//tHog();
+		//datalogDataGroupStart();
+		//datalogAddValue(0, SensorValue[anglerPoti]);
+		//datalogAddValue(1, (pVal*10.0));
+		//datalogAddValue(2, (iVal*10.0));
+		//datalogAddValue(3, gAnglerPower);
+		//datalogAddValue(4, SensorValue[shooterEnc]);
+		//datalogAddValue(5, SensorValue[ballDetector]);
+		//datalogDataGroupEnd();
+		//tRelease();
 		sleep(10);
 	}
 }
@@ -588,8 +616,7 @@ task main()
 			anglerVel = ( (float)(anglerSen-anglerSenLst) / (float)(time-timeLst) );
 		else anglerVel = 0;
 		if (ballThere && !ballThereLst) writeDebugStreamLine("	%d Ball Detected. Shooter:%d Angler:%d (err:%d). Vel:%f", nPgmTime, SensorValue[shooterEnc], SensorValue[anglerPoti], (gAnglerTarget-SensorValue[anglerPoti]), anglerVel);
-		else if (!ballThere && ballThereLst) writeDebugStreamLine("	%d Ball Off. Shooter:%d Angler:%d (err:%d). Vel:%f", nPgmTime, SensorVal
-			ue[shooterEnc], SensorValue[anglerPoti], (gAnglerTarget-SensorValue[anglerPoti]), anglerVel);
+		else if (!ballThere && ballThereLst) writeDebugStreamLine("	%d Ball Off. Shooter:%d Angler:%d (err:%d). Vel:%f", nPgmTime, SensorValue[shooterEnc], SensorValue[anglerPoti], (gAnglerTarget-SensorValue[anglerPoti]), anglerVel);
 
 		ballThereLst = ballThere;
 		anglerSenLst = anglerSen;
