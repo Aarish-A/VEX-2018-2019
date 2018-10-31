@@ -42,7 +42,7 @@ void tRelease()
 #define SHOOTER_RELOAD_HOLD 11
 #define SHOOTER_SHOOT_POS ((gShooterShotCount*360.0*SHOOTER_GEAR_RATIO) + RESET_OFFSET)
 #define SHOOTER_NEXT_SHOOT_POS (((1+gShooterShotCount)*360.0*SHOOTER_GEAR_RATIO) + RESET_OFFSET)
-#define SHOOTER_RELOAD_POS ((SHOOTER_SHOOT_POS) + 145)
+#define SHOOTER_RELOAD_POS ((SHOOTER_SHOOT_POS) + 165)//145)
 
 #define BD_UNPLUGGED (SensorValue[ballDetector] >= 244 && SensorValue[ballDetector] <= 252)
 
