@@ -685,7 +685,12 @@ void startTasks()
 	startTask(anglerStateSet);
 
 	setShooterState(shooterReset);
+
 	tRelease();
+
+	sleep(50);
+	while(gShooterState != shooterHold) sleep(10);
+
 }
 
 void stopTasks()
