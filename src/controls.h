@@ -18,4 +18,5 @@
 #define BTN_SHOOT_FRONT_PF Btn7L
 #define BTN_SHOOT_BACK_PF Btn7R
 #define BTN_SHOOT_BACK Btn7D
+#define BTN_SHIFT_SHOT Btn5U
 	//Cap Flip
