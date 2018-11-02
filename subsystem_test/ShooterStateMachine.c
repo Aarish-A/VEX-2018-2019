@@ -631,6 +631,9 @@ task driverControl
 		{
 			doubleShot(ANGLER_BACK_MID_FLAG, ANGLER_BACK_TOP_FLAG, 25, true, true);
 		}
+		else if (anglerPickupBtn && !anglerPickupBtnLst)
+		{
+			anglerMoveToPos(ANGLER_PICKUP_POS, 150);
 		}
 		else if (abs(vexRT[Ch2]) > 10)
 		{
