@@ -29,14 +29,24 @@ void tRelease()
 
 #define LIM_TO_VAL(input, val) (abs(input) > (val) ? (val) * sgn(input) : (input))
 
-/* Shooter Defines */
+/* Shooter Controls */
 #define BTN_SHOOT Btn5U
+
+/* Intake Controls */
 #define BTN_INTAKE_UP Btn6U
 #define BTN_INTAKE_DOWN Btn6D
 
+/* Angler Controls */
 #define JOY_ANGLER Ch2
-#define BTN_ANGLER_TEST Btn5D
+#define BTN_ANGLER_PICKUP Btn5D
 
+/* Macros */
+	//Double Shot
+#define BTN_SHOOT_FRONT_PF Btn7L
+#define BTN_SHOOT_BACK_PF Btn7R
+#define BTN_SHOOT_BACK Btn7D
+
+/* Shooter Defines */
 #define RESET_OFFSET 45 //35
 #define SHOOTER_GEAR_RATIO 1.0
 #define SHOOTER_RELOAD_HOLD 11
@@ -291,10 +301,17 @@ void shooterSafety()
 
 #define ANGLER_AXEL_POS (ANGLER_TOP_POS-1850)
 
+#define ANGLER_PICKUP_POS 940
+
 //Positions shooting from back
-#define ANGLER_BACK_TOP_FLAG 1320;//1415
-#define ANGLER_BACK_MID_FLAG 1100;//1265//1165
+#define ANGLER_BACK_TOP_FLAG 1320//1415
+#define ANGLER_BACK_MID_FLAG 1100//1265//1165
 #define ANGLER_BACK_BOTTOM_FLAG 955
+
+//Positions shooting from back of front platform tile
+#define ANGLER_FRONT_TOP_FLAG 1700//1415
+#define ANGLER_FRONT_MID_FLAG 1280//1265//1165
+#define ANGLER_FRONT_BOTTOM_FLAG 955
 
 int gAnglerPower = 0;
 void setAngler(word val)
@@ -318,14 +335,17 @@ int gAnglerStateSen = SensorValue[anglerPoti];
 
 int gAnglerTarget = ANGLER_BOTTOM_POS;
 int gAnglerGoodCount = 0;
+int gAnglerAcceptableRange = 25;
 
-void setAnglerState (tAnglerState state)
+void setAnglerState (tAnglerState state, int acceptableRange = 25)
 {
 	tHog();
 	if (state != gAnglerState)
 	{
 		gAnglerStateLst = gAnglerState;
 		gAnglerState = state;
+
+		gAnglerAcceptableRange = abs(acceptableRange);
 
 		gAnglerStateTime = nPgmTime;
 		gAnglerStateSen = SensorValue[anglerPoti];
@@ -420,11 +440,11 @@ task anglerStateSet()
 				}
 				else iVal += ( (float)error / (float)(deltaTime) ) * kI;
 
-				if (abs(deltaSen) < 5 && abs(error) < 25)
+				if (abs(deltaSen) < 5 && abs(error) < gAnglerAcceptableRange)// && abs(gAnglerGoodCount) < 25)
 				{
 					gAnglerGoodCount++;
 					SensorValue[LED1] = 300;
-					//writeDebugStreamLine("%d Angler Stopped at %d. Inc gAnglerGoodCount to %d", nPgmTime, SensorValue[anglerPoti], gAnglerGoodCount);
+					//writeDebugStreamLine("	%d Angler Stopped at %d. Inc gAnglerGoodCount to %d. Err:%d", nPgmTime, sen, gAnglerGoodCount, (gAnglerTarget-sen));
 				}
 				else
 				{
@@ -443,18 +463,18 @@ task anglerStateSet()
 				//if((tElpsd < 100) || (tElpsd > 700 && tElpsd < 850))
 				//	writeDebugStreamLine("%d Sen:%d, Err: %d, pVal:%f, iVal:%f, pow: %f, dT:%d, dS:%d", nPgmTime, SensorValue[anglerPoti], error, pVal, iVal, power, deltaTime, deltaSen);
 
-				if (gAnglerGoodCount == 5) writeDebugStreamLine("		%d Done hold to %d in %d ms. vel:%f. Sen:%d", nPgmTime, gAnglerTarget, (nPgmTime-gAnglerStateTime), (deltaSen/deltaTime), SensorValue[anglerpoti]);
+				if (gAnglerGoodCount == 5) writeDebugStreamLine("		%d Done hold to %d in %d ms. vel:%f. Sen:%d", nPgmTime, gAnglerTarget, (nPgmTime-gAnglerStateTime), (deltaSen/deltaTime), SensorValue[anglerPoti]);
 				senLst = sen;
 				timeLst = time;
 
-				//datalogDataGroupStart();
+				datalogDataGroupStart();
 				//datalogAddValue(0, SensorValue[anglerPoti]);
 				//datalogAddValue(1, (pVal*10.0));
 				//datalogAddValue(2, (iVal*10.0));
 				//datalogAddValue(3, gAnglerPower);
-				//datalogAddValue(4, SensorValue[shooterEnc]);
-				//datalogAddValue(5, SensorValue[ballDetector]);
-				//datalogDataGroupEnd();
+				datalogAddValue(4, SensorValue[shooterEnc]);
+				datalogAddValue(5, SensorValue[ballDetector]);
+				datalogDataGroupEnd();
 
 				tRelease();
 				break;
@@ -477,7 +497,8 @@ task anglerStateSet()
 					setAngler(0);
 					sleep(100);
 					gAnglerTarget = SensorValue[anglerPoti];
-					setAnglerState(anglerHold);
+					setAnglerState(anglerIdle);
+					//setAnglerState(anglerHold);
 				}
 				break;
 			}
@@ -497,14 +518,77 @@ task anglerStateSet()
 	}
 }
 
+void anglerMoveToPos(int pos, int acceptableRange)
+{
+	acceptableRange = abs(acceptableRange);
+
+	gAnglerTarget = pos;
+	gAnglerGoodCount = 0;
+	setAnglerState(anglerMove, acceptableRange);
+}
+
+void doubleShot(int posA, int posB, int acceptableRange, bool waitForFirstShot = true, bool waitForSecShot = true)
+{
+		acceptableRange = abs(acceptableRange);
+
+      int startShotCount = gShooterShotCount;
+
+      //First shot
+      gAnglerTarget = posA;
+      gAnglerGoodCount = 0;
+      setAnglerState(anglerMove, acceptableRange);
+      if (waitForFirstShot)
+    	{
+	      while (gAnglerGoodCount < 5) sleep(10);
+	      writeDebugStreamLine("%d Done waiting for point. Angler:%d", nPgmTime, SensorValue[anglerPoti]);
+	    }
+      setShooterState(shooterShoot);
+
+      while (gShooterState != shooterReload) sleep(10); //Start moving angler immediately after first shot applies breaking
+
+    	//Second shot
+      gAnglerTarget = posB;
+      gAnglerGoodCount = 0;
+      setAnglerState(anglerMove, acceptableRange);
+      if (waitForSecShot)
+    	{
+	      while (gAnglerGoodCount < 5) sleep(10);
+	      writeDebugStreamLine("%d Done waiting for point. Angler:%d", nPgmTime, SensorValue[anglerPoti]);
+	    }
+	    setShooterState(shooterShoot);
+
+      while (gShooterState != shooterHold) sleep(10);
+
+      //If we haven't made two shots, try the last shot again
+      if ((gShooterShotCount-startShotCount) < 2)
+      {
+        writeDebugStreamLine("  %d Second shot failed (ball jumped). Try again", nPgmTime);
+        sleep(50);
+        setShooterState(shooterShoot);
+        while (gShooterState != shooterHold) sleep(10);
+      }
+
+      writeDebugStreamLine("%d Done double point and shoot from back. Angler:%d. Shooter:%d", nPgmTime, SensorValue[anglerPoti], SensorValue[shooterEnc]);
+
+}
+
 /* Driver Control */
 task driverControl
 {
 	bool shootBtn = false;
 	bool shootBtnLst = false;
 
-	bool anglerBtn = false;
-	bool anglerBtnLst = false;
+	bool shootFrontPFBtn = false;
+	bool shootFrontPFBtnLst = false;
+
+	bool shootBackPFBtn = false;
+	bool shootBackPFBtnLst = false;
+
+	bool shootBackBtn = false;
+	bool shootBackBtnLst = false;
+
+	bool anglerPickupBtn = false;
+	bool anglerPickupBtnLst = false;
 
 	//int lstShotCount = 0;
 	unsigned long lstShotTimer = 0;
@@ -512,7 +596,11 @@ task driverControl
 	while (true)
 	{
 		shootBtn = (bool)vexRT[BTN_SHOOT];
-		anglerBtn = (bool)vexRT[BTN_ANGLER_TEST];
+
+		shootFrontPfBtn = (bool)vexRT[BTN_SHOOT_FRONT_PF];
+		shootBackPfBtn = (bool)vexRT[BTN_SHOOT_BACK_PF];
+		shootBackBtn = (bool)vexRT[BTN_SHOOT_BACK];
+		anglerPickupBtn = (bool)vexRT[BTN_ANGLER_PICKUP];
 
 		if (shootBtn && !shootBtnLst)
 		{
@@ -535,41 +623,14 @@ task driverControl
 			lstShotTimer = 0;
 			writeDebugStreamLine("%d SECOND SHOT TRIGGERED. # %d", nPgmTime, gShooterShotCount);
 		}
-		if ((anglerBtn && !anglerBtnLst) && !(shootBtn && !shootBtnLst))
+		if ((shootFrontPFBtn && !shootFrontPFBtnLst) && !(shootBtn && !shootBtnLst))
 		{
-			int startShotCount = gShooterShotCount;
-			gAnglerTarget = ANGLER_BACK_MID_FLAG;
-			gAnglerGoodCount = 0;
-			setAnglerState(anglerMove);
-			while (gAnglerGoodCount < 5) sleep(10);
-			writeDebugStreamLine("%d Done point. Angler:%d", nPgmTime, SensorValue[anglerPoti]);
-			setShooterState(shooterShoot);
-			while (gShooterState != shooterReload) sleep(10);
-
-			gAnglerTarget = ANGLER_BACK_TOP_FLAG;
-			gAnglerGoodCount = 0;
-			setAnglerState(anglerMove);
-			while (gAnglerGoodCount < 5) sleep(10);
-			writeDebugStreamLine("%d Done point. Angler:%d", nPgmTime, SensorValue[anglerPoti]);
-			setShooterState(shooterShoot);
-
-			//while (gShooterState != shooterReload) sleep(10); //Start moving angler immediately after first shot applies breaking
-			//writeDebugStreamLine("%d Done point and shoot 1. Angler:%d", nPgmTime, SensorValue[anglerPoti]);
-			//gAnglerTarget = ANGLER_BACK_TOP_FLAG;
-			//gAnglerGoodCount = 0;
-			//setAnglerState(anglerMove);
-			//setShooterState(shooterShoot);
-
-			while (gShooterState != shooterHold) sleep(10);
-			if ((gShooterShotCount-startShotCount) < 2)
-			{
-				writeDebugStreamLine("	%d Second shot failed (ball jumped). Try again", nPgmTime);
-				sleep(50);
-				setShooterState(shooterShoot);
-				while (gShooterState != shooterHold) sleep(10);
-			}
-			writeDebugStreamLine("%d Done double point and shoot from back. Angler:%d. Shooter:%d", nPgmTime, SensorValue[anglerPoti], SensorValue[shooterEnc]);
-
+			doubleShot(ANGLER_FRONT_MID_FLAG, ANGLER_FRONT_TOP_FLAG, 60, false, false);
+		}
+		else if ((shootBackBtn && !shootBackBtnLst) && !(shootBtn && !shootBtnLst))
+		{
+			doubleShot(ANGLER_BACK_MID_FLAG, ANGLER_BACK_TOP_FLAG, 25, true, true);
+		}
 		}
 		else if (abs(vexRT[Ch2]) > 10)
 		{
@@ -577,7 +638,11 @@ task driverControl
 		}
 
 		shootBtnLst = shootBtn;
-		anglerBtnLst = anglerBtn;
+		shootFrontPFBtnLst = shootFrontPFBtn;
+		shootBackPFBtnLst = shootBackPFBtn;
+		shootBackBtnLst = shootBackBtn;
+
+		anglerPickupBtnLst = anglerPickupBtn;
 		sleep(10);
 	}
 }

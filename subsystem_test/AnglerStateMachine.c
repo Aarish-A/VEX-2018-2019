@@ -171,7 +171,7 @@ task anglerStateSet()
 				}
 				else iVal += ( (float)error / (float)(deltaTime) ) * kI;
 
-				if (abs(deltaSen) < 5 && abs(error) < 25)
+				if (abs(deltaSen) < 5 && abs(error) < 70)//25)
 				{
 					gAnglerGoodCount++;
 					SensorValue[LED1] = 300;
