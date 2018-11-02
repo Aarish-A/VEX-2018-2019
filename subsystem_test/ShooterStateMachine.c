@@ -56,7 +56,7 @@ void tRelease()
 
 #define BD_UNPLUGGED (SensorValue[ballDetector] >= 244 && SensorValue[ballDetector] <= 252)
 
-#define BALL_DETECTED (SensorValue[ballDetector] < 1000 && (!BD_UNPLUGGED))
+#define BALL_DETECTED (SensorValue[ballDetector] < 1400)// && (!BD_UNPLUGGED))
 
 typedef enum _tShooterState
 {
