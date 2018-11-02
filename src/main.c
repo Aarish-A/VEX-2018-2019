@@ -56,6 +56,103 @@ void setIntake(word power)
 	motor[intake] = LIM_TO_VAL(power, 127);
 }
 
+typedef enum _tIntakeState
+{
+	intakeIdle,
+	intakeUp,
+	intakeDown
+
+} tIntakeState;
+
+tIntakeState gIntakeState = intakeIdle;
+tIntakeState gIntakeStateLst = gIntakeState;
+unsigned long gIntakeStateTime;
+
+void setIntakeState (tIntakeState state)
+{
+	tHog();
+	if (state != gIntakeState)
+	{
+		gIntakeStateLst = gIntakeState;
+		gIntakeState = state;
+
+		gIntakeStateTime = nPgmTime;
+
+		writeDebugStream("%d Intake State Set %d ", nPgmTime, gIntakeState);
+		switch(gIntakeState)
+		{
+			case intakeIdle: writeDebugStream("intakeIdle"); break;
+			case intakeUp: writeDebugStream("intakeUp"); break;
+			case intakeDown: writeDebugStream("intakeDown"); break;
+
+			default: writeDebugStream("UNKNOWN STATE"); break;
+		}
+		writeDebugStreamLine(", AnglerSen:%d, T:%d", SensorValue[anglerPoti], gIntakeStateTime);
+	}
+	tRelease();
+}
+
+
+task intakeStateSet()
+{
+	sCycleData intakeCycle;
+	initCycle(intakeCycle, 10, "intakeCycle");
+
+	while (true)
+	{
+		switch (gIntakeState)
+		{
+			case intakeIdle:
+			{
+				setIntake(0);
+				break;
+			}
+			case intakeUp:
+			{
+				setIntake(127);
+				break;
+			}
+			case intakeDown:
+			{
+				setIntake(-127);
+				break;
+			}
+			//case intakeSlowUp:
+			//	motor[intake] = 15;
+			//	break;
+			//case intakeSlowDown:
+			//	motor[intake] = -15;
+			//	break;
+
+		}
+		endCycle(intakeCycle);
+	}
+}
+
+bool intakeUpBtn = false;
+bool intakeUpBtnLst = false;
+bool intakeDownBtn = false;
+bool intakeDownBtnLst = false;
+void intakeControls()
+{
+	intakeUpBtn = (bool)vexRT[BTN_INTAKE_UP];
+	intakeDownBtn = (bool)vexRT[BTN_INTAKE_DOWN];
+
+	if (intakeUpBtn && !intakeUpBtnLst)
+	{
+		if (gIntakeState != intakeIdle) setIntakeState(intakeIdle);
+		else setIntakeState(intakeUp);
+	}
+	else if (intakeDownBtn && !intakeDownBtnLst)
+	{
+		if (gIntakeState != intakeIdle) setIntakeState(intakeIdle);
+		else setIntakeState(intakeDown);
+	}
+
+	intakeUpBtnLst = intakeUpBtn;
+	intakeDownBtnLst = intakeDownBtn;
+}
+
 /* Shooter Defines */
 #define RESET_OFFSET 45 //35
 #define SHOOTER_GEAR_RATIO 1.0
@@ -584,7 +681,7 @@ void startTasks()
 	SensorValue[shooterEnc] = 0;
 
 	startTask(shooterStateSet);
-	//startTask(intakeStateSet);
+	startTask(intakeStateSet);
 	startTask(anglerStateSet);
 
 	setShooterState(shooterReset);
@@ -595,7 +692,7 @@ void stopTasks()
 {
 	tHog();
 	stopTask(shooterStateSet);
-	//stopTask(intakeStateSet);
+	stopTask(intakeStateSet);
 	stopTask(anglerStateSet);
 	tRelease();
 }
@@ -700,6 +797,10 @@ task usercontrol()
 		shooterSafety();
 		ballTrackLog();
 
+		//Intake Controls
+		intakeControls();
+
+		//Shooter Controls
 		if (shootBtn && !shootBtnLst)
 		{
 			if (SensorValue[shooterEnc] < SHOOTER_RELOAD_POS) setShooterState(shooterReload);
@@ -714,6 +815,7 @@ task usercontrol()
 			}
 		}
 
+		//Angler / Double Shot Macro Controls
 		if (!shootBtn) lstShotTimer = 0;
 		else if (shootBtn && gShooterState == shooterHold && (lstShotTimer != 0 && (nPgmTime-lstShotTimer) < 900))
 		{
