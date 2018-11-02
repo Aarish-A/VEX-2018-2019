@@ -48,11 +48,10 @@ task main()
 	clearLCDLine(0);
 	clearLCDLine(1);
 	displayLCDPos(0, 0);
-	displayNextLCDString("Startup");
+	displayNextLCDString("%d Startup", nPgmTime);
+
 	wait1Msec(2000);
-
 	startup();
-
 	//wait1Msec(500);
 
 	while (true)

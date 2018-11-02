@@ -578,6 +578,28 @@ void doubleShot(int posA, int posB, int acceptableRange, bool waitForFirstShot =
   writeDebugStreamLine("%d Done double point and shoot from back. Angler:%d. Shooter:%d", nPgmTime, SensorValue[anglerPoti], SensorValue[shooterEnc]);
 }
 
+void startTasks()
+{
+	tHog();
+	SensorValue[shooterEnc] = 0;
+
+	startTask(shooterStateSet);
+	//startTask(intakeStateSet);
+	startTask(anglerStateSet);
+
+	setShooterState(shooterReset);
+	tRelease();
+}
+
+void stopTasks()
+{
+	tHog();
+	stopTask(shooterStateSet);
+	//stopTask(intakeStateSet);
+	stopTask(anglerStateSet);
+	tRelease();
+}
+
 void startup()
 {
 	clearDebugStream();
@@ -587,6 +609,8 @@ void startup()
 	writeDebugStreamLine("%d Battery: %d", nPgmTime, nBatteryLevel);
 
 	SensorValue[shooterEnc] = 0;
+
+	startTasks();
 	//Setup Joysticks & Buttons
 }
 
@@ -625,28 +649,6 @@ void ballTrackLog()
 	timeLst = time;
 }
 
-void startTasks()
-{
-	tHog();
-	SensorValue[shooterEnc] = 0;
-
-	startTask(shooterStateSet);
-	//startTask(intakeStateSet);
-	startTask(anglerStateSet);
-
-	setShooterState(shooterReset);
-	tRelease();
-}
-
-void stopTasks()
-{
-	tHog();
-	stopTask(shooterStateSet);
-	//stopTask(intakeStateSet);
-	stopTask(anglerStateSet);
-	tRelease();
-}
-
 task autonomous()
 {
 	sCycleData cycle;
@@ -659,12 +661,14 @@ task autonomous()
 	stopTasks();
 }
 
+//TODO1: Get rid of blocking code for double shot macros
+//TODO2: Make joystick reading cleaner
 task usercontrol()
 {
 	sCycleData cycle;
 	initCycle(cycle, 10, "usercontrol");
 
-	startTasks();
+	//startTasks();
 
 
 	bool shootBtn = false;
