@@ -2,13 +2,20 @@
 #define JOY_THROTTLE Ch3
 #define JOY_TURN Ch4
 
-/* Intake */
+/* Shooter Controls */
+#define BTN_SHOOT Btn5U
+
+/* Intake Controls */
 #define BTN_INTAKE_UP Btn6U
 #define BTN_INTAKE_DOWN Btn6D
 
-/* Angler */
+/* Angler Controls */
 #define JOY_ANGLER Ch2
-#define BTN_ANGLER_TEST Btn5D
+#define BTN_ANGLER_PICKUP Btn5D
 
-/* Shooter */
-#define BTN_SHOOT Btn5U
+/* Macros */
+	//Double Shot
+#define BTN_SHOOT_FRONT_PF Btn7L
+#define BTN_SHOOT_BACK_PF Btn7R
+#define BTN_SHOOT_BACK Btn7D
+	//Cap Flip
