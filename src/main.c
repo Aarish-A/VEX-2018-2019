@@ -257,7 +257,6 @@ void intakeControls()
 
 int ANGLER_BACK_TOP_FLAG = 1390;
 int ANGLER_BACK_MID_FLAG = 1175;
-int ANGLER_BACK_BOTTOM_FLAG = 955;
 
 //Positions shooting from back of front platform tile
 //#define ANGLER_FRONT_PF_TOP_FLAG 1730//1415
@@ -266,12 +265,10 @@ int ANGLER_BACK_BOTTOM_FLAG = 955;
 
 int ANGLER_FRONT_PF_TOP_FLAG = 1730;
 int ANGLER_FRONT_PF_MID_FLAG = 1280;
-int ANGLER_FRONT_PF_BOTTOM_FLAG = 955;
 
 //Positions shooting from back of front platform tile
 int ANGLER_BACK_PF_TOP_FLAG = 1410;
 int ANGLER_BACK_PF_MID_FLAG = 1160;
-int ANGLER_BACK_PF_BOTTOM_FLAG = 955;
 
 int gAnglerPower = 0;
 void setAngler(word val)
@@ -840,12 +837,14 @@ void anglerShooter(int posA, int posB, int acceptableRange, bool waitForFirstSho
 /* LCD Controls */
 typedef enum _tLCDScreen
 {
+	batteryLevel,
+	anglerTargetTuning,
 	selectPosition,
 	selectFlag,
 	changeTarget
 } tLCDScreen;
 
-tLCDScreen gLCDScreen;
+tLCDScreen gLCDScreen = anglerTargetTuning;
 
 typedef struct _sCurLCDSelection
 {
@@ -862,6 +861,7 @@ task handleLCD()
 	bool curLCDLeft, lstLCDLeft;
 	bool curLCDMiddle, lstLCDMiddle;
 	bool curLCDRight, lstLCDRight;
+	int pointer = 2;
 
 	while(true)
 	{
@@ -879,33 +879,79 @@ task handleLCD()
 
 		switch(gLCDScreen)
 		{
+			case batteryLevel:
+			{
+				displayLCDString(0, 1, "Battery: ");
+				nBatteryLevel = nImmediateBatteryLevel;
+				displayNextLCDNumber(nBatteryLevel, 4);
+				displayLCDChar(1, 0, '<');
+
+				if (curLCDLeft && !lstLCDLeft) gLCDScreen = anglerTargetTuning;
+				break;
+			}
+			case anglerTargetTuning:
+			{
+				displayLCDCenteredString(0, "Angler Tuning");
+				displayLCDChar(1, 15, '>');
+				if (curLCDMiddle && !lstLCDMiddle) gLCDScreen = selectPosition;
+				else if (curLCDRight && !lstLCDRight) gLCDScreen = batteryLevel;
+				break;
+			}
 			case selectPosition:
 			{
 				// Display
 				displayLCDCenteredString(0, "Front Mid Back");
+				if (pointer == 0) displayLCDChar(1, 0, '<');
+				else if (pointer == 1) displayLCDChar(1, 3, '^');
+				else if (pointer == 2) displayLCDChar(1, 8, '^');
+				else if (pointer == 3) displayLCDChar(1, 12, '^');
 
 				// Controls
-				if ((curLCDLeft && !lstLCDLeft) || (curLCDMiddle && !lstLCDMiddle) || (curLCDRight && !lstLCDRight))
+				if (curLCDLeft && !lstLCDLeft)
 				{
-					if (curLCDLeft) gCurLCDSelection.position = 0; // Front
-					else if (curLCDMiddle) gCurLCDSelection.position = 1; // Middle
-					else if (curLCDRight) gCurLCDSelection.position = 2; // Back
-					gLCDScreen = selectFlag;
+					if (pointer > 0) pointer--;
+					else gLCDScreen = anglerTargetTuning;
+				}
+				else if (curLCDRight && !lstLCDRight)
+				{
+					if (pointer < 3) pointer++;
+				}
+				else if (curLCDMiddle && !lstLCDMiddle)
+				{
+					if (pointer == 1) gCurLCDSelection.position = 0;
+					else if (pointer == 2) gCurLCDSelection.position = 1;
+					else if (pointer == 3) gCurLCDSelection.position = 2;
+
+					if (pointer == 0) gLCDScreen = anglerTargetTuning;
+					else gLCDScreen = selectFlag;
 				}
 				break;
 			}
 			case selectFlag:
 			{
 				// Display
-				displayLCDCenteredString(0, "Exit  MidF  TopF");
+				displayLCDCenteredString(0, "MidF    TopF");
+				if (pointer == 0) displayLCDChar(1, 0, '<');
+				else if (pointer == 1) displayLCDChar(1, 4, '^');
+				else if (pointer == 2) displayLCDChar(1, 11, '^');
+				else if (pointer == 3) pointer = 2;
 
 				// Controls
-				if ((curLCDLeft && !lstLCDLeft) || (curLCDMiddle && !lstLCDMiddle) || (curLCDRight && !lstLCDRight))
+				if (curLCDLeft && !lstLCDLeft)
 				{
-					if (curLCDMiddle) gCurLCDSelection.flag = 0; // Middle Flag
-					else if (curLCDRight) gCurLCDSelection.flag = 1; // Top Flag
+					if (pointer > 0) pointer--;
+					else gLCDScreen = selectPosition;
+				}
+				else if (curLCDRight && !lstLCDRight)
+				{
+					if (pointer < 2) pointer++;
+				}
+				else if (curLCDMiddle && !lstLCDMiddle)
+				{
+					if (pointer == 1) gCurLCDSelection.flag = 0;
+					else if (pointer == 2) gCurLCDSelection.flag = 1;
 
-					if (curLCDLeft) gLCDScreen = selectPosition;
+					if (pointer == 0) gLCDScreen = selectPosition;
 					else gLCDScreen = changeTarget;
 				}
 				break;
@@ -965,11 +1011,11 @@ task handleLCD()
 					else if (curLCDRight) adjust = 10;
 
 					*gCurLCDSelection.value += adjust;
-					writeDebugStreamLine("%d | %d", nPgmTime, ANGLER_BACK_TOP_FLAG);
+					//writeDebugStreamLine("%d | %d", nPgmTime, ANGLER_BACK_TOP_FLAG);
 				}
 				else if (curLCDMiddle && !lstLCDMiddle)
 				{
-					gLCDScreen = selectPosition;
+					gLCDScreen = selectFlag;
 				}
 				break;
 			}
@@ -982,190 +1028,6 @@ task handleLCD()
 		sleep(50);
 	}
 }
-
-//typedef enum _tLCDScreen
-//{
-//	selectPosition,
-//	selectFlag,
-//	changeTarget
-//} tLCDScreen;
-
-//tLCDScreen gLCDScreen;
-
-//typedef struct _sCurLCDSelection
-//{
-//	int position;
-//	int flag;
-//	string name;
-//} sCurLCDSelection;
-
-//sCurLCDSelection gCurLCDSelection;
-
-//task handleLCD()
-//{
-//	bool curLCDLeft, lstLCDLeft;
-//	bool curLCDMiddle, lstLCDMiddle;
-//	bool curLCDRight, lstLCDRight;
-
-//	while(true)
-//	{
-//		clearLCDLine(0);
-//		clearLCDLine(1);
-
-//		if (nLCDButtons == 1) curLCDLeft = true;
-//		else curLCDLeft = false;
-
-//		if (nLCDButtons == 2) curLCDMiddle = true;
-//		else curLCDMiddle = false;
-
-//		if (nLCDButtons == 4) curLCDRight = true;
-//		else curLCDRight = false;
-
-//		writeDebugStreamLine("%d | Screen: %d", nPgmTime, gLCDScreen);
-
-//		switch(gLCDScreen)
-//		{
-//			case selectPosition:
-//			{
-//				// Display
-//				displayLCDCenteredString(0, "FrPF BckPF Bck");
-
-//				// Controls
-//				if ((curLCDLeft && !lstLCDLeft) || (curLCDMiddle && !lstLCDMiddle) || (curLCDRight && !lstLCDRight))
-//				{
-//					if (curLCDLeft) gCurLCDSelection.position = 0; // Front Platform
-//					else if (curLCDMiddle) gCurLCDSelection.position = 1; // Back Platform
-//					else if (curLCDRight) gCurLCDSelection.position = 2; // Back
-//					gLCDScreen = selectFlag;
-//				}
-//				break;
-//			}
-//			case selectFlag:
-//			{
-//				// Display
-//				displayLCDCenteredString(0, "BtmF MidF TopF");
-
-//				// Controls
-//				if ((curLCDLeft && !lstLCDLeft) || (curLCDMiddle && !lstLCDMiddle) || (curLCDRight && !lstLCDRight))
-//				{
-//					if (curLCDLeft) gCurLCDSelection.flag = 0; // Bottom Flag
-//					else if (curLCDMiddle) gCurLCDSelection.flag = 1; // Middle Flag
-//					else if (curLCDRight) gCurLCDSelection.flag = 2; // Top Flag
-//					gLCDScreen = changeTarget;
-//				}
-//				break;
-//			}
-//			case changeTarget:
-//			{
-//				// Display
-//				switch(gCurLCDSelection.position)
-//				{
-//						case 0:
-//							if (gCurLCDSelection.flag == 0)
-//							{
-//								displayLCDString(0, 0, "Fr PF Btm: ");
-//								displayNextLCDNumber(ANGLER_FRONT_PF_BOTTOM_FLAG, 4);
-//								writeDebugStreamLine("%d | Fr PF Btm: %d", nPgmTime, ANGLER_FRONT_PF_BOTTOM_FLAG);
-//							}
-//							else if (gCurLCDSelection.flag == 1)
-//							{
-//								displayLCDString(0, 0, "Fr PF Mid: ");
-//								displayNextLCDNumber(ANGLER_FRONT_PF_MID_FLAG, 4);
-//								writeDebugStreamLine("%d | Fr PF Mid: %d", nPgmTime, ANGLER_FRONT_PF_MID_FLAG);
-//							}
-//							else if (gCurLCDSelection.flag == 2)
-//							{
-//								displayLCDString(0, 0, "Fr PF Top: ");
-//								displayNextLCDNumber(ANGLER_FRONT_PF_TOP_FLAG, 4);
-//								writeDebugStreamLine("%d | Fr PF Top: %d", nPgmTime, ANGLER_FRONT_PF_TOP_FLAG);
-//							}
-//							break;
-//						case 1:
-//							if (gCurLCDSelection.flag == 0)
-//							{
-//								displayLCDString(0, 0, "Bck PF Btm ");
-//								displayNextLCDNumber(ANGLER_BACK_PF_BOTTOM_FLAG, 4);
-//								writeDebugStreamLine("%d | Bck PF Btm: %d", nPgmTime, ANGLER_BACK_PF_BOTTOM_FLAG);
-//							}
-//							else if (gCurLCDSelection.flag == 1)
-//							{
-//								displayLCDString(0, 0, "Bck PF Mid ");
-//								displayNextLCDNumber(ANGLER_BACK_PF_MID_FLAG, 4);
-//								writeDebugStreamLine("%d | Bck PF Mid: %d", nPgmTime, ANGLER_BACK_PF_MID_FLAG);
-//							}
-//							else if (gCurLCDSelection.flag == 2)
-//							{
-//								displayLCDString(0, 0, "Bck PF Top ");
-//								displayNextLCDNumber(ANGLER_BACK_PF_TOP_FLAG, 4);
-//								writeDebugStreamLine("%d | Bck PF Top: %d", nPgmTime, ANGLER_BACK_PF_TOP_FLAG);
-//							}
-//							break;
-//						case 2:
-//							if (gCurLCDSelection.flag == 0)
-//							{
-//								displayLCDString(0, 0, "Bck Btm ");
-//								displayNextLCDNumber(ANGLER_BACK_BOTTOM_FLAG, 4);
-//								writeDebugStreamLine("%d | Bck Btm: %d", nPgmTime, ANGLER_BACK_BOTTOM_FLAG);
-//							}
-//							else if (gCurLCDSelection.flag == 1)
-//							{
-//								displayLCDString(0, 0, "Bck Mid ");
-//								displayNextLCDNumber(ANGLER_BACK_MID_FLAG, 4);
-//								writeDebugStreamLine("%d | Bck Mid: %d", nPgmTime, ANGLER_BACK_MID_FLAG);
-//							}
-//							else if (gCurLCDSelection.flag == 2)
-//							{
-//								displayLCDString(0, 0, "Bck Top ");
-//								displayNextLCDNumber(ANGLER_BACK_TOP_FLAG, 4);
-//								writeDebugStreamLine("%d | Bck Top: %d", nPgmTime, ANGLER_BACK_TOP_FLAG);
-//							}
-//							break;
-//				}
-
-//				// Controls
-//				if ((curLCDLeft && !lstLCDLeft) || (curLCDRight && !lstLCDRight))
-//				{
-//					// Adjust positions
-//					int adjust;
-//					if (curLCDLeft) adjust = -10;
-//					else if (curLCDRight) adjust = 10;
-
-//					switch(gCurLCDSelection.position)
-//					{
-//						case 0:
-//							if (gCurLCDSelection.flag == 0) ANGLER_FRONT_PF_BOTTOM_FLAG += adjust;
-//							else if (gCurLCDSelection.flag == 1) ANGLER_FRONT_PF_MID_FLAG += adjust;
-//							else if (gCurLCDSelection.flag == 2) ANGLER_FRONT_PF_TOP_FLAG += adjust;
-//							break;
-//						case 1:
-//							if (gCurLCDSelection.flag == 0) ANGLER_BACK_PF_BOTTOM_FLAG += adjust;
-//							else if (gCurLCDSelection.flag == 1) ANGLER_BACK_PF_MID_FLAG += adjust;
-//							else if (gCurLCDSelection.flag == 2) ANGLER_BACK_PF_TOP_FLAG += adjust;
-//							break;
-//						case 2:
-//							if (gCurLCDSelection.flag == 0) ANGLER_BACK_BOTTOM_FLAG += adjust;
-//							else if (gCurLCDSelection.flag == 1) ANGLER_BACK_MID_FLAG += adjust;
-//							else if (gCurLCDSelection.flag == 2) ANGLER_BACK_TOP_FLAG += adjust;
-//							break;
-//					}
-//				}
-//				else if (curLCDMiddle && !lstLCDMiddle)
-//				{
-//					// Go back to first screen
-//					gLCDScreen = selectPosition;
-//				}
-//				break;
-//			}
-//		}
-
-//		lstLCDLeft = curLCDLeft;
-//		lstLCDMiddle = curLCDMiddle;
-//		lstLCDRight = curLCDRight;
-
-//		sleep(50);
-//	}
-//}
-
 
 void startup()
 {
