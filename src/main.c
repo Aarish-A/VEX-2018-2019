@@ -682,10 +682,10 @@ task anglerStateSet()
 				{
 					AnglerHoldTrigger:
 					setAngler(0);
-					sleep(100);
+					sleep(200);
 					gAnglerTarget = SensorValue[anglerPoti];
-					setAnglerState(anglerIdle);
-					//setAnglerState(anglerHold);
+					//setAnglerState(anglerIdle);
+					setAnglerState(anglerHold);
 				}
 				break;
 			}
