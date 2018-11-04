@@ -251,24 +251,24 @@ void intakeControls()
 #define ANGLER_CAP_PICKUP_POS 1530
 
 //Positions shooting from back
-//#define ANGLER_BACK_TOP_FLAG 1390//1320//1415
-//#define ANGLER_BACK_MID_FLAG 1175//1100//1265//1165
+//#define anglerBackTopFlag 1390//1320//1415
+//#define anglerBackMidFlag 1175//1100//1265//1165
 //#define ANGLER_BACK_BOTTOM_FLAG 955
 
-int ANGLER_BACK_TOP_FLAG = 1390;
-int ANGLER_BACK_MID_FLAG = 1175;
+int anglerBackTopFlag = 1390;
+int anglerBackMidFlag = 1175;
 
 //Positions shooting from back of front platform tile
-//#define ANGLER_FRONT_PF_TOP_FLAG 1730//1415
-//#define ANGLER_FRONT_PF_MID_FLAG 1280//1265//1165
+//#define anglerFrontPFTopFlag 1730//1415
+//#define anglerFrontPFMidFlag 1280//1265//1165
 //#define ANGLER_FRONT_PF_BOTTOM_FLAG 955
 
-int ANGLER_FRONT_PF_TOP_FLAG = 1730;
-int ANGLER_FRONT_PF_MID_FLAG = 1280;
+int anglerFrontPFTopFlag = 1730;
+int anglerFrontPFMidFlag = 1280;
 
 //Positions shooting from back of front platform tile
-int ANGLER_BACK_PF_TOP_FLAG = 1410;
-int ANGLER_BACK_PF_MID_FLAG = 1160;
+int anglerBackPFTopFlag = 1410;
+int anglerBackPFMidFlag = 1160;
 
 int gAnglerPower = 0;
 void setAngler(word val)
@@ -580,7 +580,7 @@ task shooterStateSet()
 			case shooterShoot:
 				unsigned long shotStartTime = nPgmTime;
 				gShooterShotCount++;
-				target = SHOOTER_SHOOT_POS;
+				int target = SHOOTER_SHOOT_POS;
 				setShooter(127);
 				writeDebugStreamLine("%d Start shot %d: Time: %d Pos:%d ", nPgmTime, gShooterShotCount, nPgmTime-shotStartTime, SensorValue[shooterEnc]);
 
@@ -705,7 +705,7 @@ void shooterSafety()
 
 		if (gShooterState == shooterReset)
 		{
-			if (stateElpsdTime > 4500) shooterSafetySet(shooterIdle);
+			if (stateElpsdTime > 5000) shooterSafetySet(shooterIdle);
 			else if (stateElpsdTime > 100 && senChange > 10) killShooter();
 		}
 		else if (gShooterState == shooterReload)
@@ -970,36 +970,36 @@ task handleLCD()
 							if (gCurLCDSelection.flag == 0)
 							{
 								gCurLCDSelection.name = "Front Mid: ";
-								gCurLCDSelection.value = &ANGLER_FRONT_PF_MID_FLAG;
+								gCurLCDSelection.value = &anglerFrontPFMidFlag;
 							}
 							else if (gCurLCDSelection.flag == 1)
 							{
 								gCurLCDSelection.name = "Front Top: ";
-								gCurLCDSelection.value = &ANGLER_FRONT_PF_TOP_FLAG;
+								gCurLCDSelection.value = &anglerFrontPFTopFlag;
 							}
 							break;
 						case 1:
 							if (gCurLCDSelection.flag == 0)
 							{
 								gCurLCDSelection.name = "Mid Mid ";
-								gCurLCDSelection.value = &ANGLER_BACK_PF_MID_FLAG;
+								gCurLCDSelection.value = &anglerBackPFMidFlag;
 							}
 							else if (gCurLCDSelection.flag == 1)
 							{
 								gCurLCDSelection.name = "Mid Top ";
-								gCurLCDSelection.value = &ANGLER_BACK_PF_TOP_FLAG;
+								gCurLCDSelection.value = &anglerBackPFTopFlag;
 							}
 							break;
 						case 2:
 							if (gCurLCDSelection.flag == 0)
 							{
 								gCurLCDSelection.name = "Back Mid ";
-								gCurLCDSelection.value = &ANGLER_BACK_MID_FLAG;
+								gCurLCDSelection.value = &anglerBackMidFlag;
 							}
 							else if (gCurLCDSelection.flag == 1)
 							{
 								gCurLCDSelection.name = "Back Top ";
-								gCurLCDSelection.value = &ANGLER_BACK_TOP_FLAG;
+								gCurLCDSelection.value = &anglerBackTopFlag;
 							}
 							break;
 				}
@@ -1016,7 +1016,7 @@ task handleLCD()
 					else if (curLCDRight) adjust = 10;
 
 					*gCurLCDSelection.value += adjust;
-					//writeDebugStreamLine("%d | %d", nPgmTime, ANGLER_BACK_TOP_FLAG);
+					//writeDebugStreamLine("%d | %d", nPgmTime, anglerBackTopFlag);
 				}
 				else if (curLCDMiddle && !lstLCDMiddle)
 				{
@@ -1043,6 +1043,8 @@ void startTasks()
 	startTask(intakeStateSet);
 	startTask(anglerStateSet);
 
+	startTask(handleLCD);
+
 	setShooterState(shooterReset);
 
 	tRelease();
@@ -1058,6 +1060,8 @@ void stopTasks()
 	stopTask(shooterStateSet);
 	stopTask(intakeStateSet);
 	stopTask(anglerStateSet);
+
+	stopTask(handleLCD);
 	tRelease();
 }
 
@@ -1125,6 +1129,7 @@ task autonomous()
 
 task usercontrol()
 {
+	writeDebugStreamLine("\n%d Start UserControl", nPgmTime);
 	sCycleData cycle;
 	initCycle(cycle, 10, "usercontrol");
 
@@ -1196,17 +1201,17 @@ task usercontrol()
 		if ((shootFrontPFBtn && !shootFrontPFBtnLst) && !(shootBtn && !shootBtnLst))
 		{
 			writeDebugStreamLine("%d Shoot from front of platform", nPgmTime);
-			doubleShot(ANGLER_FRONT_PF_MID_FLAG, ANGLER_FRONT_PF_TOP_FLAG, 60, false, false);
+			doubleShot(anglerFrontPFMidFlag, anglerFrontPFTopFlag, 60, false, false);
 		}
 		else if ((shootBackPFBtn && !shootBackPFBtnLst) && !(shootBtn && !shootBtnLst))
 		{
 			writeDebugStreamLine("%d Shoot from back of platform", nPgmTime);
-			doubleShot(ANGLER_BACK_PF_MID_FLAG, ANGLER_BACK_PF_TOP_FLAG, 60, false, false);
+			doubleShot(anglerBackPFMidFlag, anglerBackPFTopFlag, 60, false, false);
 		}
 		else if ((shootBackBtn && !shootBackBtnLst) && !(shootBtn && !shootBtnLst))
 		{
 			writeDebugStreamLine("%d Shoot from back of field", nPgmTime);
-			doubleShot(ANGLER_BACK_MID_FLAG, ANGLER_BACK_TOP_FLAG, 25, true, true);
+			doubleShot(anglerBackMidFlag, anglerBackTopFlag, 25, true, true);
 		}
 		else if (anglerPickupGroundBtn && !anglerPickupGroundBtnLst)
 		{
