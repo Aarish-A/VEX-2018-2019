@@ -1029,15 +1029,44 @@ task handleLCD()
 	}
 }
 
+void startTasks()
+{
+	tHog();
+	SensorValue[shooterEnc] = 0;
+
+	startTask(shooterStateSet);
+	startTask(intakeStateSet);
+	startTask(anglerStateSet);
+
+	setShooterState(shooterReset);
+
+	tRelease();
+
+	sleep(50);
+	while(gShooterState != shooterHold) sleep(10);
+
+}
+
+void stopTasks()
+{
+	tHog();
+	stopTask(shooterStateSet);
+	stopTask(intakeStateSet);
+	stopTask(anglerStateSet);
+	tRelease();
+}
+
 void startup()
 {
 	clearDebugStream();
 	datalogClear();
 
 	int nBatteryLevel = nImmediateBatteryLevel;
-	writeDebugStreamLine("%d Battery: %d", nPgmTime, nBatteryLevel);
+	writeDebugStreamLine("%d Startup Battery: %d", nPgmTime, nBatteryLevel);
 
 	SensorValue[shooterEnc] = 0;
+
+	startTasks();
 	//Setup Joysticks & Buttons
 }
 
@@ -1077,29 +1106,6 @@ void ballTrackLog()
 		timeLst = time;
 }
 
-void startTasks()
-{
-	tHog();
-	SensorValue[shooterEnc] = 0;
-	startTask(driveStateSet);
-	startTask(shooterStateSet);
-	startTask(intakeStateSet);
-	startTask(anglerStateSet);
-	startTask(handleLCD);
-	setShooterState(shooterReset);
-	tRelease();
-}
-
-void stopTasks()
-{
-	tHog();
-	stopTask(driveStateSet);
-	stopTask(shooterStateSet);
-	stopTask(intakeStateSet);
-	stopTask(anglerStateSet);
-	tRelease();
-}
-
 task autonomous()
 {
 	sCycleData cycle;
@@ -1117,7 +1123,7 @@ task usercontrol()
 	sCycleData cycle;
 	initCycle(cycle, 10, "usercontrol");
 
-	startTasks();
+	//startTasks();
 
 
 	bool shootBtn = false;
