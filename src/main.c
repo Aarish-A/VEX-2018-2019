@@ -558,17 +558,21 @@ task shooterStateSet()
 				setShooterState(shooterReload);
 				break;
 			case shooterReload:
-				setShooter(127);
-				int target = SHOOTER_RELOAD_POS;
-
-				while(SensorValue[shooterEnc] < target)
+				if (SensorValue[anglerPoti] < ANGLER_AXEL_POS)
 				{
-					sleep(10);
+					setShooter(127);
+					int target = SHOOTER_RELOAD_POS;
+
+					while(SensorValue[shooterEnc] < target)
+					{
+						sleep(10);
+					}
+
+					writeDebugStreamLine("%d Reloaded to %d. Targ: %d", nPgmTime, SensorValue[shooterEnc], target);
+
+					setShooterState(shooterHold);
 				}
-
-				writeDebugStreamLine("%d Reloaded to %d. Targ: %d", nPgmTime, SensorValue[shooterEnc], target);
-
-				setShooterState(shooterHold);
+				else setShooterState(shooterIdle);
 				break;
 			case shooterHold:
 				setShooter(SHOOTER_RELOAD_HOLD);
@@ -653,8 +657,9 @@ task shooterStateSet()
 				gShooterShotCount = 0;
 				sleep(50);
 
-				if (SensorValue[anglerPoti] < ANGLER_AXEL_POS) setShooterState(shooterReload);
-				else setShooterState(shooterIdle);
+				//if (SensorValue[anglerPoti] < ANGLER_AXEL_POS) setShooterState(shooterReload);
+				//else setShooterState(shooterIdle);
+				setShooterState(shooterReload);
 				break;
 		}
 		//endCycle(cycle);
@@ -1043,7 +1048,7 @@ void startTasks()
 	tRelease();
 
 	sleep(50);
-	while(gShooterState != shooterHold) sleep(10);
+	while(gShooterState != shooterHold && gShooterState != shooterIdle) sleep(10);
 
 }
 
