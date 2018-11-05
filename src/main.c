@@ -376,6 +376,9 @@ task anglerStateSet()
   float kI = 0.048;//0.016;
   float iVal, pVal;
 
+  sCycleData anglerCycle;
+  initCycle(anglerCycle, 10, "anglerCycle");
+
   while (true)
   {
     switch (gAnglerState)
@@ -514,7 +517,8 @@ task anglerStateSet()
     //datalogAddValue(5, SensorValue[ballDetector]);
     //datalogDataGroupEnd();
     //tRelease();
-    sleep(10);
+
+   	endCycle(anglerCycle);
   }
 }
 
@@ -578,8 +582,8 @@ task shooterStateSet()
   //SensorValue[shooterEnc] = 0;
   SensorValue[shooterEnc] = 0;
 
-  //sCycleData cycle;
-  //initCycle(cycle, 10, "shooter");
+  sCycleData shooterCycle;
+  initCycle(shooterCycle, 10, "shooterCycle");
   while (true)
   {
     switch (gShooterState)
@@ -721,8 +725,7 @@ task shooterStateSet()
         break;
       }
     }
-    //endCycle(cycle);
-    sleep(10);
+    endCycle(shooterCycle);
   }
 }
 
