@@ -847,9 +847,16 @@ void doubleShot(int posA, int posB, int acceptableRange, bool waitForFirstShot =
 }
 
 
-void anglerShooter(int posA, int posB, int acceptableRange, bool waitForFirstShot = true, bool waitForSecShot = true, TVexJoysticks btn)
+void anglerShooter(int posA, int posB, int acceptableRange, bool waitForFirstShot = true, bool waitForSecShot = true, TVexJoysticks btn, bool reversePos = false)
 {
   setDriveState(driveIdle); //Kill drive
+
+  if (reversePos)
+  {
+  	int temp = posA;
+  	posA = posB;
+  	posB = temp;
+  }
 
   bool btnReleased = false;
 
@@ -1377,19 +1384,19 @@ task usercontrol()
     if ((shootFrontPFBtn && !shootFrontPFBtnLst) && !(shootBtn && !shootBtnLst))
     {
       writeDebugStreamLine("%d Shoot from front of platform", nPgmTime);
-      anglerShooter(gAnglerFrontPFMidFlag, gAnglerFrontPFTopFlag, 60, false, false, BTN_SHOOT_FRONT_PF);
+      anglerShooter(gAnglerFrontPFMidFlag, gAnglerFrontPFTopFlag, 60, false, false, BTN_SHOOT_FRONT_PF, vexRT[BTN_SHIFT_SHOT]);
       //doubleShot(gAnglerFrontPFMidFlag, gAnglerFrontPFTopFlag, 60, false, false);
     }
     else if ((shootBackPFBtn && !shootBackPFBtnLst) && !(shootBtn && !shootBtnLst))
     {
       writeDebugStreamLine("%d Shoot from back of platform", nPgmTime);
-      anglerShooter(gAnglerBackPFMidFlag, gAnglerBackPFTopFlag, 60, false, false, BTN_SHOOT_BACK_PF);
+      anglerShooter(gAnglerBackPFMidFlag, gAnglerBackPFTopFlag, 60, false, false, BTN_SHOOT_BACK_PF, vexRT[BTN_SHIFT_SHOT]);
       //doubleShot(gAnglerBackPFMidFlag, gAnglerBackPFTopFlag, 60, false, false);
     }
     else if ((shootBackBtn && !shootBackBtnLst) && !(shootBtn && !shootBtnLst))
     {
       writeDebugStreamLine("%d Shoot from back of field", nPgmTime);
-      anglerShooter(gAnglerBackMidFlag, gAnglerBackTopFlag, 25, true, true, BTN_SHOOT_BACK);
+      anglerShooter(gAnglerBackMidFlag, gAnglerBackTopFlag, 25, true, true, BTN_SHOOT_BACK, vexRT[BTN_SHIFT_SHOT]);
       //doubleShot(gAnglerBackMidFlag, gAnglerBackTopFlag, 25, true, true);
     }
     else if (anglerPickupGroundBtn && !anglerPickupGroundBtnLst)

@@ -22,5 +22,5 @@
 #define BTN_SHOOT_FRONT_PF Btn7U
 #define BTN_SHOOT_BACK_PF Btn7R
 #define BTN_SHOOT_BACK Btn7D
-//#define BTN_SHIFT_SHOT Btn5U
+#define BTN_SHIFT_SHOT Btn5D
 	//Cap Flip
