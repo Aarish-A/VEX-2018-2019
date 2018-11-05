@@ -1361,12 +1361,12 @@ task usercontrol()
     if ((shootFrontPFBtn && !shootFrontPFBtnLst) && !(shootBtn && !shootBtnLst))
     {
       writeDebugStreamLine("%d Shoot from front of platform", nPgmTime);
-      doubleShot(gAnglerFrontPFMidFlag, gAnglerFrontPFTopFlag, 60, false, false);
+      doubleShot(gAnglerFrontPFMidFlag, gAnglerFrontPFTopFlag, 60, true, true);//false, false);
     }
     else if ((shootBackPFBtn && !shootBackPFBtnLst) && !(shootBtn && !shootBtnLst))
     {
       writeDebugStreamLine("%d Shoot from back of platform", nPgmTime);
-      doubleShot(gAnglerBackPFMidFlag, gAnglerBackPFTopFlag, 60, false, false);
+      doubleShot(gAnglerBackPFMidFlag, gAnglerBackPFTopFlag, 60, true, true);//false, false);
     }
     else if ((shootBackBtn && !shootBackBtnLst) && !(shootBtn && !shootBtnLst))
     {
