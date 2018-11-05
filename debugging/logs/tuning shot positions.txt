@@ -1,0 +1,457 @@
+2001 Startup Battery: 7446
+2002 Shooter State Set 5 shooterReset, Count:0, Sen:0, Targ:45, NextTarg:405, T:2002
+2002 Start Shooter State Machine Task
+2002 Shooter rest for 500ms in reset. ShotCount:0. Pos:0
+2503 Start reset at -12 in reverse
+2803 Pos:-11, PosLst:10, Vel: -21.000000
+3103 Pos:-28, PosLst:-11, Vel: -17.000000
+3403 Pos:-46, PosLst:-28, Vel: -18.000000
+3703 Pos:-66, PosLst:-46, Vel: -20.000000
+4003 Pos:-84, PosLst:-66, Vel: -18.000000
+4303 Pos:-96, PosLst:-84, Vel: -12.000000
+4603 Pos:-96, PosLst:-96, Vel: 0.000000
+4903 Reset Shooter from -96. Vel:0
+4953 Shooter State Set 2 shooterReload, Count:0, Sen:0, Targ:45, NextTarg:405, T:4953
+5443 Reloaded to 231. Targ: 230
+5443 Shooter State Set 3 shooterHold, Count:0, Sen:231, Targ:45, NextTarg:405, T:5443
+
+5444 Start UserControl
+	37525 Ball Detected (1879). Shooter:252 Angler:1719 (err:-1389). Vel:0.100000
+39414 Shoot from front of platform
+39414 Angler State Set 1 anglerMove. Targ:1310, Sen:1721, Time:39414, GoodCount:0
+39423 Angler State Set 2 anglerHold. Targ:1310, Sen:1721, Time:39423, GoodCount:0
+   41513 Done hold to 1310 in 2090 ms. vel:0.000000. Sen:1309
+41514 Done waiting for first point. Angler:1308
+41514 Shooter State Set 4 shooterShoot, Count:0, Sen:252, Targ:45, NextTarg:405, T:41514
+41524 Start shot 1: Time: 0 Pos:252 
+41994 Start break: Time: 470 Pos:404 
+  > 42004 BALL HIT. Angler at 1312 holding at 6. Err:-2
+	42005 Ball Off (3067). Shooter:1311 Angler:-1 (err:0). Vel:
+42074 Shoot Trigger False - shot end
+42074 Shooter State Set 2 shooterReload, Count:1, Sen:412, Targ:405, NextTarg:765, T:42074
+42074 Done waiting for first reload. Angler:1343
+42074 Angler State Set 1 anglerMove. Targ:1730, Sen:1342, Time:42074, GoodCount:0
+42213 Angler Break. Pos:1566, Vel:1.600000
+42223 Angler Break. Pos:1603, Vel:3.700000
+42233 Angler Break. Pos:1633, Vel:3.000000
+42243 Angler Break. Pos:1655, Vel:2.200000
+42253 Angler State Set 2 anglerHold. Targ:1730, Sen:1665, Time:42253, GoodCount:0
+42464 Reloaded to 593. Targ: 590
+42464 Shooter State Set 3 shooterHold, Count:1, Sen:593, Targ:405, NextTarg:765, T:42464
+	42695 Ball Detected (1916). Shooter:616 Angler:1711 (err:19). Vel:-0.200000
+   42743 Done hold to 1730 in 490 ms. vel:0.000000. Sen:1714
+42744 Done waiting for second point. Angler:1715
+42744 Shooter State Set 4 shooterShoot, Count:1, Sen:616, Targ:405, NextTarg:765, T:42744
+42754 Start shot 2: Time: 0 Pos:616 
+	42775 Ball Off (2038). Shooter:1717 Angler:13 (err:0). Vel:
+	42825 Ball Detected (1947). Shooter:619 Angler:1719 (err:11). Vel:0.000000
+	43215 Ball Off (3089). Shooter:1694 Angler:36 (err:-2). Vel:
+43224 Start break: Time: 470 Pos:768 
+  > 43224 BALL HIT. Angler at 1664 holding at 5. Err:66
+43304 Shoot Trigger False - shot end
+43304 Shooter State Set 2 shooterReload, Count:2, Sen:790, Targ:765, NextTarg:1125, T:43304
+   43483 Done hold to 1730 in 1230 ms. vel:0.000000. Sen:1731
+43674 Reloaded to 953. Targ: 950
+43674 Shooter State Set 3 shooterHold, Count:2, Sen:953, Targ:765, NextTarg:1125, T:43674
+43674 Done double point and shoot from back. Angler:1727. Shooter:953
+ 43674 Cycle usercontrol Took 4260 instead of 10
+   87393 Done hold to 1730 in 45140 ms. vel:0.000000. Sen:1733
+   132613 Done hold to 1730 in 90360 ms. vel:0.000000. Sen:1732
+   160903 Done hold to 1730 in 118650 ms. vel:0.000000. Sen:1728
+	161115 Ball Detected (1786). Shooter:980 Angler:1732 (err:-2). Vel:0.000000
+	161165 Ball Off (2140). Shooter:1728 Angler:2 (err:0). Vel:
+163236 Angler State Set 3 anglerManual. Targ:1730, Sen:1732, Time:163236, GoodCount:238
+163643 Angler State Set 2 anglerHold. Targ:1272, Sen:1272, Time:163643, GoodCount:238
+	163645 Ball Detected (1965). Shooter:980 Angler:1269 (err:3). Vel:-1.500000
+   164683 Done hold to 1272 in 1040 ms. vel:0.000000. Sen:1262
+173076 Shoot from front of platform
+173076 Angler State Set 1 anglerMove. Targ:1350, Sen:1265, Time:173076, GoodCount:0
+173083 Angler Break. Pos:1264, Vel:0.000000
+173093 Angler Break. Pos:1265, Vel:0.100000
+173103 Angler State Set 2 anglerHold. Targ:1350, Sen:1265, Time:173103, GoodCount:0
+   174393 Done hold to 1350 in 1290 ms. vel:0.000000. Sen:1358
+174396 Done waiting for first point. Angler:1358
+174396 Shooter State Set 4 shooterShoot, Count:2, Sen:980, Targ:765, NextTarg:1125, T:174396
+174404 Start shot 3: Time: 0 Pos:980 
+174854 Start break: Time: 450 Pos:1126 
+  > 174854 BALL HIT. Angler at 1332 holding at 7. Err:18
+	174855 Ball Off (3076). Shooter:1343 Angler:7 (err:0). Vel:
+174934 Shoot Trigger False - shot end
+174934 Shooter State Set 2 shooterReload, Count:3, Sen:1141, Targ:1125, NextTarg:1485, T:174934
+174936 Done waiting for first reload. Angler:1379
+174936 Angler State Set 1 anglerMove. Targ:1770, Sen:1379, Time:174936, GoodCount:0
+175073 Angler Break. Pos:1585, Vel:1.478571
+175083 Angler Break. Pos:1620, Vel:3.500000
+175093 Angler Break. Pos:1650, Vel:3.000000
+175103 Angler Break. Pos:1672, Vel:2.200000
+175113 Angler State Set 2 anglerHold. Targ:1770, Sen:1674, Time:175113, GoodCount:0
+175314 Reloaded to 1312. Targ: 1310
+175314 Shooter State Set 3 shooterHold, Count:3, Sen:1312, Targ:1125, NextTarg:1485, T:175314
+	177165 Ball Detected (1801). Shooter:1336 Angler:1719 (err:51). Vel:0.000000
+   179583 Done hold to 1770 in 4470 ms. vel:0.000000. Sen:1748
+179586 Done waiting for second point. Angler:1748
+179586 Shooter State Set 4 shooterShoot, Count:3, Sen:1336, Targ:1125, NextTarg:1485, T:179586
+179594 Start shot 4: Time: 0 Pos:1336 
+	180035 Ball Off (3088). Shooter:1738 Angler:32 (err:0). Vel:
+180044 Start break: Time: 450 Pos:1488 
+  > 180044 BALL HIT. Angler at 1740 holding at 1. Err:30
+180124 Shoot Trigger False - shot end
+180124 Shooter State Set 2 shooterReload, Count:4, Sen:1502, Targ:1485, NextTarg:1845, T:180124
+   180313 Done hold to 1770 in 5200 ms. vel:0.000000. Sen:1763
+180494 Reloaded to 1671. Targ: 1670
+180494 Shooter State Set 3 shooterHold, Count:4, Sen:1671, Targ:1485, NextTarg:1845, T:180494
+180496 Done double point and shoot from back. Angler:1761. Shooter:1672
+ 180496 Cycle usercontrol Took 7420 instead of 10
+	185415 Ball Detected (1942). Shooter:1694 Angler:1765 (err:5). Vel:0.400000
+	185455 Ball Off (2046). Shooter:1763 Angler:7 (err:0). Vel:
+   185463 Done hold to 1770 in 10350 ms. vel:0.000000. Sen:1762
+   185553 Done hold to 1770 in 10440 ms. vel:0.000000. Sen:1755
+	185725 Ball Detected (1995). Shooter:1694 Angler:1761 (err:9). Vel:0.000000
+   186783 Done hold to 1770 in 11670 ms. vel:0.000000. Sen:1750
+190626 Angler State Set 3 anglerManual. Targ:1770, Sen:1726, Time:190626, GoodCount:0
+191023 Angler State Set 2 anglerHold. Targ:1414, Sen:1414, Time:191023, GoodCount:0
+191546 Angler State Set 3 anglerManual. Targ:1414, Sen:1349, Time:191546, GoodCount:0
+192053 Angler State Set 2 anglerHold. Targ:979, Sen:979, Time:192053, GoodCount:0
+   192813 Done hold to 979 in 760 ms. vel:0.000000. Sen:966
+   192923 Done hold to 979 in 870 ms. vel:0.000000. Sen:960
+   193163 Done hold to 979 in 1110 ms. vel:0.000000. Sen:967
+   196943 Done hold to 979 in 4890 ms. vel:0.000000. Sen:970
+   197603 Done hold to 979 in 5550 ms. vel:0.000000. Sen:966
+198506 Shoot from front of platform
+198506 Angler State Set 1 anglerMove. Targ:1350, Sen:971, Time:198506, GoodCount:0
+198643 Angler Break. Pos:1184, Vel:1.528571
+198653 Angler Break. Pos:1221, Vel:3.700000
+198663 Angler Break. Pos:1256, Vel:3.500000
+198673 Angler Break. Pos:1281, Vel:2.500000
+198683 Angler State Set 2 anglerHold. Targ:1350, Sen:1314, Time:198683, GoodCount:0
+   198763 Done hold to 1350 in 80 ms. vel:0.000000. Sen:1336
+198766 Done waiting for first point. Angler:1336
+198766 Shooter State Set 4 shooterShoot, Count:4, Sen:1694, Targ:1485, NextTarg:1845, T:198766
+198774 Start shot 5: Time: 0 Pos:1694 
+199224 Start break: Time: 450 Pos:1846 
+  > 199224 BALL HIT. Angler at 1292 holding at 11. Err:58
+	199225 Ball Off (3076). Shooter:1295 Angler:55 (err:0). Vel:
+199304 Shoot Trigger False - shot end
+199304 Shooter State Set 2 shooterReload, Count:5, Sen:1861, Targ:1845, NextTarg:2205, T:199304
+199306 Done waiting for first reload. Angler:1326
+199306 Angler State Set 1 anglerMove. Targ:1770, Sen:1326, Time:199306, GoodCount:0
+199453 Angler Break. Pos:1579, Vel:1.686667
+199463 Angler Break. Pos:1606, Vel:2.700000
+199473 Angler State Set 2 anglerHold. Targ:1770, Sen:1633, Time:199473, GoodCount:0
+199674 Reloaded to 2030. Targ: 2030
+199674 Shooter State Set 3 shooterHold, Count:5, Sen:2030, Targ:1845, NextTarg:2205, T:199674
+	199855 Ball Detected (1960). Shooter:2056 Angler:1693 (err:77). Vel:0.000000
+	199925 Ball Off (2072). Shooter:1690 Angler:80 (err:0). Vel:
+	200215 Ball Detected (1937). Shooter:2056 Angler:1697 (err:73). Vel:0.100000
+   204193 Done hold to 1770 in 4720 ms. vel:0.000000. Sen:1752
+204196 Done waiting for second point. Angler:1753
+204196 Shooter State Set 4 shooterShoot, Count:5, Sen:2056, Targ:1845, NextTarg:2205, T:204196
+204204 Start shot 6: Time: 0 Pos:2056 
+	204655 Ball Off (3089). Shooter:1744 Angler:26 (err:0). Vel:
+204664 Start break: Time: 460 Pos:2209 
+  > 204664 BALL HIT. Angler at 1751 holding at 0. Err:19
+204744 Shoot Trigger False - shot end
+204744 Shooter State Set 2 shooterReload, Count:6, Sen:2235, Targ:2205, NextTarg:2565, T:204744
+   204763 Done hold to 1770 in 5290 ms. vel:0.000000. Sen:1790
+   204923 Done hold to 1770 in 5450 ms. vel:0.000000. Sen:1764
+205094 Reloaded to 2393. Targ: 2390
+205094 Shooter State Set 3 shooterHold, Count:6, Sen:2393, Targ:2205, NextTarg:2565, T:205094
+205096 Done double point and shoot from back. Angler:1768. Shooter:2394
+ 205096 Cycle usercontrol Took 6590 instead of 10
+   209463 Done hold to 1770 in 9990 ms. vel:0.000000. Sen:1766
+   209573 Done hold to 1770 in 10100 ms. vel:0.000000. Sen:1764
+	210015 Ball Detected (1950). Shooter:2417 Angler:1768 (err:2). Vel:0.100000
+   211133 Done hold to 1770 in 11660 ms. vel:0.000000. Sen:1767
+217556 Shoot from front of platform
+217556 Angler State Set 1 anglerMove. Targ:1350, Sen:1771, Time:217556, GoodCount:0
+217563 Angler State Set 2 anglerHold. Targ:1350, Sen:1770, Time:217563, GoodCount:0
+   220533 Done hold to 1350 in 2970 ms. vel:0.000000. Sen:1336
+220536 Done waiting for first point. Angler:1340
+220536 Shooter State Set 4 shooterShoot, Count:6, Sen:2417, Targ:2205, NextTarg:2565, T:220536
+220544 Start shot 7: Time: 0 Pos:2417 
+   220613 Done hold to 1350 in 3050 ms. vel:0.000000. Sen:1367
+220984 Start break: Time: 440 Pos:2566 
+  > 220984 BALL HIT. Angler at 1355 holding at 6. Err:-5
+	220985 Ball Off (3077). Shooter:1359 Angler:-9 (err:0). Vel:
+221064 Shoot Trigger False - shot end
+221064 Shooter State Set 2 shooterReload, Count:7, Sen:2582, Targ:2565, NextTarg:2925, T:221064
+221066 Done waiting for first reload. Angler:1401
+221066 Angler State Set 1 anglerMove. Targ:1770, Sen:1401, Time:221066, GoodCount:0
+221203 Angler Break. Pos:1595, Vel:1.392857
+221213 Angler Break. Pos:1631, Vel:3.600000
+221223 Angler Break. Pos:1659, Vel:2.800000
+221233 Angler Break. Pos:1666, Vel:0.700000
+221243 Angler State Set 2 anglerHold. Targ:1770, Sen:1665, Time:221243, GoodCount:0
+221444 Reloaded to 2753. Targ: 2750
+221444 Shooter State Set 3 shooterHold, Count:7, Sen:2753, Targ:2565, NextTarg:2925, T:221444
+	221735 Ball Detected (1867). Shooter:2776 Angler:1704 (err:66). Vel:0.100000
+   225493 Done hold to 1770 in 4250 ms. vel:0.000000. Sen:1750
+225496 Done waiting for second point. Angler:1750
+225496 Shooter State Set 4 shooterShoot, Count:7, Sen:2776, Targ:2565, NextTarg:2925, T:225496
+225504 Start shot 8: Time: 0 Pos:2776 
+   225613 Done hold to 1770 in 4370 ms. vel:0.000000. Sen:1766
+225944 Start break: Time: 440 Pos:2926 
+  > 225944 BALL HIT. Angler at 1763 holding at 0. Err:7
+	225945 Ball Off (2772). Shooter:1760 Angler:10 (err:0). Vel:
+226024 Shoot Trigger False - shot end
+226024 Shooter State Set 2 shooterReload, Count:8, Sen:2932, Targ:2925, NextTarg:3285, T:226024
+   226173 Done hold to 1770 in 4930 ms. vel:0.000000. Sen:1764
+   226263 Done hold to 1770 in 5020 ms. vel:0.000000. Sen:1769
+226404 Reloaded to 3110. Targ: 3110
+226404 Shooter State Set 3 shooterHold, Count:8, Sen:3110, Targ:2925, NextTarg:3285, T:226404
+226406 Done double point and shoot from back. Angler:1775. Shooter:3111
+ 226406 Cycle usercontrol Took 8850 instead of 10
+   235103 Done hold to 1770 in 13860 ms. vel:0.000000. Sen:1759
+   235523 Done hold to 1770 in 14280 ms. vel:0.000000. Sen:1763
+	235535 Ball Detected (1747). Shooter:3136 Angler:1767 (err:3). Vel:0.500000
+   236313 Done hold to 1770 in 15070 ms. vel:0.000000. Sen:1769
+   239173 Done hold to 1770 in 17930 ms. vel:0.000000. Sen:1771
+   239463 Done hold to 1770 in 18220 ms. vel:0.000000. Sen:1765
+240756 Shoot from front of platform
+240756 Angler State Set 1 anglerMove. Targ:1360, Sen:1770, Time:240756, GoodCount:0
+240763 Angler State Set 2 anglerHold. Targ:1360, Sen:1770, Time:240763, GoodCount:0
+   242903 Done hold to 1360 in 2140 ms. vel:0.000000. Sen:1353
+242906 Done waiting for first point. Angler:1353
+242906 Shooter State Set 4 shooterShoot, Count:8, Sen:3136, Targ:2925, NextTarg:3285, T:242906
+242914 Start shot 9: Time: 0 Pos:3136 
+243374 Start break: Time: 460 Pos:3286 
+  > 243374 BALL HIT. Angler at 1357 holding at 7. Err:3
+	243375 Ball Off (3072). Shooter:1358 Angler:2 (err:1). Vel:
+243454 Shoot Trigger False - shot end
+243454 Shooter State Set 2 shooterReload, Count:9, Sen:3303, Targ:3285, NextTarg:3645, T:243454
+243456 Done waiting for first reload. Angler:1394
+243456 Angler State Set 1 anglerMove. Targ:1770, Sen:1394, Time:243456, GoodCount:0
+243593 Angler Break. Pos:1588, Vel:1.385714
+243603 Angler Break. Pos:1624, Vel:3.600000
+243613 Angler Break. Pos:1652, Vel:2.800000
+243623 Angler Break. Pos:1671, Vel:1.900000
+243633 Angler State Set 2 anglerHold. Targ:1770, Sen:1665, Time:243633, GoodCount:0
+243834 Reloaded to 3473. Targ: 3470
+243834 Shooter State Set 3 shooterHold, Count:9, Sen:3473, Targ:3285, NextTarg:3645, T:243834
+	245445 Ball Detected (1996). Shooter:3496 Angler:1727 (err:43). Vel:-0.100000
+	245505 Ball Off (2039). Shooter:1726 Angler:44 (err:0). Vel:
+	245845 Ball Detected (1653). Shooter:3496 Angler:1727 (err:43). Vel:0.000000
+   247443 Done hold to 1770 in 3810 ms. vel:0.000000. Sen:1749
+247446 Done waiting for second point. Angler:1749
+247446 Shooter State Set 4 shooterShoot, Count:9, Sen:3496, Targ:3285, NextTarg:3645, T:247446
+247454 Start shot 10: Time: 0 Pos:3496 
+247894 Start break: Time: 440 Pos:3648 
+  > 247894 BALL HIT. Angler at 1740 holding at 3. Err:30
+	247895 Ball Off (3079). Shooter:1745 Angler:25 (err:0). Vel:
+247974 Shoot Trigger False - shot end
+247974 Shooter State Set 2 shooterReload, Count:10, Sen:3661, Targ:3645, NextTarg:4005, T:247974
+   248003 Done hold to 1770 in 4370 ms. vel:0.000000. Sen:1787
+   248163 Done hold to 1770 in 4530 ms. vel:0.000000. Sen:1762
+248354 Reloaded to 3834. Targ: 3830
+248354 Shooter State Set 3 shooterHold, Count:10, Sen:3834, Targ:3645, NextTarg:4005, T:248354
+248356 Done double point and shoot from back. Angler:1765. Shooter:3835
+ 248356 Cycle usercontrol Took 7600 instead of 10
+   252713 Done hold to 1770 in 9080 ms. vel:0.000000. Sen:1768
+   261463 Done hold to 1770 in 17830 ms. vel:0.000000. Sen:1770
+   262263 Done hold to 1770 in 18630 ms. vel:0.000000. Sen:1760
+   263573 Done hold to 1770 in 19940 ms. vel:0.000000. Sen:1774
+   264123 Done hold to 1770 in 20490 ms. vel:0.000000. Sen:1767
+   264333 Done hold to 1770 in 20700 ms. vel:0.000000. Sen:1765
+   265283 Done hold to 1770 in 21650 ms. vel:0.000000. Sen:1763
+   265493 Done hold to 1770 in 21860 ms. vel:0.000000. Sen:1767
+   271863 Done hold to 1770 in 28230 ms. vel:0.000000. Sen:1758
+	272605 Ball Detected (1977). Shooter:3856 Angler:1757 (err:13). Vel:-0.100000
+   273283 Done hold to 1770 in 29650 ms. vel:0.000000. Sen:1761
+281996 Shoot from back of platform
+281996 Angler State Set 1 anglerMove. Targ:1160, Sen:1769, Time:281996, GoodCount:0
+282003 Angler State Set 2 anglerHold. Targ:1160, Sen:1768, Time:282003, GoodCount:0
+   283853 Done hold to 1160 in 1850 ms. vel:0.000000. Sen:1147
+283856 Done waiting for first point. Angler:1148
+283856 Shooter State Set 4 shooterShoot, Count:10, Sen:3856, Targ:3645, NextTarg:4005, T:283856
+283864 Start shot 11: Time: 0 Pos:3856 
+284324 Start break: Time: 460 Pos:4006 
+  > 284324 BALL HIT. Angler at 1152 holding at 7. Err:8
+	284325 Ball Off (3073). Shooter:1154 Angler:6 (err:0). Vel:
+284404 Shoot Trigger False - shot end
+284404 Shooter State Set 2 shooterReload, Count:11, Sen:4020, Targ:4005, NextTarg:4365, T:284404
+284406 Done waiting for first reload. Angler:1189
+284406 Angler State Set 1 anglerMove. Targ:1410, Sen:1189, Time:284406, GoodCount:0
+284493 Angler Break. Pos:1220, Vel:0.355556
+284503 Angler Break. Pos:1239, Vel:1.900000
+284513 Angler State Set 2 anglerHold. Targ:1410, Sen:1259, Time:284513, GoodCount:0
+   284733 Done hold to 1410 in 220 ms. vel:0.000000. Sen:1428
+284736 Done waiting for second point. Angler:1428
+284736 Shooter State Set 4 shooterShoot, Count:11, Sen:4172, Targ:4005, NextTarg:4365, T:284736
+284784 Reloaded to 4193. Targ: 4190
+284784 Shooter State Set 3 shooterHold, Count:11, Sen:4193, Targ:4005, NextTarg:4365, T:284784
+  284786 Second shot failed (ball jumped). Try again
+284836 Shooter State Set 4 shooterShoot, Count:11, Sen:4216, Targ:4005, NextTarg:4365, T:284836
+284844 Start shot 12: Time: 0 Pos:4218 
+   284933 Done hold to 1410 in 420 ms. vel:0.000000. Sen:1433
+285074 Ball gone: Val:3093, Time: 230 Pos:4287, Targ:4365 
+285074 Shooter State Set 1 shooterBreak, Count:11, Sen:4287, Targ:4005, NextTarg:4365, T:285074
+285174 Shooter State Set 2 shooterReload, Count:11, Sen:4276, Targ:4005, NextTarg:4365, T:285174
+285184 Reloaded to 4270. Targ: 4190
+285184 Shooter State Set 3 shooterHold, Count:11, Sen:4270, Targ:4005, NextTarg:4365, T:285184
+285186 Done double point and shoot from back. Angler:1438. Shooter:4268
+ 285186 Cycle usercontrol Took 3190 instead of 10
+   285943 Done hold to 1410 in 1430 ms. vel:0.000000. Sen:1410
+   286933 Done hold to 1410 in 2420 ms. vel:0.000000. Sen:1411
+   287073 Done hold to 1410 in 2560 ms. vel:0.000000. Sen:1396
+	287245 Ball Detected (1734). Shooter:4227 Angler:1404 (err:6). Vel:-0.100000
+	287305 Ball Off (2007). Shooter:1402 Angler:8 (err:0). Vel:
+	287315 Ball Detected (1981). Shooter:4227 Angler:1402 (err:8). Vel:0.000000
+297306 Shooter State Set 4 shooterShoot, Count:11, Sen:4227, Targ:4005, NextTarg:4365, T:297306
+297306 FIRST SHOT TRIGGERED. # 11. Angler: 1409
+297314 Start shot 12: Time: 0 Pos:4227 
+297744 Start break: Time: 430 Pos:4364 
+  > 297754 BALL HIT. Angler at 1402 holding at 7. Err:8
+	297755 Ball Off (3069). Shooter:1402 Angler:8 (err:0). Vel:
+297824 Shoot Trigger False - shot end
+297824 Shooter State Set 2 shooterReload, Count:12, Sen:4380, Targ:4365, NextTarg:4725, T:297824
+   298023 Done hold to 1410 in 13510 ms. vel:0.000000. Sen:1405
+298204 Reloaded to 4551. Targ: 4550
+298204 Shooter State Set 3 shooterHold, Count:12, Sen:4552, Targ:4365, NextTarg:4725, T:298204
+   303913 Done hold to 1410 in 19400 ms. vel:0.000000. Sen:1403
+   304633 Done hold to 1410 in 20120 ms. vel:0.000000. Sen:1403
+   304953 Done hold to 1410 in 20440 ms. vel:0.000000. Sen:1397
+	305005 Ball Detected (1970). Shooter:4576 Angler:1399 (err:11). Vel:0.300000
+   305373 Done hold to 1410 in 20860 ms. vel:0.000000. Sen:1395
+   305663 Done hold to 1410 in 21150 ms. vel:0.000000. Sen:1389
+   305753 Done hold to 1410 in 21240 ms. vel:0.000000. Sen:1396
+   321353 Done hold to 1410 in 36840 ms. vel:0.000000. Sen:1389
+   322423 Done hold to 1410 in 37910 ms. vel:0.000000. Sen:1407
+   322603 Done hold to 1410 in 38090 ms. vel:0.000000. Sen:1404
+   322863 Done hold to 1410 in 38350 ms. vel:0.000000. Sen:1395
+   323153 Done hold to 1410 in 38640 ms. vel:0.000000. Sen:1391
+   324743 Done hold to 1410 in 40230 ms. vel:0.000000. Sen:1396
+331436 Shoot from back of platform
+331436 Angler State Set 1 anglerMove. Targ:1160, Sen:1402, Time:331436, GoodCount:0
+331443 Angler State Set 2 anglerHold. Targ:1160, Sen:1402, Time:331443, GoodCount:0
+   331813 Done hold to 1160 in 370 ms. vel:0.000000. Sen:1170
+331816 Done waiting for first point. Angler:1167
+331816 Shooter State Set 4 shooterShoot, Count:12, Sen:4576, Targ:4365, NextTarg:4725, T:331816
+331824 Start shot 13: Time: 0 Pos:4576 
+   332003 Done hold to 1160 in 560 ms. vel:0.000000. Sen:1140
+	332265 Ball Off (3068). Shooter:1133 Angler:27 (err:0). Vel:
+332274 Start break: Time: 450 Pos:4726 
+  > 332274 BALL HIT. Angler at 1133 holding at 8. Err:27
+332354 Shoot Trigger False - shot end
+332354 Shooter State Set 2 shooterReload, Count:13, Sen:4743, Targ:4725, NextTarg:5085, T:332354
+332356 Done waiting for first reload. Angler:1165
+332356 Angler State Set 1 anglerMove. Targ:1410, Sen:1165, Time:332356, GoodCount:0
+332453 Angler Break. Pos:1227, Vel:0.630000
+332463 Angler Break. Pos:1256, Vel:2.900000
+332473 Angler Break. Pos:1274, Vel:1.800000
+332483 Angler State Set 2 anglerHold. Targ:1410, Sen:1315, Time:332483, GoodCount:0
+332724 Reloaded to 4912. Targ: 4910
+332724 Shooter State Set 3 shooterHold, Count:13, Sen:4912, Targ:4725, NextTarg:5085, T:332724
+   334153 Done hold to 1410 in 1670 ms. vel:0.000000. Sen:1418
+334156 Done waiting for second point. Angler:1418
+334156 Shooter State Set 4 shooterShoot, Count:13, Sen:4937, Targ:4725, NextTarg:5085, T:334156
+334164 Start shot 14: Time: 0 Pos:4937 
+334414 Ball gone: Val:3091, Time: 250 Pos:5008, Targ:5085 
+334414 Shooter State Set 1 shooterBreak, Count:13, Sen:5008, Targ:4725, NextTarg:5085, T:334414
+334514 Shooter State Set 2 shooterReload, Count:13, Sen:4992, Targ:4725, NextTarg:5085, T:334514
+334524 Reloaded to 4986. Targ: 4910
+334524 Shooter State Set 3 shooterHold, Count:13, Sen:4986, Targ:4725, NextTarg:5085, T:334524
+  334526 Second shot failed (ball jumped). Try again
+334576 Shooter State Set 4 shooterShoot, Count:13, Sen:4963, Targ:4725, NextTarg:5085, T:334576
+334584 Start shot 14: Time: 0 Pos:4962 
+334794 Ball gone: Val:3092, Time: 210 Pos:5006, Targ:5085 
+334794 Shooter State Set 1 shooterBreak, Count:13, Sen:5006, Targ:4725, NextTarg:5085, T:334794
+334894 Shooter State Set 2 shooterReload, Count:13, Sen:5008, Targ:4725, NextTarg:5085, T:334894
+334904 Reloaded to 5000. Targ: 4910
+334904 Shooter State Set 3 shooterHold, Count:13, Sen:5000, Targ:4725, NextTarg:5085, T:334904
+334906 Done double point and shoot from back. Angler:1423. Shooter:4999
+ 334906 Cycle usercontrol Took 3470 instead of 10
+	336125 Ball Detected (1982). Shooter:4976 Angler:1416 (err:-6). Vel:0.000000
+	336175 Ball Off (2185). Shooter:1415 Angler:-5 (err:0). Vel:
+	336215 Ball Detected (1928). Shooter:4975 Angler:1418 (err:-8). Vel:0.100000
+338136 Shooter State Set 4 shooterShoot, Count:13, Sen:4975, Targ:4725, NextTarg:5085, T:338136
+338136 FIRST SHOT TRIGGERED. # 13. Angler: 1421
+338144 Start shot 14: Time: 0 Pos:4975 
+338494 Start break: Time: 350 Pos:5085 
+  > 338494 BALL HIT. Angler at 1400 holding at 7. Err:10
+	338495 Ball Off (2899). Shooter:1402 Angler:8 (err:0). Vel:
+338574 Shoot Trigger False - shot end
+338574 Shooter State Set 2 shooterReload, Count:14, Sen:5100, Targ:5085, NextTarg:5445, T:338574
+   338753 Done hold to 1410 in 6270 ms. vel:0.000000. Sen:1414
+338954 Reloaded to 5272. Targ: 5270
+338954 Shooter State Set 3 shooterHold, Count:14, Sen:5272, Targ:5085, NextTarg:5445, T:338954
+   341643 Done hold to 1410 in 9160 ms. vel:0.000000. Sen:1400
+   343593 Done hold to 1410 in 11110 ms. vel:0.000000. Sen:1402
+   343673 Done hold to 1410 in 11190 ms. vel:0.000000. Sen:1404
+   344243 Done hold to 1410 in 11760 ms. vel:0.000000. Sen:1407
+   344423 Done hold to 1410 in 11940 ms. vel:0.000000. Sen:1406
+   344593 Done hold to 1410 in 12110 ms. vel:0.000000. Sen:1405
+   344693 Done hold to 1410 in 12210 ms. vel:0.000000. Sen:1408
+   344933 Done hold to 1410 in 12450 ms. vel:0.000000. Sen:1409
+   362463 Done hold to 1410 in 29980 ms. vel:0.000000. Sen:1409
+   363153 Done hold to 1410 in 30670 ms. vel:0.000000. Sen:1402
+   363943 Done hold to 1410 in 31460 ms. vel:0.000000. Sen:1402
+   364123 Done hold to 1410 in 31640 ms. vel:0.000000. Sen:1401
+   365153 Done hold to 1410 in 32670 ms. vel:0.000000. Sen:1395
+	365345 Ball Detected (1916). Shooter:5296 Angler:1384 (err:26). Vel:-1.000000
+   365403 Done hold to 1410 in 32920 ms. vel:0.000000. Sen:1393
+	365415 Ball Off (2136). Shooter:1394 Angler:16 (err:0). Vel:
+	365445 Ball Detected (1993). Shooter:5296 Angler:1395 (err:15). Vel:-0.100000
+	365455 Ball Off (2034). Shooter:1396 Angler:14 (err:0). Vel:
+	365475 Ball Detected (1899). Shooter:5296 Angler:1396 (err:14). Vel:0.100000
+ 1 shooterBreak, Count:27, Sen:10046, Targ:9765, NextTarg:10125, T:617564
+617664 Shooter State Set 2 shooterReload, Count:27, Sen:10038, Targ:9765, NextTarg:10125, T:617664
+617674 Reloaded to 10031. Targ: 9950
+617674 Shooter State Set 3 shooterHold, Count:27, Sen:10031, Targ:9765, NextTarg:10125, T:617674
+617676 Done double point and shoot from back. Angler:1530. Shooter:10030
+ 617676 Cycle usercontrol Took 1830 instead of 10
+	619015 Ball Detected (1603). Shooter:9989 Angler:1530 (err:10). Vel:-0.100000
+	619045 Ball Off (2197). Shooter:1528 Angler:12 (err:0). Vel:
+   619103 Done hold to 1540 in 2090 ms. vel:0.000000. Sen:1525
+	619105 Ball Detected (1822). Shooter:9988 Angler:1525 (err:15). Vel:0.000000
+621216 Shooter State Set 4 shooterShoot, Count:27, Sen:9988, Targ:9765, NextTarg:10125, T:621216
+621216 FIRST SHOT TRIGGERED. # 27. Angler: 1530
+621224 Start shot 28: Time: 0 Pos:9988 
+	621655 Ball Off (3026). Shooter:1520 Angler:20 (err:0). Vel:
+621664 Start break: Time: 440 Pos:10126 
+  > 621664 BALL HIT. Angler at 1519 holding at 2. Err:21
+621744 Shoot Trigger False - shot end
+621744 Shooter State Set 2 shooterReload, Count:28, Sen:10151, Targ:10125, NextTarg:10485, T:621744
+   621873 Done hold to 1540 in 4860 ms. vel:0.000000. Sen:1522
+   621963 Done hold to 1540 in 4950 ms. vel:0.000000. Sen:1526
+622124 Reloaded to 10312. Targ: 10310
+622124 Shooter State Set 3 shooterHold, Count:28, Sen:10312, Targ:10125, NextTarg:10485, T:622124
+   624773 Done hold to 1540 in 7760 ms. vel:0.000000. Sen:1542
+   629353 Done hold to 1540 in 12340 ms. vel:0.000000. Sen:1546
+	629445 Ball Detected (970). Shooter:10336 Angler:1549 (err:-9). Vel:0.300000
+   633643 Done hold to 1540 in 16630 ms. vel:0.000000. Sen:1542
+   633813 Done hold to 1540 in 16800 ms. vel:0.000000. Sen:1541
+   637423 Done hold to 1540 in 20410 ms. vel:0.000000. Sen:1542
+644636 Shoot from back of field
+644636 Angler State Set 1 anglerMove. Targ:1275, Sen:1546, Time:644636, GoodCount:0
+644643 Angler State Set 2 anglerHold. Targ:1275, Sen:1546, Time:644643, GoodCount:0
+   645933 Done hold to 1275 in 1290 ms. vel:0.000000. Sen:1271
+645936 Done waiting for first point. Angler:1272
+645936 Shooter State Set 4 shooterShoot, Count:28, Sen:10336, Targ:10125, NextTarg:10485, T:645936
+645944 Start shot 29: Time: 0 Pos:10336 
+	646395 Ball Off (3090). Shooter:1263 Angler:12 (err:0). Vel:
+646404 Start break: Time: 460 Pos:10488 
+  > 646404 BALL HIT. Angler at 1274 holding at 7. Err:1
+646484 Shoot Trigger False - shot end
+646484 Shooter State Set 2 shooterReload, Count:29, Sen:10506, Targ:10485, NextTarg:10845, T:646484
+646486 Done waiting for first reload. Angler:1320
+646486 Angler State Set 1 anglerMove. Targ:1540, Sen:1320, Time:646486, GoodCount:0
+646573 Angler Break. Pos:1341, Vel:0.188889
+646583 Angler Break. Pos:1363, Vel:2.200000
+646593 Angler State Set 2 anglerHold. Targ:1540, Sen:1384, Time:646593, GoodCount:0
+646864 Reloaded to 10673. Targ: 10670
+646864 Shooter State Set 3 shooterHold, Count:29, Sen:10673, Targ:10485, NextTarg:10845, T:646864
+	648335 Ball Detected (1695). Shooter:10692 Angler:1480 (err:60). Vel:-0.100000
+   650443 Done hold to 1540 in 3850 ms. vel:0.000000. Sen:1520
+650446 Done waiting for second point. Angler:1519
+650446 Shooter State Set 4 shooterShoot, Count:29, Sen:10692, Targ:10485, NextTarg:10845, T:650446
+650454 Start shot 30: Time: 0 Pos:10692 
+650934 Start break: Time: 480 Pos:10846 
+  > 650934 BALL HIT. Angler at 1499 holding at 3. Err:41
+	650935 Ball Off (3088). Shooter:1503 Angler:37 (err:-1). Vel:
+651014 Shoot Trigger False - shot end
+651014 Shooter State Set 2 shooterReload, Count:30, Sen:10864, Targ:10845, NextTarg:11205, T:651014
+   651153 Done hold to 1540 in 4560 ms. vel:0.000000. Sen:1530
+651394 Reloaded to 11034. Targ: 11030
+651394 Shooter State Set 3 shooterHold, Count:30, Sen:11034, Targ:10845, NextTarg:11205, T:651394
+651396 Done double point and shoot from back. Angler:1535. Shooter:11034
+ 651396 Cycle usercontrol Took 6760 instead of 10

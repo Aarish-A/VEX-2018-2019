@@ -698,8 +698,8 @@ task shooterStateSet()
       	//}
       	LOG(shooter)("%d Start reset at -12 in reverse", nPgmTime);
         setShooter(-12);
-        float pos = -1;
-        float lstPos = -1;
+        float pos = SensorValue[shooterEnc];
+        float lstPos = 10;
         float vel = -1;
         unsigned long time = nPgmTime;
         unsigned long lstTime = 0;
@@ -709,14 +709,14 @@ task shooterStateSet()
           pos = SensorValue[shooterEnc];
           time = nPgmTime;
 
-          vel = (float)(pos-lstPos)/(float)(time-lstTime);
+          vel = (float)(pos-lstPos);///(float)(time-lstTime);
           LOG(shooter)("%d Pos:%d, PosLst:%d, Vel: %f", nPgmTime, pos, lstPos, vel);
           lstPos = pos;
           lstTime = time;
-          sleep(200);
-        } while(vel < -0.0001);
-        setShooter(0);
-        sleep(150);
+          sleep(300);
+        } while(vel < -1);
+        //setShooter(0);
+        //sleep(100);
         LOG(shooter)("%d Reset Shooter from %d. Vel:%d", nPgmTime, SensorValue[shooterEnc], vel);
         playTone(300, 50);
         SensorValue[shooterEnc] = 0;
@@ -724,7 +724,7 @@ task shooterStateSet()
         sleep(50);
 
         //if (SensorValue[anglerPoti] < ANGLER_AXEL_POS) setShooterState(shooterReload);
-        //else setShooterState(shooterIdle);
+        //setShooterState(shooterIdle);
         setShooterState(shooterReload);
         break;
       }
