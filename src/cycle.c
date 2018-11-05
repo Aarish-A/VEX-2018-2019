@@ -22,7 +22,7 @@ void endCycle(sCycleData& data)
 	else if (data.time > data.period)
 	{
 		//writeDebugStream(data.name);
-		writeDebugStreamLine(" %d Cycle Took %d instead of %d", nPgmTime, data.time, data.period);
+		writeDebugStreamLine(" %d Cycle %s Took %d instead of %d", nPgmTime, data.name, data.time, data.period);
 	}
 	data.startTime = nPgmTime;
 }

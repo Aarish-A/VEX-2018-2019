@@ -1,0 +1,95 @@
+2002 Startup Battery: 7564
+2003 Shooter State Set 5 shooterReset, Count:0, Sen:0, Targ:45, NextTarg:405, T:2003
+2003 Start Shooter State Machine Task
+2003 Shooter rest for 500ms in reset. ShotCount:0. Pos:0
+2504 Start reset at -12 in reverse
+2804 Pos:-11, PosLst:-1, Vel: -0.003566
+3004 Pos:-21, PosLst:-11, Vel: -0.050000
+3204 Pos:-33, PosLst:-21, Vel: -0.060000
+3404 Pos:-44, PosLst:-33, Vel: -0.055000
+3604 Pos:-54, PosLst:-44, Vel: -0.050000
+3804 Pos:-64, PosLst:-54, Vel: -0.050000
+4004 Pos:-75, PosLst:-64, Vel: -0.055000
+4204 Pos:-87, PosLst:-75, Vel: -0.060000
+4404 Pos:-99, PosLst:-87, Vel: -0.060000
+4604 Pos:-103, PosLst:-99, Vel: -0.020000
+4804 Pos:-103, PosLst:-103, Vel: 0.000000
+5154 Reset Shooter from -103. Vel:0
+5204 Shooter State Set 2 shooterReload, Count:0, Sen:0, Targ:45, NextTarg:405, T:5204
+ 5204 Cycle Took 3201 instead of 10
+5664 Reloaded to 233. Targ: 230
+5664 Shooter State Set 3 shooterHold, Count:0, Sen:233, Targ:45, NextTarg:405, T:5664
+ 5664 Cycle Took 460 instead of 10
+
+5673 Start UserControl
+8533 Angler State Set 3 anglerManual. Targ:330, Sen:1204, Time:8533, GoodCount:0
+8824 Angler State Set 2 anglerHold. Targ:1306, Sen:1306, Time:8824, GoodCount:0
+ 8824 Cycle Took 200 instead of 10
+   8954 Done hold to 1306 in 130 ms. vel:0.000000. Sen:1295
+9293 Drive State Set 1 driveManual, T:9293
+9553 Drive State Set 2 driveBreak, T:9553
+9563 Drive State Set 0 driveIdle, T:9563
+   9564 Done hold to 1306 in 740 ms. vel:0.000000. Sen:1298
+   9784 Done hold to 1306 in 960 ms. vel:0.000000. Sen:1291
+   9884 Done hold to 1306 in 1060 ms. vel:0.000000. Sen:1295
+10003 Drive State Set 1 driveManual, T:10003
+   10314 Done hold to 1306 in 1490 ms. vel:0.000000. Sen:1320
+   10594 Done hold to 1306 in 1770 ms. vel:0.000000. Sen:1288
+10793 Drive State Set 2 driveBreak, T:10793
+10803 Drive State Set 0 driveIdle, T:10803
+11123 Drive State Set 1 driveManual, T:11123
+   11195 Done hold to 1306 in 2371 ms. vel:0.000000. Sen:1285
+   11255 Done hold to 1306 in 2431 ms. vel:0.000000. Sen:1291
+11833 Drive State Set 2 driveBreak, T:11833
+11843 Drive State Set 0 driveIdle, T:11843
+   12195 Done hold to 1306 in 3371 ms. vel:0.000000. Sen:1290
+12733 Drive State Set 1 driveManual, T:12733
+   12905 Done hold to 1306 in 4081 ms. vel:0.000000. Sen:1282
+   13395 Done hold to 1306 in 4571 ms. vel:0.000000. Sen:1290
+   13535 Done hold to 1306 in 4711 ms. vel:0.000000. Sen:1289
+13613 Drive State Set 2 driveBreak, T:13613
+13623 Drive State Set 0 driveIdle, T:13623
+   14035 Done hold to 1306 in 5211 ms. vel:0.000000. Sen:1286
+14383 Drive State Set 1 driveManual, T:14383
+15373 Drive State Set 2 driveBreak, T:15373
+15383 Drive State Set 0 driveIdle, T:15383
+   15785 Done hold to 1306 in 6961 ms. vel:0.000000. Sen:1287
+17695 Drive State Set 1 driveManual, T:17695
+   17945 Done hold to 1306 in 9121 ms. vel:0.000000. Sen:1286
+   18045 Done hold to 1306 in 9221 ms. vel:0.000000. Sen:1286
+   18175 Done hold to 1306 in 9351 ms. vel:0.000000. Sen:1287
+18223 Drive State Set 2 driveBreak, T:18223
+18233 Drive State Set 0 driveIdle, T:18233
+   18325 Done hold to 1306 in 9501 ms. vel:0.000000. Sen:1288
+   18445 Done hold to 1306 in 9621 ms. vel:0.000000. Sen:1289
+   18585 Done hold to 1306 in 9761 ms. vel:0.000000. Sen:1287
+19135 Drive State Set 1 driveManual, T:19135
+   19395 Done hold to 1306 in 10571 ms. vel:0.000000. Sen:1287
+   19955 Done hold to 1306 in 11131 ms. vel:0.000000. Sen:1282
+20063 Drive State Set 2 driveBreak, T:20063
+20073 Drive State Set 0 driveIdle, T:20073
+   20115 Done hold to 1306 in 11291 ms. vel:0.000000. Sen:1286
+   20555 Done hold to 1306 in 11731 ms. vel:0.000000. Sen:1286
+58298 Shoot from front of platform
+58298 Angler State Set 1 anglerMove. Targ:1310, Sen:1300, Time:58298, GoodCount:0
+58305 Angler Break. Pos:1299, Vel:0.000000
+58315 Angler Break. Pos:1299, Vel:0.000000
+58325 Angler State Set 2 anglerHold. Targ:1310, Sen:1299, Time:58325, GoodCount:0
+ 58325 Cycle Took 20 instead of 10
+   58365 Done hold to 1310 in 40 ms. vel:0.000000. Sen:1300
+58368 Done waiting for point. Angler:1299
+58368 Shooter State Set 4 shooterShoot, Count:0, Sen:254, Targ:45, NextTarg:405, T:58368
+58374 Start shot 1: Time: 0 Pos:254 
+58614 Ball gone: Val:3095, Time: 240 Pos:328, Targ:405 
+58614 Shooter State Set 1 shooterBreak, Count:0, Sen:328, Targ:45, NextTarg:405, T:58614
+ 58614 Cycle Took 240 instead of 10
+58704 Shooter State Set 2 shooterReload, Count:0, Sen:326, Targ:45, NextTarg:405, T:58704
+ 58704 Cycle Took 90 instead of 10
+58704 Reloaded to 326. Targ: 230
+58704 Shooter State Set 3 shooterHold, Count:0, Sen:326, Targ:45, NextTarg:405, T:58704
+   96605 Done hold to 1310 in 38280 ms. vel:0.000000. Sen:1326
+   98455 Done hold to 1310 in 40130 ms. vel:0.000000. Sen:1286
+   98525 Done hold to 1310 in 40200 ms. vel:0.000000. Sen:1286
+   99095 Done hold to 1310 in 40770 ms. vel:0.000000. Sen:1290
+   99995 Done hold to 1310 in 41670 ms. vel:0.000000. Sen:1294
+   101215 Done hold to 1310 in 42890 ms. vel:0.000000. Sen:1293

@@ -17,8 +17,9 @@
 
 int nBatteryLevel;
 
-int driveLogs = 1;
+int driveLogs = 0;
 int intakeLogs = 1;
+
 int anglerLogs = 1;
 int shooterLogs = 1;
 int macroLogs = 1;
@@ -72,7 +73,7 @@ typedef enum _tTurnDir
 #define DRIVE_THROTTLE_DZ 15
 #define DRIVE_TURN_DZ 10
 
-int gDriveBreakPow = 12;
+int gDriveBreakPow = 11;
 int gDriveBreakWait = 500;
 
 void setDrive(word left, word right)
@@ -115,7 +116,7 @@ void setDriveState (tDriveState state)
 
       default: writeDebugStream("UNKNOWN STATE"); break;
     }
-    writeDebugStreamLine(", T:%d", gDriveStateTime);
+    writeDebugStreamLine(", turnDir: %d, T:%d", gDriveTurnDir, gDriveStateTime);
   }
   tRelease();
 }
@@ -149,6 +150,8 @@ task driveStateSet()
         }
         else turn = 0;
 
+        if ((nPgmTime-gDriveStateTime) < 200) gDriveTurnDir = turnNone; //For first 250ms of being in manual, turnDir reset to turnNone
+
         left = throttle + turn;
         right = throttle - turn;
 
@@ -156,14 +159,13 @@ task driveStateSet()
 
 				if (!(abs(vexRT[JOY_TURN]) > DRIVE_TURN_DZ) && !(abs(vexRT[JOY_THROTTLE]) > DRIVE_THROTTLE_DZ)) setDriveState(driveBreak);
 
-				if ((nPgmTime-gDriveStateTime) < 250) gDriveTurnDir = turnNone; //For first 250ms of being in manual, turnDir reset to turnNone
-
         break;
       }
       case driveBreak:
       {
       	gDriveBreakPow = abs(gDriveBreakPow);
       	gDriveBreakWait = abs(gDriveBreakWait);
+      	//LOG(drive)("%d In breaking. DriveBreakPow:%d. TurnDir:%d", nPgmTime, gDrivebreakPow, gDriveTurnDir);
 
       	if (gDriveTurnDir == turnCW) setDrive(-gDriveBreakPow, gDriveBreakPow);
       	else if (gDriveTurnDir == turnCCW) setDrive(gDriveBreakPow, -gDriveBreakPow);
@@ -252,7 +254,8 @@ task intakeStateSet()
       //  break;
 
     }
-    endCycle(intakeCycle);
+    //endCycle(intakeCycle);
+    sleep(10);
   }
 }
 
@@ -518,7 +521,8 @@ task anglerStateSet()
     //datalogDataGroupEnd();
     //tRelease();
 
-   	endCycle(anglerCycle);
+   	//endCycle(anglerCycle);
+    sleep(10);
   }
 }
 
@@ -725,7 +729,8 @@ task shooterStateSet()
         break;
       }
     }
-    endCycle(shooterCycle);
+    //endCycle(shooterCycle);
+    sleep(10);
   }
 }
 
@@ -806,12 +811,12 @@ void doubleShot(int posA, int posB, int acceptableRange, bool waitForFirstShot =
   if (waitForFirstShot)
   {
     while (gAnglerGoodCount < 5) sleep(10);
-    LOG(macro)("%d Done waiting for point. Angler:%d", nPgmTime, SensorValue[anglerPoti]);
+    LOG(macro)("%d Done waiting for first point. Angler:%d", nPgmTime, SensorValue[anglerPoti]);
   }
   setShooterState(shooterShoot);
 
   while (gShooterState != shooterReload) sleep(10); //Start moving angler immediately after first shot applies breaking
-
+	LOG(macro)("%d Done waiting for first reload. Angler:%d", nPgmTime, SensorValue[anglerPoti]);
   //Second shot
   gAnglerTarget = posB;
   gAnglerGoodCount = 0;
@@ -819,7 +824,7 @@ void doubleShot(int posA, int posB, int acceptableRange, bool waitForFirstShot =
   if (waitForSecShot)
   {
     while (gAnglerGoodCount < 5) sleep(10);
-    LOG(macro)("%d Done waiting for point. Angler:%d", nPgmTime, SensorValue[anglerPoti]);
+    LOG(macro)("%d Done waiting for second point. Angler:%d", nPgmTime, SensorValue[anglerPoti]);
   }
   setShooterState(shooterShoot);
 
