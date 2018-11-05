@@ -62,7 +62,6 @@ int gShooterShotCount = 0;
 #define SHOOTER_RELOAD_POS ((SHOOTER_SHOOT_POS) + 185)//165)
 
 /* Drive Controls */
-
 typedef enum _tTurnDir
 {
 	turnNone,
@@ -232,7 +231,7 @@ task intakeStateSet()
     {
       case intakeIdle:
       {
-        setIntake(0);
+        setIntake(15);
         break;
       }
       case intakeUp:
