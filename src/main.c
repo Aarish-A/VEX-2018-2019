@@ -707,7 +707,7 @@ task shooterStateSet()
           LOG(shooter)("%d Pos:%d, PosLst:%d, Vel: %f", nPgmTime, pos, lstPos, vel);
           lstPos = pos;
           lstTime = time;
-          sleep(300);
+          sleep(200);
         } while(vel < -0.0001);
         setShooter(0);
         sleep(150);
@@ -956,7 +956,7 @@ task handleLCD()
         displayLCDString(0, 1, "Battery: ");
         nBatteryLevel = nImmediateBatteryLevel;
         displayNextLCDNumber(nBatteryLevel, 4);
-        displayLCDChar(1, 0, '<');
+        //displayLCDChar(1, 0, '<');
 
         selected = false;
         //if (curLCDLeft && !lstLCDLeft) gLCDScreen = anglerTargetTuning;
@@ -1025,8 +1025,8 @@ task handleLCD()
       case anglerTargetTuning:
       {
         displayLCDCenteredString(0, "Angler Tuning");
-        displayLCDChar(1, 15, '>');
-        if (curLCDMiddle && !lstLCDMiddle) gLCDScreen = selectPosition;
+        //displayLCDChar(1, 15, '>');
+        if (LCD_M) gLCDScreen = selectPosition;
         //else if (curLCDRight && !lstLCDRight) gLCDScreen = batteryLevel;
         else if (LCD_L) gLCDScreen --;
         break;
