@@ -684,12 +684,13 @@ task shooterStateSet()
       }
       case shooterReset:
       {
-      	if (gShooterShotCount != 0) //Let it come to a rest if it enters the reset outside of startup
-      	{
-      		LOG(shooter)("%d Let shooter rest in reset. ShotCount:%d. Pos:%d", nPgmTime, gShooterShotCount, SensorValue[shooterEnc]);
+      	//if (gShooterShotCount != 0) //Let it come to a rest if it enters the reset outside of startup
+      	//{
+      		LOG(shooter)("%d Shooter rest for 500ms in reset. ShotCount:%d. Pos:%d", nPgmTime, gShooterShotCount, SensorValue[shooterEnc]);
       		setShooter(0);
       		sleep(500);
-      	}
+      	//}
+      	LOG(shooter)("%d Start reset at -12 in reverse", nPgmTime);
         setShooter(-12);
         float pos = -1;
         float lstPos = -1;
@@ -706,7 +707,7 @@ task shooterStateSet()
           LOG(shooter)("%d Pos:%d, PosLst:%d, Vel: %f", nPgmTime, pos, lstPos, vel);
           lstPos = pos;
           lstTime = time;
-          sleep(200);
+          sleep(300);
         } while(vel < -0.0001);
         setShooter(0);
         sleep(150);
