@@ -1347,8 +1347,15 @@ task usercontrol()
 
     if (shootBtn && !shootBtnLst)
     {
-      if (SensorValue[shooterEnc] < SHOOTER_RELOAD_POS) setShooterState(shooterReload);
-      else if (gShooterShotCount != 0 && SensorValue[shooterEnc] >= (SHOOTER_NEXT_SHOOT_POS-50)) shooterSafetySet(shooterReset);
+      if (SensorValue[shooterEnc] < SHOOTER_RELOAD_POS)
+      {
+      	setShooterState(shooterReload);
+      }
+      else if (gShooterShotCount != 0 && SensorValue[shooterEnc] >= (SHOOTER_NEXT_SHOOT_POS-50))
+      {
+      	writeDebugStreamLine("%d Shot count wrong. Reset", nPgmTime);
+      	shooterSafetySet(shooterReset);
+      }
       else if (BALL_DETECTED)
       {
         setShooterState(shooterShoot);
@@ -1366,21 +1373,24 @@ task usercontrol()
       lstShotTimer = 0;
       writeDebugStreamLine("%d SECOND SHOT TRIGGERED. # %d", nPgmTime, gShooterShotCount);
     }
-
+		//position tuning params: doubleShot(gAnglerFrontPFMidFlag, gAnglerFrontPFTopFlag, 20, true, true);
     if ((shootFrontPFBtn && !shootFrontPFBtnLst) && !(shootBtn && !shootBtnLst))
     {
       writeDebugStreamLine("%d Shoot from front of platform", nPgmTime);
-      doubleShot(gAnglerFrontPFMidFlag, gAnglerFrontPFTopFlag, 60, true, true);//false, false);
+      anglerShooter(gAnglerFrontPFMidFlag, gAnglerFrontPFTopFlag, 60, false, false, BTN_SHOOT_FRONT_PF);
+      //doubleShot(gAnglerFrontPFMidFlag, gAnglerFrontPFTopFlag, 60, false, false);
     }
     else if ((shootBackPFBtn && !shootBackPFBtnLst) && !(shootBtn && !shootBtnLst))
     {
       writeDebugStreamLine("%d Shoot from back of platform", nPgmTime);
-      doubleShot(gAnglerBackPFMidFlag, gAnglerBackPFTopFlag, 60, true, true);//false, false);
+      anglerShooter(gAnglerBackPFMidFlag, gAnglerBackPFTopFlag, 60, false, false, BTN_SHOOT_BACK_PF);
+      //doubleShot(gAnglerBackPFMidFlag, gAnglerBackPFTopFlag, 60, false, false);
     }
     else if ((shootBackBtn && !shootBackBtnLst) && !(shootBtn && !shootBtnLst))
     {
       writeDebugStreamLine("%d Shoot from back of field", nPgmTime);
-      doubleShot(gAnglerBackMidFlag, gAnglerBackTopFlag, 25, true, true);
+      anglerShooter(gAnglerBackMidFlag, gAnglerBackTopFlag, 25, true, true, BTN_SHOOT_BACK);
+      //doubleShot(gAnglerBackMidFlag, gAnglerBackTopFlag, 25, true, true);
     }
     else if (anglerPickupGroundBtn && !anglerPickupGroundBtnLst)
     {
