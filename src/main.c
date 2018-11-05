@@ -294,24 +294,24 @@ void intakeControls()
 #define ANGLER_CAP_PICKUP_POS 1530
 
 //Positions shooting from back
-//#define anglerBackTopFlag 1390//1320//1415
-//#define anglerBackMidFlag 1175//1100//1265//1165
+//#define gAnglerBackTopFlag 1390//1320//1415
+//#define gAnglerBackMidFlag 1175//1100//1265//1165
 //#define ANGLER_BACK_BOTTOM_FLAG 955
 
-int anglerBackTopFlag = 1390;
-int anglerBackMidFlag = 1175;
+int gAnglerBackTopFlag = 1390;
+int gAnglerBackMidFlag = 1175;
 
 //Positions shooting from back of front platform tile
-//#define anglerFrontPFTopFlag 1730//1415
-//#define anglerFrontPFMidFlag 1280//1265//1165
+//#define gAnglerFrontPFTopFlag 1730//1415
+//#define gAnglerFrontPFMidFlag 1280//1265//1165
 //#define ANGLER_FRONT_PF_BOTTOM_FLAG 955
 
-int anglerFrontPFTopFlag = 1730;
-int anglerFrontPFMidFlag = 1310;
+int gAnglerFrontPFTopFlag = 1730;
+int gAnglerFrontPFMidFlag = 1310;
 
 //Positions shooting from back of front platform tile
-int anglerBackPFTopFlag = 1410;
-int anglerBackPFMidFlag = 1160;
+int gAnglerBackPFTopFlag = 1410;
+int gAnglerBackPFMidFlag = 1160;
 
 int gAnglerPower = 0;
 void setAngler(word val)
@@ -431,7 +431,7 @@ task anglerStateSet()
         sen = SensorValue[anglerPoti];
 
         int error = gAnglerTarget - SensorValue[anglerPoti];
-        float pVal = error * kP;
+        pVal = error * kP;
 
         unsigned long deltaTime = time-timeLst;
         deltaSen = sen - senLst;
@@ -521,7 +521,6 @@ task anglerStateSet()
 
 /* Shooter Controls */
 #define BD_UNPLUGGED (SensorValue[ballDetector] >= 244 && SensorValue[ballDetector] <= 252)
-
 #define BALL_DETECTED (SensorValue[ballDetector] < 2000)// && (!BD_UNPLUGGED))
 
 typedef enum _tShooterState
@@ -1099,36 +1098,36 @@ task handleLCD()
               if (gCurLCDSelection.flag == 0)
               {
                 gCurLCDSelection.name = "Front Mid: ";
-                gCurLCDSelection.value = &anglerFrontPFMidFlag;
+                gCurLCDSelection.value = &gAnglerFrontPFMidFlag;
               }
               else if (gCurLCDSelection.flag == 1)
               {
                 gCurLCDSelection.name = "Front Top: ";
-                gCurLCDSelection.value = &anglerFrontPFTopFlag;
+                gCurLCDSelection.value = &gAnglerFrontPFTopFlag;
               }
               break;
             case 1:
               if (gCurLCDSelection.flag == 0)
               {
                 gCurLCDSelection.name = "Mid Mid ";
-                gCurLCDSelection.value = &anglerBackPFMidFlag;
+                gCurLCDSelection.value = &gAnglerBackPFMidFlag;
               }
               else if (gCurLCDSelection.flag == 1)
               {
                 gCurLCDSelection.name = "Mid Top ";
-                gCurLCDSelection.value = &anglerBackPFTopFlag;
+                gCurLCDSelection.value = &gAnglerBackPFTopFlag;
               }
               break;
             case 2:
               if (gCurLCDSelection.flag == 0)
               {
                 gCurLCDSelection.name = "Back Mid ";
-                gCurLCDSelection.value = &anglerBackMidFlag;
+                gCurLCDSelection.value = &gAnglerBackMidFlag;
               }
               else if (gCurLCDSelection.flag == 1)
               {
                 gCurLCDSelection.name = "Back Top ";
-                gCurLCDSelection.value = &anglerBackTopFlag;
+                gCurLCDSelection.value = &gAnglerBackTopFlag;
               }
               break;
         }
@@ -1145,7 +1144,7 @@ task handleLCD()
           else if (curLCDRight) adjust = 10;
 
           *gCurLCDSelection.value += adjust;
-          //writeDebugStreamLine("%d | %d", nPgmTime, anglerBackTopFlag);
+          //writeDebugStreamLine("%d | %d", nPgmTime, gAnglerBackTopFlag);
         }
         else if (curLCDMiddle && !lstLCDMiddle)
         {
@@ -1165,31 +1164,31 @@ task handleLCD()
 }
 
 //Declarations for ball log
-bool ballThere = false;
-bool ballThereLst = ballThere;
+bool gBallThere = false;
+bool gBallThereLst = gBallThere;
 
-float anglerSen = SensorValue[anglerPoti];
-float anglerSenLst = anglerSen;
-unsigned long time = nPgmTime;
-unsigned long timeLst = time;
-float anglerVel;
+float gAnglerSen = SensorValue[anglerPoti];
+float gAnglerSenLst = gAnglerSen;
+unsigned long gBallTime = nPgmTime;
+unsigned long gBallTimeLst = gBallTime;
+//float anglerVel;
 
 void ballTrackLog()
 {
-  ballThere = BALL_DETECTED;
-  anglerSen = SensorValue[anglerPoti];
-  time = nPgmTime;
+  gBallThere = BALL_DETECTED;
+  gAnglerSen = SensorValue[anglerPoti];
+  gBallTime = nPgmTime;
 
   float anglerVel;
-  if ((time-timeLst) > 0)
-    anglerVel = ( (float)(anglerSen-anglerSenLst) / (float)(time-timeLst) );
+  if ((gBallTime-gBallTimeLst) > 0)
+    anglerVel = ( (float)(gAnglerSen-gAnglerSenLst) / (float)(gBallTime-gBallTimeLst) );
   else anglerVel = 0;
-  if (ballThere && !ballThereLst) writeDebugStreamLine("	%d Ball Detected (%d). Shooter:%d Angler:%d (err:%d). Vel:%f", nPgmTime, SensorValue[ballDetector], SensorValue[shooterEnc], SensorValue[anglerPoti], (gAnglerTarget-SensorValue[anglerPoti]), anglerVel);
-  else if (!ballThere && ballThereLst) writeDebugStreamLine("	%d Ball Off (%d). Shooter:%d Angler:%d (err:%d). Vel:%f", nPgmTime, SensorValue[ballDetector], SensorValue[anglerPoti], (gAnglerTarget-SensorValue[anglerPoti]), anglerVel);
+  if (gBallThere && !gBallThereLst) writeDebugStreamLine("	%d Ball Detected (%d). Shooter:%d Angler:%d (err:%d). Vel:%f", nPgmTime, SensorValue[ballDetector], SensorValue[shooterEnc], SensorValue[anglerPoti], (gAnglerTarget-SensorValue[anglerPoti]), anglerVel);
+  else if (!gBallThere && gBallThereLst) writeDebugStreamLine("	%d Ball Off (%d). Shooter:%d Angler:%d (err:%d). Vel:%f", nPgmTime, SensorValue[ballDetector], SensorValue[anglerPoti], (gAnglerTarget-SensorValue[anglerPoti]), anglerVel);
 
-  ballThereLst = ballThere;
-  anglerSenLst = anglerSen;
-  timeLst = time;
+  gBallThereLst = gBallThere;
+  gAnglerSenLst = gAnglerSen;
+  gBallTimeLst = gBallTime;
 }
 
 task monitorVals()
@@ -1360,17 +1359,17 @@ task usercontrol()
     if ((shootFrontPFBtn && !shootFrontPFBtnLst) && !(shootBtn && !shootBtnLst))
     {
       writeDebugStreamLine("%d Shoot from front of platform", nPgmTime);
-      doubleShot(anglerFrontPFMidFlag, anglerFrontPFTopFlag, 60, false, false);
+      doubleShot(gAnglerFrontPFMidFlag, gAnglerFrontPFTopFlag, 60, false, false);
     }
     else if ((shootBackPFBtn && !shootBackPFBtnLst) && !(shootBtn && !shootBtnLst))
     {
       writeDebugStreamLine("%d Shoot from back of platform", nPgmTime);
-      doubleShot(anglerBackPFMidFlag, anglerBackPFTopFlag, 60, false, false);
+      doubleShot(gAnglerBackPFMidFlag, gAnglerBackPFTopFlag, 60, false, false);
     }
     else if ((shootBackBtn && !shootBackBtnLst) && !(shootBtn && !shootBtnLst))
     {
       writeDebugStreamLine("%d Shoot from back of field", nPgmTime);
-      doubleShot(anglerBackMidFlag, anglerBackTopFlag, 25, true, true);
+      doubleShot(gAnglerBackMidFlag, gAnglerBackTopFlag, 25, true, true);
     }
     else if (anglerPickupGroundBtn && !anglerPickupGroundBtnLst)
     {
