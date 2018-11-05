@@ -55,7 +55,7 @@ void tRelease()
 
 /* Shooter Positions */
 int gShooterShotCount = 0;
-#define RESET_OFFSET 45 //35
+#define RESET_OFFSET 45 //40
 #define SHOOTER_GEAR_RATIO 1.0
 #define SHOOTER_RELOAD_HOLD 11
 #define SHOOTER_SHOOT_POS ((gShooterShotCount*360.0*SHOOTER_GEAR_RATIO) + RESET_OFFSET)
@@ -289,6 +289,8 @@ void intakeControls()
 #define ANGLER_HORIZONTAL_POS 1165
 #define ANGLER_TOP_POS 3866
 
+#define ANGLER_TOP_LIM_POS (ANGLER_TOP_POS-1000)
+
 #define ANGLER_AXEL_POS (ANGLER_TOP_POS-1900)
 
 #define ANGLER_GROUND_PICKUP_POS 900//940
@@ -300,20 +302,20 @@ void intakeControls()
 //#define gAnglerBackMidFlag 1175//1100//1265//1165
 //#define ANGLER_BACK_BOTTOM_FLAG 955
 
-int gAnglerBackTopFlag = 1390;
-int gAnglerBackMidFlag = 1175;
+int gAnglerBackTopFlag = 1490;//1390;
+int gAnglerBackMidFlag = 1270;//1175;
 
 //Positions shooting from back of front platform tile
 //#define gAnglerFrontPFTopFlag 1730//1415
 //#define gAnglerFrontPFMidFlag 1280//1265//1165
 //#define ANGLER_FRONT_PF_BOTTOM_FLAG 955
 
-int gAnglerFrontPFTopFlag = 1730;
-int gAnglerFrontPFMidFlag = 1310;
+int gAnglerFrontPFTopFlag = 1770;//1730;
+int gAnglerFrontPFMidFlag = 1360;//1310;
 
 //Positions shooting from back of front platform tile
-int gAnglerBackPFTopFlag = 1410;
-int gAnglerBackPFMidFlag = 1160;
+int gAnglerBackPFTopFlag = 1510;//1410;
+int gAnglerBackPFMidFlag = 1220;//1160;
 
 int gAnglerPower = 0;
 void setAngler(word val)
@@ -489,7 +491,7 @@ task anglerStateSet()
       {
         if (abs(vexRT[JOY_ANGLER]) > 10)
         {
-          if (vexRT[JOY_ANGLER] > 0 && SensorValue[anglerPoti] < (ANGLER_TOP_POS - 100))
+          if (vexRT[JOY_ANGLER] > 0 && SensorValue[anglerPoti] < (ANGLER_TOP_LIM_POS - 100))
           {
             if (SensorValue[anglerPoti] > ANGLER_AXEL_POS && SensorValue[shooterEnc] > (SHOOTER_RELOAD_POS-10)) goto AnglerHoldTrigger;
             setAngler(vexRT[JOY_ANGLER]);
