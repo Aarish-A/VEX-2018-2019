@@ -547,7 +547,8 @@ void setShooter(word val)
   motor[shooter] = motor[shooterY] = LIM_TO_VAL(val, 127);
 }
 tShooterState gShooterState = shooterIdle;
-tShooterState gShooterStateLst;
+tShooterState gShooterStateLst = gShooterState;
+tShooterState gShooterStateLstLst = gShooterStateLst;
 unsigned long gShooterStateTime; //Stores the time the shooter state is changed
 int gShooterStateSen;
 bool gShooterKilled = false;
@@ -559,6 +560,7 @@ void setShooterState (tShooterState state)
   tHog();
   if (state != gShooterState)
   {
+  	gShooterStateLstLst = gShooterStateLst;
     gShooterStateLst = gShooterState;
     gShooterState = state;
 
@@ -785,7 +787,7 @@ void shooterSafety()
     else if (gShooterState == shooterShoot)
     {
       if (stateElpsdTime > 950) killShooter();//shooterSafetySet(shooterBreak);
-      else if (stateElpsdTime > 150 && senChange < 10) killShooter();
+      else if (stateElpsdTime > 150 && senChange < 10 && (gShooterStateLst != shooterBreak && gShooterStateLstLst != shooterBreak)) killShooter();
     }
   }
   tRelease();
