@@ -484,14 +484,14 @@ task anglerStateSet()
       }
       case anglerManual:
       {
-        if (abs(vexRT[Ch2]) > 10)
+        if (abs(vexRT[JOY_ANGLER]) > 10)
         {
-          if (vexRT[Ch2] > 0 && SensorValue[anglerPoti] < (ANGLER_TOP_POS - 100))
+          if (vexRT[JOY_ANGLER] > 0 && SensorValue[anglerPoti] < (ANGLER_TOP_POS - 100))
           {
             if (SensorValue[anglerPoti] > ANGLER_AXEL_POS && SensorValue[shooterEnc] > (SHOOTER_RELOAD_POS-10)) goto AnglerHoldTrigger;
-            setAngler(vexRT[Ch2]);
+            setAngler(vexRT[JOY_ANGLER]);
           }
-          else if (vexRT[Ch2] < 0 && SensorValue[anglerPoti] > (ANGLER_BOTTOM_POS + 100)) setAngler(vexRT[Ch2]);
+          else if (vexRT[JOY_ANGLER] < 0 && SensorValue[anglerPoti] > (ANGLER_BOTTOM_POS + 100)) setAngler(vexRT[JOY_ANGLER]);
           else goto AnglerHoldTrigger;
         }
         else
@@ -734,7 +734,7 @@ void shooterSafetySet(tShooterState state)
   //tHog();
   unsigned long stateElpsdTime = (nPgmTime-gShooterStateTime);
   int senChange = SensorValue[shooterEnc]-gShooterStateSen;
-  writeDebugStreamLine("  %d Shooter State (%d) Safety. TO: %d SenChange: %d", nPgmTime, gShooterState, stateElpsdTime, senChange);
+  writeDebugStreamLine(">>	  %d Shooter State %d Safety. TO: %d SenChange: %d", nPgmTime, gShooterState, stateElpsdTime, senChange);
   stopTask(shooterStateSet);
   startTask(shooterStateSet);
   setShooterState(state);
@@ -751,7 +751,7 @@ void killShooter()
       gShooterKilled = true;
       stopTask(shooterStateSet);
       setShooter(0);
-      writeDebugStreamLine("  %d KILL SHOOTER SAFETY state %d Safety TO: %d SenChange: %d, Sen:%d", nPgmTime, gShooterState, stateElpsdTime, senChange, SensorValue[shooterEnc]);
+      writeDebugStreamLine(">>>	 %d KILL SHOOTER SAFETY state %d Safety TO: %d SenChange: %d, Sen:%d", nPgmTime, gShooterState, stateElpsdTime, senChange, SensorValue[shooterEnc]);
       //writeDebugStreamLine("  %d KILL SHOOTER TASK - Shooter Enc Not Plugged In. State: %d", nPgmTime, gShooterState);
       //tRelease();
   }
@@ -1388,7 +1388,7 @@ task usercontrol()
       writeDebugStreamLine("%d Angler to pickup low platform position", nPgmTime);
       anglerMoveToPos(ANGLER_LOW_PF_PICKUP_POS, 150);
     }
-    else if (abs(vexRT[Ch2]) > 10)
+    else if (abs(vexRT[JOY_ANGLER]) > 10)
     {
       setAnglerState(anglerManual);
     }
