@@ -3,42 +3,24 @@ void setupMotors()
 {
 	// Clear both motor arrays
 	for (ubyte i = 0; i < kNumbOfTotalMotors; ++i) {
-		gMotor[i].power = gMotor[i].curPower = motor[i] = 0;
+		gMotor[i].powerCur = motor[i] = 0;
 		gMotor[i].powerScale = -1;
-#ifdef MOTOR_SENSOR_LOGS
-		gMotor[i].datalog = -1;
-#endif
 	}
 
-#ifdef MOTOR_SENSOR_LOGS
-	_motorDoDatalog = false;
-#endif
 }
 
-void updateMotors()
+void setMotor(tMotor mot, word power)
 {
-#ifdef MOTOR_SENSOR_LOGS
-	tHog();
-	datalogDataGroupStart();
-	_motorDoDatalog = true;
-#endif
-	for (ubyte i = 0; i < kNumbOfTotalMotors; ++i)
-		updateMotor(i);
-#ifdef MOTOR_SENSOR_LOGS
-	_motorDoDatalog = false;
-	datalogDataGroupEnd();
-	tRelease();
-#endif
-}
-
-void updateMotor(tMotor mot)
-{
-	if (gMotor[mot].power != gMotor[mot].curPower)
+	LIM_TO_VAL_SET(power, 127);
+	if (power != gMotor[mot].powerCur)
 	{
-		motor[mot] = gMotor[mot].curPower = gMotor[mot].powerScale >= 0 ? round(gMotor[mot].power * gMotor[mot].powerScale) : gMotor[mot].power;
-	#ifdef MOTOR_SENSOR_LOGS
-		if (_motorDoDatalog && gMotor[mot].datalog != -1)
-			datalogAddValue(gMotor[mot].datalog, gMotor[mot].curPower);
-	#endif
+		//writeDebugStreamLine("%d Set Motor %d", nPgmTime, power);
+		motor[mot] = gMotor[mot].powerCur = gMotor[mot].powerScale >= 0 ? round(power * gMotor[mot].powerScale) : power;
 	}
+}
+
+void killAllMotors()
+{
+	for (ubyte i = 0; i < kNumbOfTotalMotors; ++i)
+		setMotor(i, 0);
 }

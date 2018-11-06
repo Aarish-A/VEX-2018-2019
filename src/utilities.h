@@ -28,7 +28,7 @@
 
 #define REINTERPRET(var, type) (*(type *)&var)
 
-#define STOP_TASK_NOT_CUR(t) if (t != nCurrentTask) stopTask(t)
+//#define STOP_TASK_NOT_CUR(t) if (t != nCurrentTask) stopTask(t)
 
 /* Functions */
 float fmod(float x, float y); // Floating point mod operation
@@ -36,6 +36,8 @@ float degToRad(float degrees); // Convert degrees to radians
 float radToDeg(float radians); // Convert radians to degrees
 float nearAngle(float angle, float reference); // Get an equivalent angle close to reference
 float simplifyAngle(float angle); //Return angle from -180 to 180
-void stopAllButCurrentTasks();
-void startTaskID(word id); // Start a task using a given ID
-void stopTaskID(word id); // Stop a task using a given ID
+
+
+//void stopAllButCurrentTasks();
+//void startTaskID(word id); // Start a task using a given ID
+//void stopTaskID(word id); // Stop a task using a given ID

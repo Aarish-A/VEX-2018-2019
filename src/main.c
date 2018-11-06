@@ -40,15 +40,15 @@ void tRelease()
     releaseCPU();
 }
 
-#define LIM_TO_VAL(input, val) (abs(input) > (val) ? (val) * sgn(input) : (input))
-
 // Year-independent libraries (headers)
-//#include "utilities.h"
+#include "utilities.h"
 #include "cycle.h"
+#include "motors.h"
 
 // Year-independent libraries (source)
 //#include "utilities.c"
 #include "cycle.c"
+#include "motors.c"
 
 // Other includes
 #include "Vex_Competition_Includes_Custom.c"
@@ -81,8 +81,10 @@ int gDriveBreakWait = 500;
 
 void setDrive(word left, word right)
 {
-  motor[driveL] = motor[driveLY] = LIM_TO_VAL(left, 127);
-  motor[driveR] = motor[driveRY] = LIM_TO_VAL(right, 127);
+	setMotor(driveL, left);
+	setMotor(driveLY, left);
+	setMotor(driveR, right);
+	setMotor(driveRY, right);
 }
 
 typedef enum _tDriveState
@@ -185,7 +187,7 @@ task driveStateSet()
 /* Intake Controls */
 void setIntake(word power)
 {
-  motor[intake] = LIM_TO_VAL(power, 127);
+  setMotor(intake, power);
 }
 
 typedef enum _tIntakeState
@@ -249,13 +251,6 @@ task intakeStateSet()
         setIntake(-127);
         break;
       }
-      //case intakeSlowUp:
-      //  motor[intake] = 15;
-      //  break;
-      //case intakeSlowDown:
-      //  motor[intake] = -15;
-      //  break;
-
     }
     //endCycle(intakeCycle);
     sleep(10);
@@ -323,8 +318,7 @@ int gAnglerBackPFMidFlag = 1220;//1160;
 int gAnglerPower = 0;
 void setAngler(word val)
 {
-  gAnglerPower = LIM_TO_VAL(val, 127);
-  motor[angler] = LIM_TO_VAL(val, 127);
+  setMotor(angler, val);
 }
 
 typedef enum _tAnglerState
@@ -547,7 +541,8 @@ typedef enum _tShooterState
 
 void setShooter(word val)
 {
-  motor[shooter] = motor[shooterY] = LIM_TO_VAL(val, 127);
+  setMotor(shooter, val);
+  setMotor(shooterY, val);
 }
 tShooterState gShooterState = shooterIdle;
 tShooterState gShooterStateLst = gShooterState;
@@ -683,7 +678,7 @@ task shooterStateSet()
             if (ballThere && !BALL_DETECTED)
             {
               ballThere = false;
-              LOG(shooter)("  > %d BALL HIT. Angler at %d holding at %d. Err:%d", nPgmTime, SensorValue[anglerPoti], motor[angler], (gAnglerTarget-SensorValue[anglerPoti]));
+              LOG(shooter)("  > %d BALL HIT. Angler at %d holding at %d. Err:%d", nPgmTime, SensorValue[anglerPoti], gMotor[angler].powerCur, (gAnglerTarget-SensorValue[anglerPoti]));
             }
             sleep(10);
           }
@@ -1025,6 +1020,7 @@ void startup()
 {
   clearDebugStream();
   datalogClear();
+  setupMotors();
 
   gBatteryLevel = nImmediateBatteryLevel;
   gBackupBatteryLevel = BackupBatteryLevel;
