@@ -295,18 +295,8 @@ void intakeControls()
 #define ANGLER_LOW_PF_PICKUP_POS 1470
 #define ANGLER_CAP_PICKUP_POS 1530
 
-//Positions shooting from back
-//#define gAnglerBackTopFlag 1390//1320//1415
-//#define gAnglerBackMidFlag 1175//1100//1265//1165
-//#define ANGLER_BACK_BOTTOM_FLAG 955
-
 int gAnglerBackTopFlag = 1490;//1390;
 int gAnglerBackMidFlag = 1270;//1175;
-
-//Positions shooting from back of front platform tile
-//#define gAnglerFrontPFTopFlag 1730//1415
-//#define gAnglerFrontPFMidFlag 1280//1265//1165
-//#define ANGLER_FRONT_PF_BOTTOM_FLAG 955
 
 int gAnglerFrontPFTopFlag = 1770;//1730;
 int gAnglerFrontPFMidFlag = 1360;//1310;
@@ -1117,11 +1107,8 @@ task usercontrol()
         setShooterState(shooterShoot);
         lstShotTimer = nPgmTime;
         writeDebugStreamLine("%d FIRST SHOT TRIGGERED. # %d. Angler: %d", nPgmTime, gShooterShotCount, SensorValue[anglerPoti]);
-        //if ((nPgmTime-secondShotTimer) > 900) secondShotTimer = nPgmTime;
-        //else secondShotTimer = 0;
       }
     }
-
     if (!shootBtn) lstShotTimer = 0;
     else if (shootBtn && gShooterState == shooterHold && (lstShotTimer != 0 && (nPgmTime-lstShotTimer) < 900))
     {
@@ -1129,24 +1116,20 @@ task usercontrol()
       lstShotTimer = 0;
       writeDebugStreamLine("%d SECOND SHOT TRIGGERED. # %d", nPgmTime, gShooterShotCount);
     }
-		//position tuning params: doubleShot(gAnglerFrontPFMidFlag, gAnglerFrontPFTopFlag, 20, true, true);
     if ((shootFrontPFBtn && !shootFrontPFBtnLst) && !(shootBtn && !shootBtnLst))
     {
       writeDebugStreamLine("%d Shoot from front of platform", nPgmTime);
       anglerShooter(gAnglerFrontPFMidFlag, gAnglerFrontPFTopFlag, 60, false, false, BTN_SHOOT_FRONT_PF, vexRT[BTN_SHIFT_SHOT]);
-      //doubleShot(gAnglerFrontPFMidFlag, gAnglerFrontPFTopFlag, 60, false, false);
     }
     else if ((shootBackPFBtn && !shootBackPFBtnLst) && !(shootBtn && !shootBtnLst))
     {
       writeDebugStreamLine("%d Shoot from back of platform", nPgmTime);
       anglerShooter(gAnglerBackPFMidFlag, gAnglerBackPFTopFlag, 60, false, false, BTN_SHOOT_BACK_PF, vexRT[BTN_SHIFT_SHOT]);
-      //doubleShot(gAnglerBackPFMidFlag, gAnglerBackPFTopFlag, 60, false, false);
     }
     else if ((shootBackBtn && !shootBackBtnLst) && !(shootBtn && !shootBtnLst))
     {
       writeDebugStreamLine("%d Shoot from back of field", nPgmTime);
       anglerShooter(gAnglerBackMidFlag, gAnglerBackTopFlag, 25, true, true, BTN_SHOOT_BACK, vexRT[BTN_SHIFT_SHOT]);
-      //doubleShot(gAnglerBackMidFlag, gAnglerBackTopFlag, 25, true, true);
     }
     else if (anglerPickupGroundBtn && !anglerPickupGroundBtnLst)
     {
