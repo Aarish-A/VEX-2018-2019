@@ -23,8 +23,8 @@
 #define JOY_DECAPPER Ch1
 
 /* Decapper Defines */
-#define DECAPPER_BOTTOM_POS 100
-#define DECAPPER_TOP_POS 900
+#define DECAPPER_BOTTOM_POS 100  //Replace with the actual value you measure
+#define DECAPPER_TOP_POS 900 //Replace with the actual value you measure
 
 #define DECAPPER_DZ 10
 
@@ -47,6 +47,8 @@ task main()
 		else power = 0;
 
 		setDecapper(power);
+
+		sleep(10);
 	}
 
 }
