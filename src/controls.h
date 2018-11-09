@@ -26,3 +26,26 @@
 #define BTN_SHOOT_BACK Btn7D
 #define BTN_SHIFT_SHOT Btn5D
 	//Cap Flip
+
+void enableUsedJoysticks()
+{
+	enableJoystick(JOY_THROTTLE, 10);
+	enableJoystick(JOY_TURN, 10);
+
+	enableJoystick(BTN_SHOOT);
+	enableJoystick(BTN_INTAKE_UP);
+	enableJoystick(BTN_INTAKE_DOWN);
+
+	enableJoystick(JOY_ANGLER, 10);
+
+	enableJoystick(BTN_ANGLER_GROUND_PICKUP);
+	enableJoystick(BTN_ANGLER_CAP_PICKUP);
+	enableJoystick(BTN_ANGLER_LOW_PF_PICKUP);
+
+	enableJoystick(JOY_DECAPPER, 10);
+
+	enableJoystick(BTN_SHOOT_FRONT_PF);
+	enableJoystick(BTN_SHOOT_BACK_PF);
+	enableJoystick(BTN_SHOOT_BACK);
+	enableJoystick(BTN_SHIFT_SHOT);
+}

@@ -12,8 +12,8 @@ typedef struct _sJoy
 void setupJoysticks(); // Initilize all the joysticks
 void updateJoysticks(); // Update the enabled joysticks
 void updateJoystick(TVexJoysticks joy); // Update a joystick
-void enableJoystick(TVexJoysticks joy); // Set a joystick to be enabled
-void mirrorJoystick(TVexJoysticks joy, TVexJoysticks mirror); // set a joystick to be mirrored
+void enableJoystick(TVexJoysticks joy, short deadzone = -1); // Set a joystick to be enabled & set deadzone
+void mirrorJoystick(TVexJoysticks joy, TVexJoysticks mirror); // Set a joystick to be mirrored
 
 /* Variables */
 sJoy gJoy[kNumbOfVexRFIndices]; // The global joystick array

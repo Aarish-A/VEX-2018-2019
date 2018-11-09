@@ -44,11 +44,13 @@ void tRelease()
 #include "utilities.h"
 #include "cycle.h"
 #include "motors.h"
+#include "joysticks.h"
 
 // Year-independent libraries (source)
 //#include "utilities.c"
 #include "cycle.c"
 #include "motors.c"
+#include "joysticks.c"
 
 // Other includes
 #include "Vex_Competition_Includes_Custom.c"
@@ -957,6 +959,8 @@ task monitorVals()
     datalogAddValue(5, SensorValue[ballDetector]);
     datalogDataGroupEnd();
 
+    updateJoysticks();
+
     tRelease();
 
 		sleep(10);
@@ -1018,8 +1022,11 @@ void startup()
 
   SensorValue[shooterEnc] = 0;
 
-  startTasks();
   //Setup Joysticks & Buttons
+  setupJoysticks();
+  enableUsedJoysticks();
+
+  startTasks();
 }
 
 void disabled()
