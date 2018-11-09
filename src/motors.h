@@ -2,7 +2,7 @@
 typedef struct _sMotor
 {
 	word powerCur;
-	float powerScale;
+	//float powerScale;
 } sMotor; // Represent a single motor
 
 /* Functions */

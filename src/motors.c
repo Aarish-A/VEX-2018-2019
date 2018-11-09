@@ -2,9 +2,10 @@
 void setupMotors()
 {
 	// Clear both motor arrays
-	for (ubyte i = 0; i < kNumbOfTotalMotors; ++i) {
+	for (ubyte i = 0; i < kNumbOfTotalMotors; ++i)
+	{
 		gMotor[i].powerCur = motor[i] = 0;
-		gMotor[i].powerScale = -1;
+		//gMotor[i].powerScale = -1;
 	}
 
 }
@@ -15,7 +16,8 @@ void setMotor(tMotor mot, word power)
 	if (power != gMotor[mot].powerCur)
 	{
 		//writeDebugStreamLine("%d Set Motor %d", nPgmTime, power);
-		motor[mot] = gMotor[mot].powerCur = gMotor[mot].powerScale >= 0 ? round(power * gMotor[mot].powerScale) : power;
+		motor[mot] = gMotor[mot].powerCur = power;
+			//gMotor[mot].powerScale >= 0 ? round(power * gMotor[mot].powerScale) : power;
 	}
 }
 
