@@ -16,6 +16,8 @@
 #define BTN_ANGLER_CAP_PICKUP Btn8R
 #define BTN_ANGLER_LOW_PF_PICKUP Btn8U
 
+/* Decapper Controls */
+#define JOY_DECAPPER Ch1
 
 /* Macros */
 	//Double Shot
