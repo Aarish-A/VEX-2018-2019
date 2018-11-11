@@ -1,6 +1,6 @@
 /* Drive */
-#define JOY_THROTTLE Ch3
-#define JOY_TURN Ch4
+#define JOY_DRIVE_THROTTLE Ch3
+#define JOY_DRIVE_TURN Ch4
 
 /* Shooter Controls */
 #define BTN_SHOOT Btn5U
@@ -23,7 +23,9 @@
 /* Macros */
 	//Double Shot
 #define BTN_SHOOT_FRONT_PF Btn7U
+#define BTN_SHOOT_MID_PF Btn7L
 #define BTN_SHOOT_BACK_PF Btn7R
 #define BTN_SHOOT_BACK Btn7D
-#define BTN_SHIFT_SHOT Btn5D
+
+#define BTN_SHIFT Btn5D
 	//Cap Flip

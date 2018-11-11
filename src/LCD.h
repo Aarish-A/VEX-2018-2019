@@ -5,6 +5,8 @@ typedef enum _tLCDScreen
   batteryLevel,
   turnBreakPow,
   turnBreakWait,
+  turnCurveColour,
+  turnCurveAdjust,
   sensorView,
   shootTuneMode,
 
@@ -16,6 +18,8 @@ typedef enum _tLCDScreen
 } tLCDScreen;
 
 tLCDScreen gLCDScreen = shootTuneMode;
+
+const int kPosNum = 4;
 
 typedef struct _sCurLCDSelection
 {

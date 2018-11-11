@@ -3,7 +3,7 @@ task handleLCD()
   bool curLCDLeft, lstLCDLeft;
   bool curLCDMiddle, lstLCDMiddle;
   bool curLCDRight, lstLCDRight;
-  int pointer = 2;
+  int pointer = 0;
 
   bool selected = false;
 
@@ -138,11 +138,16 @@ task handleLCD()
       case selectPosition:
       {
         // Display
-        displayLCDCenteredString(0, "Front Mid Back");
-        if (pointer == 0) displayLCDChar(1, 0, '<');
-        else if (pointer == 1) displayLCDChar(1, 3, '^');
-        else if (pointer == 2) displayLCDChar(1, 8, '^');
-        else if (pointer == 3) displayLCDChar(1, 12, '^');
+        displayLCDCenteredString(0, "F_PF M_PF B_PF B");
+
+        switch(pointer)
+        {
+        	case 0: displayLCDChar(1, 0, '<'); break;
+        	case 1: displayLCDChar(1, 1, '^'); break;
+        	case 2: displayLCDChar(1, 6, '^'); break;
+        	case 3: displayLCDChar(1, 11, '^'); break;
+        	case 4: displayLCDChar(1, 15, '^'); break;
+        }
 
         // Controls
         if (curLCDLeft && !lstLCDLeft)
@@ -152,13 +157,16 @@ task handleLCD()
         }
         else if (curLCDRight && !lstLCDRight)
         {
-          if (pointer < 3) pointer++;
+          if (pointer < kPosNum) pointer++;
         }
         else if (curLCDMiddle && !lstLCDMiddle)
         {
-          if (pointer == 1) gCurLCDSelection.position = 0;
-          else if (pointer == 2) gCurLCDSelection.position = 1;
-          else if (pointer == 3) gCurLCDSelection.position = 2;
+          //if (pointer == 1) gCurLCDSelection.position = 0;
+          //else if (pointer == 2) gCurLCDSelection.position = 1;
+          //else if (pointer == 3) gCurLCDSelection.position = 2;
+          //else if (pointer == 4) gCurLCDSelection.position = 3;
+
+        	gCurLCDSelection.position = pointer;
 
           if (pointer == 0) gLCDScreen = anglerTargetTuning;
           else gLCDScreen = selectFlag;
@@ -172,7 +180,7 @@ task handleLCD()
         if (pointer == 0) displayLCDChar(1, 0, '<');
         else if (pointer == 1) displayLCDChar(1, 4, '^');
         else if (pointer == 2) displayLCDChar(1, 11, '^');
-        else if (pointer == 3) pointer = 2;
+        else pointer = 2;
 
         // Controls
         if (curLCDLeft && !lstLCDLeft)
@@ -199,31 +207,43 @@ task handleLCD()
         // Set current flag
         switch(gCurLCDSelection.position)
         {
-            case 0:
+            case 1:
               if (gCurLCDSelection.flag == 0)
               {
-                gCurLCDSelection.name = "Front Mid: ";
+                gCurLCDSelection.name = "F_PF Mid: ";
                 gCurLCDSelection.value = &gAnglerFrontPFMidFlag;
               }
               else if (gCurLCDSelection.flag == 1)
               {
-                gCurLCDSelection.name = "Front Top: ";
+                gCurLCDSelection.name = "F_PF Top: ";
                 gCurLCDSelection.value = &gAnglerFrontPFTopFlag;
               }
               break;
-            case 1:
+            case 2:
               if (gCurLCDSelection.flag == 0)
               {
-                gCurLCDSelection.name = "Mid Mid ";
+                gCurLCDSelection.name = "M_PF Mid ";
+                gCurLCDSelection.value = &gAnglerMidPFMidFlag;
+              }
+              else if (gCurLCDSelection.flag == 1)
+              {
+                gCurLCDSelection.name = "M_PF Top ";
+                gCurLCDSelection.value = &gAnglerMidPFTopFlag;
+              }
+              break;
+             case 3:
+              if (gCurLCDSelection.flag == 0)
+              {
+                gCurLCDSelection.name = "B_PF Mid ";
                 gCurLCDSelection.value = &gAnglerBackPFMidFlag;
               }
               else if (gCurLCDSelection.flag == 1)
               {
-                gCurLCDSelection.name = "Mid Top ";
+                gCurLCDSelection.name = "B_PF Top ";
                 gCurLCDSelection.value = &gAnglerBackPFTopFlag;
               }
               break;
-            case 2:
+            case 4:
               if (gCurLCDSelection.flag == 0)
               {
                 gCurLCDSelection.name = "Back Mid ";
