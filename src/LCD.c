@@ -98,16 +98,64 @@ task handleLCD()
       	else if (!selected && LCD_L) gLCDScreen--;
       	break;
       }
-      case sensorView:
+      case turnCurveColour:
       {
-      	string anglerSen, shooterSen;
-      	sprintf(anglerSen, "Angler: %d", SensorValue[anglerPoti]);
-      	sprintf(shooterSen, "Shooter: %d", SensorValue[shooterEnc]);
-      	displayLCDCenteredString(0, anglerSen);
-      	displayLCDCenteredString(1, shooterSen);
+      	displayLCDCenteredString(0, "Turn Colour:");
+      	if (gTurnAlg)	displayLCDCenteredString(1, "blue");
+      	else displayLCDCenteredString(1, "red");
 
-      	if (LCD_R) gLCDScreen++;
-      	else if (LCD_L) gLCDScreen--;
+      	if (LCD_M)
+      	{
+      		gTurnAlg = !gTurnAlg;
+      	}
+      	else if (LCD_R)
+      	{
+      		updateTurnLookup();
+      		gLCDScreen++;
+      	}
+      	else if (LCD_L)
+      	{
+      		updateTurnLookup();
+      		gLCDScreen--;
+      	}
+      	break;
+      }
+      case turnCurveAdjust:
+      {
+     		displayLCDCenteredString(0, "Turn Curve:");
+       displayLCDNumber(1, 0, gTurnCurvature);
+
+      	if (!selected && LCD_M)
+      	{
+      		selected = true;
+      		//writeDebugStreamLine("%d Selected: %d", nPgmTime, selected);
+      		goto end;
+      	}
+
+      	if (selected)
+      	{
+      		if (LCD_R) gTurnCurvature += 1;
+      		if (LCD_L) gTurnCurvature -= 1;
+
+      		if (LCD_M)
+      		{
+      			selected = false;
+      			//writeDebugStreamLine("%d Selected: %d", nPgmTime, selected);
+      			//goto end;
+      		}
+
+      		//writeDebugStreamLine("%d Selected: %d", nPgmTime, selected);
+      	}
+      	else if (!selected && LCD_R)
+      	{
+      		updateTurnLookup();
+      		gLCDScreen++;
+      	}
+      	else if (!selected && LCD_L)
+      	{
+      		updateTurnLookup();
+      		gLCDScreen--;
+      	}
       	break;
       }
       case shootTuneMode:

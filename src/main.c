@@ -160,7 +160,7 @@ task driveStateSet()
 
 				if (abs(vexRT[JOY_DRIVE_TURN]) > DRIVE_TURN_DZ)
 				{
-					turn = vexRT[JOY_DRIVE_TURN];
+					turn = lookupTurn(vexRT[JOY_DRIVE_TURN]);
 					gDriveTurnDir = (turn > 0)? turnCW : turnCCW;
 				}
 				else turn = 0;
