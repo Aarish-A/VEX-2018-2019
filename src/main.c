@@ -786,7 +786,7 @@ void shooterSafety()
 		}
 		else if (gShooterState == shooterShoot)
 		{
-			if (stateElpsdTime > 950) killShooter();//shooterSafetySet(shooterBreak);
+			if (stateElpsdTime > 1200) killShooter();//shooterSafetySet(shooterBreak);
 			else if (stateElpsdTime > 150 && senChange < 10 && (gShooterStateLst != shooterBreak && gShooterStateLstLst != shooterBreak)) killShooter();
 		}
 	}
