@@ -886,6 +886,14 @@ void anglerShooter(int posA, int posB, int acceptableRange, bool waitForFirstSho
 		}
 		LOG(macro)("%d Done waiting for point. Angler:%d", nPgmTime, SensorValue[anglerPoti]);
 	}
+
+	//Move shooter once it's in hold (protects from other states overwriting our state-change-request)
+	while (gShooterState != shooterHold)
+	{
+		if (!vexRT[btn]) btnReleased = true;
+			sleep(10);
+	}
+	//Start taking first shot
 	setShooterState(shooterShoot);
 
 	while (gShooterState != shooterReload) //Start moving angler immediately after first shot applies breaking
