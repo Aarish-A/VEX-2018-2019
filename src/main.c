@@ -42,21 +42,33 @@ void tRelease()
 		releaseCPU();
 }
 
+/* Includes */
 // Year-independent libraries (headers)
 #include "utilities.h"
 #include "cycle.h"
 #include "motors.h"
 #include "custom_turning.h"
+#include "safety.h"
 
 // Year-independent libraries (source)
 //#include "utilities.c"
 #include "cycle.c"
 #include "motors.c"
 #include "custom_turning.c"
+#include "safety.c"
 
 // Other includes
 #include "Vex_Competition_Includes_Custom.c"
 #include "controls.h"
+
+//Iniitialize safeties
+sSafety driveSafety, shooterSafety, anglerSafety; //No intake safety
+void initSafeties()
+{
+	initSafety(driveSafety, "driveSafety", velSensor, trackL);
+	initSafety(shooterSafety, "shooterSafety", velSensor, shooterEnc);
+	initSafety(anglerSafety, "anglerSafety", velSensor, anglerPoti);
+}
 
 /* Shooter Positions */
 int gShootTuneMode = false;
@@ -783,7 +795,7 @@ void killShooter()
 	//}
 }
 
-void shooterSafety()
+void shooterSafetyCheck()
 {
 	tHog();
 	if (!gShooterKilled)
@@ -863,7 +875,7 @@ void doubleShot(int posA, int posB, int acceptableRange, bool waitForFirstShot =
 	LOG(macro)("%d Done double point and shoot from back. Angler:%d. Shooter:%d", nPgmTime, SensorValue[anglerPoti], SensorValue[shooterEnc]);
 }
 
-
+//ToDo: Add safeties to anglerShooter
 void anglerShooter(int posA, int posB, int acceptableRange, bool waitForFirstShot = true, bool waitForSecShot = true, TVexJoysticks btn, bool reversePos = false)
 {
 	int kGoodCount = 5;
@@ -896,7 +908,9 @@ void anglerShooter(int posA, int posB, int acceptableRange, bool waitForFirstSho
 	setAnglerState(anglerMove, acceptableRange);
 	if (waitForFirstShot)
 	{
-		while (gAnglerGoodCount < kGoodCount)
+		//setSafetyTO(anglerSafety, "angle for shot1", 7000);
+		//WHILE(anglerSafety, (gAnglerGoodCount < kGoodCount))
+		while(gAnglerGoodCount < kGoodCount)
 		{
 			if (!vexRT[btn]) btnReleased = true;
 			sleep(10);
@@ -1000,7 +1014,7 @@ task monitorVals()
 	while(true)
 	{
 		tHog();
-		shooterSafety();
+		shooterSafetyCheck();
 		ballTrackLog();
 
 		datalogDataGroupStart();
@@ -1022,11 +1036,11 @@ task monitorVals()
 #include "LCD.h"
 #include "LCD.c"
 
-
 /* Modes */
 void startTasks()
 {
 	tHog();
+
 	SensorValue[shooterEnc] = 0;
 	startTask(driveStateSet);
 	startTask(shooterStateSet);
@@ -1064,6 +1078,7 @@ void startup()
 	clearDebugStream();
 	datalogClear();
 	setupMotors();
+	initSafeties();
 
 	gBatteryLevel = nImmediateBatteryLevel;
 	gBackupBatteryLevel = BackupBatteryLevel;
