@@ -46,7 +46,7 @@ void tRelease()
 // Year-independent libraries (headers)
 #include "cycle.h"
 #include "motors.h"
-#include "auto.h"
+#include "tracking.h"
 #include "utilities.h"
 
 #include "custom_turning.h"
@@ -55,7 +55,7 @@ void tRelease()
 // Year-independent libraries (source)
 #include "cycle.c"
 #include "motors.c"
-#include "auto.c"
+#include "tracking.c"
 #include "utilities.c"
 
 #include "custom_turning.c"
