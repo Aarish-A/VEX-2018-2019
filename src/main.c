@@ -1017,9 +1017,11 @@ typedef enum _tMacroTask
 
 tMacroTask gMacroTask = macroNone;
 
+/* AnglerShooter function task globals */
 int anglerShooterPosA, anglerShooterPosB, anglerShooterAcceptableRange;
 bool anglerShooterWaitForFirstShot, anglerShooterWaitForSecShot, anglerShooterReversePos;
 TVexJoysticks anglerShooterBtn;
+
 task macroTask()
 {
 	switch(gMacroTask)
@@ -1029,9 +1031,11 @@ task macroTask()
 		break;
 
 		case macroAnglerShooter:
+		writeDebugStreamLine("%d Start macroAnglerShooter from macroTask", nPgmTime);
 		gAnglerShooterTaskRunning = true;
 		anglerShooter(anglerShooterPosA, anglerShooterPosB, anglerShooterAcceptableRange, anglerShooterWaitForFirstShot, anglerShooterWaitForSecShot, anglerShooterBtn, anglerShooterReversePos);
 		gAnglerShooterTaskRunning = false;
+		writeDebugStreamLine("%d Done macroAnglerShooter from macroTask", nPgmTime);
 		break;
 
 		case macroCapFlip:
@@ -1093,11 +1097,9 @@ task monitorVals()
 
 		datalogDataGroupStart();
 		datalogAddValue(0, SensorValue[anglerPoti]);
-		//datalogAddValue(1, (pVal*10.0));
-		//datalogAddValue(2, (iVal*10.0));
-		datalogAddValue(3, gAnglerPower);
-		datalogAddValue(4, SensorValue[shooterEnc]);
-		datalogAddValue(5, SensorValue[ballDetector]);
+		datalogAddValue(1, gMotor[angler].powerCur);
+		datalogAddValue(2, SensorValue[shooterEnc]);
+		datalogAddValue(3, SensorValue[ballDetector]);
 		datalogDataGroupEnd();
 
 		tRelease();
@@ -1237,10 +1239,11 @@ task usercontrol()
 		/* Drive Controls */
 		if (!gDriveDisabled)
 		{
-			gDriveThrottleRaw = (!gAnglerShooterTaskRunning)? vexRT[JOY_DRIVE_THROTTLE] : vexRT[JOY_ANGLER];
-			gDriveTurnRaw = (!gAnglerShooterTaskRunning)? vexRT[JOY_DRIVE_TURN] : (vexRT[JOY_DECAPPER] * 0.5);
+			gDriveThrottleRaw = (!gAnglerShooterTaskRunning)? vexRT[JOY_DRIVE_THROTTLE] : vexRT[JOY_ANGLER]; //Switch drive to right joy
+			gDriveTurnRaw = (!gAnglerShooterTaskRunning)? vexRT[JOY_DRIVE_TURN] : (vexRT[JOY_DECAPPER] * 0.5); //when taking shot(s)
 			if ( ((abs(gDriveTurnRaw) > DRIVE_TURN_DZ) || (abs(gDriveThrottleRaw) > DRIVE_THROTTLE_DZ)) && gDriveState != driveMoveTime) setDriveState(driveManual);
 		}
+
 		/* Intake Controls */
 		intakeControls();
 
