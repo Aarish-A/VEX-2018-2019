@@ -12,7 +12,7 @@ void _setSafetyMessage(sSafety& safety, const string message)
 	safety.message = safety.name;
 	string temp = " ";
 	strcat(temp, message);
-	writeDebugStreamLine("%d name:%s temp:%s mssg:%s", nPgmTime, safety.name, temp, safety.message);
+	//writeDebugStreamLine("%d name:%s temp:%s mssg:%s", nPgmTime, safety.name, temp, safety.message);
 	strcat(safety.message, temp);
 	tRelease();
 }

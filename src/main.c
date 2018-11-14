@@ -44,16 +44,20 @@ void tRelease()
 
 /* Includes */
 // Year-independent libraries (headers)
-#include "utilities.h"
 #include "cycle.h"
 #include "motors.h"
+#include "auto.h"
+#include "utilities.h"
+
 #include "custom_turning.h"
 #include "safety.h"
 
 // Year-independent libraries (source)
-//#include "utilities.c"
 #include "cycle.c"
 #include "motors.c"
+#include "auto.c"
+#include "utilities.c"
+
 #include "custom_turning.c"
 #include "safety.c"
 
@@ -88,12 +92,12 @@ int gShooterShotCount = 0;
 #define SHOOTER_RELOAD_POS ((SHOOTER_SHOOT_POS) + 185)//165)
 
 /* Drive Controls */
-typedef enum _tTurnDir
+typedef enum _tDriveTurnDir
 {
 	turnNone,
 	turnCW,
 	turnCCW
-} tTurnDir;
+} tDriveTurnDir;
 
 #define DRIVE_THROTTLE_DZ 15
 #define DRIVE_TURN_DZ 10
@@ -127,7 +131,7 @@ tDriveState gDriveState = driveIdle;
 tDriveState gDriveStateLst = gDriveState;
 unsigned long gDriveStateTime;
 
-tTurnDir gDriveTurnDir = turnNone;
+tDriveTurnDir gDriveTurnDir = turnNone;
 
 void setDriveState (tDriveState state, int drivePower = -1, int driveLength = -1)
 {
@@ -1035,7 +1039,7 @@ task macroTask()
 		gAnglerShooterTaskRunning = true;
 		anglerShooter(anglerShooterPosA, anglerShooterPosB, anglerShooterAcceptableRange, anglerShooterWaitForFirstShot, anglerShooterWaitForSecShot, anglerShooterBtn, anglerShooterReversePos);
 		gAnglerShooterTaskRunning = false;
-		writeDebugStreamLine("%d Done macroAnglerShooter from macroTask", nPgmTime);
+		//writeDebugStreamLine("%d Done macroAnglerShooter from macroTask", nPgmTime);
 		break;
 
 		case macroCapFlip:
@@ -1043,7 +1047,7 @@ task macroTask()
 		gDriveDisabled = true;
 		//do something
 		gDriveDisabled = false;
-		writeDebugStreamLine("%d Done macroCapFlip from macroTask", nPgmTime);
+		//writeDebugStreamLine("%d Done macroCapFlip from macroTask", nPgmTime);
 		break;
 
 		default:
