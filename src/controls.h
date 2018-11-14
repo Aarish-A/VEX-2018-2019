@@ -17,14 +17,14 @@
 #define BTN_ANGLER_LOW_PF_PICKUP Btn8U
 
 /* Decapper Controls */
-#define JOY_DECAPPER Ch2
+#define JOY_DECAPPER Ch1
 #define DECAPPER_DZ 40
 
 /* Macros */
 	//Double Shot
 #define BTN_SHOOT_FRONT_PF Btn7U
-#define BTN_SHOOT_MID_PF Btn7L
-#define BTN_SHOOT_BACK_PF Btn7R
+#define BTN_SHOOT_MID_PF Btn7R
+#define BTN_SHOOT_BACK_PF Btn7L
 #define BTN_SHOOT_BACK Btn7D
 
 #define BTN_SHIFT Btn5D

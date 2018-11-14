@@ -83,8 +83,8 @@ task handleLCD()
 
       	if (selected)
       	{
-      		if (LCD_R) gDriveBreakWait += 10;
-      		if (LCD_L) gDriveBreakWait -= 10;
+      		if (LCD_R) gDriveBreakWait += 50;
+      		if (LCD_L) gDriveBreakWait -= 50;
 
       		if (LCD_M)
       		{

@@ -61,6 +61,9 @@ void tRelease()
 #include "Vex_Competition_Includes_Custom.c"
 #include "controls.h"
 
+// Important globals
+bool gAnglerShooterTaskRunning = false;
+
 //Iniitialize safeties
 sSafety driveSafety, shooterSafety, anglerSafety; //No intake safety
 void initSafeties()
@@ -880,7 +883,7 @@ void anglerShooter(int posA, int posB, int acceptableRange, bool waitForFirstSho
 {
 	int kGoodCount = 5;
 
-	setDriveState(driveIdle); //Kill drive
+	//setDriveState(driveIdle); //Kill drive
 
 	bool btnReleased = false;
 	acceptableRange = abs(acceptableRange);
@@ -981,6 +984,22 @@ void anglerShooter(int posA, int posB, int acceptableRange, bool waitForFirstSho
 	}
 }
 
+int anglerShooterPosA, anglerShooterPosB, anglerShooterAcceptableRange;
+bool anglerShooterWaitForFirstShot, anglerShooterWaitForSecShot, anglerShooterReversePos;
+TVexJoysticks anglerShooterBtn;
+task anglerShooterTask()
+{
+	gAnglerShooterTaskRunning = true;
+	anglerShooter(anglerShooterPosA, anglerShooterPosB, anglerShooterAcceptableRange, anglerShooterWaitForFirstShot, anglerShooterWaitForSecShot, anglerShooterBtn, anglerShooterReversePos);
+	gAnglerShooterTaskRunning = false;
+	return;
+}
+#define ANGLER_SHOOTER_TASK(posA, posB, acceptableRange, waitForFirstShot, waitForSecShot, btn, reversePos) \
+anglerShooterPosA = posA; anglerShooterPosB = posB; anglerShooterAcceptableRange = acceptableRange; \
+anglerShooterWaitForFirstShot = waitForFirstShot; anglerShooterWaitForSecShot = waitForSecShot; anglerShooterReversePos = reversePos; \
+anglerShooterBtn = btn; \
+startTask(anglerShooterTask)
+
 //Declarations for ball log
 bool gBallThere = false;
 bool gBallThereLst = gBallThere;
@@ -1078,6 +1097,7 @@ void startup()
 	clearDebugStream();
 	datalogClear();
 	setupMotors();
+	updateTurnLookup();
 	initSafeties();
 
 	gBatteryLevel = nImmediateBatteryLevel;
@@ -1162,84 +1182,86 @@ task usercontrol()
 
 		intakeControls();
 
-		if (shootBtn && !shootBtnLst)
+		if (!gAnglerShooterTaskRunning)
 		{
-			if (vexRT[BTN_SHIFT])
+			if (shootBtn && !shootBtnLst)
 			{
-				gDriveFlip = !gDriveFlip;
+				if (vexRT[BTN_SHIFT])
+				{
+					gDriveFlip = !gDriveFlip;
+				}
+				else if (SensorValue[shooterEnc] < SHOOTER_RELOAD_POS)
+				{
+					setShooterState(shooterReload);
+				}
+				else if (SensorValue[shooterEnc] >= (SHOOTER_NEXT_SHOOT_POS-50))
+				{
+					writeDebugStreamLine("%d Shot count wrong. Reset", nPgmTime);
+					shooterSafetySet(shooterReset);
+				}
+				else if (BALL_DETECTED && SensorValue[anglerPoti] > ANGLER_GROUND_PICKUP_POS)
+				{
+					setShooterState(shooterShoot);
+					lstShotTimer = nPgmTime;
+					writeDebugStreamLine("%d FIRST SHOT TRIGGERED. # %d. Angler: %d", nPgmTime, gShooterShotCount, SensorValue[anglerPoti]);
+				}
 			}
-			else if (SensorValue[shooterEnc] < SHOOTER_RELOAD_POS)
-			{
-				setShooterState(shooterReload);
-			}
-			else if (SensorValue[shooterEnc] >= (SHOOTER_NEXT_SHOOT_POS-50))
-			{
-				writeDebugStreamLine("%d Shot count wrong. Reset", nPgmTime);
-				shooterSafetySet(shooterReset);
-			}
-			else if (BALL_DETECTED && SensorValue[anglerPoti] > ANGLER_GROUND_PICKUP_POS)
+			if (!shootBtn) lstShotTimer = 0;
+			else if (shootBtn && gShooterState == shooterHold && (lstShotTimer != 0 && (nPgmTime-lstShotTimer) < 900))
 			{
 				setShooterState(shooterShoot);
-				lstShotTimer = nPgmTime;
-				writeDebugStreamLine("%d FIRST SHOT TRIGGERED. # %d. Angler: %d", nPgmTime, gShooterShotCount, SensorValue[anglerPoti]);
+				lstShotTimer = 0;
+				writeDebugStreamLine("%d SECOND SHOT TRIGGERED. # %d", nPgmTime, gShooterShotCount);
 			}
-		}
-		if (!shootBtn) lstShotTimer = 0;
-		else if (shootBtn && gShooterState == shooterHold && (lstShotTimer != 0 && (nPgmTime-lstShotTimer) < 900))
-		{
-			setShooterState(shooterShoot);
-			lstShotTimer = 0;
-			writeDebugStreamLine("%d SECOND SHOT TRIGGERED. # %d", nPgmTime, gShooterShotCount);
-		}
-		if ((shootFrontPFBtn && !shootFrontPFBtnLst) && !(shootBtn && !shootBtnLst))
-		{
-			writeDebugStreamLine("%d Shoot from front of platform", nPgmTime);
-			anglerShooter(gAnglerFrontPFMidFlag, gAnglerFrontPFTopFlag, 60, false, false, BTN_SHOOT_FRONT_PF, vexRT[BTN_SHIFT]);
-		}
-		else if ((shootMidPFBtn && !shootMidPFBtnLst) && !(shootBtn && !shootBtnLst))
-		{
-			writeDebugStreamLine("%d Shoot from mid of platform", nPgmTime);
-			anglerShooter(gAnglerMidPFMidFlag, gAnglerMidPFTopFlag, 60, false, false, BTN_SHOOT_MID_PF, vexRT[BTN_SHIFT]);
-		}
-		else if ((shootBackPFBtn && !shootBackPFBtnLst) && !(shootBtn && !shootBtnLst))
-		{
-			writeDebugStreamLine("%d Shoot from back of platform", nPgmTime);
-			anglerShooter(gAnglerBackPFMidFlag, gAnglerBackPFTopFlag, 60, false, false, BTN_SHOOT_BACK_PF, vexRT[BTN_SHIFT]);
-		}
-		else if ((shootBackBtn && !shootBackBtnLst) && !(shootBtn && !shootBtnLst))
-		{
-			writeDebugStreamLine("%d Shoot from back of field", nPgmTime);
-			anglerShooter(gAnglerBackMidFlag, gAnglerBackTopFlag, 25, true, true, BTN_SHOOT_BACK, vexRT[BTN_SHIFT]);
-		}
-		else if (anglerPickupGroundBtn && !anglerPickupGroundBtnLst)
-		{
-			if (vexRT[BTN_SHIFT])
+			if ((shootFrontPFBtn && !shootFrontPFBtnLst) && !(shootBtn && !shootBtnLst))
 			{
-				writeDebugStreamLine("%d Angler to flip cap position", nPgmTime);
-				anglerMoveToPos(ANGLER_CAP_FLIP_POS, 150);
-				setIntakeState(intakeDown);
+				writeDebugStreamLine("%d Shoot from front of platform", nPgmTime);
+				ANGLER_SHOOTER_TASK(gAnglerFrontPFMidFlag, gAnglerFrontPFTopFlag, 60, false, false, BTN_SHOOT_FRONT_PF, vexRT[BTN_SHIFT]);
 			}
-			else
+			else if ((shootMidPFBtn && !shootMidPFBtnLst) && !(shootBtn && !shootBtnLst))
 			{
-				writeDebugStreamLine("%d Angler to pickup ground position", nPgmTime);
-				anglerMoveToPos(ANGLER_GROUND_PICKUP_POS, 150);
+				writeDebugStreamLine("%d Shoot from mid of platform", nPgmTime);
+				ANGLER_SHOOTER_TASK(gAnglerMidPFMidFlag, gAnglerMidPFTopFlag, 60, false, false, BTN_SHOOT_MID_PF, vexRT[BTN_SHIFT]);
+			}
+			else if ((shootBackPFBtn && !shootBackPFBtnLst) && !(shootBtn && !shootBtnLst))
+			{
+				writeDebugStreamLine("%d Shoot from back of platform", nPgmTime);
+				ANGLER_SHOOTER_TASK(gAnglerBackPFMidFlag, gAnglerBackPFTopFlag, 60, false, false, BTN_SHOOT_BACK_PF, vexRT[BTN_SHIFT]);
+			}
+			else if ((shootBackBtn && !shootBackBtnLst) && !(shootBtn && !shootBtnLst))
+			{
+				writeDebugStreamLine("%d Shoot from back of field", nPgmTime);
+				ANGLER_SHOOTER_TASK(gAnglerBackMidFlag, gAnglerBackTopFlag, 25, true, true, BTN_SHOOT_BACK, vexRT[BTN_SHIFT]);
+			}
+			else if (anglerPickupGroundBtn && !anglerPickupGroundBtnLst)
+			{
+				if (vexRT[BTN_SHIFT])
+				{
+					writeDebugStreamLine("%d Angler to flip cap position", nPgmTime);
+					anglerMoveToPos(ANGLER_CAP_FLIP_POS, 150);
+					setIntakeState(intakeDown);
+				}
+				else
+				{
+					writeDebugStreamLine("%d Angler to pickup ground position", nPgmTime);
+					anglerMoveToPos(ANGLER_GROUND_PICKUP_POS, 150);
+				}
+			}
+			else if (anglerPickupCapBtn && !anglerPickupCapBtnLst)
+			{
+				writeDebugStreamLine("%d Angler to pickup cap position", nPgmTime);
+				anglerMoveToPos(ANGLER_CAP_PICKUP_POS, 150);
+			}
+			else if (anglerPickupLowPFBtn && !anglerPickupLowPFBtnLst)
+			{
+				writeDebugStreamLine("%d Angler to pickup low platform position", nPgmTime);
+				anglerMoveToPos(ANGLER_LOW_PF_PICKUP_POS, 150);
+			}
+			else if (abs(vexRT[JOY_ANGLER]) > 10)
+			{
+				setAnglerState(anglerManual);
 			}
 		}
-		else if (anglerPickupCapBtn && !anglerPickupCapBtnLst)
-		{
-			writeDebugStreamLine("%d Angler to pickup cap position", nPgmTime);
-			anglerMoveToPos(ANGLER_CAP_PICKUP_POS, 150);
-		}
-		else if (anglerPickupLowPFBtn && !anglerPickupLowPFBtnLst)
-		{
-			writeDebugStreamLine("%d Angler to pickup low platform position", nPgmTime);
-			anglerMoveToPos(ANGLER_LOW_PF_PICKUP_POS, 150);
-		}
-		else if (abs(vexRT[JOY_ANGLER]) > 10)
-		{
-			setAnglerState(anglerManual);
-		}
-
 		shootBtnLst = shootBtn;
 		shootFrontPFBtnLst = shootFrontPFBtn;
 		shootMidPFBtnLst = shootMidPFBtn;
