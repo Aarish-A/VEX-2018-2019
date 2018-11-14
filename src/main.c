@@ -1266,7 +1266,7 @@ task usercontrol()
 				if (vexRT[BTN_SHIFT])
 				{
 					writeDebugStreamLine("%d Angler to flip cap position", nPgmTime);
-					anglerMoveToPos(ANGLER_CAP_FLIP_POS, 150);
+					anglerMoveToPos(ANGLER_CAP_FLIP_POS, 100);
 					setIntakeState(intakeDown);
 
 					//while(gAnglerGoodCount < 5) sleep(10);
