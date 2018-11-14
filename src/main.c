@@ -63,6 +63,9 @@ void tRelease()
 
 // Important globals
 bool gAnglerShooterTaskRunning = false;
+//bool gAnglerBusy = false;
+//bool gShooterBusy = false;
+bool gDriveDisabled = false;
 
 //Iniitialize safeties
 sSafety driveSafety, shooterSafety, anglerSafety; //No intake safety
@@ -1005,22 +1008,52 @@ void anglerShooter(int posA, int posB, int acceptableRange, bool waitForFirstSho
 		anglerMoveToPos(ANGLER_GROUND_PICKUP_POS, 150);
 	}
 }
+typedef enum _tMacroTask
+{
+	macroNone,
+	macroAnglerShooter,
+	macroCapFlip
+} tMacroTask;
+
+tMacroTask gMacroTask = macroNone;
 
 int anglerShooterPosA, anglerShooterPosB, anglerShooterAcceptableRange;
 bool anglerShooterWaitForFirstShot, anglerShooterWaitForSecShot, anglerShooterReversePos;
 TVexJoysticks anglerShooterBtn;
-task anglerShooterTask()
+task macroTask()
 {
-	gAnglerShooterTaskRunning = true;
-	anglerShooter(anglerShooterPosA, anglerShooterPosB, anglerShooterAcceptableRange, anglerShooterWaitForFirstShot, anglerShooterWaitForSecShot, anglerShooterBtn, anglerShooterReversePos);
-	gAnglerShooterTaskRunning = false;
+	switch(gMacroTask)
+	{
+		case macroNone:
+		writeDebugStream("%d macroTask trying to run. gMacroTask:%d macroNone.", nPgmTime, gMacroTask);
+		break;
+
+		case macroAnglerShooter:
+		gAnglerShooterTaskRunning = true;
+		anglerShooter(anglerShooterPosA, anglerShooterPosB, anglerShooterAcceptableRange, anglerShooterWaitForFirstShot, anglerShooterWaitForSecShot, anglerShooterBtn, anglerShooterReversePos);
+		gAnglerShooterTaskRunning = false;
+		break;
+
+		case macroCapFlip:
+		writeDebugStreamLine("%d Start macroCapFlip from macroTask", nPgmTime);
+		gDriveDisabled = true;
+		//do something
+		gDriveDisabled = false;
+		writeDebugStreamLine("%d Done macroCapFlip from macroTask", nPgmTime);
+		break;
+
+		default:
+		writeDebugStreamLine("	>> %d macroTask trying to run unknown procedure. gMacroTask: %d", nPgmTime, gMacroTask);
+		break;
+	}
 	return;
 }
 #define ANGLER_SHOOTER_TASK(posA, posB, acceptableRange, waitForFirstShot, waitForSecShot, btn, reversePos) \
 anglerShooterPosA = posA; anglerShooterPosB = posB; anglerShooterAcceptableRange = acceptableRange; \
 anglerShooterWaitForFirstShot = waitForFirstShot; anglerShooterWaitForSecShot = waitForSecShot; anglerShooterReversePos = reversePos; \
 anglerShooterBtn = btn; \
-startTask(anglerShooterTask)
+gMacroTask = macroAnglerShooter; \
+startTask(macroTask)
 
 //Declarations for ball log
 bool gBallThere = false;
@@ -1202,10 +1235,12 @@ task usercontrol()
 		anglerPickupLowPFBtn = (bool)vexRT[BTN_ANGLER_LOW_PF_PICKUP];
 
 		/* Drive Controls */
-		gDriveThrottleRaw = (!gAnglerShooterTaskRunning)? vexRT[JOY_DRIVE_THROTTLE] : vexRT[JOY_ANGLER];
-		gDriveTurnRaw = (!gAnglerShooterTaskRunning)? vexRT[JOY_DRIVE_TURN] : (vexRT[JOY_DECAPPER] * 0.5);
-		if ( ((abs(gDriveTurnRaw) > DRIVE_TURN_DZ) || (abs(gDriveThrottleRaw) > DRIVE_THROTTLE_DZ)) && gDriveState != driveMoveTime) setDriveState(driveManual);
-
+		if (!gDriveDisabled)
+		{
+			gDriveThrottleRaw = (!gAnglerShooterTaskRunning)? vexRT[JOY_DRIVE_THROTTLE] : vexRT[JOY_ANGLER];
+			gDriveTurnRaw = (!gAnglerShooterTaskRunning)? vexRT[JOY_DRIVE_TURN] : (vexRT[JOY_DECAPPER] * 0.5);
+			if ( ((abs(gDriveTurnRaw) > DRIVE_TURN_DZ) || (abs(gDriveThrottleRaw) > DRIVE_THROTTLE_DZ)) && gDriveState != driveMoveTime) setDriveState(driveManual);
+		}
 		/* Intake Controls */
 		intakeControls();
 
