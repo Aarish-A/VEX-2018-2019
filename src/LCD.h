@@ -8,6 +8,7 @@ typedef enum _tLCDScreen
   turnCurveColour,
   turnCurveAdjust,
   //sensorView,
+  shotCount,
   shootTuneMode,
 
   anglerTargetTuning,

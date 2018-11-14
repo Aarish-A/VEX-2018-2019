@@ -20,7 +20,7 @@
 int gBatteryLevel;
 int gBackupBatteryLevel;
 
-int driveLogs = 0;
+int driveLogs = 1;
 int intakeLogs = 1;
 
 int anglerLogs = 1;
@@ -97,6 +97,8 @@ typedef enum _tTurnDir
 
 int gDriveThrottleRaw, gDriveTurnRaw,;
 
+int gDrivePower, gDriveLength;
+
 bool gDriveFlip = false;
 
 int gDriveBreakPow = 11;
@@ -114,6 +116,7 @@ typedef enum _tDriveState
 {
 	driveIdle,
 	driveManual,
+	driveMoveTime,
 	driveBreak
 } tDriveState;
 
@@ -123,7 +126,7 @@ unsigned long gDriveStateTime;
 
 tTurnDir gDriveTurnDir = turnNone;
 
-void setDriveState (tDriveState state)
+void setDriveState (tDriveState state, int drivePower = -1, int driveLength = -1)
 {
 	tHog();
 	if (state != gDriveState)
@@ -135,16 +138,20 @@ void setDriveState (tDriveState state)
 
 		gDriveStateTime = nPgmTime;
 
+		gDrivePower = drivePower;
+		gDriveLength = driveLength;
+
 		writeDebugStream("%d Drive State Set %d ", nPgmTime, gDriveState);
 		switch(gDriveState)
 		{
 		case driveIdle: writeDebugStream("driveIdle"); break;
 		case driveManual: writeDebugStream("driveManual"); break;
+		case driveMoveTime: writeDebugStream("driveMoveTime"); break;
 		case driveBreak: writeDebugStream("driveBreak"); break;
 
 		default: writeDebugStream("UNKNOWN STATE"); break;
 		}
-		writeDebugStreamLine(", turnDir: %d, T:%d", gDriveTurnDir, gDriveStateTime);
+		writeDebugStreamLine(", turnDir: %d, pow: %d, length:%d, T:%d", gDriveTurnDir, gDrivePower, gDriveLength, gDriveStateTime);
 	}
 	tRelease();
 }
@@ -179,7 +186,7 @@ task driveStateSet()
 				}
 				else turn = 0;
 
-				if ((nPgmTime-gDriveStateTime) < 200) gDriveTurnDir = turnNone; //For first 250ms of being in manual, turnDir reset to turnNone
+				if ((nPgmTime-gDriveStateTime) < 50) gDriveTurnDir = turnNone; //For first 250ms of being in manual, turnDir reset to turnNone
 
 				left = throttle + turn;
 				right = throttle - turn;
@@ -188,6 +195,17 @@ task driveStateSet()
 
 				if (!(abs(gDriveTurnRaw) > DRIVE_TURN_DZ) && !(abs(gDriveThrottleRaw) > DRIVE_THROTTLE_DZ)) setDriveState(driveBreak);
 
+				break;
+			}
+		case driveMoveTime:
+			{
+				unsigned long timeCur = nPgmTime;
+				unsigned long length = timeCur + gDriveLength;
+				setDrive(gDrivePower, gDrivePower);
+				while (nPgmTime < length) sleep(10);
+				setDrive(0,0);
+
+				setDriveState(driveIdle);
 				break;
 			}
 		case driveBreak:
@@ -1171,6 +1189,7 @@ task usercontrol()
 	//setDriveState(driveManual);
 	while (true)
 	{
+		/* Handle Btns */
 		shootBtn = (bool)vexRT[BTN_SHOOT];
 		shootFrontPFBtn = (bool)vexRT[BTN_SHOOT_FRONT_PF];
 		shootMidPFBtn = (bool)vexRT[BTN_SHOOT_MID_PF];
@@ -1182,11 +1201,13 @@ task usercontrol()
 
 		/* Drive Controls */
 		gDriveThrottleRaw = (!gAnglerShooterTaskRunning)? vexRT[JOY_DRIVE_THROTTLE] : vexRT[JOY_ANGLER];
-		gDriveTurnRaw = (!gAnglerShooterTaskRunning)? vexRT[JOY_DRIVE_TURN] : vexRT[JOY_DECAPPER];
-		if ( (abs(gDriveTurnRaw) > DRIVE_TURN_DZ) || (abs(gDriveThrottleRaw) > DRIVE_THROTTLE_DZ) ) setDriveState(driveManual);
+		gDriveTurnRaw = (!gAnglerShooterTaskRunning)? vexRT[JOY_DRIVE_TURN] : (vexRT[JOY_DECAPPER] * 0.5);
+		if ( ((abs(gDriveTurnRaw) > DRIVE_TURN_DZ) || (abs(gDriveThrottleRaw) > DRIVE_THROTTLE_DZ)) && gDriveState != driveMoveTime) setDriveState(driveManual);
 
+		/* Intake Controls */
 		intakeControls();
 
+		/* Shooter & Angler Controls */
 		if (!gAnglerShooterTaskRunning)
 		{
 			if (shootBtn && !shootBtnLst)
@@ -1244,7 +1265,14 @@ task usercontrol()
 				{
 					writeDebugStreamLine("%d Angler to flip cap position", nPgmTime);
 					anglerMoveToPos(ANGLER_CAP_FLIP_POS, 150);
+					while(gAnglerGoodCount < 5) sleep(10);
 					setIntakeState(intakeDown);
+					setDriveState(driveMoveTime, 70, 250);
+					while(gDriveState != driveIdle) sleep(10);
+					anglerMoveToPos(2800, 100);
+					setDriveState(driveMoveTime, 70, 250);
+					while(gDriveState != driveIdle) sleep(10);
+					setDriveState(driveMoveTime, -11, 400);
 				}
 				else
 				{
@@ -1267,6 +1295,8 @@ task usercontrol()
 				setAnglerState(anglerManual);
 			}
 		}
+
+		/* Handle Btns */
 		shootBtnLst = shootBtn;
 		shootFrontPFBtnLst = shootFrontPFBtn;
 		shootMidPFBtnLst = shootMidPFBtn;

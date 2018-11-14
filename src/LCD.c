@@ -158,6 +158,15 @@ task handleLCD()
       	}
       	break;
       }
+      case shotCount:
+      {
+      	displayLCDString(0, 0, "ShotCount: ");
+     		displayLCDNumber(0, 11, gShooterShotCount);
+
+     		if (LCD_R) gLCDScreen++;
+      	else if (LCD_L) gLCDScreen--;
+      	break;
+      }
       case shootTuneMode:
       {
       	displayLCDCenteredString(0, "Shoot Tune Mode?");
