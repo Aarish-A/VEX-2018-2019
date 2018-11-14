@@ -8,15 +8,18 @@ void initSafety(sSafety& safety, const string name, tVelType velType, tSensors s
 
 void _setSafetyMessage(sSafety& safety, const string message)
 {
+	tHog();
 	safety.message = safety.name;
 	string temp = " ";
 	strcat(temp, message);
+	writeDebugStreamLine("%d name:%s temp:%s mssg:%s", nPgmTime, safety.name, temp, safety.message);
 	strcat(safety.message, temp);
+	tRelease();
 }
 
 void setSafety(sSafety& safety, const string message, int timeOut, tVelDir velDir, float velThresh, tVelType velType)
 {
-	_setSafetyMessage(safety, message);
+	safety.message = message;
 	safety.velType = velType;
 
 	safety.startTime = nPgmTime;
@@ -35,7 +38,7 @@ void setSafety(sSafety& safety, const string message, int timeOut, tVelDir velDi
 
 void setSafetyTO(sSafety& safety, const string message, int timeOut)
 {
-	_setSafetyMessage(safety, message);
+	safety.message = message;
 	safety.velType = velNone;
 
 	safety.startTime = nPgmTime;
@@ -49,7 +52,7 @@ bool isTimeoutSafe(sSafety& safety)
 	if(nPgmTime < safety.timeOut) return true;
 	else
 	{
-		writeDebugStreamLine("%d %s timedout. TO:%d", nPgmTime, safety.message, safety.timeOut);
+		writeDebugStreamLine("%d %s |%s| timedout. TO:%d", nPgmTime, safety.name, safety.message, safety.timeOut);
 		return false;
 	}
 }
@@ -115,7 +118,7 @@ bool isVelSafe(sSafety& safety)
 				case velDown: dir = "down"; break;
 				default: dir = "unknown"; break;
 			}
-			writeDebugStreamLine("%d %s - Vel Safety. Thresh:%f, Dir: %s, BadVelCount:%d, Vel:%f.", nPgmTime, safety.message, safety.velThresh, dir, safety.velBadCount, vel);
+			writeDebugStreamLine("%d %s |%s| - Vel Safety. Thresh:%f, Dir: %s, BadVelCount:%d, Vel:%f.", nPgmTime, safety.name, safety.message, safety.velThresh, dir, safety.velBadCount, vel);
 			return false;
 		}
 	}
