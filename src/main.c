@@ -95,6 +95,8 @@ typedef enum _tTurnDir
 #define DRIVE_THROTTLE_DZ 15
 #define DRIVE_TURN_DZ 10
 
+int gDriveThrottleRaw, gDriveTurnRaw,;
+
 bool gDriveFlip = false;
 
 int gDriveBreakPow = 11;
@@ -166,13 +168,13 @@ task driveStateSet()
 			}
 		case driveManual:
 			{
-				if (abs(vexRT[JOY_DRIVE_THROTTLE]) > DRIVE_THROTTLE_DZ) throttle = vexRT[JOY_DRIVE_THROTTLE];
+				if (abs(gDriveThrottleRaw) > DRIVE_THROTTLE_DZ) throttle = gDriveThrottleRaw;
 				else throttle = 0;
 				if (gDriveFlip) throttle *= -1;
 
-				if (abs(vexRT[JOY_DRIVE_TURN]) > DRIVE_TURN_DZ)
+				if (abs(gDriveTurnRaw) > DRIVE_TURN_DZ)
 				{
-					turn = lookupTurn(vexRT[JOY_DRIVE_TURN]);
+					turn = gDriveTurnRaw;//lookupTurn(gDriveTurnRaw);
 					gDriveTurnDir = (turn > 0)? turnCW : turnCCW;
 				}
 				else turn = 0;
@@ -184,7 +186,7 @@ task driveStateSet()
 
 				setDrive(left, right);
 
-				if (!(abs(vexRT[JOY_DRIVE_TURN]) > DRIVE_TURN_DZ) && !(abs(vexRT[JOY_DRIVE_THROTTLE]) > DRIVE_THROTTLE_DZ)) setDriveState(driveBreak);
+				if (!(abs(gDriveTurnRaw) > DRIVE_TURN_DZ) && !(abs(gDriveThrottleRaw) > DRIVE_THROTTLE_DZ)) setDriveState(driveBreak);
 
 				break;
 			}
@@ -1178,7 +1180,10 @@ task usercontrol()
 		anglerPickupCapBtn = (bool)vexRT[BTN_ANGLER_CAP_PICKUP];
 		anglerPickupLowPFBtn = (bool)vexRT[BTN_ANGLER_LOW_PF_PICKUP];
 
-		if ( (abs(vexRT[JOY_DRIVE_TURN]) > DRIVE_TURN_DZ) || (abs(vexRT[JOY_DRIVE_THROTTLE]) > DRIVE_THROTTLE_DZ) ) setDriveState(driveManual);
+		/* Drive Controls */
+		gDriveThrottleRaw = (!gAnglerShooterTaskRunning)? vexRT[JOY_DRIVE_THROTTLE] : vexRT[JOY_ANGLER];
+		gDriveTurnRaw = (!gAnglerShooterTaskRunning)? vexRT[JOY_DRIVE_TURN] : vexRT[JOY_DECAPPER];
+		if ( (abs(gDriveTurnRaw) > DRIVE_TURN_DZ) || (abs(gDriveThrottleRaw) > DRIVE_THROTTLE_DZ) ) setDriveState(driveManual);
 
 		intakeControls();
 
