@@ -931,7 +931,7 @@ void anglerShooter(int posA, int posB, int acceptableRange, bool waitForFirstSho
 	setAnglerState(anglerMove, acceptableRange);
 	if (waitForFirstShot)
 	{
-		//setSafetyTO(anglerSafety, "angle for shot1", 7000);
+		//setSafetyTO(anglerSafety, "shot1", 8000);
 		//WHILE(anglerSafety, (gAnglerGoodCount < kGoodCount))
 		while(gAnglerGoodCount < kGoodCount)
 		{
@@ -977,7 +977,9 @@ void anglerShooter(int posA, int posB, int acceptableRange, bool waitForFirstSho
 		setAnglerState(anglerMove, acceptableRange);
 		if (waitForSecShot)
 		{
-			while (gAnglerGoodCount < kGoodCount)
+			//setSafetyTO(anglerSafety, "shot2", 50);
+			//WHILE(anglerSafety, (gAnglerGoodCount < kGoodCount))
+			while(gAnglerGoodCount < kGoodCount)
 			{
 				if (!vexRT[btn]) btnReleased = true;
 				sleep(10);
@@ -1265,14 +1267,16 @@ task usercontrol()
 				{
 					writeDebugStreamLine("%d Angler to flip cap position", nPgmTime);
 					anglerMoveToPos(ANGLER_CAP_FLIP_POS, 150);
-					while(gAnglerGoodCount < 5) sleep(10);
 					setIntakeState(intakeDown);
-					setDriveState(driveMoveTime, 70, 250);
-					while(gDriveState != driveIdle) sleep(10);
-					anglerMoveToPos(2800, 100);
-					setDriveState(driveMoveTime, 70, 250);
-					while(gDriveState != driveIdle) sleep(10);
-					setDriveState(driveMoveTime, -11, 400);
+
+					//while(gAnglerGoodCount < 5) sleep(10);
+					//setIntakeState(intakeDown);
+					//setDriveState(driveMoveTime, 70, 250);
+					//while(gDriveState != driveIdle) sleep(10);
+					//anglerMoveToPos(2800, 100);
+					//setDriveState(driveMoveTime, 70, 250);
+					//while(gDriveState != driveIdle) sleep(10);
+					//setDriveState(driveMoveTime, -11, 400);
 				}
 				else
 				{
