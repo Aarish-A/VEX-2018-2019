@@ -98,7 +98,7 @@ typedef enum _tTurnDir
 #define DRIVE_THROTTLE_DZ 15
 #define DRIVE_TURN_DZ 10
 
-int gDriveThrottleRaw, gDriveTurnRaw,;
+sbyte gDriveThrottleRaw, gDriveTurnRaw,;
 
 int gDrivePower, gDriveLength;
 
@@ -187,7 +187,7 @@ task driveStateSet()
 
 				if (abs(gDriveTurnRaw) > DRIVE_TURN_DZ)
 				{
-					turn = gDriveTurnRaw;//lookupTurn(gDriveTurnRaw);
+					turn = lookupTurn(gDriveTurnRaw); //gDriveTurnRaw
 					gDriveTurnDir = (turn > 0)? turnCW : turnCCW;
 				}
 				else turn = 0;
