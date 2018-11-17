@@ -235,6 +235,7 @@ void setIntake(word power)
 typedef enum _tIntakeState
 {
 	intakeIdle,
+	intakeCapHold,
 	intakeUp,
 	intakeDown
 
@@ -254,16 +255,20 @@ void setIntakeState (tIntakeState state)
 
 		gIntakeStateTime = nPgmTime;
 
-		writeDebugStream("%d Intake State Set %d ", nPgmTime, gIntakeState);
-		switch(gIntakeState)
+		if (intakeStateLogs)
 		{
-		case intakeIdle: writeDebugStream("intakeIdle"); break;
-		case intakeUp: writeDebugStream("intakeUp"); break;
-		case intakeDown: writeDebugStream("intakeDown"); break;
+			writeDebugStream("%d Intake State Set %d ", nPgmTime, gIntakeState);
+			switch(gIntakeState)
+			{
+			case intakeIdle: writeDebugStream("intakeIdle"); break;
+			case intakeCapHold: writeDebugStream("intakeCapHold"); break;
+			case intakeUp: writeDebugStream("intakeUp"); break;
+			case intakeDown: writeDebugStream("intakeDown"); break;
 
-		default: writeDebugStream("UNKNOWN STATE"); break;
+			default: writeDebugStream("UNKNOWN STATE"); break;
+			}
+			writeDebugStreamLine(", AnglerSen:%d, T:%d", SensorValue[anglerPoti], gIntakeStateTime);
 		}
-		writeDebugStreamLine(", AnglerSen:%d, T:%d", SensorValue[anglerPoti], gIntakeStateTime);
 	}
 	tRelease();
 }
