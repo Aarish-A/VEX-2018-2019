@@ -766,6 +766,7 @@ task shooterStateSet()
 				float pos = SensorValue[shooterEnc];
 				float lstPos = 10;
 				float vel = -1;
+				float velLst = -1;
 				unsigned long time = nPgmTime;
 				unsigned long lstTime = 0;
 				sleep(300);
@@ -774,15 +775,18 @@ task shooterStateSet()
 					pos = SensorValue[shooterEnc];
 					time = nPgmTime;
 
+					velLst = vel;
+
 					vel = (float)(pos-lstPos);///(float)(time-lstTime);
-					LOG(shooter)("%d Pos:%d, PosLst:%d, Vel: %f", nPgmTime, pos, lstPos, vel);
+					LOG(shooter)("%d Pos:%d, PosLst:%d, Vel: %f, VelLst:%d", nPgmTime, pos, lstPos, vel, velLst);
+
 					lstPos = pos;
 					lstTime = time;
 					sleep(300);
-				} while(vel < -1);
+				} while(vel < -1 || velLst < -1);
 				//setShooter(0);
 				//sleep(100);
-				LOG(shooter)("%d Reset Shooter from %d. Vel:%d", nPgmTime, SensorValue[shooterEnc], vel);
+				LOG(shooter)("%d Reset Shooter from %d. Vel:%d. VelLst:%d", nPgmTime, SensorValue[shooterEnc], vel, velLst);
 				//playTone(300, 50);
 				SensorValue[shooterEnc] = 0;
 				gShooterShotCount = 0;

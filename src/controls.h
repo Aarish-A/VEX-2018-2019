@@ -18,7 +18,7 @@
 
 /* Decapper Controls */
 #define JOY_DECAPPER Ch1
-#define DECAPPER_DZ 40
+#define BTN_DECAPPER_MOVE Btn8L
 
 /* Macros */
 	//Double Shot
