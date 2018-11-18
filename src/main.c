@@ -651,7 +651,6 @@ task anglerStateSet()
 				}
 				else iVal += ( (float)error / (float)(deltaTime) ) * kI;
 
-				if (abs(deltaSen) < 4 && abs(error) < gAnglerAcceptableRange)// && abs(gAnglerGoodCount) < 25)
 				if (abs(deltaSen) < 3 && abs(error) < gAnglerAcceptableRange)// && abs(gAnglerGoodCount) < 25)
 				{
 					gAnglerGoodCount++;
