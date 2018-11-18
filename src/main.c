@@ -507,6 +507,7 @@ task anglerStateSet()
 				else iVal += ( (float)error / (float)(deltaTime) ) * kI;
 
 				if (abs(deltaSen) < 4 && abs(error) < gAnglerAcceptableRange)// && abs(gAnglerGoodCount) < 25)
+				if (abs(deltaSen) < 3 && abs(error) < gAnglerAcceptableRange)// && abs(gAnglerGoodCount) < 25)
 				{
 					gAnglerGoodCount++;
 					SensorValue[LED1] = 300;
@@ -975,6 +976,7 @@ void anglerShooter(int posA, int posB, int acceptableRange, bool waitForFirstSho
 
 	LOG(macro)(" >%d AnglerShooter: FirstPos:%d. Wait?%d. SecondPos:%d. Wait?%d. CurAnglerPos:%d", nPgmTime, posA, waitForFirstShot, posB, waitForSecShot, SensorValue[anglerPoti]);
 	unsigned long startTime = nPgmTime;
+	unsigned long shotTriggerTime;
 
 	//First shot
 	gAnglerTarget = posA;
@@ -989,7 +991,7 @@ void anglerShooter(int posA, int posB, int acceptableRange, bool waitForFirstSho
 			if (!vexRT[btn]) btnReleased = true;
 			sleep(10);
 		}
-		LOG(macro)("%d Done waiting for first point. Angler:%d", nPgmTime, SensorValue[anglerPoti]);
+		LOG(macro)("	>> %d Angle (FirstShot) took:%dms. Pos: %d", nPgmTime, (nPgmTime-startTime), SensorValue[anglerPoti]);
 	}
 
 	//Move shooter once it's in hold (protects from other states overwriting our state-change-request)
@@ -1000,6 +1002,7 @@ void anglerShooter(int posA, int posB, int acceptableRange, bool waitForFirstSho
 	}
 	//Start taking first shot
 	setShooterState(shooterShoot);
+	shotTriggerTime = nPgmTime;
 
 	while (gShooterState != shooterReload) //Start moving angler immediately after first shot applies breaking
 	{
@@ -1009,9 +1012,10 @@ void anglerShooter(int posA, int posB, int acceptableRange, bool waitForFirstSho
 
 	if ((gShooterShotCount-startShotCount) < 1)
 	{
-		LOG(macro)("  %d First shot failed (ball jumped). Try again", nPgmTime);
+		LOG(macro)("	>> %d First shot failed (ball jumped). Try again", nPgmTime);
 		sleep(50);
 		setShooterState(shooterShoot);
+		shotTriggerTime = nPgmTime;
 		while (gShooterState != shooterReload) //Start moving angler immediately after first shot applies breaking
 		{
 			if (!vexRT[btn]) btnReleased = true;
@@ -1019,7 +1023,7 @@ void anglerShooter(int posA, int posB, int acceptableRange, bool waitForFirstSho
 		}
 	}
 
-	LOG(macro)("	>> %d FirstShot+Reload took:%dms", nPgmTime, (nPgmTime-startTime));
+	LOG(macro)("	>> %d FirstShot+Angle took:%dms. Shot took:%dms", nPgmTime, (nPgmTime-startTime), (nPgmTime-shotTriggerTime));
 	unsigned long firstShotDone = nPgmTime;
 
 	//anglerReachedAlert(posA);
@@ -1041,27 +1045,29 @@ void anglerShooter(int posA, int posB, int acceptableRange, bool waitForFirstSho
 				if (!vexRT[btn]) btnReleased = true;
 				sleep(10);
 			}
-			LOG(macro)("%d Done waiting for second point. Angler:%d", nPgmTime, SensorValue[anglerPoti]);
+			LOG(macro)("	>> %d Angle (SecondShot) took:%dms. Pos: %d", nPgmTime, (nPgmTime-firstShotDone), SensorValue[anglerPoti]);
 		}
 		setShooterState(shooterShoot);
+		shotTriggerTime = nPgmTime;
 
-		while (gShooterState != shooterHold) sleep(10);
+		while (gShooterState != shooterReload) sleep(10);
 
 		//If we haven't made two shots, try the last shot again
 		if ((gShooterShotCount-startShotCount) < 1)
 		{
-			LOG(macro)("  %d Second shot failed (ball jumped). Try again", nPgmTime);
+			LOG(macro)("	>> %d Second shot failed (ball jumped). Try again", nPgmTime);
 			sleep(50);
 			setShooterState(shooterShoot);
-			while (gShooterState != shooterHold) sleep(10);
+			shotTriggerTime = nPgmTime;
+			while (gShooterState != shooterReload) sleep(10);
 		}
-		LOG(macro)("	>> %d SecondShot+Reload took:%dms", nPgmTime, (nPgmTime-firstShotDone));
+		LOG(macro)("	>> %d SecondShot+Angle took:%dms. Shot took: %d", nPgmTime, (nPgmTime-firstShotDone), (nPgmTime-shotTriggerTime));
 		//anglerReachedAlert(posB);
 		LOG(macro)("%d Angler to pickup ground position", nPgmTime);
 		anglerMoveToPos(ANGLER_GROUND_PICKUP_POS, 150);
 	}
 	anglerAlgLogs = false;
-	LOG(macro)("	>> %d Done point and shoot in %dms. Angler:%d. Shooter:%d", nPgmTime, (nPgmTime-startTime), SensorValue[anglerPoti], SensorValue[shooterEnc]);
+	LOG(macro)("	>> %d Done pointShoot in %dms. Angler:%d. Shooter:%d", nPgmTime, (nPgmTime-startTime), SensorValue[anglerPoti], SensorValue[shooterEnc]);
 
 }
 
@@ -1121,7 +1127,7 @@ task monitorVals()
 		datalogAddValue(0, SensorValue[anglerPoti]);
 		//datalogAddValue(1, (pVal*10.0));
 		//datalogAddValue(2, (iVal*10.0));
-		datalogAddValue(3, gAnglerPower);
+		datalogAddValue(3, gMotor[angler].powerCur);
 		datalogAddValue(4, SensorValue[shooterEnc]);
 		datalogAddValue(5, SensorValue[ballDetector]);
 		datalogDataGroupEnd();
@@ -1145,6 +1151,7 @@ void startTasks()
 	startTask(driveStateSet);
 	startTask(shooterStateSet);
 	startTask(intakeStateSet);
+	startTask(decapperStateSet);
 	startTask(anglerStateSet);
 	startTask(monitorVals);
 
