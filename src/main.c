@@ -431,7 +431,7 @@ task decapperStateSet()
 			}
 		case decapperHold:
 			{
-				if (SensorValue[decapperPoti] < DECAPPER_HOLD_POS) setDecapper(13);
+				if (SensorValue[decapperPoti] < DECAPPER_HOLD_POS) setDecapper(15);
 				else setDecapper(0);
 				break;
 			}
@@ -481,11 +481,19 @@ void decapperControls()
 	if(decapperMoveBtn && !decapperMoveBtnLst)
 	{
 		if (vexRT[BTN_SHIFT])
-			setDecapperState(decapperDown, DECAPPER_DROP_POS, -50);
-		else if (SensorValue[decapperPoti] < DECAPPER_CARRY_POS)
+		{
+			//if (SensorValue[decapperPoti] > (DECAPPER_GRAB_POS-100))
+			//	setDecapperState(decapperUp, DECAPPER_TOP_POS, 60);
+			//else
+				setDecapperState(decapperDown, DECAPPER_DROP_POS, -20);
+		}
+		else
+		{
+			if (SensorValue[decapperPoti] < DECAPPER_CARRY_POS)
 			setDecapperState(decapperUp, DECAPPER_GRAB_POS, 127);
 		else
 			setDecapperState(decapperDown, DECAPPER_CARRY_POS, -20);
+		}
 	}
 	else if (abs(vexRT[JOY_DECAPPER]) > DECAPPER_DZ) setDecapperState(decapperManual);
 
