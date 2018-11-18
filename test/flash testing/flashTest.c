@@ -15,19 +15,19 @@ task main()
 
 	// If file is found, copy contents of file into integer number
 	// If file isn't found, write integer number to new file
-	//if (RCFS_GetFile("anglerPos", &data, &fileLength) == RCFS_SUCCESS)
-	//{
-	//	memcpy(&integer, data, sizeof(integer));
-	//	writeDebugStreamLine("%d | Copied data from file, Integer = %d", nPgmTime, integer);
-	//}
-	//else
-	//{
+	if (RCFS_GetFile("anglerPos", &data, &fileLength) == RCFS_SUCCESS)
+	{
+		memcpy(&integer, data, sizeof(integer));
+		writeDebugStreamLine("%d | Copied data from file, Integer = %d", nPgmTime, integer);
+	}
+	else
+	{
 		writeDebugStreamLine("%d | Could not find file", nPgmTime);
 		memcpy(&tempData, &integer, sizeof(integer));
 		if(RCFS_AddFile(tempData, sizeof(integer), "angler position") == RCFS_ERROR)
 			writeDebugStreamLine("%d | File Write Error", nPgmTime);
 		else writeDebugStreamLine("%d | Wrote new file", nPgmTime);
-	//}
+	}
 	writeDebugStreamLine("%d", integer);
 
 	// Get info of last file
@@ -80,10 +80,10 @@ task main()
 	displayLCDCenteredString(0, "Saved!");
 
 	// Write new integer value to new file
-	//memcpy(&tempData, &integer, sizeof(integer));
-	//if(RCFS_AddFile(tempData, sizeof(integer), "anglerPos") == RCFS_ERROR)
-	//	writeDebugStreamLine("%d | File Write Error", nPgmTime);
-	//else writeDebugStream("%d | Wrote new file", nPgmTime);
+	memcpy(&tempData, &integer, sizeof(integer));
+	if(RCFS_AddFile(tempData, sizeof(integer), "anglerPos") == RCFS_ERROR)
+		writeDebugStreamLine("%d | File Write Error", nPgmTime);
+	else writeDebugStream("%d | Wrote new file", nPgmTime);
 
 	sleep(5000);
 
