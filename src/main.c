@@ -10,8 +10,8 @@
 #pragma config(Motor,  port2,           driveLY,       tmotorVex393TurboSpeed_MC29, openLoop, reversed)
 #pragma config(Motor,  port3,           intake,        tmotorVex393TurboSpeed_MC29, openLoop)
 #pragma config(Motor,  port4,           driveL,        tmotorVex393TurboSpeed_MC29, openLoop)
-#pragma config(Motor,  port5,           shooter,       tmotorVex393HighSpeed_MC29, openLoop)
-#pragma config(Motor,  port6,           shooterY,      tmotorVex393HighSpeed_MC29, openLoop, reversed)
+#pragma config(Motor,  port5,           shooter,       tmotorVex393HighSpeed_MC29, openLoop, reversed)
+#pragma config(Motor,  port6,           shooterY,      tmotorVex393HighSpeed_MC29, openLoop)
 #pragma config(Motor,  port7,           driveR,        tmotorVex393TurboSpeed_MC29, openLoop, reversed)
 #pragma config(Motor,  port8,           angler,        tmotorVex393TurboSpeed_MC29, openLoop, reversed)
 #pragma config(Motor,  port9,           driveRY,       tmotorVex393TurboSpeed_MC29, openLoop)
@@ -1470,14 +1470,14 @@ task usercontrol()
 			{
 				tHog();
 				writeDebugStreamLine("%d Shoot from mid of platform", nPgmTime);
-				ANGLER_SHOOTER_TASK(gAnglerMidPFMidFlag, gAnglerMidPFTopFlag, 60, false, false, BTN_SHOOT_MID_PF, vexRT[BTN_SHIFT]);
+				ANGLER_SHOOTER_TASK(gAnglerMidPFMidFlag, gAnglerMidPFTopFlag, 60, true, true, BTN_SHOOT_MID_PF, vexRT[BTN_SHIFT]);
 				tRelease();
 			}
 			else if ((shootBackPFBtn && !shootBackPFBtnLst) && !(shootBtn && !shootBtnLst))
 			{
 				tHog();
 				writeDebugStreamLine("%d Shoot from back of platform", nPgmTime);
-				ANGLER_SHOOTER_TASK(gAnglerBackPFMidFlag, gAnglerBackPFTopFlag, 60, false, false, BTN_SHOOT_BACK_PF, vexRT[BTN_SHIFT]);
+				ANGLER_SHOOTER_TASK(gAnglerBackPFMidFlag, gAnglerBackPFTopFlag, 55, true, true, BTN_SHOOT_BACK_PF, vexRT[BTN_SHIFT]);
 				tRelease();
 			}
 			else if ((shootBackBtn && !shootBackBtnLst) && !(shootBtn && !shootBtnLst))
