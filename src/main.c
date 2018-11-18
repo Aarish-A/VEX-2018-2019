@@ -764,6 +764,8 @@ void setShooterState (tShooterState state)
 	tHog();
 	if (state != gShooterState)
 	{
+		unsigned long deltaTime = (nPgmTime - gShooterStateTime);
+
 		gShooterStateLstLst = gShooterStateLst;
 		gShooterStateLst = gShooterState;
 		gShooterState = state;
@@ -781,7 +783,8 @@ void setShooterState (tShooterState state)
 		case shooterReset: writeDebugStream("shooterReset"); break;
 		default: writeDebugStream("UNKNOWN STATE"); break;
 		}
-		writeDebugStreamLine(", Count:%d, Sen:%d, Targ:%d, NextTarg:%d, T:%d", gShooterShotCount, gShooterStateSen, SHOOTER_SHOOT_POS, SHOOTER_NEXT_SHOOT_POS, gShooterStateTime);
+
+		writeDebugStreamLine(", dTimeLst:%dms, Count:%d, Sen:%d, Targ:%d, NextTarg:%d", deltaTime, gShooterShotCount, gShooterStateSen, SHOOTER_SHOOT_POS, SHOOTER_NEXT_SHOOT_POS, gShooterStateTime);
 	}
 	tRelease();
 }
