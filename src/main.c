@@ -1004,7 +1004,9 @@ void shooterSafetyCheck()
 
 		if (gShooterState == shooterReset)
 		{
-			if (stateElpsdTime > 7000) shooterSafetySet(shooterIdle);
+			//TODO: REVERT THIS SAFETY BACK TO COMMENTED OUT LINE
+			if (stateElpsdTime > 8000) shooterSafetySet(shooterIdle);
+			//if (stateElpsdTime > 500) shooterSafetySet(shooterIdle);
 			else if (stateElpsdTime > 100 && senChange > 10) killShooter();
 		}
 		else if (gShooterState == shooterReload)
