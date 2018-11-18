@@ -24,8 +24,11 @@ bool driveLogs = false;
 bool driveStateLogs = false;
 bool intakeLogs = false;
 bool intakeStateLogs = false;
+bool decapperStateLogs = true;
 
-bool anglerLogs = true;
+bool decapperLogs = true;
+
+bool anglerLogs = false;
 bool anglerAlgLogs = false;
 bool shooterLogs = true;
 bool macroLogs = true;
@@ -187,7 +190,7 @@ task driveStateSet()
 
 				if (abs(gDriveTurnRaw) > DRIVE_TURN_DZ)
 				{
-					turn = lookupTurn(gDriveTurnRaw); //gDriveTurnRaw
+					turn = gDriveTurnRaw; //lookupTurn(gDriveTurnRaw);
 					gDriveTurnDir = (turn > 0)? turnCW : turnCCW;
 				}
 				else turn = 0;
@@ -345,6 +348,148 @@ void intakeControls()
 
 	intakeUpBtnLst = intakeUpBtn;
 	intakeDownBtnLst = intakeDownBtn;
+}
+
+
+/* Decapper Controls */
+#define DECAPPER_DZ 10
+
+#define DECAPPER_HOLD_POS 2000
+
+#define DECAPPER_GRAB_POS 1700
+#define DECAPPER_DROP_POS 190
+
+#define DECAPPER_CARRY_POS 1290
+
+void setDecapper(word power)
+{
+	setMotor(decapper, power);
+}
+
+typedef enum _tDecapperState
+{
+	decapperIdle,
+	decapperHold,
+	decapperManual,
+	decapperUp,
+	decapperDown
+} tDecapperState;
+
+tDecapperState gDecapperState = decapperIdle;
+tDecapperState gDecapperStateLst = gDecapperState;
+unsigned long gDecapperStateTime;
+
+int gDecapperTarget;
+int gDecapperPower;
+
+void setDecapperState (tDecapperState state, int target = -1, int power = -1)
+{
+	tHog();
+	if (state != gDecapperState)
+	{
+		gDecapperStateLst = gDecapperState;
+		gDecapperState = state;
+
+		if (target != -1) gDecapperTarget = target;
+		gDecapperPower = power;
+
+		gDecapperStateTime = nPgmTime;
+
+		if (decapperStateLogs)
+		{
+			writeDebugStream("%d Decapper State Set %d ", nPgmTime, gDecapperState);
+			switch(gDecapperState)
+			{
+			case decapperIdle: writeDebugStream("decapperIdle"); break;
+			case decapperHold: writeDebugStream("decapperHold"); break;
+			case decapperManual: writeDebugStream("decapperManual"); break;
+			case decapperUp: writeDebugStream("decapperUp"); break;
+			case decapperDown: writeDebugStream("decapperDown"); break;
+
+			default: writeDebugStream("UNKNOWN STATE"); break;
+			}
+			writeDebugStreamLine(", DecapperSen:%d, T:%d", SensorValue[decapperPoti], gDecapperStateTime);
+		}
+	}
+	tRelease();
+}
+
+
+task decapperStateSet()
+{
+	sCycleData decapperCycle;
+	initCycle(decapperCycle, 10, "decapperCycle");
+
+	while (true)
+	{
+		switch (gDecapperState)
+		{
+		case decapperIdle:
+			{
+				setDecapper(0);
+				break;
+			}
+		case decapperHold:
+			{
+				if (SensorValue[decapperPoti] < DECAPPER_HOLD_POS) setDecapper(13);
+				else setDecapper(0);
+				break;
+			}
+		case decapperManual:
+			{
+				int power = vexRT[JOY_DECAPPER];
+				if (abs(power) < DECAPPER_DZ) power = 0;
+				setDecapper(power);
+				break;
+			}
+		case decapperUp:
+			{
+				setDecapper(gDecapperPower);
+				while (SensorValue[decapperPoti] < gDecapperTarget-100) sleep(10);
+				LOG(decapper)("%d Decapper moved to %d", nPgmTime, SensorValue[decapperPoti]);
+				setDecapper(-15);
+				sleep(150);
+				LOG(decapper)("%d Decapper breaked to %d", nPgmTime, SensorValue[decapperPoti]);
+				setDecapperState(decapperHold);
+
+				break;
+			}
+		case decapperDown:
+			{
+				setDecapper(gDecapperPower);
+				while (SensorValue[decapperPoti] > gDecapperTarget+100) sleep(10);
+				LOG(decapper)("%d Decapper moved to %d", nPgmTime, SensorValue[decapperPoti]);
+				setDecapper(15);
+				sleep(150);
+				LOG(decapper)("%d Decapper breaked to %d", nPgmTime, SensorValue[decapperPoti]);
+				setDecapperState(decapperHold);
+
+				break;
+			}
+		}
+		//endCycle(decapperCycle);
+		sleep(10);
+	}
+}
+
+bool decapperMoveBtn = false;
+bool decapperMoveBtnLst = false;
+void decapperControls()
+{
+	decapperMoveBtn = (bool) vexRT[BTN_DECAPPER_MOVE];
+
+	if(decapperMoveBtn && !decapperMoveBtnLst)
+	{
+		if (vexRT[BTN_SHIFT])
+			setDecapperState(decapperDown, DECAPPER_DROP_POS, -50);
+		else if (SensorValue[decapperPoti] < DECAPPER_CARRY_POS)
+			setDecapperState(decapperUp, DECAPPER_GRAB_POS, 127);
+		else
+			setDecapperState(decapperDown, DECAPPER_CARRY_POS, -20);
+	}
+	else if (abs(vexRT[JOY_DECAPPER]) > DECAPPER_DZ) setDecapperState(decapperManual);
+
+	decapperMoveBtnLst = decapperMoveBtn;
 }
 
 //int gAnglerTarget = 1000;
@@ -1277,6 +1422,9 @@ task usercontrol()
 		/* Intake Controls */
 		intakeControls();
 
+		/* Decapper Controls */
+		decapperControls();
+
 		/* Shooter & Angler Controls */
 		if (!gAnglerShooterTaskRunning)
 		{
@@ -1364,11 +1512,24 @@ task usercontrol()
 			{
 				writeDebugStreamLine("%d Angler to pickup cap position", nPgmTime);
 				anglerMoveToPos(ANGLER_CAP_PICKUP_POS, 150);
+
+				//writeDebugStreamLine("%d Angler pos1", nPgmTime);
+				//unsigned long startTime = nPgmTime;
+				//anglerMoveToPos(gAnglerBackMidFlag, 25);
+				//while (gAnglerGoodCount < 7) sleep(10);
+				//writeDebugStreamLine("%d Angler done pos1 in %d ms", nPgmTime, (nPgmTime-startTime));
+
 			}
 			else if (anglerPickupLowPFBtn && !anglerPickupLowPFBtnLst)
 			{
 				writeDebugStreamLine("%d Angler to pickup low platform position", nPgmTime);
 				anglerMoveToPos(ANGLER_LOW_PF_PICKUP_POS, 150);
+
+				//writeDebugStreamLine("%d Angler pos2", nPgmTime);
+				//unsigned long startTime = nPgmTime;
+				//anglerMoveToPos(gAnglerBackTopFlag, 25);
+				//while (gAnglerGoodCount < 7) sleep(10);
+				//writeDebugStreamLine("%d Angler done pos2 in %d ms", nPgmTime, (nPgmTime-startTime));
 			}
 			else if (abs(vexRT[JOY_ANGLER]) > 10)
 			{
