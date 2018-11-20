@@ -21,14 +21,14 @@ int gBatteryLevel;
 int gBackupBatteryLevel;
 
 bool driveLogs = false;
-bool driveStateLogs = false;
+bool driveStateLogs = true;
 bool intakeLogs = false;
 bool intakeStateLogs = false;
 bool decapperStateLogs = true;
 
 bool decapperLogs = true;
 
-bool anglerLogs = false;
+bool anglerLogs = true;
 bool anglerAlgLogs = false;
 bool shooterLogs = true;
 bool macroLogs = true;
@@ -631,7 +631,7 @@ task anglerStateSet()
 
 						vel = (float)(sen-senLst)/(float)(time-timeLst);
 
-						LOG(angler)("%d Angler Break. Pos:%d, Vel:%f", nPgmTime, sen, vel);
+						//LOG(angler)("%d Angler Break. Pos:%d, Vel:%f", nPgmTime, sen, vel);
 						senLst = sen;
 						timeLst = time;
 						sleep(10);
@@ -653,7 +653,7 @@ task anglerStateSet()
 
 				unsigned long deltaTime = time-timeLst;
 				deltaSen = sen - senLst;
-				if (deltaTime <= 0 || abs(deltaSen) > 2 || abs(error) < 10)// || gAnglerStateLst == anglerManual)
+				if (deltaTime <= 0 || abs(deltaSen) > 3 || abs(error) < 10)// || gAnglerStateLst == anglerManual)
 				{
 					iVal = 0;
 				}
@@ -680,7 +680,7 @@ task anglerStateSet()
 				//if(gAnglerStateLst == anglerMove)
 				unsigned long tElpsd = (nPgmTime-gAnglerStateTime);
 
-				LOG(anglerAlg)("%d Sen:%d, Err: %d, pVal:%f, iVal:%f, pow: %f, dT:%d, dS:%d", nPgmTime, SensorValue[anglerPoti], error, pVal, iVal, power, deltaTime, deltaSen);
+				//LOG(anglerAlg)("%d Sen:%d, Err: %d, pVal:%f, iVal:%f, pow: %f, dT:%d, dS:%d", nPgmTime, SensorValue[anglerPoti], error, pVal, iVal, power, deltaTime, deltaSen);
 
 				//if (gAnglerGoodCount == 5) LOG(angler)("   %d Done angler hold to %d in %d ms. vel:%f. Sen:%d", nPgmTime, gAnglerTarget, (nPgmTime-gAnglerStateTime), (deltaSen/deltaTime), SensorValue[anglerPoti]);
 				senLst = sen;
@@ -784,15 +784,15 @@ void setShooterState (tShooterState state)
 		switch(gShooterState)
 		{
 		case shooterIdle: writeDebugStream("shooterIdle"); break;
-		case shooterBreak: writeDebugStream("shooterBreak"); break;
-		case shooterReload: writeDebugStream("shooterReload"); break;
-		case shooterHold: writeDebugStream("shooterHold"); break;
-		case shooterShoot: writeDebugStream("shooterShoot"); break;
-		case shooterReset: writeDebugStream("shooterReset"); break;
+		//case shooterBreak: writeDebugStream("shooterBreak"); break;
+		//case shooterReload: writeDebugStream("shooterReload"); break;
+		//case shooterHold: writeDebugStream("shooterHold"); break;
+		//case shooterShoot: writeDebugStream("shooterShoot"); break;
+		//case shooterReset: writeDebugStream("shooterReset"); break;
 		default: writeDebugStream("UNKNOWN STATE"); break;
 		}
 
-		writeDebugStreamLine(", dTimeLst:%dms, Count:%d, Sen:%d, Targ:%d, NextTarg:%d", deltaTime, gShooterShotCount, gShooterStateSen, SHOOTER_SHOOT_POS, SHOOTER_NEXT_SHOOT_POS, gShooterStateTime);
+		//writeDebugStreamLine(", dTimeLst:%dms, Count:%d, Sen:%d, Targ:%d, NextTarg:%d", deltaTime, gShooterShotCount, gShooterStateSen, SHOOTER_SHOOT_POS, SHOOTER_NEXT_SHOOT_POS, gShooterStateTime);
 	}
 	tRelease();
 }
@@ -973,8 +973,8 @@ void shooterSafetySet(tShooterState state)
 
 void killShooter()
 {
-	//if (!gShooterKilled)
-	//{
+	if (!gShooterKilled)
+	{
 		//Kill shooter
 		unsigned long stateElpsdTime = (nPgmTime-gShooterStateTime);
 		int senChange = SensorValue[shooterEnc]-gShooterStateSen;
@@ -984,22 +984,22 @@ void killShooter()
 		writeDebugStreamLine(">>>	 %d KILL SHOOTER SAFETY state %d Safety TO: %d SenChange: %d, Sen:%d", nPgmTime, gShooterState, stateElpsdTime, senChange, SensorValue[shooterEnc]);
 
 		//Wait for shooter to come to stop
-		int sen, senLst, senDelta;
-		do
-		{
-			sen = SensorValue[shooterEnc];
-			senDelta = sen - senLst;
-			writeDebugStream("%d Waiting for shooter to come to stop. Pos:%d. LstPos:%d, DeltaPos:%d", nPgmTime, sen, senLst, senDelta);
-			senLst = sen;
-			sleep(300);
-		}while(abs(senDelta) > 1);
-		sleep(1000);
+		//int sen, senLst, senDelta;
+		//do
+		//{
+		//	sen = SensorValue[shooterEnc];
+		//	senDelta = sen - senLst;
+		//	writeDebugStream("%d Waiting for shooter to come to stop. Pos:%d. LstPos:%d, DeltaPos:%d", nPgmTime, sen, senLst, senDelta);
+		//	senLst = sen;
+		//	sleep(300);
+		//}while(abs(senDelta) > 1);
+		//sleep(1000);
 
-		//Reset shooter
-		startTask(shooterStateSet);
-		setShooterState(shooterReset);
+		////Reset shooter
+		//startTask(shooterStateSet);
+		//setShooterState(shooterReset);
 
-	//}
+	}
 }
 
 void shooterSafetyCheck()
@@ -1522,26 +1522,26 @@ task usercontrol()
 			}
 			else if (anglerPickupCapBtn && !anglerPickupCapBtnLst)
 			{
-				writeDebugStreamLine("%d Angler to pickup cap position", nPgmTime);
-				anglerMoveToPos(ANGLER_CAP_PICKUP_POS, 150);
+				//writeDebugStreamLine("%d Angler to pickup cap position", nPgmTime);
+				//anglerMoveToPos(ANGLER_CAP_PICKUP_POS, 150);
 
-				//writeDebugStreamLine("%d Angler pos1", nPgmTime);
-				//unsigned long startTime = nPgmTime;
-				//anglerMoveToPos(gAnglerBackMidFlag, 25);
-				//while (gAnglerGoodCount < 7) sleep(10);
-				//writeDebugStreamLine("%d Angler done pos1 in %d ms", nPgmTime, (nPgmTime-startTime));
+				writeDebugStreamLine("%d Angler pos1", nPgmTime);
+				unsigned long startTime = nPgmTime;
+				anglerMoveToPos(gAnglerBackMidFlag, 25);
+				while (gAnglerGoodCount < 7) sleep(10);
+				writeDebugStreamLine("%d Angler done pos1 in %d ms", nPgmTime, (nPgmTime-startTime));
 
 			}
 			else if (anglerPickupLowPFBtn && !anglerPickupLowPFBtnLst)
 			{
-				writeDebugStreamLine("%d Angler to pickup low platform position", nPgmTime);
-				anglerMoveToPos(ANGLER_LOW_PF_PICKUP_POS, 150);
+				//writeDebugStreamLine("%d Angler to pickup low platform position", nPgmTime);
+				//anglerMoveToPos(ANGLER_LOW_PF_PICKUP_POS, 150);
 
-				//writeDebugStreamLine("%d Angler pos2", nPgmTime);
-				//unsigned long startTime = nPgmTime;
-				//anglerMoveToPos(gAnglerBackTopFlag, 25);
-				//while (gAnglerGoodCount < 7) sleep(10);
-				//writeDebugStreamLine("%d Angler done pos2 in %d ms", nPgmTime, (nPgmTime-startTime));
+				writeDebugStreamLine("%d Angler pos2", nPgmTime);
+				unsigned long startTime = nPgmTime;
+				anglerMoveToPos(gAnglerBackTopFlag, 25);
+				while (gAnglerGoodCount < 7) sleep(10);
+				writeDebugStreamLine("%d Angler done pos2 in %d ms", nPgmTime, (nPgmTime-startTime));
 			}
 			else if (abs(vexRT[JOY_ANGLER]) > 10)
 			{
