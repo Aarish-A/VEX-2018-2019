@@ -973,8 +973,8 @@ void shooterSafetySet(tShooterState state)
 
 void killShooter()
 {
-	//if (!gShooterKilled)
-	//{
+	if (!gShooterKilled)
+	{
 		//Kill shooter
 		unsigned long stateElpsdTime = (nPgmTime-gShooterStateTime);
 		int senChange = SensorValue[shooterEnc]-gShooterStateSen;
@@ -982,24 +982,24 @@ void killShooter()
 		stopTask(shooterStateSet);
 		setShooter(0);
 		writeDebugStreamLine(">>>	 %d KILL SHOOTER SAFETY state %d Safety TO: %d SenChange: %d, Sen:%d", nPgmTime, gShooterState, stateElpsdTime, senChange, SensorValue[shooterEnc]);
+		setShooterState(shooterIdle);
+		////Wait for shooter to come to stop
+		//int sen, senLst, senDelta;
+		//do
+		//{
+		//	sen = SensorValue[shooterEnc];
+		//	senDelta = sen - senLst;
+		//	writeDebugStream("%d Waiting for shooter to come to stop. Pos:%d. LstPos:%d, DeltaPos:%d", nPgmTime, sen, senLst, senDelta);
+		//	senLst = sen;
+		//	sleep(300);
+		//}while(abs(senDelta) > 1);
+		//sleep(1000);
 
-		//Wait for shooter to come to stop
-		int sen, senLst, senDelta;
-		do
-		{
-			sen = SensorValue[shooterEnc];
-			senDelta = sen - senLst;
-			writeDebugStream("%d Waiting for shooter to come to stop. Pos:%d. LstPos:%d, DeltaPos:%d", nPgmTime, sen, senLst, senDelta);
-			senLst = sen;
-			sleep(300);
-		}while(abs(senDelta) > 1);
-		sleep(1000);
+		////Reset shooter
+		//startTask(shooterStateSet);
+		//setShooterState(shooterReset);
 
-		//Reset shooter
-		startTask(shooterStateSet);
-		setShooterState(shooterReset);
-
-	//}
+	}
 }
 
 void shooterSafetyCheck()
