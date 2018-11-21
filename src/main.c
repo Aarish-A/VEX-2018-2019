@@ -502,6 +502,8 @@ void decapperControls()
 
 //int gAnglerTarget = 1000;
 /* Angler Controls */
+#define ANGLER_DZ 15
+
 #define ANGLER_BOTTOM_POS  330
 #define ANGLER_HORIZONTAL_POS 1165
 #define ANGLER_TOP_POS 3866
@@ -574,7 +576,7 @@ void setAnglerState (tAnglerState state, int acceptableRange = 25)
 
 		default: writeDebugStream("UNKNOWN STATE"); break;
 		}
-		writeDebugStreamLine(". Targ:%d, Sen:%d, Time:%d, GoodCount:%d", gAnglerTarget, gAnglerStateSen, gAnglerStateTime, gAnglerGoodCount);
+		writeDebugStreamLine(". Targ:%d, Sen:%d, Time:%d, GoodCount:%d. AccRange:%d", gAnglerTarget, gAnglerStateSen, gAnglerStateTime, gAnglerGoodCount, gAnglerAcceptableRange);
 	}
 	tRelease();
 }
@@ -589,7 +591,7 @@ task anglerStateSet()
 	unsigned long deltaSen = 0;
 
 	float kP = 0.095;//0.09;
-	float kI = 0.048;//0.016;
+	float kI = 0.05;//0.048;//0.016;
 	float iVal, pVal;
 
 	sCycleData anglerCycle;
@@ -610,7 +612,7 @@ task anglerStateSet()
 				if (SensorValue[anglerPoti] < gAnglerTarget)
 				{
 					float kP = 0.3;
-					int targ = gAnglerTarget-200;
+					int targ = gAnglerTarget-300;
 					while(SensorValue[anglerPoti] < targ)
 					{
 						tHog();
@@ -638,7 +640,38 @@ task anglerStateSet()
 					} while ((vel > 2.7 && (nPgmTime-startBreakTime) < 100) || (nPgmTime-startBreakTime) < 20);
 					setAngler(0);
 				}
-				setAnglerState(anglerHold);
+				else
+				{
+					float kP = 0.08;
+					int targ = gAnglerTarget+300;
+					while(SensorValue[anglerPoti] > targ)
+					{
+						tHog();
+						int error = gAnglerTarget - SensorValue[anglerPoti];
+						float power = error * kP;
+						//if (abs(SensorValue[anglerPoti]-ANGLER_HORIZONTAL_POS) < 250) power+=6;
+						setAngler(power);
+						tRelease();
+						sleep(10);
+					}
+					setAngler(18);
+					unsigned long startBreakTime = nPgmTime;
+					float vel = 10;
+					do
+					{
+						sen = SensorValue[anglerPoti];
+						time = nPgmTime;
+
+						vel = (float)(sen-senLst)/(float)(time-timeLst);
+
+						//LOG(angler)("%d Angler Break. Pos:%d, Vel:%f", nPgmTime, sen, vel);
+						senLst = sen;
+						timeLst = time;
+						sleep(10);
+					} while ((vel < -2.7 && (nPgmTime-startBreakTime) < 100) || (nPgmTime-startBreakTime) < 20);
+					setAngler(0);
+				}
+				setAnglerState(anglerHold, gAnglerAcceptableRange);
 				break;
 			}
 		case anglerHold:
@@ -653,7 +686,7 @@ task anglerStateSet()
 
 				unsigned long deltaTime = time-timeLst;
 				deltaSen = sen - senLst;
-				if (deltaTime <= 0 || abs(deltaSen) > 3 || abs(error) < 10)// || gAnglerStateLst == anglerManual)
+				if (deltaTime <= 0 || abs(deltaSen) > 6 || abs(error) < (abs(gAnglerAcceptableRange)-15))// || gAnglerStateLst == anglerManual)
 				{
 					iVal = 0;
 				}
@@ -700,7 +733,7 @@ task anglerStateSet()
 			}
 		case anglerManual:
 			{
-				if (abs(vexRT[JOY_ANGLER]) > 10)
+				if (abs(vexRT[JOY_ANGLER]) > ANGLER_DZ)
 				{
 					if (vexRT[JOY_ANGLER] > 0 && SensorValue[anglerPoti] < (ANGLER_TOP_LIM_POS - 100))
 					{
@@ -723,16 +756,17 @@ task anglerStateSet()
 			}
 		}
 
-		//tHog();
-		//datalogDataGroupStart();
-		//datalogAddValue(0, SensorValue[anglerPoti]);
-		//datalogAddValue(1, (pVal*10.0));
-		//datalogAddValue(2, (iVal*10.0));
-		//datalogAddValue(3, gAnglerPower);
+		tHog();
+		datalogDataGroupStart();
+		datalogAddValue(0, SensorValue[anglerPoti]);
+		datalogAddValue(1, (pVal*10.0));
+		datalogAddValue(2, (iVal*10.0));
+		datalogAddValue(3, gMotor[angler].powerCur);
+		datalogAddValue(4, vexRT[JOY_ANGLER]);
 		//datalogAddValue(4, SensorValue[shooterEnc]);
 		//datalogAddValue(5, SensorValue[ballDetector]);
-		//datalogDataGroupEnd();
-		//tRelease();
+		datalogDataGroupEnd();
+		tRelease();
 
 		//endCycle(anglerCycle);
 		sleep(10);
@@ -982,8 +1016,8 @@ void killShooter()
 		stopTask(shooterStateSet);
 		setShooter(0);
 		writeDebugStreamLine(">>>	 %d KILL SHOOTER SAFETY state %d Safety TO: %d SenChange: %d, Sen:%d", nPgmTime, gShooterState, stateElpsdTime, senChange, SensorValue[shooterEnc]);
-
-		//Wait for shooter to come to stop
+		setShooterState(shooterIdle);
+		////Wait for shooter to come to stop
 		//int sen, senLst, senDelta;
 		//do
 		//{
@@ -998,7 +1032,6 @@ void killShooter()
 		////Reset shooter
 		//startTask(shooterStateSet);
 		//setShooterState(shooterReset);
-
 	}
 }
 
@@ -1013,8 +1046,8 @@ void shooterSafetyCheck()
 		if (gShooterState == shooterReset)
 		{
 			//TODO: REVERT THIS SAFETY BACK TO COMMENTED OUT LINE
-			if (stateElpsdTime > 8000) shooterSafetySet(shooterIdle);
-			//if (stateElpsdTime > 500) shooterSafetySet(shooterIdle);
+			//if (stateElpsdTime > 8000) shooterSafetySet(shooterIdle);
+			if (stateElpsdTime > 500) shooterSafetySet(shooterIdle);
 			else if (stateElpsdTime > 100 && senChange > 10) killShooter();
 		}
 		else if (gShooterState == shooterReload)
@@ -1280,14 +1313,14 @@ task monitorVals()
 		shooterSafetyCheck();
 		ballTrackLog();
 
-		datalogDataGroupStart();
-		datalogAddValue(0, SensorValue[anglerPoti]);
-		//datalogAddValue(1, (pVal*10.0));
-		//datalogAddValue(2, (iVal*10.0));
-		datalogAddValue(3, gMotor[angler].powerCur);
-		datalogAddValue(4, SensorValue[shooterEnc]);
-		datalogAddValue(5, SensorValue[ballDetector]);
-		datalogDataGroupEnd();
+		//datalogDataGroupStart();
+		//datalogAddValue(0, SensorValue[anglerPoti]);
+		////datalogAddValue(1, (pVal*10.0));
+		////datalogAddValue(2, (iVal*10.0));
+		//datalogAddValue(3, gMotor[angler].powerCur);
+		//datalogAddValue(4, SensorValue[shooterEnc]);
+		//datalogAddValue(5, SensorValue[ballDetector]);
+		//datalogDataGroupEnd();
 
 		tRelease();
 
@@ -1543,7 +1576,7 @@ task usercontrol()
 				while (gAnglerGoodCount < 7) sleep(10);
 				writeDebugStreamLine("%d Angler done pos2 in %d ms", nPgmTime, (nPgmTime-startTime));
 			}
-			else if (abs(vexRT[JOY_ANGLER]) > 10)
+			else if (abs(vexRT[JOY_ANGLER]) > ANGLER_DZ)
 			{
 				setAnglerState(anglerManual);
 			}
