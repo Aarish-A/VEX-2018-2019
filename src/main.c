@@ -614,7 +614,8 @@ task anglerStateSet()
 					float kP = 0.3;
 					//int targ = gAnglerTarget - ((abs(gAnglerAcceptableRange)<30)? 300 : 200);
 					int targ = gAnglerTarget - 300;
-					while(SensorValue[anglerPoti] < targ)
+					unsigned long startMoveTime = nPgmTime;
+					while(SensorValue[anglerPoti] < targ && (nPgmTime-startMoveTime) < 1500)
 					{
 						tHog();
 						int error = gAnglerTarget - SensorValue[anglerPoti];
@@ -646,7 +647,8 @@ task anglerStateSet()
 					float kP = 0.1;
 					//int targ = gAnglerTarget + ((abs(gAnglerAcceptableRange)<30)? 300 : 200);
 					int targ = gAnglerTarget;// + 300;
-					while(SensorValue[anglerPoti] > targ)
+					unsigned long startMoveTime = nPgmTime;
+					while(SensorValue[anglerPoti] > (targ+100) && (nPgmTime-startMoveTime) < 1500)
 					{
 						tHog();
 						int error = gAnglerTarget - SensorValue[anglerPoti];
@@ -656,7 +658,7 @@ task anglerStateSet()
 						tRelease();
 						sleep(10);
 					}
-					setAngler(18);
+					setAngler(17);
 					unsigned long startBreakTime = nPgmTime;
 					float vel = 10;
 					do
@@ -758,7 +760,7 @@ task anglerStateSet()
 					sleep(200);
 					gAnglerTarget = SensorValue[anglerPoti];
 					//setAnglerState(anglerIdle);
-					setAnglerState(anglerHold);
+					setAnglerState(anglerHold, 100);
 				}
 				break;
 			}
