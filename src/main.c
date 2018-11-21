@@ -591,7 +591,7 @@ task anglerStateSet()
 	unsigned long deltaSen = 0;
 
 	float kP = 0.095;//0.09;
-	float kI = 0.03;//0.048;//0.016;
+	float kI = 0.05;//0.048;//0.016;
 	float iVal, pVal;
 
 	sCycleData anglerCycle;
@@ -612,8 +612,7 @@ task anglerStateSet()
 				if (SensorValue[anglerPoti] < gAnglerTarget)
 				{
 					float kP = 0.3;
-					//int targ = gAnglerTarget - ((abs(gAnglerAcceptableRange)<30)? 300 : 200);
-					int targ = gAnglerTarget - 300;
+					int targ = gAnglerTarget-300;
 					while(SensorValue[anglerPoti] < targ)
 					{
 						tHog();
@@ -643,9 +642,8 @@ task anglerStateSet()
 				}
 				else
 				{
-					float kP = 0.1;
-					//int targ = gAnglerTarget + ((abs(gAnglerAcceptableRange)<30)? 300 : 200);
-					int targ = gAnglerTarget;// + 300;
+					float kP = 0.08;
+					int targ = gAnglerTarget+300;
 					while(SensorValue[anglerPoti] > targ)
 					{
 						tHog();
@@ -688,19 +686,13 @@ task anglerStateSet()
 
 				unsigned long deltaTime = time-timeLst;
 				deltaSen = sen - senLst;
-				if (deltaTime <= 0 || abs(deltaSen) > 10 || abs(error) < (abs(gAnglerAcceptableRange)-15))// || gAnglerStateLst == anglerManual)
+				if (deltaTime <= 0 || abs(deltaSen) > 6 || abs(error) < (abs(gAnglerAcceptableRange)-15))// || gAnglerStateLst == anglerManual)
 				{
 					iVal = 0;
 				}
 				else iVal += ( (float)error / (float)(deltaTime) ) * kI;
 
-				if (error > 0 && deltaSen < 5  && abs(error) > gAnglerAcceptableRange) //If we are stalled below our target, i must be grater than 8
-				{
-					if (SensorValue[anglerPoti] < 1350 && iVal < 8) iVal = 8;
-					else if (SensorValue[anglerPoti] > 1350 && iVal < 15) iVal = 15;
-				}
-
-				if (abs(deltaSen) < 5 && abs(error) < gAnglerAcceptableRange)// && abs(gAnglerGoodCount) < 25)
+				if (abs(deltaSen) < 3 && abs(error) < gAnglerAcceptableRange)// && abs(gAnglerGoodCount) < 25)
 				{
 					gAnglerGoodCount++;
 					SensorValue[LED1] = 300;
@@ -1568,7 +1560,7 @@ task usercontrol()
 
 				writeDebugStreamLine("%d Angler pos1", nPgmTime);
 				unsigned long startTime = nPgmTime;
-				anglerMoveToPos(gAnglerFrontPFMidFlag, 80);
+				anglerMoveToPos(gAnglerBackMidFlag, 25);
 				while (gAnglerGoodCount < 7) sleep(10);
 				writeDebugStreamLine("%d Angler done pos1 in %d ms", nPgmTime, (nPgmTime-startTime));
 
@@ -1580,7 +1572,7 @@ task usercontrol()
 
 				writeDebugStreamLine("%d Angler pos2", nPgmTime);
 				unsigned long startTime = nPgmTime;
-				anglerMoveToPos(gAnglerFrontPFTopFlag, 80);
+				anglerMoveToPos(gAnglerBackTopFlag, 25);
 				while (gAnglerGoodCount < 7) sleep(10);
 				writeDebugStreamLine("%d Angler done pos2 in %d ms", nPgmTime, (nPgmTime-startTime));
 			}
