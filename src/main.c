@@ -195,7 +195,7 @@ task driveStateSet()
 				}
 				else turn = 0;
 
-				if ((nPgmTime-gDriveStateTime) < 50) gDriveTurnDir = turnNone; //For first 250ms of being in manual, turnDir reset to turnNone
+				if ((nPgmTime-gDriveStateTime) < 50) gDriveTurnDir = turnNone; //For first 50ms of being in manual, turnDir reset to turnNone
 
 				left = throttle + turn;
 				right = throttle - turn;
@@ -285,8 +285,6 @@ void setIntakeState (tIntakeState state)
 
 task intakeStateSet()
 {
-	sCycleData intakeCycle;
-	initCycle(intakeCycle, 10, "intakeCycle");
 
 	while (true)
 	{
@@ -313,7 +311,6 @@ task intakeStateSet()
 				break;
 			}
 		}
-		//endCycle(intakeCycle);
 		sleep(10);
 	}
 }
@@ -417,8 +414,6 @@ void setDecapperState (tDecapperState state, int target = -1, int power = -1)
 
 task decapperStateSet()
 {
-	sCycleData decapperCycle;
-	initCycle(decapperCycle, 10, "decapperCycle");
 
 	while (true)
 	{
@@ -467,7 +462,6 @@ task decapperStateSet()
 				break;
 			}
 		}
-		//endCycle(decapperCycle);
 		sleep(10);
 	}
 }
@@ -593,9 +587,6 @@ task anglerStateSet()
 	float kP = 0.095;//0.09;
 	float kI = 0.03;//0.048;//0.016;
 	float iVal, pVal;
-
-	sCycleData anglerCycle;
-	initCycle(anglerCycle, 10, "anglerCycle");
 
 	while (true)
 	{
@@ -778,7 +769,6 @@ task anglerStateSet()
 		datalogDataGroupEnd();
 		tRelease();
 
-		//endCycle(anglerCycle);
 		sleep(10);
 	}
 }
@@ -851,8 +841,6 @@ task shooterStateSet()
 	//SensorValue[shooterEnc] = 0;
 	SensorValue[shooterEnc] = 0;
 
-	sCycleData shooterCycle;
-	initCycle(shooterCycle, 10, "shooterCycle");
 	while (true)
 	{
 		switch (gShooterState)
@@ -998,7 +986,6 @@ task shooterStateSet()
 				break;
 			}
 		}
-		//endCycle(shooterCycle);
 		sleep(10);
 	}
 }
