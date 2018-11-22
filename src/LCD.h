@@ -1,4 +1,3 @@
-
 /* LCD Controls */
 typedef enum _tLCDScreen
 {

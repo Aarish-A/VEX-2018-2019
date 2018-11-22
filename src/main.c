@@ -52,6 +52,7 @@ void tRelease()
 #include "motors.h"
 #include "custom_turning.h"
 #include "safety.h"
+#include "FlashLib/FlashLib.h"
 
 // Year-independent libraries (source)
 //#include "utilities.c"
