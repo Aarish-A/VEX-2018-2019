@@ -336,7 +336,11 @@ void intakeControls()
 
 	if (intakeUpBtn && !intakeUpBtnLst)
 	{
-		if (gIntakeState != intakeIdle)
+		if (vexRT[BTN_SHIFT])
+		{
+			gDriveFlip = !gDriveFlip;
+		}
+		else if (gIntakeState != intakeIdle)
 		{
 			if (gIntakeState == intakeDown) setIntakeState(intakeCapHold);
 			else setIntakeState(intakeIdle);
@@ -1265,6 +1269,11 @@ void anglerShooter(int posA, int posB, int acceptableRange, bool waitForFirstSho
 	anglerAlgLogs = false;
 	LOG(macro)("	>> %d Done pntSht in %dms. Anglr:%d. Shooter:%d", nPgmTime, (nPgmTime-startTime), SensorValue[anglerPoti], SensorValue[shooterEnc]);
 
+	if(SensorValue[anglerPoti] > ANGLER_AXEL_POS)
+	{
+		while (gAnglerGoodCount < 2) sleep(10);
+		setShooterState(shooterReload);
+	}
 }
 
 int anglerShooterPosA, anglerShooterPosB, anglerShooterAcceptableRange;
@@ -1493,11 +1502,7 @@ task usercontrol()
 		{
 			if (shootBtn && !shootBtnLst)
 			{
-				if (vexRT[BTN_SHIFT])
-				{
-					gDriveFlip = !gDriveFlip;
-				}
-				else if (SensorValue[shooterEnc] < SHOOTER_RELOAD_POS)
+				if (SensorValue[shooterEnc] < SHOOTER_RELOAD_POS)
 				{
 					setShooterState(shooterReload);
 				}
