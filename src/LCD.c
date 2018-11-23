@@ -158,18 +158,6 @@ task handleLCD()
       	}
       	break;
       }
-      case trackingTune:
-      {
-      	string line1, line2;
-      	sprintf(line1, "(%3.2f, %3.2f)", gPosition.x, gPosition.y);
-      	sprintf(line2, "a:%3.2f", gPosition.a);
-      	displayLCDCenteredString(0, line1);
-      	displayLCDCenteredString(1, line2);
-
-      	if (LCD_R) gLCDScreen++;
-      	else if (LCD_L) gLCDScreen--;
-      	break;
-      }
       case shotCount:
       {
       	displayLCDString(0, 0, "ShotCount: ");

@@ -59,20 +59,16 @@ void tRelease()
 
 /* Includes */
 // Year-independent libraries (headers)
+#include "utilities.h"
 #include "cycle.h"
 #include "motors.h"
-#include "tracking.h"
-#include "utilities.h"
-
 #include "custom_turning.h"
 #include "safety.h"
 
 // Year-independent libraries (source)
+//#include "utilities.c"
 #include "cycle.c"
 #include "motors.c"
-#include "tracking.c"
-#include "utilities.c"
-
 #include "custom_turning.c"
 #include "safety.c"
 
@@ -83,7 +79,6 @@ void tRelease()
 // Important globals
 bool gAnglerShooterTaskRunning = false;
 unsigned long gAnglerShooterTaskTime = 0;
-
 
 //Iniitialize safeties
 sSafety driveSafety, shooterSafety, anglerSafety; //No intake safety
@@ -106,12 +101,12 @@ int gShooterShotCount = 0;
 #define SHOOTER_RELOAD_POS ((SHOOTER_SHOOT_POS) + 185)//165)
 
 /* Drive Controls */
-typedef enum _tDriveTurnDir
+typedef enum _tTurnDir
 {
 	turnNone,
 	turnCW,
 	turnCCW
-} tDriveTurnDir;
+} tTurnDir;
 
 #define DRIVE_THROTTLE_DZ 15
 #define DRIVE_TURN_DZ 10
@@ -145,7 +140,7 @@ tDriveState gDriveState = driveIdle;
 tDriveState gDriveStateLst = gDriveState;
 unsigned long gDriveStateTime;
 
-tDriveTurnDir gDriveTurnDir = turnNone;
+tTurnDir gDriveTurnDir = turnNone;
 
 void setDriveState (tDriveState state, int drivePower = -1, int driveLength = -1)
 {
@@ -1280,21 +1275,11 @@ void anglerShooter(int posA, int posB, int acceptableRange, bool waitForFirstSho
 		setShooterState(shooterReload);
 	}
 }
-typedef enum _tMacroTask
-{
-	macroNone,
-	macroAnglerShooter,
-	macroCapFlip
-} tMacroTask;
 
-tMacroTask gMacroTask = macroNone;
-
-/* AnglerShooter function task globals */
 int anglerShooterPosA, anglerShooterPosB, anglerShooterAcceptableRange;
 bool anglerShooterWaitForFirstShot, anglerShooterWaitForSecShot, anglerShooterReversePos;
 TVexJoysticks anglerShooterBtn;
-
-task macroTask()
+task anglerShooterTask()
 {
 	gAnglerShooterTaskRunning = true;
 	gAnglerShooterTaskTime = nPgmTime;
@@ -1307,8 +1292,7 @@ task macroTask()
 anglerShooterPosA = posA; anglerShooterPosB = posB; anglerShooterAcceptableRange = acceptableRange; \
 anglerShooterWaitForFirstShot = waitForFirstShot; anglerShooterWaitForSecShot = waitForSecShot; anglerShooterReversePos = (bool)reversePos; \
 anglerShooterBtn = btn; \
-gMacroTask = macroAnglerShooter; \
-startTask(macroTask)
+startTask(anglerShooterTask)
 
 #define ANGLER_SHOOTER_TASK_KILL \
 	gAnglerShooterTaskTime = 0; \
@@ -1358,9 +1342,6 @@ task monitorVals()
 		datalogAddValue(3, gMotor[angler].powerCur);
 		datalogAddValue(4, SensorValue[shooterEnc]);
 		datalogAddValue(5, SensorValue[ballDetector]);
-		datalogAddValue(1, gMotor[angler].powerCur);
-		datalogAddValue(2, SensorValue[shooterEnc]);
-		datalogAddValue(3, SensorValue[ballDetector]);
 		datalogDataGroupEnd();
 
 		tRelease();
@@ -1501,12 +1482,9 @@ task usercontrol()
 		anglerPickupLowPFBtn = (bool)vexRT[BTN_ANGLER_LOW_PF_PICKUP];
 
 		/* Drive Controls */
-		if (!gDriveDisabled)
-		{
-			gDriveThrottleRaw = (!gAnglerShooterTaskRunning)? vexRT[JOY_DRIVE_THROTTLE] : vexRT[JOY_ANGLER]; //Switch drive to right joy
-			gDriveTurnRaw = (!gAnglerShooterTaskRunning)? vexRT[JOY_DRIVE_TURN] : (vexRT[JOY_DECAPPER] * 0.5); //when taking shot(s)
-			if ( ((abs(gDriveTurnRaw) > DRIVE_TURN_DZ) || (abs(gDriveThrottleRaw) > DRIVE_THROTTLE_DZ)) && gDriveState != driveMoveTime) setDriveState(driveManual);
-		}
+		gDriveThrottleRaw = (!gAnglerShooterTaskRunning)? vexRT[JOY_DRIVE_THROTTLE] : vexRT[JOY_ANGLER];
+		gDriveTurnRaw = (!gAnglerShooterTaskRunning)? vexRT[JOY_DRIVE_TURN] : (vexRT[JOY_DECAPPER] * 0.5);
+		if ( ((abs(gDriveTurnRaw) > DRIVE_TURN_DZ) || (abs(gDriveThrottleRaw) > DRIVE_THROTTLE_DZ)) && gDriveState != driveMoveTime) setDriveState(driveManual);
 
 		/* Intake Controls */
 		intakeControls();

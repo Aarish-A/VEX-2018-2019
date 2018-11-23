@@ -2,43 +2,6 @@
 bool autoLogs = 0;
 bool excelLogs = 1;
 
-void applyHarshStop()
-{
-	sVector vel;
-	vel.x = gVelocity.x;
-	vel.y = gVelocity.y;
-	sPolar polarVel;
-	vectorToPolar(vel, polarVel);
-	polarVel.angle += gPosition.a;
-	polarToVector(polarVel, vel);
-	float yPow = vel.y, aPow = gVelocity.a;
-
-	writeDebugStreamLine("Vel y | a: %f | %f", yPow, aPow);
-
-	yPow *= -0.7;
-	aPow *= -6.3;
-
-	word left = yPow + aPow;
-	word right = yPow - aPow;
-
-	left = sgn(left) * MAX(fabs(left), 7);
-	right = sgn(right) * MAX(fabs(right), 7);
-
-	LIM_TO_VAL_SET(left, 30);
-	LIM_TO_VAL_SET(right, 30);
-
-	writeDebugStreamLine("Applying harsh stop: %d %d", left, right);
-	setDrive(left, right);
-	updateMotors();
-
-	unsigned long startTime = npgmtime;
-	WHILE(drive, (npgmtime-startTime) < 150)
-		sleep(10);
-
-	setDrive(0, 0);
-	updateMotors();
-}
-
 //TODO: Test Offset Calc
 //TODO: Make local y be delta x - if delta x is larger than delta y
 //TODO: Make the while loop end when abs(currentLocalPos.hypotenuse) < 0.5
