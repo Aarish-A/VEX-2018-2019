@@ -42,7 +42,7 @@ task handleLCD()
       case turnBreakPow:
       {
       	displayLCDCenteredString(0, "Turn Break Power:");
-       displayLCDNumber(1, 0, gDriveBreakPow);
+       	displayLCDNumber(1, 0, gDriveBreakPow);
 
       	if (!selected && LCD_M)
       	{
@@ -123,7 +123,7 @@ task handleLCD()
       case turnCurveAdjust:
       {
      		displayLCDCenteredString(0, "Turn Curve:");
-       displayLCDNumber(1, 0, gTurnCurvature);
+       	displayLCDNumber(1, 0, gTurnCurvature);
 
       	if (!selected && LCD_M)
       	{
@@ -204,19 +204,21 @@ task handleLCD()
         	case 2: displayLCDChar(1, 6, '^'); break;
         	case 3: displayLCDChar(1, 11, '^'); break;
         	case 4: displayLCDChar(1, 15, '^'); break;
+        	case 5: displayLCDChar(1, 15, '>'); break;
         }
 
         // Controls
-        if (curLCDLeft && !lstLCDLeft)
+        if (LCD_L)
         {
           if (pointer > 0) pointer--;
           else gLCDScreen = anglerTargetTuning;
         }
-        else if (curLCDRight && !lstLCDRight)
+        else if (LCD_R)
         {
-          if (pointer < kPosNum) pointer++;
+          if (pointer < (kPosNum + 1)) pointer++;
+          else gLCDScreen = saveTuning;
         }
-        else if (curLCDMiddle && !lstLCDMiddle)
+        else if (LCD_M)
         {
           //if (pointer == 1) gCurLCDSelection.position = 0;
           //else if (pointer == 2) gCurLCDSelection.position = 1;
@@ -240,16 +242,16 @@ task handleLCD()
         else pointer = 2;
 
         // Controls
-        if (curLCDLeft && !lstLCDLeft)
+        if (LCD_L)
         {
           if (pointer > 0) pointer--;
           else gLCDScreen = selectPosition;
         }
-        else if (curLCDRight && !lstLCDRight)
+        else if (LCD_R)
         {
           if (pointer < 2) pointer++;
         }
-        else if (curLCDMiddle && !lstLCDMiddle)
+        else if (LCD_M)
         {
           if (pointer == 1) gCurLCDSelection.flag = 0;
           else if (pointer == 2) gCurLCDSelection.flag = 1;
@@ -268,48 +270,48 @@ task handleLCD()
               if (gCurLCDSelection.flag == 0)
               {
                 gCurLCDSelection.name = "F_PF Mid: ";
-                gCurLCDSelection.value = &gAnglerFrontPFMidFlag;
+                gCurLCDSelection.value = &gAnglerTargetPosition[6];
               }
               else if (gCurLCDSelection.flag == 1)
               {
                 gCurLCDSelection.name = "F_PF Top: ";
-                gCurLCDSelection.value = &gAnglerFrontPFTopFlag;
+                gCurLCDSelection.value = &gAnglerTargetPosition[7];
               }
               break;
             case 2:
               if (gCurLCDSelection.flag == 0)
               {
                 gCurLCDSelection.name = "M_PF Mid ";
-                gCurLCDSelection.value = &gAnglerMidPFMidFlag;
+                gCurLCDSelection.value = &gAnglerTargetPosition[4];
               }
               else if (gCurLCDSelection.flag == 1)
               {
                 gCurLCDSelection.name = "M_PF Top ";
-                gCurLCDSelection.value = &gAnglerMidPFTopFlag;
+                gCurLCDSelection.value = &gAnglerTargetPosition[5];
               }
               break;
              case 3:
               if (gCurLCDSelection.flag == 0)
               {
                 gCurLCDSelection.name = "B_PF Mid ";
-                gCurLCDSelection.value = &gAnglerBackPFMidFlag;
+                gCurLCDSelection.value = &gAnglerTargetPosition[2];
               }
               else if (gCurLCDSelection.flag == 1)
               {
                 gCurLCDSelection.name = "B_PF Top ";
-                gCurLCDSelection.value = &gAnglerBackPFTopFlag;
+                gCurLCDSelection.value = &gAnglerTargetPosition[3];
               }
               break;
             case 4:
               if (gCurLCDSelection.flag == 0)
               {
                 gCurLCDSelection.name = "Back Mid ";
-                gCurLCDSelection.value = &gAnglerBackMidFlag;
+                gCurLCDSelection.value = &gAnglerTargetPosition[0];
               }
               else if (gCurLCDSelection.flag == 1)
               {
                 gCurLCDSelection.name = "Back Top ";
-                gCurLCDSelection.value = &gAnglerBackTopFlag;
+                gCurLCDSelection.value = &gAnglerTargetPosition[1];
               }
               break;
         }
@@ -319,21 +321,61 @@ task handleLCD()
         displayNextLCDNumber(*gCurLCDSelection.value, 4);
 
         // Controls
-        if ((curLCDLeft && !lstLCDLeft) || (curLCDRight && !lstLCDRight))
+        if ((LCD_L) || (LCD_R))
         {
           int adjust;
           if (curLCDLeft) adjust = -10;
           else if (curLCDRight) adjust = 10;
 
           *gCurLCDSelection.value += adjust;
-          //writeDebugStreamLine("%d | %d", nPgmTime, gAnglerBackTopFlag);
+          //writeDebugStreamLine("%d | %d", nPgmTime, gAnglerTargetPosition[1]);
         }
-        else if (curLCDMiddle && !lstLCDMiddle)
+        else if (LCD_M)
         {
           gLCDScreen = selectFlag;
         }
         break;
       }
+      case saveTuning:
+      {
+      	if (pointer == 5) pointer = 1;
+      	displayLCDCenteredString(0, "Save? : Yes   No");
+
+        switch(pointer)
+        {
+        	case 0: displayLCDChar(1, 0, '<'); break;
+        	case 1: displayLCDChar(1, 9, '^'); break;
+        	case 2: displayLCDChar(1, 14, '^'); break;
+        }
+
+        // Controls
+        if (LCD_L)
+        {
+          if (pointer > 0)
+          {
+          	pointer--;
+          }
+          else if (pointer == 0)
+          {
+          	pointer = 5;
+          	gLCDScreen = selectPosition;
+          }
+        }
+        else if (LCD_R)
+        {
+          if (pointer < 2) pointer++;
+        }
+        else if (LCD_M)
+        {
+        	switch(pointer)
+        	{
+        		case 0: updateAnglerFiles(); break;
+        		case 1: writeDebugStreamLine("Cancelled Save"); break;
+        	}
+					gLCDScreen = anglerTargetTuning;
+      	}
+      	break;
+    	}
     }
 
     end:
@@ -343,4 +385,32 @@ task handleLCD()
 
     sleep(10);
   }
+}
+
+// Flash Functions
+void setupAnglerFiles()
+{
+	if (RCFS_GetFile("debug001", &data, &fileLength) == RCFS_SUCCESS)
+	{
+		RCFS_GetLastFilename(name, 16);
+		RCFS_GetFile(name, &data, &fileLength)
+		memcpy(&gAnglerTargetPosition, data, sizeof(gAnglerTargetPosition));
+		writeDebugStreamLine("Last file written was %s", &name[0]);
+	}
+	else
+	{
+		writeDebugStreamLine("%d | Could not find file", nPgmTime);
+		memcpy(&tempData, &gAnglerTargetPosition, sizeof(gAnglerTargetPosition));
+		if (RCFS_AddFile(tempData, sizeof(gAnglerTargetPosition)) == RCFS_ERROR)
+			writeDebugStreamLine("%d | File Write Error", nPgmTime);
+		else writeDebugStreamLine("%d | Wrote new angler positions file", nPgmTime);
+	}
+}
+
+void updateAnglerFiles()
+{
+	memcpy(&tempData, &gAnglerTargetPosition, sizeof(gAnglerTargetPosition));
+	if (RCFS_AddFile(tempData, sizeof(gAnglerTargetPosition)) == RCFS_ERROR)
+		writeDebugStreamLine("%d | File Write Error", nPgmTime);
+	else writeDebugStream("%d | Wrote new angler positions file", nPgmTime);
 }

@@ -14,6 +14,7 @@ typedef enum _tLCDScreen
   selectPosition,
   selectFlag,
   changeTarget,
+  saveTuning,
   kNumLcdScreens
 } tLCDScreen;
 
@@ -33,3 +34,13 @@ sCurLCDSelection gCurLCDSelection;
 #define LCD_L (curLCDLeft && !lstLCDLeft)
 #define LCD_R (curLCDRight && !lstLCDRight)
 #define LCD_M (curLCDMiddle && !lstLCDMiddle)
+
+// Flash Variables
+static char tempData[sizeof(int) * 8];
+unsigned char* data;
+int fileLength;
+char name[16];
+
+// Flash Functions
+void setupAnglerFiles();
+void updateAnglerFiles();

@@ -248,7 +248,6 @@ typedef enum _tIntakeState
 	intakeCapHold,
 	intakeUp,
 	intakeDown
-
 } tIntakeState;
 
 tIntakeState gIntakeState = intakeIdle;
@@ -519,18 +518,33 @@ void decapperControls()
 
 #define ANGLER_CAP_FLIP_POS 820
 
-int gAnglerBackTopFlag = 1510; //1430; //1390; //1490
-int gAnglerBackMidFlag = 1250; //1235; //1175; //1270
+int gAnglerTargetPosition[] = {
+	1250, // Back Middle Flag
+	1510, // Back Top Flag
 
-int gAnglerFrontPFTopFlag = 1770;//1730;
-int gAnglerFrontPFMidFlag = 1360;//1310;
+	1220, // Back Platform Middle Flag
+	1510, // Back Platform Top Flag
 
-int gAnglerMidPFTopFlag = 1570;//1730;
-int gAnglerMidPFMidFlag = 1250;//1310;
+	1250, // Mid Platform Middle Flag
+	1570, // Mid Platform Top Flag
 
-//Positions shooting from back of front platform tile
-int gAnglerBackPFTopFlag = 1510;//1410;
-int gAnglerBackPFMidFlag = 1220;//1160;
+	1360, // Front Platform Middle Flag
+	1770  // Front Platform Top Flag
+};
+
+//int gAnglerTargetPosition[0] = 1250; //1235; //1175; //1270
+//int gAnglerTargetPosition[1] = 1510; //1430; //1390; //1490
+
+////Positions shooting from back of front platform tile
+//int gAnglerTargetPosition[2] = 1220;//1160;
+//int gAnglerTargetPosition[3] = 1510;//1410;
+
+//int gAnglerTargetPosition[4] = 1250;//1310;
+//int gAnglerTargetPosition[5] = 1570;//1730;
+
+//int gAnglerTargetPosition[6] = 1360;//1310;
+//int gAnglerTargetPosition[7] = 1770;//1730;
+
 
 int gAnglerPower = 0;
 void setAngler(word val)
@@ -1389,6 +1403,7 @@ void startup()
 	setupMotors();
 	updateTurnLookup();
 	initSafeties();
+	setupAnglerFiles();
 
 	clearSounds();
 
@@ -1518,28 +1533,28 @@ task usercontrol()
 			{
 				tHog();
 				writeDebugStreamLine("%d Shoot from front of platform", nPgmTime);
-				ANGLER_SHOOTER_TASK(gAnglerFrontPFMidFlag, gAnglerFrontPFTopFlag, 60, false, false, BTN_SHOOT_FRONT_PF, vexRT[BTN_SHIFT]);
+				ANGLER_SHOOTER_TASK(gAnglerTargetPosition[6], gAnglerTargetPosition[7], 60, false, false, BTN_SHOOT_FRONT_PF, vexRT[BTN_SHIFT]);
 				tRelease();
 			}
 			else if ((shootMidPFBtn && !shootMidPFBtnLst) && !(shootBtn && !shootBtnLst))
 			{
 				tHog();
 				writeDebugStreamLine("%d Shoot from mid of platform", nPgmTime);
-				ANGLER_SHOOTER_TASK(gAnglerMidPFMidFlag, gAnglerMidPFTopFlag, 60, true, true, BTN_SHOOT_MID_PF, vexRT[BTN_SHIFT]);
+				ANGLER_SHOOTER_TASK(gAnglerTargetPosition[4], gAnglerTargetPosition[5], 60, true, true, BTN_SHOOT_MID_PF, vexRT[BTN_SHIFT]);
 				tRelease();
 			}
 			else if ((shootBackPFBtn && !shootBackPFBtnLst) && !(shootBtn && !shootBtnLst))
 			{
 				tHog();
 				writeDebugStreamLine("%d Shoot from back of platform", nPgmTime);
-				ANGLER_SHOOTER_TASK(gAnglerBackPFMidFlag, gAnglerBackPFTopFlag, 55, true, true, BTN_SHOOT_BACK_PF, vexRT[BTN_SHIFT]);
+				ANGLER_SHOOTER_TASK(gAnglerTargetPosition[2], gAnglerTargetPosition[3], 55, true, true, BTN_SHOOT_BACK_PF, vexRT[BTN_SHIFT]);
 				tRelease();
 			}
 			else if ((shootBackBtn && !shootBackBtnLst) && !(shootBtn && !shootBtnLst))
 			{
 				tHog();
 				writeDebugStreamLine("%d Shoot from back of field", nPgmTime);
-				ANGLER_SHOOTER_TASK(gAnglerBackMidFlag, gAnglerBackTopFlag, 25, true, true, BTN_SHOOT_BACK, vexRT[BTN_SHIFT]);
+				ANGLER_SHOOTER_TASK(gAnglerTargetPosition[0], gAnglerTargetPosition[1], 25, true, true, BTN_SHOOT_BACK, vexRT[BTN_SHIFT]);
 				tRelease();
 			}
 			else if (anglerPickupGroundBtn && !anglerPickupGroundBtnLst)
@@ -1572,7 +1587,7 @@ task usercontrol()
 
 				//writeDebugStreamLine("%d Angler pos1", nPgmTime);
 				//unsigned long startTime = nPgmTime;
-				//anglerMoveToPos(gAnglerBackMidFlag, 25);
+				//anglerMoveToPos(gAnglerTargetPosition[0], 25);
 				//while (gAnglerGoodCount < 7) sleep(10);
 				//writeDebugStreamLine("%d Angler done pos1 in %d ms", nPgmTime, (nPgmTime-startTime));
 
@@ -1584,7 +1599,7 @@ task usercontrol()
 
 				//writeDebugStreamLine("%d Angler pos2", nPgmTime);
 				//unsigned long startTime = nPgmTime;
-				//anglerMoveToPos(gAnglerBackTopFlag, 25);
+				//anglerMoveToPos(gAnglerTargetPosition[1], 25);
 				//while (gAnglerGoodCount < 7) sleep(10);
 				//writeDebugStreamLine("%d Angler done pos2 in %d ms", nPgmTime, (nPgmTime-startTime));
 			}
