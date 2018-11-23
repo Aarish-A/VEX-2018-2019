@@ -8,6 +8,7 @@ typedef enum _tLCDScreen
   turnCurveColour,
   turnCurveAdjust,
   //sensorView,
+  trackingTune,
   shotCount,
   shootTuneMode,
 
@@ -18,7 +19,7 @@ typedef enum _tLCDScreen
   kNumLcdScreens
 } tLCDScreen;
 
-tLCDScreen gLCDScreen = shootTuneMode;
+tLCDScreen gLCDScreen = trackingTune;//shootTuneMode;
 
 const int kPosNum = 4;
 

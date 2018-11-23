@@ -6,7 +6,6 @@
 #define LIM_TO_VAL(input, val) (abs(input) > (val) ? (val) * sgn(input) : (input))
 #define MIN_LIM_TO_VAL(input, val, targSgn) (( (sgn(targSgn) >= 0)? (input < sgn(targSgn)):(input > sgn(targSgn)*(val)) )? (val) * sgn(targSgn) : (input))
 
-
 // Limit a variable to a value and set that variable to the result
 #define LIM_TO_VAL_SET(input, val) input = LIM_TO_VAL(input, val)
 #define MIN_LIM_TO_VAL_SET(input, val, targSgn) input = MIN_LIM_TO_VAL(input, val, targSgn)
@@ -28,7 +27,7 @@
 
 #define REINTERPRET(var, type) (*(type *)&var)
 
-//#define STOP_TASK_NOT_CUR(t) if (t != nCurrentTask) stopTask(t)
+#define STOP_TASK_NOT_CUR(t) if (t != nCurrentTask) stopTask(t)
 
 /* Functions */
 float fmod(float x, float y); // Floating point mod operation

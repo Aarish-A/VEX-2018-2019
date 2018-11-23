@@ -16,7 +16,6 @@ void updateTurnLookup()
 				break;
 		}
 		gTurnLookup[(ubyte)x] = round(w * x);
-		//writeDebugStreamLine("DTL: (%d, %d), uX:%d, sBX:%d", x, gTurnLookup[(ubyte)x], (ubyte)x, (sbyte)x);
 	}
 }
 
