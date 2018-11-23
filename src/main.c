@@ -81,15 +81,15 @@ bool gAnglerShooterTaskRunning = false;
 unsigned long gAnglerShooterTaskTime = 0;
 
 //Initialize safeties
-//#include "safety.h"
-//#include "safety.c"
-//sSafety driveSafety, shooterSafety, anglerSafety; //No intake safety
-//void initSafeties()
-//{
-//	initSafety(driveSafety, "driveSafety", velSensor, trackL);
-//	initSafety(shooterSafety, "shooterSafety", velSensor, shooterEnc);
-//	initSafety(anglerSafety, "anglerSafety", velSensor, anglerPoti);
-//}
+#include "safety.h"
+#include "safety.c"
+sSafety driveSafety, shooterSafety, anglerSafety; //No intake safety
+void initSafeties()
+{
+	initSafety(driveSafety, "driveSafety", velSensor, trackL);
+	initSafety(shooterSafety, "shooterSafety", velSensor, shooterEnc);
+	initSafety(anglerSafety, "anglerSafety", velSensor, anglerPoti);
+}
 
 /* Shooter Positions */
 int gShootTuneMode = false;
@@ -919,7 +919,7 @@ task shooterStateSet()
 				gShooterShotCount++;
 				int target = SHOOTER_SHOOT_POS;
 				setShooter(127);
-				LOG(shooter)("%d Start shot %d: Time: %d Pos:%d ", nPgmTime, gShooterShotCount, nPgmTime-shotStartTime, SensorValue[shooterEnc]);
+				//LOG(shooter)("%d Start shot %d: Time: %d Pos:%d ", nPgmTime, gShooterShotCount, nPgmTime-shotStartTime, SensorValue[shooterEnc]);
 
 				bool shotTargReached = ( SensorValue[shooterEnc] > (target-shooterBreakOffset) );
 
@@ -961,8 +961,6 @@ task shooterStateSet()
 					}
 					setShooter(0);
 
-					LOG(shooter)("%d Shoot Trigger False - shot end", nPgmTime);
-
 					setShooterState(shooterReload);
 				}
 				break;
@@ -971,11 +969,11 @@ task shooterStateSet()
 			{
 				//if (gShooterShotCount != 0) //Let it come to a rest if it enters the reset outside of startup
 				//{
-				LOG(shooter)("%d Shooter rest for 500ms in reset. ShotCount:%d. Pos:%d", nPgmTime, gShooterShotCount, SensorValue[shooterEnc]);
+				LOG(shooter)("%d Shter 500ms rest(reset). ShtCnt:%d. Pos:%d", nPgmTime, gShooterShotCount, SensorValue[shooterEnc]);
 				setShooter(0);
 				sleep(500);
 				//}
-				LOG(shooter)("%d Start reset at -12 in reverse", nPgmTime);
+				LOG(shooter)("%d Rst shtr at -13", nPgmTime);
 				setShooter(-13);
 				float pos = SensorValue[shooterEnc];
 				float lstPos = 10;
@@ -1000,7 +998,7 @@ task shooterStateSet()
 				} while(vel < -1 || velLst < -1);
 				//setShooter(0);
 				//sleep(100);
-				LOG(shooter)("%d Reset Shooter from %d. Vel:%d. VelLst:%d", nPgmTime, SensorValue[shooterEnc], vel, velLst);
+				LOG(shooter)("%d Rst Shtr frm %d. Vel:%d. VelLst:%d", nPgmTime, SensorValue[shooterEnc], vel, velLst);
 				//playTone(300, 50);
 				SensorValue[shooterEnc] = 0;
 				gShooterShotCount = 0;
@@ -1021,7 +1019,7 @@ void shooterSafetySet(tShooterState state)
 	//tHog();
 	unsigned long stateElpsdTime = (nPgmTime-gShooterStateTime);
 	int senChange = SensorValue[shooterEnc]-gShooterStateSen;
-	writeDebugStreamLine(">>	  %d Shooter State %d Safety. TO: %d SenChange: %d", nPgmTime, gShooterState, stateElpsdTime, senChange);
+	writeDebugStreamLine(">>	  %d Shootr State %d Sfty. TO: %d SenChange: %d", nPgmTime, gShooterState, stateElpsdTime, senChange);
 	stopTask(shooterStateSet);
 	startTask(shooterStateSet);
 	setShooterState(state);
@@ -1038,7 +1036,7 @@ void killShooter()
 		gShooterKilled = true;
 		stopTask(shooterStateSet);
 		setShooter(0);
-		writeDebugStreamLine("	>>>	 %d KILL SHOOTER! state %d Safety TO: %d SenChange: %d, Sen:%d", nPgmTime, gShooterState, stateElpsdTime, senChange, SensorValue[shooterEnc]);
+		writeDebugStreamLine("	>>>	 %d KILL SHOOTER! state:%d Safety TO: %d SenChange: %d, Sen:%d", nPgmTime, gShooterState, stateElpsdTime, senChange, SensorValue[shooterEnc]);
 		setShooterState(shooterIdle);
 		////Wait for shooter to come to stop
 		//int sen, senLst, senDelta;
@@ -1146,7 +1144,7 @@ void anglerShooter(int posA, int posB, int acceptableRange, bool waitForFirstSho
 		posB = temp;
 	}
 
-	LOG(macro)(" >%d AnglerShooter: FrstPos:%d. Wait?%d. ScndPos:%d. Wait?%d. CurAnglrPos:%d", nPgmTime, posA, waitForFirstShot, posB, waitForSecShot, SensorValue[anglerPoti]);
+	LOG(macro)(" >%d AnglrShooter: FrstPos:%d. Wait?%d. ScndPos:%d. Wait?%d. CurAnglrPos:%d", nPgmTime, posA, waitForFirstShot, posB, waitForSecShot, SensorValue[anglerPoti]);
 	unsigned long startTime = nPgmTime;
 	unsigned long shotTriggerTime;
 
@@ -1400,13 +1398,13 @@ void startup()
 	datalogClear();
 	setupMotors();
 	updateTurnLookup();
-	//initSafeties();
+	initSafeties();
 
 	clearSounds();
 
 	gBatteryLevel = nImmediateBatteryLevel;
 	gBackupBatteryLevel = BackupBatteryLevel;
-	writeDebugStreamLine("%d Startup Battery: %d, BU Battery: %d", nPgmTime, gBatteryLevel, gBackupBatteryLevel);
+	writeDebugStreamLine("%d Startup Battery: %d", nPgmTime, gBatteryLevel);
 
 	SensorValue[shooterEnc] = 0;
 
@@ -1510,14 +1508,13 @@ task usercontrol()
 				}
 				else if (SensorValue[shooterEnc] >= (SHOOTER_NEXT_SHOOT_POS-50))
 				{
-					writeDebugStreamLine(" > %d Shot count wrong. Reset <", nPgmTime);
+					writeDebugStreamLine(" > %d Sht cnt wrng. Rst <", nPgmTime);
 					shooterSafetySet(shooterReset);
 				}
 				else if (BALL_DETECTED && SensorValue[anglerPoti] > ANGLER_GROUND_PICKUP_POS)
 				{
 					setShooterState(shooterShoot);
 					lstShotTimer = nPgmTime;
-					writeDebugStreamLine(" > %d FIRST SHOT TRIGGERED. # %d. Angler: %d <", nPgmTime, gShooterShotCount, SensorValue[anglerPoti]);
 				}
 			}
 			if (!shootBtn) lstShotTimer = 0;
@@ -1525,33 +1522,32 @@ task usercontrol()
 			{
 				setShooterState(shooterShoot);
 				lstShotTimer = 0;
-				writeDebugStreamLine(" > %d SECOND SHOT TRIGGERED. # %d <", nPgmTime, gShooterShotCount);
 			}
 			if ((shootFrontPFBtn && !shootFrontPFBtnLst) && !(shootBtn && !shootBtnLst))
 			{
 				tHog();
-				writeDebugStreamLine(" > %d Shoot from front of platform <", nPgmTime);
+				writeDebugStreamLine(" > %d F_PF Shoot <", nPgmTime);
 				ANGLER_SHOOTER_TASK(gAnglerFrontPFMidFlag, gAnglerFrontPFTopFlag, 70, false, false, BTN_SHOOT_FRONT_PF, vexRT[BTN_SHIFT]);
 				tRelease();
 			}
 			else if ((shootMidPFBtn && !shootMidPFBtnLst) && !(shootBtn && !shootBtnLst))
 			{
 				tHog();
-				writeDebugStreamLine(" > %d Shoot from mid of platform <", nPgmTime);
+				writeDebugStreamLine(" > %d M_PF Shoot <", nPgmTime);
 				ANGLER_SHOOTER_TASK(gAnglerMidPFMidFlag, gAnglerMidPFTopFlag, 60, true, true, BTN_SHOOT_MID_PF, vexRT[BTN_SHIFT]);
 				tRelease();
 			}
 			else if ((shootBackPFBtn && !shootBackPFBtnLst) && !(shootBtn && !shootBtnLst))
 			{
 				tHog();
-				writeDebugStreamLine("%d Shoot from back of platform", nPgmTime);
+				writeDebugStreamLine("%d B_PF Shoot <", nPgmTime);
 				ANGLER_SHOOTER_TASK(gAnglerBackPFMidFlag, gAnglerBackPFTopFlag, 50, true, true, BTN_SHOOT_BACK_PF, vexRT[BTN_SHIFT]);
 				tRelease();
 			}
 			else if ((shootBackBtn && !shootBackBtnLst) && !(shootBtn && !shootBtnLst))
 			{
 				tHog();
-				writeDebugStreamLine(" > %d Shoot from back of field <", nPgmTime);
+				writeDebugStreamLine(" > %d Bck Shoot <", nPgmTime);
 				ANGLER_SHOOTER_TASK(gAnglerBackMidFlag, gAnglerBackTopFlag, 25, true, true, BTN_SHOOT_BACK, vexRT[BTN_SHIFT]);
 				tRelease();
 			}
@@ -1559,7 +1555,7 @@ task usercontrol()
 			{
 				if (vexRT[BTN_SHIFT])
 				{
-					writeDebugStreamLine(" > %d Angler to flip cap position <", nPgmTime);
+					writeDebugStreamLine(" > %d MveAnglr: flip cap pos <", nPgmTime);
 					anglerMoveToPos(ANGLER_CAP_FLIP_POS, 100);
 					setIntakeState(intakeDown);
 
@@ -1574,13 +1570,13 @@ task usercontrol()
 				}
 				else
 				{
-					writeDebugStreamLine(" > %d Angler to pickup ground position <", nPgmTime);
+					writeDebugStreamLine(" > %d MveAnglr: grnd p_u pos <", nPgmTime);
 					anglerMoveToPos(ANGLER_GROUND_PICKUP_POS, 150);
 				}
 			}
 			else if (anglerPickupCapBtn && !anglerPickupCapBtnLst)
 			{
-				writeDebugStreamLine(" > %d Angler to pickup cap position <", nPgmTime);
+				writeDebugStreamLine(" > %d MveAnglr: cap p_u pos <", nPgmTime);
 				anglerMoveToPos(ANGLER_CAP_PICKUP_POS, 150);
 
 				//writeDebugStreamLine("%d Angler pos1", nPgmTime);
@@ -1592,7 +1588,7 @@ task usercontrol()
 			}
 			else if (anglerPickupLowPFBtn && !anglerPickupLowPFBtnLst)
 			{
-				writeDebugStreamLine(" > %d Angler to pickup low platform position <", nPgmTime);
+				writeDebugStreamLine(" > %d MveAnglr: p_f p_u pos <", nPgmTime);
 				anglerMoveToPos(ANGLER_LOW_PF_PICKUP_POS, 150);
 
 				//writeDebugStreamLine("%d Angler pos2", nPgmTime);
