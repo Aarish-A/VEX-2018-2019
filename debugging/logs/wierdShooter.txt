@@ -1,0 +1,18 @@
+2021 Startup Battery: 8274, BU Battery: 59
+2022 Shooter State Set 5 shooterReset, dTimeLst:2022ms, Count:0, Sen:0, Targ:45, NextTarg:405
+2022 Start Shooter State Machine Task
+2022 Shooter rest for 500ms in reset. ShotCount:0. Pos:0
+2522 Start reset at -12 in reverse
+2822 Pos:-3, PosLst:10, Vel: -13.000000, VelLst:-1
+3122 Pos:-3, PosLst:-3, Vel: 0.000000, VelLst:-13
+3422 Pos:-3, PosLst:-3, Vel: 0.000000, VelLst:0
+3722 Reset Shooter from -3. Vel:0. VelLst:0
+3772 Shooter State Set 2 shooterReload, dTimeLst:1750ms, Count:0, Sen:0, Targ:45, NextTarg:405
+>>	  4374 Shooter State 2 Safety. TO: 602 SenChange: 201
+4374 Shooter State Set 1 shooterBreak, dTimeLst:602ms, Count:0, Sen:201, Targ:45, NextTarg:405
+4374 Start Shooter State Machine Task
+4465 Shooter State Set 2 shooterReload, dTimeLst:91ms, Count:0, Sen:16, Targ:45, NextTarg:405
+	>>>	 4624 KILL SHOOTER! state 2 Safety TO: 159 SenChange: 4, Sen:20
+4624 Shooter State Set 0 shooterIdle, dTimeLst:159ms, Count:0, Sen:20, Targ:45, NextTarg:405
+
+4632 Start UserControl
