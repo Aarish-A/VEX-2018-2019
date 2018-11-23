@@ -3,7 +3,7 @@
 #define JOY_DRIVE_TURN Ch4
 
 /* Shooter Controls */
-#define BTN_SHOOT Btn5U
+#define BTN_SHOOT Btn5D
 
 /* Intake Controls */
 #define BTN_INTAKE_UP Btn6U
@@ -18,7 +18,7 @@
 
 /* Decapper Controls */
 #define JOY_DECAPPER Ch1
-#define DECAPPER_DZ 40
+#define BTN_DECAPPER_MOVE Btn8L
 
 /* Macros */
 	//Double Shot
@@ -27,5 +27,5 @@
 #define BTN_SHOOT_BACK_PF Btn7L
 #define BTN_SHOOT_BACK Btn7D
 
-#define BTN_SHIFT Btn5D
+#define BTN_SHIFT Btn5U
 	//Cap Flip

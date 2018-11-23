@@ -25,12 +25,12 @@
 #define Y_OF_LINE(line, x) ( (line.m * (float)x) + line.b )
 
 /* Enumerations */
-typedef enum _turnDir
+typedef enum _tAutoTurnDir
 {
 	ccw = -1,
 	ch,
 	cw
-} tTurnDir;
+} tAutoTurnDir;
 
 typedef enum _facingDir
 {

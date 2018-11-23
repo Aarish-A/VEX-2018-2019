@@ -40,8 +40,6 @@ typedef struct _sSafety
 
 void initSafety(sSafety& safety, const string name, tVelType velType, tSensors sensor); //Create a new instance of sSafety for each subsystem
 																																												//and call this function once to initilize it
-
-void _setSafetyMessage(sSafety& safety, const string message); //Used internally by setSafety and setSafetyTO to set safety.message
 void setSafety(sSafety& safety, const string message, int timeOut, tVelDir velDir, float velThresh, tVelType velType = velSensor); //Setup safety conditions (including velSafeties)
 void setSafetyTO(sSafety& safety, const string message, int timeOut); //Setup timeout conditions
 bool isTimeoutSafe(sSafety& safety); //Called in while loop condition to check if it has timedout

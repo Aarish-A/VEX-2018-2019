@@ -6,17 +6,6 @@ void initSafety(sSafety& safety, const string name, tVelType velType, tSensors s
 	safety.sensor = sensor;
 }
 
-void _setSafetyMessage(sSafety& safety, const string message)
-{
-	tHog();
-	safety.message = safety.name;
-	string temp = " ";
-	strcat(temp, message);
-	//writeDebugStreamLine("%d name:%s temp:%s mssg:%s", nPgmTime, safety.name, temp, safety.message);
-	strcat(safety.message, temp);
-	tRelease();
-}
-
 void setSafety(sSafety& safety, const string message, int timeOut, tVelDir velDir, float velThresh, tVelType velType)
 {
 	safety.message = message;

@@ -59,18 +59,18 @@ void tRelease()
 
 /* Includes */
 // Year-independent libraries (headers)
-#include "utilities.h"
 #include "cycle.h"
 #include "motors.h"
+#include "utilities.h"
+#include "tracking.h"
 #include "custom_turning.h"
-#include "safety.h"
 
 // Year-independent libraries (source)
-//#include "utilities.c"
 #include "cycle.c"
 #include "motors.c"
+#include "utilities.c"
+#include "tracking.c"
 #include "custom_turning.c"
-#include "safety.c"
 
 // Other includes
 #include "Vex_Competition_Includes_Custom.c"
@@ -80,14 +80,16 @@ void tRelease()
 bool gAnglerShooterTaskRunning = false;
 unsigned long gAnglerShooterTaskTime = 0;
 
-//Iniitialize safeties
-sSafety driveSafety, shooterSafety, anglerSafety; //No intake safety
-void initSafeties()
-{
-	initSafety(driveSafety, "driveSafety", velSensor, trackL);
-	initSafety(shooterSafety, "shooterSafety", velSensor, shooterEnc);
-	initSafety(anglerSafety, "anglerSafety", velSensor, anglerPoti);
-}
+//Initialize safeties
+//#include "safety.h"
+//#include "safety.c"
+//sSafety driveSafety, shooterSafety, anglerSafety; //No intake safety
+//void initSafeties()
+//{
+//	initSafety(driveSafety, "driveSafety", velSensor, trackL);
+//	initSafety(shooterSafety, "shooterSafety", velSensor, shooterEnc);
+//	initSafety(anglerSafety, "anglerSafety", velSensor, anglerPoti);
+//}
 
 /* Shooter Positions */
 int gShootTuneMode = false;
@@ -1398,7 +1400,7 @@ void startup()
 	datalogClear();
 	setupMotors();
 	updateTurnLookup();
-	initSafeties();
+	//initSafeties();
 
 	clearSounds();
 
