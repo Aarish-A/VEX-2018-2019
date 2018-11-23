@@ -94,34 +94,28 @@ task trackPositionTask()
 {
 	while (true)
 	{
-		updateSensorInput(trackL);
-		updateSensorInput(trackR);
-		updateSensorInput(trackB);
-		trackPosition(gSensor[trackL].value, gSensor[trackR].value, gSensor[trackB].value, gPosition);
+		trackPosition(SensorValue[trackL], SensorValue[trackR], SensorValue[trackB], gPosition);
 		trackVelocity(gPosition, gVelocity);
-		sleep(1);
+		sleep(5);
 	}
 }
 
 void resetPositionFull(sPos& position, float x, float y, float a)
 {
-	tStop(trackPositionTask);
 	writeDebugStreamLine("Resetting position %f %f %f | %f %f %f", position.y, position.x, radToDeg(fmod(gPosition.a, PI * 2)), y, x, radToDeg(fmod(a, PI * 2)));
 	resetPosition(position);
 
-	resetQuadratureEncoder(trackL);
-	resetQuadratureEncoder(trackR);
-	resetQuadratureEncoder(trackB);
+	SensorValue[trackL] = 0;
+	SensorValue[trackR] = 0;
+	SensorValue[trackB] = 0;
 
-	position.leftStart = gSensor[trackL].value;
-	position.rightStart = gSensor[trackR].value;
-	position.backStart = gSensor[trackB].value;
+	position.leftStart = SensorValue[trackL];
+	position.rightStart = SensorValue[trackR];
+	position.backStart = SensorValue[trackB];
 
 	position.y = y;
 	position.x = x;
 	position.aStart = a;
-
-	tStart(trackPositionTask);
 }
 
 /* Vector Translation Functions */
@@ -221,14 +215,14 @@ float findX(sLine line, float y)
 			return (y - line.b) / line.m;
 			break;
 		case horizontal:
-			writeDebugStreamLine("%d Error, cannot find x of horizontal line", npgmtime);
+			//writeDebugStreamLine("%d Error, cannot find x of horizontal line", npgmtime);
 			return -1;
 			break;
-		case vertical;
+		case vertical:
 			return line.xVer;
 			break;
 	}
-	writeDebugStreamLine("%d No X for line", npgmtime);
+	//writeDebugStreamLine("%d No X for line", npgmtime);
 	return -1;
 }
 
@@ -246,11 +240,11 @@ float findY(sLine line, float x)
 			return line.yHor;
 			break;
 		case vertical;
-			writeDebugStreamLine("%d Error, cannot find y of horizontal line", npgmtime);
+			//writeDebugStreamLine("%d Error, cannot find y of horizontal line", npgmtime);
 			return -1;
 			break;
 	}
-	writeDebugStreamLine("%d No X for line", npgmtime);
+	//writeDebugStreamLine("%d No X for line", npgmtime);
 	return -1;
 }
 
@@ -284,85 +278,21 @@ byte facingCoord(float targX, float targY, float offset)
 	float gAngleToFront = aTan2((targX-curX),(targY-curY));
 	float gAngleToBack = aTan2((curX-targX),(curY-targY));
 
-	writeDebugStreamLine("(%f,%f)RobotPos%f, PosTo%f", gPosition.x, gPosition.y, gPosition.a, gAngleToFront);
+	//writeDebugStreamLine("(%f,%f)RobotPos%f, PosTo%f", gPosition.x, gPosition.y, gPosition.a, gAngleToFront);
 	//Check if the front, or back of robot is facing the target
 	if ( abs( (curA-gAngleToFront) ) < offset ) //< (gAngleTo - pi/4) || gPosition.a > (gAngleTo + pi/4) )
 	{
-		writeDebugStreamLine("Front facing target (%f, %f)", targX, targY);
+		//writeDebugStreamLine("Front facing target (%f, %f)", targX, targY);
 		return facingFront;
 	}
 	else if ( abs( (curA-gAngleToBack) ) < offset )
 	{
-		writeDebugStreamLine("Back facing target (%f, %f)", targX, targY);
+		//writeDebugStreamLine("Back facing target (%f, %f)", targX, targY);
 		return facingBack;
 	}
 	else
 	{
-		writeDebugStreamLine("MOVEMENT ERROR - WRONG DIR. RobotPos%f, PosTo%f", gPosition.a, gAngleToFront);
+		//writeDebugStreamLine("MOVEMENT ERROR - WRONG DIR. RobotPos%f, PosTo%f", gPosition.a, gAngleToFront);
 		return facingNone;
 	}
-}
-
-task autoMotorSensorUpdateTask()
-{
-	sCycleData cycle;
-	initCycle(cycle, 10, "auto motor/sensor");
-	writeDebugStreamLine("%d Start autoMotorSensorUpdateTask", npgmtime);
-
-	while (true)
-	{
-		nBatteryLevel = nImmediateBatteryLevel;
-		updateMotors();
-		updateSensorInputs();
-		updateSensorOutputs();
-
-		if (DATALOG_BATTERY != -1)
-		{
-			tHog();
-			datalogDataGroupStart();
-			datalogAddValue(DATALOG_BATTERY + 0, nImmediateBatteryLevel);
-			datalogAddValue(DATALOG_BATTERY + 2, BackupBatteryLevel);
-			datalogDataGroupEnd();
-			tRelease();
-		}
-
-		endCycle(cycle);
-	}
-}
-
-void applyHarshStop()
-{
-	sVector vel;
-	vel.x = gVelocity.x;
-	vel.y = gVelocity.y;
-	sPolar polarVel;
-	vectorToPolar(vel, polarVel);
-	polarVel.angle += gPosition.a;
-	polarToVector(polarVel, vel);
-	float yPow = vel.y, aPow = gVelocity.a;
-
-	writeDebugStreamLine("Vel y | a: %f | %f", yPow, aPow);
-
-	yPow *= -0.7;
-	aPow *= -6.3;
-
-	word left = yPow + aPow;
-	word right = yPow - aPow;
-
-	left = sgn(left) * MAX(fabs(left), 7);
-	right = sgn(right) * MAX(fabs(right), 7);
-
-	LIM_TO_VAL_SET(left, 30);
-	LIM_TO_VAL_SET(right, 30);
-
-	writeDebugStreamLine("Applying harsh stop: %d %d", left, right);
-	setDrive(left, right);
-	updateMotors();
-
-	unsigned long startTime = npgmtime;
-	WHILE(drive, (npgmtime-startTime) < 150)
-		sleep(10);
-
-	setDrive(0, 0);
-	updateMotors();
 }

@@ -139,8 +139,6 @@ float findY(sLine line, float x);
 void offsetPos(float& x, float& y, float offset); //Store offset of current position in x and y
 byte facingAngle(float targAngle, float offset); //Check to see if back OR front of robot is facing angle
 byte facingCoord(float targX, float targY, float offset = (PI/4)); //Check to see if back OR front of robot is facing target
-task autoMotorSensorUpdateTask(); // Update motors and sensors during auto
-void applyHarshStop();
 
 /* Variables */
 unsigned long gAutoTime = 0;
