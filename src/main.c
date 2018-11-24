@@ -1015,8 +1015,8 @@ task shooterStateSet()
 				setShooter(0);
 				sleep(500);
 				//}
-				LOG(shooter)("%d Rst shtr at -13", nPgmTime);
-				setShooter(-13);
+				LOG(shooter)("%d Rst shtr at -14", nPgmTime);
+				setShooter(-14);
 				float pos = SensorValue[shooterEnc];
 				float lstPos = 10;
 				float vel = -1;
