@@ -81,7 +81,7 @@ void trackVelocity(sPos position, sVel& velocity)
 		velocity.y = ((posY - velocity.lstPosY) * 1000.0) / passed;
 		velocity.x = ((posX - velocity.lstPosX) * 1000.0) / passed;
 
-		velocity.localY = (velocity.x * (float) sin(position.a) )+ (velocity.y * (float) cos(position.a);
+		velocity.localY = (velocity.x * (float) sin(position.a) ) + (velocity.y * (float) cos(position.a));
 
 		velocity.lstPosA = posA;
 		velocity.lstPosY = posY;
@@ -197,7 +197,7 @@ void makeLineInverse(const sLine& original, sLine& inverse, sVector pOI)
 			inverse.lineType = vertical;
 			inverse.xVer = pOI.y;
 			break;
-		case vertical;
+		case vertical:
 			inverse.lineType = horizontal;
 			inverse.yHor = pOI.x;
 			break;
@@ -239,7 +239,7 @@ float findY(sLine line, float x)
 		case horizontal:
 			return line.yHor;
 			break;
-		case vertical;
+		case vertical:
 			//writeDebugStreamLine("%d Error, cannot find y of horizontal line", npgmtime);
 			return -1;
 			break;

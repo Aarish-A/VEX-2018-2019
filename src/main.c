@@ -2,8 +2,8 @@
 #pragma config(Sensor, in2,    decapperPoti,   sensorPotentiometer)
 #pragma config(Sensor, in8,    ballDetector,   sensorLineFollower)
 #pragma config(Sensor, dgtl1,  trackL,         sensorQuadEncoder)
-#pragma config(Sensor, dgtl3,  trackR,         sensorQuadEncoder)
-#pragma config(Sensor, dgtl5,  trackB,         sensorQuadEncoder)
+#pragma config(Sensor, dgtl3,  trackB,         sensorQuadEncoder)
+#pragma config(Sensor, dgtl5,  trackR,         sensorQuadEncoder)
 #pragma config(Sensor, dgtl7,  shooterEnc,     sensorQuadEncoder)
 #pragma config(Sensor, dgtl9,  LED1,           sensorLEDtoVCC)
 #pragma config(Motor,  port1,           decapper,      tmotorVex393_HBridge, openLoop, reversed)
@@ -365,7 +365,10 @@ void intakeControls()
 
 
 /* Decapper Controls */
-#define DECAPPER_DZ 10
+#define DECAPPER_BOTTOM_POS 205
+#define DECAPPER_TOP_POS 2150
+
+#define DECAPPER_DZ 15
 
 #define DECAPPER_HOLD_POS 2000
 
@@ -390,21 +393,25 @@ typedef enum _tDecapperState
 
 tDecapperState gDecapperState = decapperIdle;
 tDecapperState gDecapperStateLst = gDecapperState;
+tDecapperState gDecapperStateLstLst = gDecapperStateLst;
 unsigned long gDecapperStateTime;
 
 int gDecapperTarget;
 int gDecapperPower;
+int gDecapperBreakPower;
 
-void setDecapperState (tDecapperState state, int target = -1, int power = -1)
+void setDecapperState (tDecapperState state, int target = -1, int power = -1, int breakPower = -1)
 {
 	tHog();
 	if (state != gDecapperState)
 	{
+		gDecapperStateLstLst = gDecapperStateLst;
 		gDecapperStateLst = gDecapperState;
 		gDecapperState = state;
 
 		if (target != -1) gDecapperTarget = target;
 		gDecapperPower = power;
+		gDecapperBreakPower = breakPower;
 
 		gDecapperStateTime = nPgmTime;
 
@@ -421,7 +428,7 @@ void setDecapperState (tDecapperState state, int target = -1, int power = -1)
 
 			default: writeDebugStream("UNKNOWN STATE"); break;
 			}
-			writeDebugStreamLine(", DecapperSen:%d, T:%d", SensorValue[decapperPoti], gDecapperStateTime);
+			writeDebugStreamLine(", DecapperSen:%d, T:%d, Joy:%d, StateL:%d, StateLL:%d", SensorValue[decapperPoti], gDecapperStateTime, vexRT[JOY_DECAPPER], gDecapperStateLst, gDecapperStateLstLst);
 		}
 	}
 	tRelease();
@@ -443,8 +450,9 @@ task decapperStateSet()
 		case decapperHold:
 			{
 				//LOG(decapper)("%d Decapper Hold", nPgmTime);
-				if (SensorValue[decapperPoti] < DECAPPER_HOLD_POS) setDecapper(15);
-				else setDecapper(0);
+				if (SensorValue[decapperPoti] > DECAPPER_HOLD_POS) setDecapper(0);
+				else if (SensorValue[decapperPoti] < (DECAPPER_BOTTOM_POS+250)) setDecapper(-10);
+				else if (SensorValue[decapperPoti] < DECAPPER_HOLD_POS) setDecapper(15);
 				break;
 			}
 		case decapperManual:
@@ -452,7 +460,14 @@ task decapperStateSet()
 				//LOG(decapper)("%d Decapper Manual, %d", nPgmTime, gMotor[decapper].powerCur);
 				int power = vexRT[JOY_DECAPPER];
 				if (abs(power) < DECAPPER_DZ) power = 0;
-				setDecapper(power);
+
+				if ( abs(vexRT[JOY_DECAPPER]) < DECAPPER_DZ ||
+					(power>0 && SensorValue[decapperPoti] > (DECAPPER_TOP_POS-150)) ||
+					(power<0 && SensorValue[decapperPoti] < (DECAPPER_BOTTOM_POS+150)) )
+						setDecapperState(decapperHold);
+				else
+					setDecapper(power);
+
 				break;
 			}
 		case decapperUp:
@@ -460,7 +475,7 @@ task decapperStateSet()
 				setDecapper(gDecapperPower);
 				while (SensorValue[decapperPoti] < gDecapperTarget-100) sleep(10);
 				LOG(decapper)("%d Decapper moved to %d", nPgmTime, SensorValue[decapperPoti]);
-				setDecapper(-15);
+				setDecapper(gDecapperBreakPower);
 				sleep(150);
 				LOG(decapper)("%d Decapper breaked to %d", nPgmTime, SensorValue[decapperPoti]);
 				setDecapperState(decapperHold);
@@ -472,7 +487,7 @@ task decapperStateSet()
 				setDecapper(gDecapperPower);
 				while (SensorValue[decapperPoti] > gDecapperTarget+100) sleep(10);
 				LOG(decapper)("%d Decapper moved to %d", nPgmTime, SensorValue[decapperPoti]);
-				setDecapper(15);
+				setDecapper(gDecapperBreakPower);
 				sleep(70);
 				LOG(decapper)("%d Decapper breaked to %d", nPgmTime, SensorValue[decapperPoti]);
 				setDecapperState(decapperHold);
@@ -484,11 +499,19 @@ task decapperStateSet()
 	}
 }
 
+bool doExtraRaise = false;
 bool decapperMoveBtn = false;
 bool decapperMoveBtnLst = false;
 void decapperControls()
 {
 	decapperMoveBtn = (bool) vexRT[BTN_DECAPPER_MOVE];
+
+	if (doExtraRaise && SensorValue[decapperPoti] > (DECAPPER_GRAB_POS+100))
+	{
+		LOG(decapper)("%d DC extra lift. Pos:%d", nPgmTime, SensorValue[decapperPoti]);
+		setDecapperState(decapperUp, (DECAPPER_TOP_POS-50), 100, 0);
+		doExtraRaise = false;
+	}
 
 	if(decapperMoveBtn && !decapperMoveBtnLst)
 	{
@@ -497,17 +520,25 @@ void decapperControls()
 			//if (SensorValue[decapperPoti] > (DECAPPER_GRAB_POS-100))
 			//	setDecapperState(decapperUp, DECAPPER_TOP_POS, 60);
 			//else
-				setDecapperState(decapperDown, DECAPPER_DROP_POS, -40);
+				setDecapperState(decapperDown, DECAPPER_DROP_POS, -40, 15);
 		}
 		else
 		{
-			if (SensorValue[decapperPoti] < DECAPPER_CARRY_POS)
-			setDecapperState(decapperUp, DECAPPER_GRAB_POS, 127);
-		else
-			setDecapperState(decapperDown, DECAPPER_CARRY_POS, -20);
+		if (SensorValue[decapperPoti] < DECAPPER_CARRY_POS)
+		{
+			setDecapperState(decapperUp, DECAPPER_GRAB_POS, 127, -15);
+			doExtraRaise = true;
 		}
+		else
+		{
+			setDecapperState(decapperDown, DECAPPER_CARRY_POS, -20, 15);
+		}
+		}
+
 	}
-	else if (abs(vexRT[JOY_DECAPPER]) > DECAPPER_DZ) setDecapperState(decapperManual);
+	else if (abs(vexRT[JOY_DECAPPER]) > DECAPPER_DZ)
+		// &&	!((vexRT[JOY_DECAPPER]>0 && SensorValue[decapperPoti] > (DECAPPER_TOP_POS-150)) ||(vexRT[JOY_DECAPPER]<0 && SensorValue[decapperPoti] < (DECAPPER_BOTTOM_POS+150)))	)
+		setDecapperState(decapperManual);
 
 	decapperMoveBtnLst = decapperMoveBtn;
 
