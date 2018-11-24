@@ -10,8 +10,8 @@
 #pragma config(Motor,  port2,           driveLY,       tmotorVex393TurboSpeed_MC29, openLoop, reversed)
 #pragma config(Motor,  port3,           intake,        tmotorVex393TurboSpeed_MC29, openLoop)
 #pragma config(Motor,  port4,           driveL,        tmotorVex393TurboSpeed_MC29, openLoop)
-#pragma config(Motor,  port5,           shooter,       tmotorVex393HighSpeed_MC29, openLoop, reversed)
-#pragma config(Motor,  port6,           shooterY,      tmotorVex393HighSpeed_MC29, openLoop)
+#pragma config(Motor,  port5,           shooter,       tmotorVex393HighSpeed_MC29, openLoop)
+#pragma config(Motor,  port6,           shooterY,      tmotorVex393HighSpeed_MC29, openLoop, reversed)
 #pragma config(Motor,  port7,           driveR,        tmotorVex393TurboSpeed_MC29, openLoop, reversed)
 #pragma config(Motor,  port8,           angler,        tmotorVex393TurboSpeed_MC29, openLoop, reversed)
 #pragma config(Motor,  port9,           driveRY,       tmotorVex393TurboSpeed_MC29, openLoop)
@@ -440,12 +440,14 @@ task decapperStateSet()
 			}
 		case decapperHold:
 			{
+				//LOG(decapper)("%d Decapper Hold", nPgmTime);
 				if (SensorValue[decapperPoti] < DECAPPER_HOLD_POS) setDecapper(15);
 				else setDecapper(0);
 				break;
 			}
 		case decapperManual:
 			{
+				//LOG(decapper)("%d Decapper Manual, %d", nPgmTime, gMotor[decapper].powerCur);
 				int power = vexRT[JOY_DECAPPER];
 				if (abs(power) < DECAPPER_DZ) power = 0;
 				setDecapper(power);
@@ -506,6 +508,15 @@ void decapperControls()
 	else if (abs(vexRT[JOY_DECAPPER]) > DECAPPER_DZ) setDecapperState(decapperManual);
 
 	decapperMoveBtnLst = decapperMoveBtn;
+
+	//Safety
+	if ((gDecapperState == decapperUp || gDecapperState == decapperDown) && (nPgmTime-gDecapperStateTime) > 2000)
+	{
+		stopTask(decapperStateSet);
+		startTask(decapperStateSet);
+		LOG(decapper)("%d Decapper TO", nPgmTime);
+		setDecapperState(decapperIdle);
+	}
 }
 
 //int gAnglerTarget = 1000;
@@ -1075,7 +1086,7 @@ void shooterSafetyCheck()
 		else if (gShooterState == shooterReload)
 		{
 			if (stateElpsdTime > 600) shooterSafetySet(shooterBreak);
-			else if (stateElpsdTime > 150 && senChange < 10) killShooter();
+			else if (stateElpsdTime > 150 && senChange < 10 && nPgmTime > (gShooterBreakStateTime+700)) killShooter();
 		}
 		else if (gShooterState == shooterShoot)
 		{
@@ -1483,7 +1494,7 @@ task usercontrol()
 
 		/* Drive Controls */
 		gDriveThrottleRaw = (!gAnglerShooterTaskRunning)? vexRT[JOY_DRIVE_THROTTLE] : vexRT[JOY_ANGLER];
-		gDriveTurnRaw = (!gAnglerShooterTaskRunning)? vexRT[JOY_DRIVE_TURN] : (vexRT[JOY_DECAPPER] * 0.5);
+		gDriveTurnRaw = (!gAnglerShooterTaskRunning)? vexRT[JOY_DRIVE_TURN] : (vexRT[JOY_DECAPPER] * 0.6);
 		if ( ((abs(gDriveTurnRaw) > DRIVE_TURN_DZ) || (abs(gDriveThrottleRaw) > DRIVE_THROTTLE_DZ)) && gDriveState != driveMoveTime) setDriveState(driveManual);
 
 		/* Intake Controls */
