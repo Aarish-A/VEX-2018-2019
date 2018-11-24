@@ -1401,6 +1401,10 @@ void startTasks()
 {
 	tHog();
 
+	//TRACKING:
+	resetPositionFull(gPosition, 0, 0, 0);
+	startTask(trackPositionTask);
+
 	SensorValue[shooterEnc] = 0;
 	startTask(driveStateSet);
 	startTask(shooterStateSet);
@@ -1417,7 +1421,6 @@ void startTasks()
 
 	sleep(50);
 	while(gShooterState != shooterHold && gShooterState != shooterIdle) sleep(10);
-
 }
 
 void stopTasks()
