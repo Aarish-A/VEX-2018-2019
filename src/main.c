@@ -24,7 +24,7 @@ int gBackupBatteryLevel;
 #define SHOOTER_SHOOT_UNLOADED_TIME 790
 #define SHOOTER_SHOOT_LOADED_TIME 500
 
-bool driveLogs = false;
+bool driveLogs = true;
 bool driveStateLogs = false;
 
 bool intakeLogs = false;
@@ -134,6 +134,7 @@ typedef enum _tDriveState
 {
 	driveIdle,
 	driveManual,
+	driveBackHold,
 	driveMoveTime,
 	driveBreak
 } tDriveState;
@@ -166,12 +167,13 @@ void setDriveState (tDriveState state, int drivePower = -1, int driveLength = -1
 			{
 			case driveIdle: writeDebugStream("driveIdle"); break;
 			case driveManual: writeDebugStream("driveManual"); break;
+			case driveBackHold: writeDebugStream("driveBackHold"); break;
 			case driveMoveTime: writeDebugStream("driveMoveTime"); break;
 			case driveBreak: writeDebugStream("driveBreak"); break;
 
 			default: writeDebugStream("UNKNOWN STATE"); break;
 			}
-			writeDebugStreamLine(", turnDir: %d, pow: %d, length:%d, T:%d", gDriveTurnDir, gDrivePower, gDriveLength, gDriveStateTime);
+			writeDebugStreamLine(", turnDir: %d, pow: %d, length:%d, T:%d, vel:%d", gDriveTurnDir, gDrivePower, gDriveLength, gDriveStateTime, gVelocity.y);
 		}
 	}
 	tRelease();
@@ -218,6 +220,20 @@ task driveStateSet()
 
 				break;
 			}
+		case driveBackHold:
+		{
+			//unsigned long startTime = nPgmTime;
+			//if (nPgmTime < (driveStateTime+300)) setDrive(-50, 0);
+			//else if (nPgmTime < (driveStateTime+300)) setDrive(0, -50);
+			if(nPgmTime < (gDriveStateTime+300))
+			{
+				setDrive(-50, -50);
+				LOG(drive)("%d vel:%f", nPgmTime, gPosition.y);
+				sleep(10);
+			}
+			else setDrive(-15, -15);
+			break;
+		}
 		case driveMoveTime:
 			{
 				unsigned long timeCur = nPgmTime;
@@ -1590,6 +1606,7 @@ task usercontrol()
 			{
 				tHog();
 				writeDebugStreamLine(" > %d Bck Shoot <", nPgmTime);
+				setDriveState(driveBackHold);
 				ANGLER_SHOOTER_TASK(gAnglerBackMidFlag, gAnglerBackTopFlag, 25, true, true, BTN_SHOOT_BACK, vexRT[BTN_SHIFT]);
 				tRelease();
 			}
