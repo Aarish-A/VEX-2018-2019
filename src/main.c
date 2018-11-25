@@ -1466,10 +1466,6 @@ void disabled()
 	//handleLcd();
 }
 
-
-//bool autoLogs = true;
-//bool excelLogs = false;
-
 #include "drive_algs.h"
 #include "drive_algs.c"
 
@@ -1484,7 +1480,7 @@ task autonomous()
 	//	endCycle(cycle);
 	//}
 
-	//moveToTarget(24, 24, gPosition.x, gPosition.y, 127, 35, 7, 5, 50, 9.5, (stopSoft|stopHarsh), mttProportional);
+	moveToTarget(24, 24, gPosition.x, gPosition.y, 127, 35, 7, 5, 50, 9.5, (stopSoft|stopHarsh), mttProportional);
 	stopTasks();
 }
 
