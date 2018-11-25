@@ -97,6 +97,7 @@ task main()
 	startTask(trackPositionTask);
 
 	setupMotors();
+	turnToTargetNewAlg(24, 24,
 	moveToTarget(24, 24, gPosition.x, gPosition.y, 127, 7, 15, 3, 50, 0, (stopSoft|stopHarsh), mttProportional);
 
 

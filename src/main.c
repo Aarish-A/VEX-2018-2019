@@ -25,7 +25,7 @@ int gBackupBatteryLevel;
 #define SHOOTER_SHOOT_UNLOADED_TIME 790
 #define SHOOTER_SHOOT_LOADED_TIME 500
 
-bool driveLogs = false;
+bool driveLogs = true;
 bool driveStateLogs = false;
 
 bool intakeLogs = false;
@@ -135,6 +135,7 @@ typedef enum _tDriveState
 {
 	driveIdle,
 	driveManual,
+	driveBackHold,
 	driveMoveTime,
 	driveBreak
 } tDriveState;
@@ -167,12 +168,13 @@ void setDriveState (tDriveState state, int drivePower = -1, int driveLength = -1
 			{
 			case driveIdle: writeDebugStream("driveIdle"); break;
 			case driveManual: writeDebugStream("driveManual"); break;
+			case driveBackHold: writeDebugStream("driveBackHold"); break;
 			case driveMoveTime: writeDebugStream("driveMoveTime"); break;
 			case driveBreak: writeDebugStream("driveBreak"); break;
 
 			default: writeDebugStream("UNKNOWN STATE"); break;
 			}
-			writeDebugStreamLine(", turnDir: %d, pow: %d, length:%d, T:%d", gDriveTurnDir, gDrivePower, gDriveLength, gDriveStateTime);
+			writeDebugStreamLine(", turnDir: %d, pow: %d, length:%d, T:%d, vel:%d", gDriveTurnDir, gDrivePower, gDriveLength, gDriveStateTime, gVelocity.y);
 		}
 	}
 	tRelease();
@@ -219,6 +221,32 @@ task driveStateSet()
 
 				break;
 			}
+		case driveBackHold:
+		{
+			//unsigned long startTime = nPgmTime;
+			//if (nPgmTime < (driveStateTime+300)) setDrive(-50, 0);
+			//else if (nPgmTime < (driveStateTime+300)) setDrive(0, -50);
+			//if(nPgmTime < (gDriveStateTime+300))
+			//{
+			//	setDrive(-50, -50);
+			//	LOG(drive)("%d vel:%f", nPgmTime, gPosition.y);
+			//	sleep(10);
+			//}
+			if(nPgmTime < (gDriveStateTime+300))
+			{
+				setDrive(-50, -15);
+				LOG(drive)("right", nPgmTime, gPosition.y);
+				sleep(10);
+			}
+			else if(nPgmTime < (gDriveStateTime+600))
+			{
+				setDrive(-15, -50);
+				LOG(drive)("left", nPgmTime, gPosition.y);
+				sleep(10);
+			}
+			else setDrive(-15, -15);
+			break;
+		}
 		case driveMoveTime:
 			{
 				unsigned long timeCur = nPgmTime;
@@ -1477,8 +1505,10 @@ void disabled()
 	//handleLcd();
 }
 
-#include "drive_algs.h"
-#include "drive_algs.c"
+bool autoLogs = 1;
+
+//#include "drive_algs.h"
+//#include "drive_algs.c"
 
 void autoAngleShoot(int posA, int acceptableRange, bool waitForFirstShot = true)
 {
@@ -1502,9 +1532,9 @@ void autoAngleShoot(int posA, int acceptableRange, bool waitForFirstShot = true)
 		else waitTimeAbs = (MAX_ANGLE_TIME-SHOOTER_SHOOT_UNLOADED_TIME);
 		unsigned long curTime = nPgmTime;
 		waitTimeRel = startTime + waitTimeAbs;
-		LOG(auto)(" >> %d Wait: waitTimeAbs = %d, waitTimeRel = %d", nPgmTime, waitTimeAbs, waitTimeRel);
+		//LOG(auto)(" >> %d Wait: waitTimeAbs = %d, waitTimeRel = %d", nPgmTime, waitTimeAbs, waitTimeRel);
 		while(nPgmTime < waitTimeRel) sleep(10);
-		LOG(auto)("	>> %d Done anglerWait. took:%dms. Pos: %d", nPgmTime, (nPgmTime-startTime), SensorValue[anglerPoti]);
+		//LOG(auto)("	>> %d Done anglerWait. took:%dms. Pos: %d", nPgmTime, (nPgmTime-startTime), SensorValue[anglerPoti]);
 		//LOG(macro)("	>> %d Angle (FirstShot) took:%dms. Pos: %d", nPgmTime, (nPgmTime-startTime), SensorValue[anglerPoti]);
 	}
 
@@ -1516,14 +1546,14 @@ void autoAngleShoot(int posA, int acceptableRange, bool waitForFirstShot = true)
 
 	if ((gShooterShotCount-startShotCount) < 1)
 	{
-		LOG(auto)("	>> %d Shot failed (ball jmpd). Retry", nPgmTime);
+		//LOG(auto)("	>> %d Shot failed (ball jmpd). Retry", nPgmTime);
 		while (gShooterState != shooterHold) sleep(10);
 		shotTriggerTime = nPgmTime;
 		setShooterState(shooterShoot);
 		while (gShooterState != shooterReload) sleep(10); //Start moving angler immediately after first shot applies breaking
 
 	}
-	LOG(auto)("	>> %d Shot+Angle took:%dms. Shot took:%dms", nPgmTime, (nPgmTime-startTime), (nPgmTime-shotTriggerTime));
+	//LOG(auto)("	>> %d Shot+Angle took:%dms. Shot took:%dms", nPgmTime, (nPgmTime-startTime), (nPgmTime-shotTriggerTime));
 	setShooterState(shooterReload);
 }
 
@@ -1544,7 +1574,7 @@ task autonomous()
 	//autoAngleShoot(gAnglerFrontPFTopFlag, 70, false);
 	//anglerMoveToPos(ANGLER_CAP_PICKUP_POS, 100);
 
-	moveToTarget(0, 24, gPosition.x, gPosition.y, 127, 35, 7, 5, 50, 9.5, (stopSoft|stopHarsh), mttProportional);
+	//moveToTarget(0, 24, gPosition.x, gPosition.y, 127, 35, 7, 5, 50, 9.5, (stopSoft|stopHarsh), mttProportional);
 	stopTasks();
 }
 
@@ -1624,7 +1654,7 @@ task usercontrol()
 				}
 				else if (SensorValue[shooterEnc] >= (SHOOTER_NEXT_SHOOT_POS-50))
 				{
-					//writeDebugStreamLine(" > %d Sht cnt wrng. Rst <", nPgmTime);
+					writeDebugStreamLine(" > %d Sht cnt wrng. Rst <", nPgmTime);
 					shooterSafetySet(shooterReset);
 				}
 				else if (BALL_DETECTED && SensorValue[anglerPoti] > ANGLER_GROUND_PICKUP_POS)
@@ -1642,28 +1672,29 @@ task usercontrol()
 			if ((shootFrontPFBtn && !shootFrontPFBtnLst) && !(shootBtn && !shootBtnLst))
 			{
 				tHog();
-				//writeDebugStreamLine(" > %d F_PF Shoot <", nPgmTime);
+				writeDebugStreamLine(" > %d F_PF Shoot <", nPgmTime);
 				ANGLER_SHOOTER_TASK(gAnglerFrontPFMidFlag, gAnglerFrontPFTopFlag, 70, false, false, BTN_SHOOT_FRONT_PF, vexRT[BTN_SHIFT]);
 				tRelease();
 			}
 			else if ((shootMidPFBtn && !shootMidPFBtnLst) && !(shootBtn && !shootBtnLst))
 			{
 				tHog();
-				//writeDebugStreamLine(" > %d M_PF Shoot <", nPgmTime);
+				writeDebugStreamLine(" > %d M_PF Shoot <", nPgmTime);
 				ANGLER_SHOOTER_TASK(gAnglerMidPFMidFlag, gAnglerMidPFTopFlag, 60, true, true, BTN_SHOOT_MID_PF, vexRT[BTN_SHIFT]);
 				tRelease();
 			}
 			else if ((shootBackPFBtn && !shootBackPFBtnLst) && !(shootBtn && !shootBtnLst))
 			{
 				tHog();
-				//writeDebugStreamLine("%d B_PF Shoot <", nPgmTime);
+				writeDebugStreamLine("%d B_PF Shoot <", nPgmTime);
 				ANGLER_SHOOTER_TASK(gAnglerBackPFMidFlag, gAnglerBackPFTopFlag, 50, true, true, BTN_SHOOT_BACK_PF, vexRT[BTN_SHIFT]);
 				tRelease();
 			}
 			else if ((shootBackBtn && !shootBackBtnLst) && !(shootBtn && !shootBtnLst))
 			{
 				tHog();
-				//writeDebugStreamLine(" > %d Bck Shoot <", nPgmTime);
+				writeDebugStreamLine(" > %d Bck Shoot <", nPgmTime);
+				setDriveState(driveBackHold);
 				ANGLER_SHOOTER_TASK(gAnglerBackMidFlag, gAnglerBackTopFlag, 25, true, true, BTN_SHOOT_BACK, vexRT[BTN_SHIFT]);
 				tRelease();
 			}
@@ -1671,7 +1702,7 @@ task usercontrol()
 			{
 				if (vexRT[BTN_SHIFT])
 				{
-				//writeDebugStreamLine(" > %d MveAnglr: flip cap pos <", nPgmTime);
+					writeDebugStreamLine(" > %d MveAnglr: flip cap pos <", nPgmTime);
 					anglerMoveToPos(ANGLER_CAP_FLIP_POS, 100);
 					setIntakeState(intakeDown);
 
@@ -1686,13 +1717,13 @@ task usercontrol()
 				}
 				else
 				{
-					//writeDebugStreamLine(" > %d MveAnglr: grnd p_u pos <", nPgmTime);
+					writeDebugStreamLine(" > %d MveAnglr: grnd p_u pos <", nPgmTime);
 					anglerMoveToPos(ANGLER_GROUND_PICKUP_POS, 150);
 				}
 			}
 			else if (anglerPickupCapBtn && !anglerPickupCapBtnLst)
 			{
-				//writeDebugStreamLine(" > %d MveAnglr: cap p_u pos <", nPgmTime);
+				writeDebugStreamLine(" > %d MveAnglr: cap p_u pos <", nPgmTime);
 				anglerMoveToPos(ANGLER_CAP_PICKUP_POS, 150);
 
 				//writeDebugStreamLine("%d Angler pos1", nPgmTime);
@@ -1704,7 +1735,7 @@ task usercontrol()
 			}
 			else if (anglerPickupLowPFBtn && !anglerPickupLowPFBtnLst)
 			{
-				//writeDebugStreamLine(" > %d MveAnglr: p_f p_u pos <", nPgmTime);
+				writeDebugStreamLine(" > %d MveAnglr: p_f p_u pos <", nPgmTime);
 				anglerMoveToPos(ANGLER_LOW_PF_PICKUP_POS, 150);
 
 				//writeDebugStreamLine("%d Angler pos2", nPgmTime);
