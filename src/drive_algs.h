@@ -32,8 +32,8 @@ void moveToTargetDis(float a, float d, float xs, float ys, byte power, byte star
 
 /* Turning Functions */
 void turnToFace(float x, float y, tFacingDir facingDir = facingFront, tStopType stopType);
-void turnToAngleNewAlg(float a, tTurnDir turnDir, float fullRatio, byte coastPower, float stopOffsetDeg, bool mogo = false, bool harshStop = true);
-void turnToTargetNewAlg(float x, float y, tTurnDir turnDir, float fullRatio, byte coastPower, float stopOffsetDeg, bool mogo = false, bool harshStop = true, float offset = 0);
+void turnToAngleNewAlg(float a, tTurnDir turnDir, float fullRatio, byte coastPower, float stopOffsetDeg, bool harshStop = true);
+void turnToTargetNewAlg(float x, float y, tTurnDir turnDir, float fullRatio, byte coastPower, float stopOffsetDeg, bool harshStop = true, float offset = 0);
 void sweepTurnToTarget(float x, float y, float a, float r, tTurnDir turnDir, byte power, bool slow = true);
 
 ///* Movement Functions */

@@ -1,5 +1,5 @@
 /* Functions */
-bool autoLogs = 0;
+bool autoLogs = 1;
 bool excelLogs = 1;
 
 void applyHarshStop()
@@ -701,10 +701,10 @@ void moveToTarget(float x, float y, float xs, float ys, byte power, byte startPo
 	followLine.p2.x = x;
 
 	float lineLength = getLengthOfLine(followLine);
-	//LOG(auto)("Line length: %.2f", lineLength);
+	LOG(auto)("Line length: %.2f", lineLength);
 	float lineAngle = getAngleOfLine(followLine); // Get the angle of the line that we're following relative to the vertical
 	float pidAngle = nearAngle(lineAngle - (power < 0 ? PI : 0), gPosition.a);
-	//LOG(auto)("Line | Pid angle: %f | %f", radToDeg(lineAngle), radToDeg(pidAngle));
+	LOG(auto)("Line | Pid angle: %f | %f", radToDeg(lineAngle), radToDeg(pidAngle));
 
 	// Current position relative to the ending point
 	sVector currentPosVector;
@@ -743,7 +743,7 @@ void moveToTarget(float x, float y, float xs, float ys, byte power, byte startPo
 			float correctA = atan2(x - gPosition.x, y - gPosition.y);
 			if (power < 0)
 				correctA += PI;
-			correction = fabs(errX) > maxErrX ? 8.0 * (nearAngle(correctA, gPosition.a) - gPosition.a) * sgn(power) : 0;
+			correction = fabs(errX) > maxErrX ? 6.0 * (nearAngle(correctA, gPosition.a) - gPosition.a) * sgn(power) : 0;
 		}
 
 		if (mode != mttSimple)
@@ -751,7 +751,7 @@ void moveToTarget(float x, float y, float xs, float ys, byte power, byte startPo
 			switch (mode)
 			{
 			case mttProportional:
-				finalPower = round(-127.0 / 40.0 * currentPosVector.y) * sgn(power);
+				finalPower = round(-127.0 / 70.0 * currentPosVector.y) * sgn(power);
 				break;
 			case mttCascading:
 				const float kB = 2.8;
@@ -774,7 +774,7 @@ void moveToTarget(float x, float y, float xs, float ys, byte power, byte startPo
 				}
 #endif
 				*/
-				float vTarget = 45 * (1 - exp(0.07 * (currentPosVector.y + dropEarly)));
+				float vTarget = 56 * (1 - exp(0.07 * (currentPosVector.y + dropEarly)));
 				finalPower = round(kB * vTarget + kP * (vTarget - vel)) * sgn(power);
 				break;
 			}
@@ -804,7 +804,7 @@ void moveToTarget(float x, float y, float xs, float ys, byte power, byte startPo
 		endCycle(cycle);
 	} while( (currentPosVector.y < -dropEarly - MAX((vel * ((stopType & stopSoft) ? 0.175 : 0.098)), decelEarly)) );
 
-	//LOG(auto)("%f %f", currentPosVector.y, vel);
+	LOG(auto)("%f %f", currentPosVector.y, vel);
 
 	setDrive(decelPower, decelPower);
 
@@ -843,7 +843,7 @@ void moveToTarget(float x, float y, float xs, float ys, byte power, byte startPo
 	else
 		setDrive(0, 0);
 
-	//LOG(auto)("Moved to %f %f from %f %f | %f %f %f", y, x, ys, xs, gPosition.y, gPosition.x, radToDeg(gPosition.a));
+	LOG(auto)("Moved to %f %f from %f %f | %f %f %f", y, x, ys, xs, gPosition.y, gPosition.x, radToDeg(gPosition.a));
 }
 
 void moveToTargetDis(float a, float d, float xs, float ys, byte power, byte startPower, float maxErrX, float decelEarly, byte decelPower, float dropEarly, tStopType stopType, tMttMode mode)
@@ -851,7 +851,7 @@ void moveToTargetDis(float a, float d, float xs, float ys, byte power, byte star
 	moveToTarget(xs + d * sin(a), ys + d * cos(a), xs, ys, power, startPower, maxErrX, decelEarly, decelPower, dropEarly, stopType, mode);
 }
 
-void turnToAngleNewAlg(float a, tTurnDir turnDir, float fullRatio, byte coastPower, float stopOffsetDeg, bool mogo, bool harshStop)
+void turnToAngleNewAlg(float a, tTurnDir turnDir, float fullRatio, byte coastPower, float stopOffsetDeg, bool harshStop)
 {
 	//LOG(auto)("Turning to %f", radToDeg(a));
 
@@ -954,7 +954,7 @@ void turnToAngleNewAlg(float a, tTurnDir turnDir, float fullRatio, byte coastPow
 	//LOG(auto)("Turned to %f | %f %f %f", radToDeg(a), gPosition.y, gPosition.x, radToDeg(gPosition.a));
 }
 
-void turnToTargetNewAlg(float x, float y, tTurnDir turnDir, float fullRatio, byte coastPower, float stopOffsetDeg, bool mogo, bool harshStop, float offset)
+void turnToTargetNewAlg(float x, float y, tTurnDir turnDir, float fullRatio, byte coastPower, float stopOffsetDeg, bool harshStop, float offset)
 {
 	//LOG(auto)("Turning to %f %f", y, x);
 
