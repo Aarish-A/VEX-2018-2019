@@ -1484,7 +1484,7 @@ task autonomous()
 	//	endCycle(cycle);
 	//}
 
-	moveToTarget(24, 24, 127, 35, 5, 10, 40, stopSoft | stopHarsh,  mttProportional);
+	//moveToTarget(24, 24, gPosition.x, gPosition.y, 127, 35, 7, 5, 50, 9.5, (stopSoft|stopHarsh), mttProportional);
 	stopTasks();
 }
 
