@@ -25,7 +25,8 @@ void applyHarshStop();
 /* Movement Functions */
 void followLine(float x, float y, byte power, tMttMode mode, bool correction, tStopType stopType);
 void moveToTargetSimple(float x, float y, byte power, tMttMode mode, bool correction, bool harshStop);
-void moveToTarget(float x, float y, float xs, float ys, byte power, byte startPower, float maxErrX, float decelEarly, byte decelPower, float dropEarly = 0, tStopType stopType = stopSoft | stopHarsh, tMttMode mode = mttProportional);
+//void moveToTarget(float x, float y, float xs = gPosition.x, float ys = gPosition.y, byte power, byte startPower, float maxErrX, float decelEarly, byte decelPower, float dropEarly = 9.5, tStopType stopType = stopSoft | stopHarsh, tMttMode mode = mttProportional);
+void moveToTarget(float x, float y, byte power, byte startPower, float maxErrX, float decelEarly, byte decelPower, float dropEarly = 9.5, tStopType stopType = stopSoft | stopHarsh, tMttMode mode = mttProportional);
 void moveToTargetDis(float a, float d, float xs, float ys, byte power, byte startPower, float maxErrX, float decelEarly, byte decelPower, float dropEarly = 0, tStopType stopType = stopSoft | stopHarsh, tMttMode mode = mttProportional);
 
 /* Turning Functions */
