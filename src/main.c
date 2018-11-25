@@ -225,10 +225,22 @@ task driveStateSet()
 			//unsigned long startTime = nPgmTime;
 			//if (nPgmTime < (driveStateTime+300)) setDrive(-50, 0);
 			//else if (nPgmTime < (driveStateTime+300)) setDrive(0, -50);
+			//if(nPgmTime < (gDriveStateTime+300))
+			//{
+			//	setDrive(-50, -50);
+			//	LOG(drive)("%d vel:%f", nPgmTime, gPosition.y);
+			//	sleep(10);
+			//}
 			if(nPgmTime < (gDriveStateTime+300))
 			{
-				setDrive(-50, -50);
-				LOG(drive)("%d vel:%f", nPgmTime, gPosition.y);
+				setDrive(-50, -15);
+				LOG(drive)("right", nPgmTime, gPosition.y);
+				sleep(10);
+			}
+			else if(nPgmTime < (gDriveStateTime+600))
+			{
+				setDrive(-15, -50);
+				LOG(drive)("left", nPgmTime, gPosition.y);
 				sleep(10);
 			}
 			else setDrive(-15, -15);
