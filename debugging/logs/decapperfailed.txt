@@ -1,0 +1,106 @@
+2019 Startup Battery: 8214
+Resetting position 0.000000 0.000000 0.000000 | 0.000000 0.000000 0.000000
+2022 Shooter State Set 5 shooterReset, dTimeLst:2022ms, Count:0, Sen:0, Targ:45, NextTarg:405
+2022 Start Shooter State Machine Task
+2023 Shter 500ms rest(reset). ShtCnt:0. Pos:0
+2523 Rst shtr at -14
+2823 Pow:-14, Pow:-14 Pos:-16, PosLst:10, Vel: -26.000000, VelLst:-1
+3123 Pow:-14, Pow:-14 Pos:-54, PosLst:-16, Vel: -38.000000, VelLst:-26
+3423 Pow:-14, Pow:-14 Pos:-89, PosLst:-54, Vel: -35.000000, VelLst:-38
+3723 Pow:-14, Pow:-14 Pos:-90, PosLst:-89, Vel: -1.000000, VelLst:-35
+4023 Pow:-14, Pow:-14 Pos:-91, PosLst:-90, Vel: -1.000000, VelLst:-1
+4323 Rst Shtr frm -91. Vel:-1. VelLst:-1
+4373 Shooter State Set 2 shooterReload, dTimeLst:2351ms, Count:0, Sen:0, Targ:45, NextTarg:405
+4853 Reloaded to 233. Targ: 230
+4853 Shooter State Set 3 shooterHold, dTimeLst:480ms, Count:0, Sen:234, Targ:45, NextTarg:405
+
+4862 Start UserControl
+Resetting position 0.000000 0.000000 0.000000 | 0.000000 0.000000 0.000000
+4864 Start Shooter State Machine Task
+, StateL:3, StateLL:1
+22112 Decapper State Set 4 decapperDown, DecapperSen:2161, Targ:1290, pow:-25, bPow:10, T:22112, Joy:0, StateL:1, StateLL:3
+22234 Decapper moved to 1199
+22304 Decapper breaked to 2047
+22304 Decapper State Set 1 decapperHold, DecapperSen:2046, Targ:1290, pow:-1, bPow:-1, T:22304, Joy:0, StateL:4, StateLL:1
+22722 Decapper State Set 4 decapperDown, DecapperSen:2062, Targ:1290, pow:-25, bPow:10, T:22722, Joy:0, StateL:1, StateLL:4
+22904 Decapper moved to 891
+22974 Decapper breaked to 1880
+22974 Decapper State Set 1 decapperHold, DecapperSen:1880, Targ:1290, pow:-1, bPow:-1, T:22974, Joy:0, StateL:4, StateLL:1
+23052 Decapper State Set 4 decapperDown, DecapperSen:1895, Targ:1290, pow:-25, bPow:10, T:23052, Joy:0, StateL:1, StateLL:4
+23114 Decapper moved to 884
+23184 Decapper breaked to 1810
+23184 Decapper State Set 1 decapperHold, DecapperSen:1807, Targ:1290, pow:-1, bPow:-1, T:23184, Joy:0, StateL:4, StateLL:1
+23402 Decapper State Set 4 decapperDown, DecapperSen:1854, Targ:1290, pow:-25, bPow:10, T:23402, Joy:0, StateL:1, StateLL:4
+23464 Decapper moved to 1225
+23534 Decapper breaked to 1779
+23534 Decapper State Set 1 decapperHold, DecapperSen:1778, Targ:1290, pow:-1, bPow:-1, T:23534, Joy:0, StateL:4, StateLL:1
+23672 Decapper State Set 4 decapperDown, DecapperSen:1763, Targ:1290, pow:-25, bPow:10, T:23672, Joy:0, StateL:1, StateLL:4
+23734 Decapper moved to 1340
+23804 Decapper breaked to 1711
+23804 Decapper State Set 1 decapperHold, DecapperSen:1712, Targ:1290, pow:-1, bPow:-1, T:23804, Joy:0, StateL:4, StateLL:1
+23892 Decapper State Set 4 decapperDown, DecapperSen:1741, Targ:1290, pow:-25, bPow:10, T:23892, Joy:0, StateL:1, StateLL:4
+23974 Decapper moved to 973
+24044 Decapper breaked to 1672
+24044 Decapper State Set 1 decapperHold, DecapperSen:1672, Targ:1290, pow:-1, bPow:-1, T:24044, Joy:0, StateL:4, StateLL:1
+24062 Decapper State Set 4 decapperDown, DecapperSen:1642, Targ:1290, pow:-25, bPow:10, T:24062, Joy:0, StateL:1, StateLL:4
+24094 Decapper moved to 257
+24164 Decapper breaked to 1644
+24164 Decapper State Set 1 decapperHold, DecapperSen:1644, Targ:1290, pow:-1, bPow:-1, T:24164, Joy:0, StateL:4, StateLL:1
+24282 Decapper State Set 4 decapperDown, DecapperSen:1635, Targ:1290, pow:-25, bPow:10, T:24282, Joy:0, StateL:1, StateLL:4
+24354 Decapper moved to 767
+24424 Decapper breaked to 1567
+24424 Decapper State Set 1 decapperHold, DecapperSen:1567, Targ:1290, pow:-1, bPow:-1, T:24424, Joy:0, StateL:4, StateLL:1
+24512 Decapper State Set 4 decapperDown, DecapperSen:1564, Targ:1290, pow:-25, bPow:10, T:24512, Joy:0, StateL:1, StateLL:4
+24544 Decapper moved to 1374
+24614 Decapper breaked to 1527
+24614 Decapper State Set 1 decapperHold, DecapperSen:1527, Targ:1290, pow:-1, bPow:-1, T:24614, Joy:0, StateL:4, StateLL:1
+24692 Decapper State Set 4 decapperDown, DecapperSen:1537, Targ:1290, pow:-25, bPow:10, T:24692, Joy:0, StateL:1, StateLL:4
+24844 Decapper moved to 1385
+24914 Decapper breaked to 1293
+24914 Decapper State Set 1 decapperHold, DecapperSen:1293, Targ:1290, pow:-1, bPow:-1, T:24914, Joy:0, StateL:4, StateLL:1
+26412 Decapper State Set 4 decapperDown, DecapperSen:1342, Targ:1290, pow:-25, bPow:10, T:26412, Joy:0, StateL:1, StateLL:4
+26414 Decapper moved to 1342
+26484 Decapper breaked to 1344
+26484 Decapper State Set 1 decapperHold, DecapperSen:1343, Targ:1290, pow:-1, bPow:-1, T:26484, Joy:0, StateL:4, StateLL:1
+29832 Decapper State Set 4 decapperDown, DecapperSen:1322, Targ:190, pow:-40, bPow:15, T:29832, Joy:0, StateL:1, StateLL:4
+30244 Decapper moved to 276
+30314 Decapper breaked to 203
+30314 Decapper State Set 1 decapperHold, DecapperSen:203, Targ:190, pow:-1, bPow:-1, T:30314, Joy:0, StateL:4, StateLL:1
+30842 Decapper State Set 3 decapperUp, DecapperSen:193, Targ:1700, pow:127, bPow:-15, T:30842, Joy:0, StateL:1, StateLL:4
+31344 Decapper moved to 1620
+31494 Decapper breaked to 848
+31494 Decapper State Set 1 decapperHold, DecapperSen:831, Targ:1700, pow:-1, bPow:-1, T:31494, Joy:0, StateL:3, StateLL:1
+rg:190, pow:-1, bPow:-1, T:126874, Joy:-18, StateL:2, StateLL:1
+126882 Decapper State Set 2 decapperManual, DecapperSen:187, Targ:190, pow:-1, bPow:-1, T:126882, Joy:-18, StateL:1, StateLL:2
+126884 Decapper State Set 1 decapperHold, DecapperSen:187, Targ:190, pow:-1, bPow:-1, T:126884, Joy:-18, StateL:2, StateLL:1
+126892 Decapper State Set 2 decapperManual, DecapperSen:188, Targ:190, pow:-1, bPow:-1, T:126892, Joy:-18, StateL:1, StateLL:2
+126894 Decapper State Set 1 decapperHold, DecapperSen:188, Targ:190, pow:-1, bPow:-1, T:126894, Joy:-18, StateL:2, StateLL:1
+126902 Decapper State Set 2 decapperManual, DecapperSen:187, Targ:190, pow:-1, bPow:-1, T:126902, Joy:-18, StateL:1, StateLL:2
+126904 Decapper State Set 1 decapperHold, DecapperSen:187, Targ:190, pow:-1, bPow:-1, T:126904, Joy:-18, StateL:2, StateLL:1
+126912 Decapper State Set 2 decapperManual, DecapperSen:187, Targ:190, pow:-1, bPow:-1, T:126912, Joy:-18, StateL:1, StateLL:2
+126914 Decapper State Set 1 decapperHold, DecapperSen:187, Targ:190, pow:-1, bPow:-1, T:126914, Joy:-18, StateL:2, StateLL:1
+126922 Decapper State Set 2 decapperManual, DecapperSen:186, Targ:190, pow:-1, bPow:-1, T:126922, Joy:-18, StateL:1, StateLL:2
+126924 Decapper State Set 1 decapperHold, DecapperSen:187, Targ:190, pow:-1, bPow:-1, T:126924, Joy:-18, StateL:2, StateLL:1
+126932 Decapper State Set 2 decapperManual, DecapperSen:187, Targ:190, pow:-1, bPow:-1, T:126932, Joy:-18, StateL:1, StateLL:2
+126934 Decapper State Set 1 decapperHold, DecapperSen:187, Targ:190, pow:-1, bPow:-1, T:126934, Joy:-18, StateL:2, StateLL:1
+126942 Decapper State Set 2 decapperManual, DecapperSen:188, Targ:190, pow:-1, bPow:-1, T:126942, Joy:-18, StateL:1, StateLL:2
+126944 Decapper State Set 1 decapperHold, DecapperSen:188, Targ:190, pow:-1, bPow:-1, T:126944, Joy:-18, StateL:2, StateLL:1
+126952 Decapper State Set 2 decapperManual, DecapperSen:188, Targ:190, pow:-1, bPow:-1, T:126952, Joy:-18, StateL:1, StateLL:2
+126954 Decapper State Set 1 decapperHold, DecapperSen:187, Targ:190, pow:-1, bPow:-1, T:126954, Joy:-18, StateL:2, StateLL:1
+126962 Decapper State Set 2 decapperManual, DecapperSen:187, Targ:190, pow:-1, bPow:-1, T:126962, Joy:-18, StateL:1, StateLL:2
+126964 Decapper State Set 1 decapperHold, DecapperSen:188, Targ:190, pow:-1, bPow:-1, T:126964, Joy:-18, StateL:2, StateLL:1
+126972 Decapper State Set 2 decapperManual, DecapperSen:190, Targ:190, pow:-1, bPow:-1, T:126972, Joy:-18, StateL:1, StateLL:2
+126974 Decapper State Set 1 decapperHold, DecapperSen:189, Targ:190, pow:-1, bPow:-1, T:126974, Joy:-18, StateL:2, StateLL:1
+126982 Decapper State Set 2 decapperManual, DecapperSen:189, Targ:190, pow:-1, bPow:-1, T:126982, Joy:-18, StateL:1, StateLL:2
+126984 Decapper State Set 1 decapperHold, DecapperSen:188, Targ:190, pow:-1, bPow:-1, T:126984, Joy:-18, StateL:2, StateLL:1
+126992 Decapper State Set 2 decapperManual, DecapperSen:188, Targ:190, pow:-1, bPow:-1, T:126992, Joy:-18, StateL:1, StateLL:2
+126994 Decapper State Set 1 decapperHold, DecapperSen:188, Targ:190, pow:-1, bPow:-1, T:126994, Joy:-18, StateL:2, StateLL:1
+127002 Decapper State Set 2 decapperManual, DecapperSen:188, Targ:190, pow:-1, bPow:-1, T:127002, Joy:-18, StateL:1, StateLL:2
+127004 Decapper State Set 1 decapperHold, DecapperSen:188, Targ:190, pow:-1, bPow:-1, T:127004, Joy:-18, StateL:2, StateLL:1
+127012 Decapper State Set 2 decapperManual, DecapperSen:188, Targ:190, pow:-1, bPow:-1, T:127012, Joy:-18, StateL:1, StateLL:2
+127014 Decapper State Set 1 decapperHold, DecapperSen:187, Targ:190, pow:-1, bPow:-1, T:127014, Joy:-18, StateL:2, StateLL:1
+ > 132672 MveAnglr: grnd p_u pos <
+135522 Shooter State Set 2 shooterReload, dTimeLst:130669ms, Count:0, Sen:-126, Targ:45, NextTarg:405
+	>>>	 136126 KILL SHOOTER! state:2 Safety TO: 604 SenChange: 243, Sen:117
+136126 Shooter State Set 0 shooterIdle, dTimeLst:604ms, Count:0, Sen:117, Targ:45, NextTarg:405
+139212 Shooter State Set 2 shooterReload, dTimeLst:3086ms, Count:0, Sen:-252, Targ:45, NextTarg:405

@@ -394,14 +394,14 @@ void intakeControls()
 
 
 /* Decapper Controls */
-#define DECAPPER_BOTTOM_POS 205
-#define DECAPPER_TOP_POS 2150
+#define DECAPPER_BOTTOM_POS 620
+#define DECAPPER_TOP_POS 3030
 
 #define DECAPPER_DZ 15
 
-#define DECAPPER_HOLD_POS 2000
+#define DECAPPER_HOLD_POS 2950
 
-#define DECAPPER_GRAB_POS 1700
+#define DECAPPER_GRAB_POS 2200
 #define DECAPPER_DROP_POS 190
 
 #define DECAPPER_CARRY_POS 1290
@@ -457,7 +457,7 @@ void setDecapperState (tDecapperState state, int target = -1, int power = -1, in
 
 			default: writeDebugStream("UNKNOWN STATE"); break;
 			}
-			writeDebugStreamLine(", DecapperSen:%d, T:%d, Joy:%d, StateL:%d, StateLL:%d", SensorValue[decapperPoti], gDecapperStateTime, vexRT[JOY_DECAPPER], gDecapperStateLst, gDecapperStateLstLst);
+			writeDebugStreamLine(", DecapperSen:%d, Targ:%d, pow:%d, bPow:%d, T:%d, Joy:%d, StateL:%d, StateLL:%d", SensorValue[decapperPoti], gDecapperTarget, gDecapperPower, gDecapperBreakPower, gDecapperStateTime, vexRT[JOY_DECAPPER], gDecapperStateLst, gDecapperStateLstLst);
 		}
 	}
 	tRelease();
@@ -502,7 +502,7 @@ task decapperStateSet()
 		case decapperUp:
 			{
 				setDecapper(gDecapperPower);
-				while (SensorValue[decapperPoti] < gDecapperTarget-100) sleep(10);
+				while (SensorValue[decapperPoti] < (gDecapperTarget-100)) sleep(10);
 				LOG(decapper)("%d Decapper moved to %d", nPgmTime, SensorValue[decapperPoti]);
 				setDecapper(gDecapperBreakPower);
 				sleep(150);
@@ -514,7 +514,7 @@ task decapperStateSet()
 		case decapperDown:
 			{
 				setDecapper(gDecapperPower);
-				while (SensorValue[decapperPoti] > gDecapperTarget+100) sleep(10);
+				while (SensorValue[decapperPoti] > (gDecapperTarget+100)) sleep(10);
 				LOG(decapper)("%d Decapper moved to %d", nPgmTime, SensorValue[decapperPoti]);
 				setDecapper(gDecapperBreakPower);
 				sleep(70);
@@ -537,8 +537,8 @@ void decapperControls()
 
 	if (doExtraRaise && SensorValue[decapperPoti] > (DECAPPER_GRAB_POS+100))
 	{
-		LOG(decapper)("%d DC extra lift. Pos:%d", nPgmTime, SensorValue[decapperPoti]);
-		setDecapperState(decapperUp, (DECAPPER_TOP_POS-50), 100, 0);
+		LOG(decapper)("%d DO extra lift. Pos:%d", nPgmTime, SensorValue[decapperPoti]);
+		setDecapperState(decapperUp, (DECAPPER_TOP_POS-150), 100, 0);
 		doExtraRaise = false;
 	}
 
@@ -560,7 +560,7 @@ void decapperControls()
 		}
 		else
 		{
-			setDecapperState(decapperDown, DECAPPER_CARRY_POS, -20, 15);
+			setDecapperState(decapperDown, DECAPPER_CARRY_POS, -25, 10);
 		}
 		}
 
@@ -1145,7 +1145,7 @@ void shooterSafetyCheck()
 		}
 		else if (gShooterState == shooterReload)
 		{
-			if (stateElpsdTime > 600)
+			if (stateElpsdTime > 700)
 			{
 				killShooter();
 				setShooter(-90);
