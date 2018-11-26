@@ -930,10 +930,7 @@ task shooterStateSet()
 	writeDebugStreamLine("%d Start Shooter State Machine Task", nPgmTime);
 	gShooterKilled = false;
 
-	float shooterBreakOffset = 12;
-
-	//SensorValue[shooterEnc] = 0;
-	SensorValue[shooterEnc] = 0;
+	float shooterBreakOffset = 10;
 
 	while (true)
 	{
@@ -1445,8 +1442,6 @@ void startTasks()
 	//TRACKING:
 	resetPositionFull(gPosition, 0, 0, 0);
 	startTask(trackPositionTask);
-
-	SensorValue[shooterEnc] = 0;
 	startTask(driveStateSet);
 	startTask(shooterStateSet);
 	startTask(intakeStateSet);
