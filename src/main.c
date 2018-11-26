@@ -930,7 +930,7 @@ task shooterStateSet()
 	writeDebugStreamLine("%d Start Shooter State Machine Task", nPgmTime);
 	gShooterKilled = false;
 
-	float shooterBreakOffset = 10;
+	float shooterBreakOffset = 12;
 
 	//SensorValue[shooterEnc] = 0;
 	SensorValue[shooterEnc] = 0;
