@@ -82,15 +82,15 @@ bool gAnglerShooterTaskRunning = false;
 unsigned long gAnglerShooterTaskTime = 0;
 
 //Initialize safeties
-#include "safety.h"
-#include "safety.c"
-sSafety driveSafety, shooterSafety, anglerSafety; //No intake safety
-void initSafeties()
-{
-	initSafety(driveSafety, "driveSafety", velSensor, trackL);
-	initSafety(shooterSafety, "shooterSafety", velSensor, shooterEnc);
-	initSafety(anglerSafety, "anglerSafety", velSensor, anglerPoti);
-}
+//#include "safety.h"
+//#include "safety.c"
+//sSafety driveSafety, shooterSafety, anglerSafety; //No intake safety
+//void initSafeties()
+//{
+//	initSafety(driveSafety, "driveSafety", velSensor, trackL);
+//	initSafety(shooterSafety, "shooterSafety", velSensor, shooterEnc);
+//	initSafety(anglerSafety, "anglerSafety", velSensor, anglerPoti);
+//}
 
 /* Shooter Positions */
 int gShootTuneMode = false;
@@ -1014,7 +1014,7 @@ task shooterStateSet()
 				if (!shotTargReached)
 				{
 					tHog();
-					LOG(shooter)("%d Ball gone: Val:%d, Time: %d Pos:%d, Targ:%d ", nPgmTime, SensorValue[ballDetector], nPgmTime-shotStartTime, SensorValue[shooterEnc], target);
+					LOG(shooter)("%d Ball gone(%d), Time: %d Pos:%d, Targ:%d ", nPgmTime, SensorValue[ballDetector], nPgmTime-shotStartTime, SensorValue[shooterEnc], target);
 					gShooterShotCount--;
 					//playTone(300, 50);
 
@@ -1023,7 +1023,7 @@ task shooterStateSet()
 				}
 				else
 				{
-					LOG(shooter)("%d Start break: Time: %d Pos:%d ", nPgmTime, nPgmTime-shotStartTime, SensorValue[shooterEnc]);
+					LOG(shooter)("%d ShotBrake: TElpsd:%d Pos:%d ", nPgmTime, nPgmTime-shotStartTime, SensorValue[shooterEnc]);
 					setShooter(-25);
 					unsigned long startBreakTime = nPgmTime;
 
@@ -1033,7 +1033,7 @@ task shooterStateSet()
 						if (ballThere && !BALL_DETECTED)
 						{
 							ballThere = false;
-							LOG(shooter)("  > %d BALL HIT. Angler at %d holding at %d. Err:%d", nPgmTime, SensorValue[anglerPoti], gMotor[angler].powerCur, (gAnglerTarget-SensorValue[anglerPoti]));
+							LOG(shooter)("  > %d BALL HIT. Angler pos:%d pow:%d. Err:%d", nPgmTime, SensorValue[anglerPoti], gMotor[angler].powerCur, (gAnglerTarget-SensorValue[anglerPoti]));
 						}
 						sleep(10);
 					}
@@ -1045,7 +1045,7 @@ task shooterStateSet()
 			}
 		case shooterReset:
 			{
-				LOG(shooter)("%d Shtr 500ms rest(reset). ShtCnt:%d. Pos:%d", nPgmTime, gShooterShotCount, SensorValue[shooterEnc]);
+				LOG(shooter)("%d Shtr rest(rset). ShtCnt:%d. Pos:%d", nPgmTime, gShooterShotCount, SensorValue[shooterEnc]);
 				setShooter(0);
 				sleep(500);
 
@@ -1066,7 +1066,7 @@ task shooterStateSet()
 					velLst = vel;
 
 					vel = (float)(pos-lstPos);///(float)(time-lstTime);
-					LOG(shooter)("%d Pow:%d, Pow:%d Pos:%d, PosLst:%d, Vel: %f, VelLst:%d", nPgmTime, gMotor[shooter].powerCur, gMotor[shooterY].powerCur, pos, lstPos, vel, velLst);
+					LOG(shooter)("%d RSTPow:%d, Pos:%d, PosLst:%d, Vel: %f, VelLst:%d", nPgmTime, gMotor[shooter].powerCur, pos, lstPos, vel, velLst);
 
 					lstPos = pos;
 					lstTime = time;
@@ -1213,7 +1213,7 @@ void driveAngleShoot(int pos, int acceptableRange, bool waitForShot, TVexJoystic
 		if (!vexRT[btn]) btnReleased = true;
 		sleep(10);
 	}
-	LOG(macro)("	>> %d (Reload) took:%dms.", nPgmTime, (nPgmTime-startTime));
+	LOG(macro)("	>> %d Reload took:%dms.", nPgmTime, (nPgmTime-startTime));
 	if (waitForShot && abs(SensorValue[anglerPoti]) > acceptableRange)
 	{
 		//setSafetyTO(anglerSafety, "shot1", 8000);
@@ -1229,7 +1229,7 @@ void driveAngleShoot(int pos, int acceptableRange, bool waitForShot, TVexJoystic
 			if (!vexRT[btn]) btnReleased = true;
 			sleep(10);
 		}
-		LOG(macro)("	>> %d Done anglr wait in %dms. Pos: %d", nPgmTime, (nPgmTime-startTime), SensorValue[anglerPoti]);
+		LOG(macro)("	>> %d AnglerWait took %dms. Pos: %d", nPgmTime, (nPgmTime-startTime), SensorValue[anglerPoti]);
 		//LOG(macro)("	>> %d Angle (FirstShot) took:%dms. Pos: %d", nPgmTime, (nPgmTime-startTime), SensorValue[anglerPoti]);
 	}
 
@@ -1245,7 +1245,7 @@ void driveAngleShoot(int pos, int acceptableRange, bool waitForShot, TVexJoystic
 
 	if ((gShooterShotCount-startShotCount) < 1)
 	{
-		LOG(macro)("	>> %d RETRY SHOT(ball jmpd)", nPgmTime);
+		LOG(macro)("	>> %d RETRY SHOT", nPgmTime);
 		while (gShooterState != shooterHold)
 		{
 			if (!vexRT[btn]) btnReleased = true;
@@ -1259,7 +1259,7 @@ void driveAngleShoot(int pos, int acceptableRange, bool waitForShot, TVexJoystic
 			sleep(10);
 		}
 	}
-	LOG(macro)("	>> %d Shot+Angle took:%dms. Shot took:%dms", nPgmTime, (nPgmTime-startTime), (nPgmTime-shotTriggerTime));
+	LOG(macro)("	>> %d Sht+Angl t:%dms. Shot t:%dms", nPgmTime, (nPgmTime-startTime), (nPgmTime-shotTriggerTime));
 	setShooterState(shooterReload); //Make sure shooter is set to reload
 																//(should not ever do anything b/c it should already be in reload state)
 }
