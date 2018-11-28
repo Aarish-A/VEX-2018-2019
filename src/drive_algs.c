@@ -35,8 +35,38 @@ void applyHarshStop()
 	setDrive(0, 0);
 	//updateMotors();
 }
-void moveToTarget(float x, float y, float xs, float ys, byte power, byte startPower, float maxErrX, float decelEarly, byte decelPower, float dropEarly, tStopType stopType, tMttMode mode)
+
+void moveToTargetY(float y, byte power, byte startPower, tStopType stopType)
 {
+	word last = startPower;
+	word finalPower = startPower;
+
+	while (gPosition.y < y)
+	{
+		LIM_TO_VAL_SET(finalPower, abs(power));
+		if (finalPower * sgn(power) < 30)
+			finalPower = 30 * sgn(power);
+		word delta = finalPower - last;
+		LIM_TO_VAL_SET(delta, 5);
+		finalPower = last += delta;
+
+		setDrive(finalPower, finalPower);
+
+		sleep(10);
+	}
+
+	if (stopType & stopHarsh)
+		applyHarshStop();
+	else
+		setDrive(0, 0);
+
+	LOG(auto)("TargY: %f | %f %f %f", y,  gPosition.x, gPosition.y, radToDeg(gPosition.a));
+}
+
+void moveToTarget(float x, float y, byte power, byte startPower, float maxErrX, float decelEarly, byte decelPower, float dropEarly, tStopType stopType, tMttMode mode)
+{
+	float xs = gPosition.x;
+	float ys = gPosition.y;
 	//LOG(auto)("Moving to %f %f from %f %f at %d", y, x, ys, xs, power);
 
 	gTargetLast.y = y;
@@ -99,8 +129,8 @@ void moveToTarget(float x, float y, float xs, float ys, byte power, byte startPo
 			correction = fabs(errX) > maxErrX ? 6.0 * (nearAngle(correctA, gPosition.a) - gPosition.a) * sgn(power) : 0;
 		}
 
-		if (mode != mttSimple)
-		{
+		//if (mode != mttSimple)
+		//{
 			switch (mode)
 			{
 			case mttProportional:
@@ -137,7 +167,7 @@ void moveToTarget(float x, float y, float xs, float ys, byte power, byte startPo
 			word delta = finalPower - last;
 			LIM_TO_VAL_SET(delta, 5);
 			finalPower = last += delta;
-		}
+		//}
 
 		switch (sgn(correction))
 		{
@@ -153,6 +183,8 @@ void moveToTarget(float x, float y, float xs, float ys, byte power, byte startPo
 		}
 
 		vel = _sin * gVelocity.x + _cos * gVelocity.y;
+
+		//writeDebugStreamLine("vel:%f", vel);
 
 		endCycle(cycle);
 	} while( (currentPosVector.y < -dropEarly - MAX((vel * ((stopType & stopSoft) ? 0.175 : 0.098)), decelEarly)) );
@@ -196,15 +228,20 @@ void moveToTarget(float x, float y, float xs, float ys, byte power, byte startPo
 	else
 		setDrive(0, 0);
 
-	LOG(auto)("Moved to %f %f from %f %f | %f %f %f", y, x, ys, xs, gPosition.y, gPosition.x, radToDeg(gPosition.a));
+	LOG(auto)("Moved to %f %f from %f %f | %f %f %f", x, y, xs, ys,  gPosition.x, gPosition.y, radToDeg(gPosition.a));
 }
 
-void moveToTargetDis(float a, float d, float xs, float ys, byte power, byte startPower, float maxErrX, float decelEarly, byte decelPower, float dropEarly, tStopType stopType, tMttMode mode)
+void moveToTargetDis(float a, float d, byte power, byte startPower, float maxErrX, float decelEarly, byte decelPower, float dropEarly, tStopType stopType, tMttMode mode)
 {
-	moveToTarget(xs + d * sin(a), ys + d * cos(a), xs, ys, power, startPower, maxErrX, decelEarly, decelPower, dropEarly, stopType, mode);
+	a += gPosition.a;
+
+	float xs = gPosition.x;
+	float ys = gPosition.y;
+	moveToTarget(xs + d * sin(a), ys + d * cos(a), power, startPower, maxErrX, decelEarly, decelPower, dropEarly, stopType, mode);
+	//moveToTarget(xs + d * sin(a), ys + d * cos(a), xs, ys, power, startPower, maxErrX, decelEarly, decelPower, dropEarly, stopType, mode);
 }
 
-void turnToAngleNewAlg(float a, tTurnDir turnDir, float fullRatio, byte coastPower, float stopOffsetDeg, bool harshStop)
+void turnToAngleNewAlg(float a, tAutoTurnDir turnDir, float fullRatio, byte coastPower, float stopOffsetDeg, bool harshStop)
 {
 	//LOG(auto)("Turning to %f", radToDeg(a));
 
@@ -307,7 +344,7 @@ void turnToAngleNewAlg(float a, tTurnDir turnDir, float fullRatio, byte coastPow
 	//LOG(auto)("Turned to %f | %f %f %f", radToDeg(a), gPosition.y, gPosition.x, radToDeg(gPosition.a));
 }
 
-void turnToTargetNewAlg(float x, float y, tTurnDir turnDir, float fullRatio, byte coastPower, float stopOffsetDeg, bool harshStop, float offset)
+void turnToTargetNewAlg(float x, float y, tAutoTurnDir turnDir, float fullRatio, byte coastPower, float stopOffsetDeg, bool harshStop, float offset)
 {
 	//LOG(auto)("Turning to %f %f", y, x);
 
@@ -408,5 +445,6 @@ void turnToTargetNewAlg(float x, float y, tTurnDir turnDir, float fullRatio, byt
 		setDrive(0, 0);
 		break;
 	}
-	//LOG(auto)("Turned to %f %f | %f %f %f", y, x, gPosition.y, gPosition.x, radToDeg(gPosition.a));
+
+	LOG(auto)("Turned to %f %f ATarg:%f Err:%f| %f %f %f", y, x, radToDeg(target), radToDeg(gPosition.a-target), gPosition.y, gPosition.x, radToDeg(gPosition.a));
 }

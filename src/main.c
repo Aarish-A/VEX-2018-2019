@@ -35,7 +35,7 @@ bool decapperStateLogs = true;
 bool decapperLogs = true;
 
 bool anglerDatalog = false;
-bool anglerStateLogs = false;
+bool anglerStateLogs = true;
 bool anglerLogs = false;
 bool anglerAlgLogs = false;
 
@@ -601,15 +601,17 @@ void decapperControls()
 #define ANGLER_AXEL_POS (ANGLER_TOP_POS-2000)
 
 #define ANGLER_GROUND_PICKUP_POS 900
+#define ANGLER_CAP_PICKUP_POS 1340
 #define ANGLER_LOW_PF_PICKUP_POS 1470
-#define ANGLER_CAP_PICKUP_POS 1530
+
+#define ANGLER_PICKUP_CAP_POS 1530
 
 #define ANGLER_CAP_FLIP_POS 820
 
 int gAnglerBackTopFlag = 1510; //1430; //1390; //1490
 int gAnglerBackMidFlag = 1250; //1235; //1175; //1270
 
-int gAnglerFrontPFTopFlag = 1820;//1730;
+int gAnglerFrontPFTopFlag = 1790;//1730;
 int gAnglerFrontPFMidFlag = 1410;//1310;
 
 int gAnglerMidPFTopFlag = 1570;//1730;
@@ -983,7 +985,11 @@ task shooterStateSet()
 
 					setShooterState(shooterHold);
 				}
-				else setShooterState(shooterIdle);
+				else
+				{
+					LOG(shooter)("%d ShtrReload->idle: Anglr @ axelPos", nPgmTime);
+					setShooterState(shooterIdle);
+				}
 				break;
 			}
 		case shooterHold:
@@ -1177,6 +1183,7 @@ void anglerMoveToPos(int pos, int acceptableRange)
 	gAnglerTarget = pos;
 	gAnglerGoodCount = 0;
 	setAnglerState(anglerMove, acceptableRange);
+
 }
 
 void anglerReachedAlert(int targ)
@@ -1198,7 +1205,7 @@ void anglerReachedAlert(int targ)
 	if (abs(SensorValue[anglerPoti]-targ) > 30) playTone(fStart, 15); //Play third tone if out of range
 }
 
-void driveAngleShoot(int pos, int acceptableRange, bool waitForShot, TVexJoysticks btn, bool& btnReleased)
+void angleShoot(int pos, int acceptableRange, bool waitForShot, TVexJoysticks btn, bool& btnReleased)
 {
 	unsigned long startTime = nPgmTime;
 	int startShotCount = gShooterShotCount;
@@ -1297,13 +1304,13 @@ void anglerShooter(int posA, int posB, int acceptableRange, bool waitForFirstSho
 
 	//First shot
 	LOG(macro)(">>%d AnglShot1", nPgmTime);
-	driveAngleShoot(posB, acceptableRange, waitForFirstShot, btn, btnReleased);
+	angleShoot(posA, acceptableRange, waitForFirstShot, btn, btnReleased);
 
 	//Second Shot
 	if (!btnReleased && vexRT[btn])
 	{
 		LOG(macro)(">>%d AnglShot2", nPgmTime);
-		driveAngleShoot(posB, acceptableRange, waitForSecShot, btn, btnReleased);
+		angleShoot(posB, acceptableRange, waitForSecShot, btn, btnReleased);
 
 		LOG(macro)(" >> %d Anglr: grnd p_u pos", nPgmTime);
 		anglerMoveToPos(ANGLER_GROUND_PICKUP_POS, 150);
@@ -1366,7 +1373,8 @@ void ballTrackLog()
 
 	if (gBallThere && !gBallThereLst) writeDebugStream("	> %d Ball Detected", nPgmTime);
 	else if (!gBallThere && gBallThereLst) writeDebugStream("	> %d Ball Off", nPgmTime);
-	writeDebugStreamLine(" (%d). Shooter:%d Angler:%d (err:%d). Vel:%f", SensorValue[ballDetector], SensorValue[shooterEnc], SensorValue[anglerPoti], (gAnglerTarget-SensorValue[anglerPoti]), anglerVel);
+	if((gBallThere && !gBallThereLst) || (!gBallThere && gBallThereLst))
+		writeDebugStreamLine(" (%d). Shooter:%d Angler:%d (err:%d). Vel:%f", SensorValue[ballDetector], SensorValue[shooterEnc], SensorValue[anglerPoti], (gAnglerTarget-SensorValue[anglerPoti]), anglerVel);
 
 	gBallThereLst = gBallThere;
 	gAnglerSenLst = gAnglerSen;
@@ -1437,11 +1445,12 @@ void stopTasks()
 
 void startup()
 {
+	tHog();
 	clearDebugStream();
 	datalogClear();
 	setupMotors();
 	updateTurnLookup();
-	initSafeties();
+	//initSafeties();
 
 	clearSounds();
 
@@ -1457,9 +1466,11 @@ void startup()
 	startTask(trackPositionTask);
 
 	startTasks();
+	sleep(50);
 
 	gShooterKilled = false;
 	setShooterState(shooterReset);
+	tRelease();
 	sleep(50);
 	while(gShooterState != shooterHold && gShooterState != shooterIdle) sleep(10);
 	//Setup Joysticks & Buttons
@@ -1522,6 +1533,15 @@ void autoAngleShoot(int posA, int acceptableRange, bool waitForFirstShot = true)
 	setShooterState(shooterReload);
 }
 
+void anglerUnderAxle()
+{
+	if (SensorValue[anglerPoti] >= ANGLER_AXEL_POS)
+	{
+		anglerMoveToPos(ANGLER_AXEL_POS-100, 100);
+		while (SensorValue[anglerPoti] >= ANGLER_AXEL_POS) sleep(10);
+	}
+}
+
 task autonomous()
 {
 	writeDebugStreamLine("\n%d Start Autonomous", nPgmTime);
@@ -1529,20 +1549,30 @@ task autonomous()
 	initCycle(cycle, 10, "auto");
 	startTasks();
 	stopTask(driveStateSet);
-	while(true)
-	{
-		writeDebugStreamLine("%d btn5u:%d", nPgmTime, vexRT[btn5u]);
-		endCycle(cycle);
-	}
+	//while(true)
+	//{
+	//	writeDebugStreamLine("%d btn5u:%d", nPgmTime, vexRT[btn5u]);
+	//	endCycle(cycle);
+	//}
 
-	//stopTask(trackPositionTask);
-	//resetPositionFull(gPosition, 0, 0, 0);
-	//startTask(trackPositionTask);
+	bool dummyBool = false;
 
-	//autoAngleShoot(gAnglerFrontPFTopFlag, 70, false);
-	//anglerMoveToPos(ANGLER_CAP_PICKUP_POS, 100);
+	stopTask(trackPositionTask);
+	resetPositionFull(gPosition, 62, 3.6+S_DISTANCE_IN, 0);
+	startTask(trackPositionTask);
 
-	moveToTarget(0, 24, gPosition.x, gPosition.y, 127, 35, 7, 5, 50, 9.5, (stopSoft|stopHarsh), mttProportional);
+	if (SensorValue[anglerPoti] >= ANGLER_AXEL_POS)
+		anglerMoveToPos(ANGLER_AXEL_POS-100, 100);
+
+	moveToTargetY(gPosition.y+2, 40, 30, stopNone);
+	turnToTargetNewAlg(11, 16, ch, 0.4, 30, 15, true);
+
+	anglerUnderAxle();
+	angleShoot(gAnglerFrontPFTopFlag, 70, false, BTN_SHOOT, dummyBool);
+
+	anglerMoveToPos(ANGLER_CAP_PICKUP_POS, 100);
+
+	//moveToTarget(11, 13, 70, 35, 5, 5, 50, 9.5, (stopSoft|stopHarsh), mttProportional);
 	stopTasks();
 }
 
@@ -1691,8 +1721,8 @@ task usercontrol()
 			}
 			else if (anglerPickupCapBtn && !anglerPickupCapBtnLst)
 			{
-				writeDebugStreamLine(" > %d Anglr: cap p_u pos <", nPgmTime);
-				anglerMoveToPos(ANGLER_CAP_PICKUP_POS, 150);
+				writeDebugStreamLine(" > %d Anglr: p_u cap pos <", nPgmTime);
+				anglerMoveToPos(ANGLER_PICKUP_CAP_POS, 150);
 
 				//writeDebugStreamLine("%d Angler pos1", nPgmTime);
 				//unsigned long startTime = nPgmTime;
