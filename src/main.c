@@ -1565,7 +1565,7 @@ task autonomous()
 		anglerMoveToPos(ANGLER_AXEL_POS-100, 100);
 
 	moveToTargetY(gPosition.y+2, 40, 30, stopNone);
-	turnToTargetSide(11, 16, 60, -12, 10, true);
+	turnToTargetSide(11, 16, 60, -15, 10, true);
 	//turnToTargetNewAlg(11, 16, ch, 0.4, 30, 15, true);
 
 	//ADD AFTER:
