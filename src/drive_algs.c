@@ -28,8 +28,8 @@ void applyHarshStop()
 	setDrive(left, right);
 	//updateMotors();
 
-	unsigned long startTime = npgmtime;
-	while( (npgmtime-startTime) < 150)
+	unsigned long startTime = nPgmTime;
+	while( (nPgmTime-startTime) < 150)
 		sleep(10);
 
 	setDrive(0, 0);
@@ -317,7 +317,7 @@ void turnToAngleNewAlg(float a, tAutoTurnDir turnDir, float fullRatio, byte coas
 			sleep(10);
 		}
 		setDrive(-coastPower, coastPower);
-		timeStart = npgmTime;
+		timeStart = nPgmTime;
 		while(  (gPosition.a > a + degToRad(stopOffsetDeg)))
 		{
 			if (DATALOG_TURN != -1)
@@ -344,6 +344,48 @@ void turnToAngleNewAlg(float a, tAutoTurnDir turnDir, float fullRatio, byte coas
 	//LOG(auto)("Turned to %f | %f %f %f", radToDeg(a), gPosition.y, gPosition.x, radToDeg(gPosition.a));
 }
 
+void turnToTargetSide(float x, float y, word big, word small, float stopOffset, bool harshStop)
+{
+	tAutoTurnDir turnDir;
+	float target, error;
+
+	if (fmod(atan2(x - gPosition.x, y - gPosition.y) - gPosition.a, PI * 2) > PI) turnDir = ccw; else turnDir = cw;
+	LOG(auto)("%d turnSide:%d", nPgmTime, turnDir);
+
+	switch (turnDir)
+	{
+	case cw:
+		do
+		{
+			target = gPosition.a + fmod(atan2(x - gPosition.x, y - gPosition.y) - gPosition.a, PI * 2);
+			error = target-gPosition.a;
+
+			setDrive(big, small);
+
+			sleep(10);
+		} while( error > degToRad(abs(stopOffset)) );
+		break;
+
+	case ccw:
+		do
+		{
+			target = gPosition.a - fmod(gPosition.a - atan2(x - gPosition.x, y - gPosition.y), PI * 2);
+			error = target-gPosition.a;
+
+			setDrive(small, big);
+
+			sleep(10);
+		} while( error < degToRad(-abs(stopOffset)) );
+		break;
+	}
+
+	LOG(auto)("%d turnSide done(%f,%f) %f targ:%f, err:%f", nPgmTime, gPosition.x, gPosition.y, gPosition.a, radToDeg(target), radToDeg(target-gPosition.a));
+
+	if (harshStop) applyHarshStop();
+	else setDrive(0,0);
+	LOG(auto)("%d turnSide exit(%f,%f) %f targ:%f, err:%f", nPgmTime, gPosition.x, gPosition.y, gPosition.a, radToDeg(target), radToDeg(target-gPosition.a));
+
+}
 void turnToTargetNewAlg(float x, float y, tAutoTurnDir turnDir, float fullRatio, byte coastPower, float stopOffsetDeg, bool harshStop, float offset)
 {
 	//LOG(auto)("Turning to %f %f", y, x);
@@ -378,7 +420,7 @@ void turnToTargetNewAlg(float x, float y, tAutoTurnDir turnDir, float fullRatio,
 			sleep(10);
 		}
 		setDrive(coastPower, -coastPower);
-		timeStart = npgmTime;
+		timeStart = nPgmTime;
 		while( (gPosition.a < nearAngle(atan2(x - gPosition.x, y - gPosition.y) + offset, target) - degToRad(stopOffsetDeg)) )
 		{
 			if (DATALOG_TURN != -1)
@@ -446,5 +488,5 @@ void turnToTargetNewAlg(float x, float y, tAutoTurnDir turnDir, float fullRatio,
 		break;
 	}
 
-	LOG(auto)("Turned to %f %f ATarg:%f Err:%f| %f %f %f", y, x, radToDeg(target), radToDeg(gPosition.a-target), gPosition.y, gPosition.x, radToDeg(gPosition.a));
+	LOG(auto)("Turned to %f %f ATarg:%f Err:%f| %f %f %f", y, x, radToDeg(target), radToDeg(target-gPosition.a), gPosition.y, gPosition.x, radToDeg(gPosition.a));
 }

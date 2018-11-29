@@ -1565,12 +1565,14 @@ task autonomous()
 		anglerMoveToPos(ANGLER_AXEL_POS-100, 100);
 
 	moveToTargetY(gPosition.y+2, 40, 30, stopNone);
-	turnToTargetNewAlg(11, 16, ch, 0.4, 30, 15, true);
+	turnToTargetSide(11, 16, 60, -12, 10, true);
+	//turnToTargetNewAlg(11, 16, ch, 0.4, 30, 15, true);
 
-	anglerUnderAxle();
-	angleShoot(gAnglerFrontPFTopFlag, 70, false, BTN_SHOOT, dummyBool);
+	//ADD AFTER:
+	//anglerUnderAxle();
+	//angleShoot(gAnglerFrontPFTopFlag, 70, false, BTN_SHOOT, dummyBool);
 
-	anglerMoveToPos(ANGLER_CAP_PICKUP_POS, 100);
+	//anglerMoveToPos(ANGLER_CAP_PICKUP_POS, 100);
 
 	//moveToTarget(11, 13, 70, 35, 5, 5, 50, 9.5, (stopSoft|stopHarsh), mttProportional);
 	stopTasks();
