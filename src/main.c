@@ -211,6 +211,9 @@ task driveStateSet()
 				if (abs(gDriveTurnRaw) > DRIVE_TURN_DZ)
 				{
 					turn = lookupTurn(gDriveTurnRaw); //gDriveTurnRaw;
+
+					if (gAnglerShooterTaskRunning) turn *=  gDriveTurnShootScale;
+
 					gDriveTurnDir = (turn > 0)? turnCW : turnCCW;
 				}
 				else turn = 0;
@@ -1629,7 +1632,7 @@ task usercontrol()
 
 		/* Drive Controls */
 		gDriveThrottleRaw = (!gAnglerShooterTaskRunning)? vexRT[JOY_DRIVE_THROTTLE] : vexRT[JOY_ANGLER];
-		gDriveTurnRaw = (!gAnglerShooterTaskRunning)? vexRT[JOY_DRIVE_TURN] : (vexRT[JOY_DECAPPER] * gDriveTurnShootScale);
+		gDriveTurnRaw = (!gAnglerShooterTaskRunning)? vexRT[JOY_DRIVE_TURN] : (vexRT[JOY_DECAPPER]);
 		if ( ((abs(gDriveTurnRaw) > DRIVE_TURN_DZ) || (abs(gDriveThrottleRaw) > DRIVE_THROTTLE_DZ)) && gDriveState != driveMoveTime) setDriveState(driveManual);
 
 		/* Intake Controls */
