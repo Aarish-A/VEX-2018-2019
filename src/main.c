@@ -1545,8 +1545,7 @@ void anglerUnderAxle()
 task autonomous()
 {
 	writeDebugStreamLine("\n%d Start Autonomous", nPgmTime);
-	sCycleData cycle;
-	initCycle(cycle, 10, "auto");
+
 	startTasks();
 	stopTask(driveStateSet);
 	//while(true)
