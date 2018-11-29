@@ -88,17 +88,23 @@ void setDrive(word left, word right)
 	setMotor(driveR, right);
 	setMotor(driveRY, right);
 }
+
+bool autoLogs = true;
 #include "drive_algs.h"
 #include "drive_algs.c"
 
 task main()
 {
-	resetPositionFull(gPosition, 0, 0, 0);
+	setupMotors();
+	resetPositionFull(gPosition, 62, 3.6+S_DISTANCE_IN, 0);
 	startTask(trackPositionTask);
 
-	setupMotors();
-	turnToTargetNewAlg(24, 24,
-	moveToTarget(24, 24, gPosition.x, gPosition.y, 127, 7, 15, 3, 50, 0, (stopSoft|stopHarsh), mttProportional);
+	moveToTargetY(gPosition.y+3, 40, 30, stopNone);
+	turnToTargetNewAlg(11, 16, ch, 0.4, 40, 15, true);
+
+	//moveToTargetDis(0, 5, 127, 35, 0, 0, 70, 0, stopNone, mttProportional);
+	//turnToTargetNewAlg(11, 15, cw, 0.7, 40, 15, true);
+	//moveToTarget(24, 24, 127, 7, 15, 3, 50, 0, (stopSoft|stopHarsh), mttProportional);
 
 
 }
