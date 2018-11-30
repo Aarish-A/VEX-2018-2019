@@ -1617,6 +1617,8 @@ task usercontrol()
 	//int lstShotCount = 0;
 	unsigned long lstShotTimer = 0;
 
+	setShooterState(shooterReload);
+
 	//setDriveState(driveManual);
 	while (true)
 	{
