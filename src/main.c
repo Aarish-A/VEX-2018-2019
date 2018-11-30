@@ -1317,7 +1317,7 @@ void anglerShooter(int posA, int posB, int acceptableRange, bool waitForFirstSho
 		LOG(macro)(">>%d AnglShot2", nPgmTime);
 		angleShoot(posB, acceptableRange, waitForSecShot, btn, btnReleased);
 
-		LOG(macro)(" >> %d Anglr: grnd p_u pos", nPgmTime);
+		LOG(macro)(" >> %d Anglr(sht): grnd p_u pos", nPgmTime);
 		anglerMoveToPos(ANGLER_GROUND_PICKUP_POS, 150);
 	}
 	anglerAlgLogs = false;
