@@ -346,6 +346,7 @@ void turnToAngleNewAlg(float a, tAutoTurnDir turnDir, float fullRatio, byte coas
 
 void turnToTargetSide(float x, float y, word big, word small, float stopOffset, bool harshStop)
 {
+	unsigned long startTime = nPgmTime;
 	tAutoTurnDir turnDir;
 	float target, error;
 
@@ -383,12 +384,14 @@ void turnToTargetSide(float x, float y, word big, word small, float stopOffset, 
 
 	if (harshStop) applyHarshStop();
 	else setDrive(0,0);
-	LOG(auto)("%d turnSide exit(%f,%f) %f targ:%f, err:%f", nPgmTime, gPosition.x, gPosition.y, gPosition.a, radToDeg(target), radToDeg(target-gPosition.a));
+	LOG(auto)("%d turnSide exit(%f,%f) %f targ:%f, err:%f T:%d", nPgmTime, gPosition.x, gPosition.y, radToDeg(gPosition.a), radToDeg(target), radToDeg(target-gPosition.a), (nPgmTime-startTime));
 
 }
 void turnToTargetNewAlg(float x, float y, tAutoTurnDir turnDir, float fullRatio, byte coastPower, float stopOffsetDeg, bool harshStop, float offset)
 {
 	//LOG(auto)("Turning to %f %f", y, x);
+
+	unsigned long startTime = nPgmTime;
 
 	if (turnDir == ch)
 		if (fmod(atan2(x - gPosition.x, y - gPosition.y) + offset - gPosition.a, PI * 2) > PI) turnDir = ccw; else turnDir = cw;
@@ -488,5 +491,5 @@ void turnToTargetNewAlg(float x, float y, tAutoTurnDir turnDir, float fullRatio,
 		break;
 	}
 
-	LOG(auto)("Turned to %f %f ATarg:%f Err:%f| %f %f %f", y, x, radToDeg(target), radToDeg(target-gPosition.a), gPosition.y, gPosition.x, radToDeg(gPosition.a));
+	LOG(auto)("Turned to %f %f ATarg:%f Err:%f| %f %f %f. T:%d", y, x, radToDeg(target), radToDeg(target-gPosition.a), gPosition.y, gPosition.x, radToDeg(gPosition.a), (nPgmTime-startTime));
 }

@@ -1563,13 +1563,11 @@ task autonomous()
 	if (SensorValue[anglerPoti] >= ANGLER_AXEL_POS)
 		anglerMoveToPos(ANGLER_AXEL_POS-100, 100);
 
-	moveToTargetY(gPosition.y+2, 40, 30, stopNone);
-	turnToTargetSide(11, 16, 60, -15, 10, true);
-	//turnToTargetNewAlg(11, 16, ch, 0.4, 30, 15, true);
+	moveToTargetY(gPosition.y+1.5, 40, 30, stopHarsh);
+	turnToTargetNewAlg(11, 16, ch, 0.4, 40, 15, true);
 
-	//ADD AFTER:
-	//anglerUnderAxle();
-	//angleShoot(gAnglerFrontPFTopFlag, 70, false, BTN_SHOOT, dummyBool);
+	anglerUnderAxle();
+	angleShoot(gAnglerFrontPFTopFlag, 70, false, BTN_SHOOT, dummyBool);
 
 	//anglerMoveToPos(ANGLER_CAP_PICKUP_POS, 100);
 
