@@ -118,6 +118,8 @@ sbyte gDriveThrottleRaw, gDriveTurnRaw,;
 
 int gDrivePower, gDriveLength;
 
+float gDriveTurnShootScale = 0.85;
+
 bool gDriveFlip = false;
 
 int gDriveBreakPow = 11;
@@ -208,7 +210,10 @@ task driveStateSet()
 
 				if (abs(gDriveTurnRaw) > DRIVE_TURN_DZ)
 				{
-					turn = gDriveTurnRaw; //lookupTurn(gDriveTurnRaw);
+					turn = lookupTurn(gDriveTurnRaw); //gDriveTurnRaw;
+
+					if (gAnglerShooterTaskRunning) turn *=  gDriveTurnShootScale;
+
 					gDriveTurnDir = (turn > 0)? turnCW : turnCCW;
 				}
 				else turn = 0;
@@ -1312,7 +1317,7 @@ void anglerShooter(int posA, int posB, int acceptableRange, bool waitForFirstSho
 		LOG(macro)(">>%d AnglShot2", nPgmTime);
 		angleShoot(posB, acceptableRange, waitForSecShot, btn, btnReleased);
 
-		LOG(macro)(" >> %d Anglr: grnd p_u pos", nPgmTime);
+		LOG(macro)(" >> %d Anglr(sht): grnd p_u pos", nPgmTime);
 		anglerMoveToPos(ANGLER_GROUND_PICKUP_POS, 150);
 	}
 	anglerAlgLogs = false;
@@ -1611,6 +1616,9 @@ task usercontrol()
 	//int lstShotCount = 0;
 	unsigned long lstShotTimer = 0;
 
+	sleep(10);
+	setShooterState(shooterReload);
+
 	//setDriveState(driveManual);
 	while (true)
 	{
@@ -1626,7 +1634,7 @@ task usercontrol()
 
 		/* Drive Controls */
 		gDriveThrottleRaw = (!gAnglerShooterTaskRunning)? vexRT[JOY_DRIVE_THROTTLE] : vexRT[JOY_ANGLER];
-		gDriveTurnRaw = (!gAnglerShooterTaskRunning)? vexRT[JOY_DRIVE_TURN] : (vexRT[JOY_DECAPPER] * 0.6);
+		gDriveTurnRaw = (!gAnglerShooterTaskRunning)? vexRT[JOY_DRIVE_TURN] : (vexRT[JOY_DECAPPER]);
 		if ( ((abs(gDriveTurnRaw) > DRIVE_TURN_DZ) || (abs(gDriveThrottleRaw) > DRIVE_THROTTLE_DZ)) && gDriveState != driveMoveTime) setDriveState(driveManual);
 
 		/* Intake Controls */

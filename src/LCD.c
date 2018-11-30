@@ -123,7 +123,7 @@ task handleLCD()
       case turnCurveAdjust:
       {
      		displayLCDCenteredString(0, "Turn Curve:");
-       displayLCDNumber(1, 0, gTurnCurvature);
+       	displayLCDNumber(1, 0, gTurnCurvature);
 
       	if (!selected && LCD_M)
       	{
@@ -136,6 +136,46 @@ task handleLCD()
       	{
       		if (LCD_R) gTurnCurvature += 1;
       		if (LCD_L) gTurnCurvature -= 1;
+
+      		if (LCD_M)
+      		{
+      			selected = false;
+      			//writeDebugStreamLine("%d Selected: %d", nPgmTime, selected);
+      			//goto end;
+      		}
+
+      		//writeDebugStreamLine("%d Selected: %d", nPgmTime, selected);
+      	}
+      	else if (!selected && LCD_R)
+      	{
+      		updateTurnLookup();
+      		gLCDScreen++;
+      	}
+      	else if (!selected && LCD_L)
+      	{
+      		updateTurnLookup();
+      		gLCDScreen--;
+      	}
+      	break;
+      }
+      case turnShootScale:
+      {
+      	displayLCDCenteredString(0, "Turn Shoot Scale:");
+      	string turnShootScale;
+      	sprintf(turnShootScale, "%3.2f", gDriveTurnShootScale);
+       displayLCDCenteredString(1, turnShootScale);
+
+      	if (!selected && LCD_M)
+      	{
+      		selected = true;
+      		//writeDebugStreamLine("%d Selected: %d", nPgmTime, selected);
+      		goto end;
+      	}
+
+      	if (selected)
+      	{
+      		if (LCD_R) gDriveTurnShootScale += 0.05;
+      		if (LCD_L) gDriveTurnShootScale -= 0.05;
 
       		if (LCD_M)
       		{

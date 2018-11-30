@@ -7,6 +7,7 @@ typedef enum _tLCDScreen
   turnBreakWait,
   turnCurveColour,
   turnCurveAdjust,
+ 	turnShootScale,
   //sensorView,
   trackingTune,
   shotCount,
