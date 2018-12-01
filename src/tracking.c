@@ -118,6 +118,12 @@ void resetPositionFull(sPos& position, float x, float y, float a)
 	position.aStart = a;
 }
 
+void resetTracking(sPos& position, float x, float y, float a)
+{
+	stopTask(trackPositionTask);
+	resetPositionFull(position, x, y, a);
+	startTask(trackPositionTask);
+}
 /* Vector Translation Functions */
 void constructTrianglePos(sTrianglePos& pos, float x, float y, bool findAngle)
 {

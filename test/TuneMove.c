@@ -95,12 +95,15 @@ bool autoLogs = true;
 
 task main()
 {
+	clearDebugStream();
+	gBatteryLevel = nImmediateBatteryLevel;
+	writeDebugStreamLine("%d battery:%d", nPgmTime, gBatteryLevel);
 	setupMotors();
 	resetPositionFull(gPosition, 62, 3.6+S_DISTANCE_IN, 0);
 	startTask(trackPositionTask);
 
-	moveToTargetY(gPosition.y+1.5, 40, 30, stopHarsh);
-	turnToTargetNewAlg(11, 16, ch, 0.4, 40, 15, true);
+	moveToTargetY(gPosition.y+1.5, 50, 30, stopHarsh);
+	turnToTargetP(11, 16, 40, 20, true, 70);
 	//turnToTargetSide(11, 16, 70, -15, 10, true);
 
 	//moveToTargetDis(0, 5, 127, 35, 0, 0, 70, 0, stopNone, mttProportional);

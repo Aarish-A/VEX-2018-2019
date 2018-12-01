@@ -1061,14 +1061,14 @@ task shooterStateSet()
 				sleep(500);
 
 				//LOG(shooter)("%d Rst shtr at -14", nPgmTime);
-				setShooter(-14);
+				setShooter(-13);
 				float pos = SensorValue[shooterEnc];
 				float lstPos = 10;
 				float vel = -1;
 				float velLst = -1;
 				unsigned long time = nPgmTime;
 				unsigned long lstTime = 0;
-				sleep(300);
+				sleep(100);
 				do
 				{
 					pos = SensorValue[shooterEnc];
@@ -1547,36 +1547,68 @@ void anglerUnderAxle()
 	}
 }
 
+typedef enum _tAuto
+{
+	redFront,
+	redBack,
+	blueFront,
+	blueBack
+} tAuto;
+tAuto gAuto = redBack;
+
 task autonomous()
 {
 	writeDebugStreamLine("\n%d Start Autonomous", nPgmTime);
+	unsigned long autoStartTime = nPgmTime;
 
 	startTasks();
 	stopTask(driveStateSet);
-	//while(true)
-	//{
-	//	writeDebugStreamLine("%d btn5u:%d", nPgmTime, vexRT[btn5u]);
-	//	endCycle(cycle);
-	//}
 
 	bool dummyBool = false;
 
-	stopTask(trackPositionTask);
-	resetPositionFull(gPosition, 62, 3.6+S_DISTANCE_IN, 0);
-	startTask(trackPositionTask);
+	switch (gAuto)
+	{
+		case redFront:
+			resetTracking(gPosition, 62, 3.6+S_DISTANCE_IN, 0);
 
-	if (SensorValue[anglerPoti] >= ANGLER_AXEL_POS)
-		anglerMoveToPos(ANGLER_AXEL_POS-100, 100);
+			anglerUnderAxle();
+			angleShoot(gAnglerFrontPFTopFlag, 70, false, BTN_SHOOT, dummyBool);
 
-	moveToTargetY(gPosition.y+1.5, 40, 30, stopHarsh);
-	turnToTargetNewAlg(11, 16, ch, 0.4, 40, 15, true);
+			anglerMoveToPos(ANGLER_CAP_PICKUP_POS, 100);
+			break;
 
-	anglerUnderAxle();
-	angleShoot(gAnglerFrontPFTopFlag, 70, false, BTN_SHOOT, dummyBool);
+		case redBack:
+			resetTracking(gPosition, 62, 3.6+S_DISTANCE_IN, 0);
 
-	//anglerMoveToPos(ANGLER_CAP_PICKUP_POS, 100);
+			anglerUnderAxle();
+			angleShoot(gAnglerBackPFTopFlag, 40, false, BTN_SHOOT, dummyBool);
+
+			anglerMoveToPos(ANGLER_CAP_PICKUP_POS, 100);
+			break;
+
+		case blueFront:
+			resetTracking(gPosition, 62, 3.6+S_DISTANCE_IN, 0);
+
+			anglerUnderAxle();
+			angleShoot(gAnglerFrontPFTopFlag, 70, false, BTN_SHOOT, dummyBool);
+
+			anglerMoveToPos(ANGLER_CAP_PICKUP_POS, 100);
+			break;
+
+		case blueBack:
+			resetTracking(gPosition, 62, 3.6+S_DISTANCE_IN, 0);
+
+			anglerUnderAxle();
+			angleShoot(gAnglerBackPFTopFlag, 40, false, BTN_SHOOT, dummyBool);
+
+			anglerMoveToPos(ANGLER_CAP_PICKUP_POS, 100);
+			break;
+	}
 
 	//moveToTarget(11, 13, 70, 35, 5, 5, 50, 9.5, (stopSoft|stopHarsh), mttProportional);
+	//turnToTargetSide(10, 18, 60, -15, 10, true);
+
+	writeDebugStreamLine("%d AutoT:%d", nPgmTime, (nPgmTime-autoStartTime));
 	stopTasks();
 }
 
