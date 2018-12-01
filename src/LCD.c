@@ -224,6 +224,27 @@ task handleLCD()
       	else if (LCD_L) gLCDScreen--;
       	break;
       }
+      case autoSelect:
+      {
+      	string auto;
+      	sprintf(auto, "allnce:%d auto: %d", gAlliance, gAuto);
+      	displayLCDCenteredString(0, auto);
+      	string preloadFlag;
+      	sprintf(preloadFlag, "flag: %d", gAutoPreloadFlag);
+      	displayLCDCenteredString(1, preloadFlag);
+
+      	selectAuto();
+
+      	if (LCD_M)
+      	{
+      		if (gAutoPreloadFlag == flagTop) gAutoPreloadFlag = flagMid;
+      		else gAutoPreloadFlag = flagTop;
+      	}
+
+      	else if (LCD_R) gLCDScreen++;
+      	else if (LCD_L) gLCDScreen--;
+      	break;
+      }
       case shootTuneMode:
       {
       	displayLCDCenteredString(0, "Shoot Tune Mode?");

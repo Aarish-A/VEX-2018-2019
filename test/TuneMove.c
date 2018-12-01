@@ -102,7 +102,7 @@ task main()
 	resetPositionFull(gPosition, 62, 3.6+S_DISTANCE_IN, 0);
 	startTask(trackPositionTask);
 
-	moveToTargetY(gPosition.y+1.5, 50, 30, stopHarsh);
+	//moveToTargetY(gPosition.y+1.5, 50, 30, stopHarsh);
 	turnToTargetP(11, 16, 40, 20, true, 70);
 	//turnToTargetSide(11, 16, 70, -15, 10, true);
 
