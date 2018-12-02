@@ -1,0 +1,139 @@
+2019 Startup Battery: 8155
+Resetting position 0.000000 0.000000 0.000000 | 0.000000 0.000000 0.000000
+2021 Start Drive Machine. S:0
+2021 Start Shooter Machine. S:0
+2021 Start Intake Machine. S:0
+2022 Start Decapper Machine. S:0
+2022 Start Angler Machine. S:0
+2070 Shooter State Set 5 shooterReset, dTimeLst:2070ms, Count:0, Sen:0, Targ:45, NextTarg:405
+2072 Shtr rest(rset). ShtCnt:0. Pos:0
+2872 RSTPow:-13, Pos:-10, PosLst:10, Vel: -20.000000, VelLst:-1
+3172 RSTPow:-13, Pos:-34, PosLst:-10, Vel: -24.000000, VelLst:-20
+3472 RSTPow:-13, Pos:-54, PosLst:-34, Vel: -20.000000, VelLst:-24
+3772 RSTPow:-13, Pos:-54, PosLst:-54, Vel: 0.000000, VelLst:-20
+4072 RSTPow:-13, Pos:-54, PosLst:-54, Vel: 0.000000, VelLst:0
+4372 Rst Shtr frm -54. Vel:0. VelLst:0
+4422 Shooter State Set 2 shooterReload, dTimeLst:2352ms, Count:0, Sen:0, Targ:45, NextTarg:405
+4432 ShtrReload->idle: Anglr @ axelPos
+4432 Shooter State Set 0 shooterIdle, dTimeLst:10ms, Count:0, Sen:0, Targ:45, NextTarg:405
+
+4440 Start UserControl
+4440 Start Drive Machine. S:0
+4441 Start Shooter Machine. S:0
+4441 Start Intake Machine. S:0
+4441 Start Decapper Machine. S:0
+4441 Start Angler Machine. S:0
+4450 Shooter State Set 2 shooterReload, dTimeLst:18ms, Count:0, Sen:0, Targ:45, NextTarg:405
+4451 ShtrReload->idle: Anglr @ axelPos
+4451 Shooter State Set 0 shooterIdle, dTimeLst:1ms, Count:0, Sen:0, Targ:45, NextTarg:405
+
+26417 Start Autonomous
+26418 Start Shooter Machine. S:0
+26418 Start Intake Machine. S:0
+26418 Start Decapper Machine. S:0
+26418 Start Angler Machine. S:0
+Resetting position 0.012093 -0.026586 359.782593 | 10.875000 58.750000 0.000000
+26420 Angler State Set 1 anglerMove. Targ:900, Sen:2790, Time:26420, GoodCount:0. AccRange:70
+26432Done fast -29.126074 < 0.000000?. pow:45, vel:264, sin0.008583, xVel:1366.897339, cos0.999963, yVel:252.625748
+26472 autoShooterReload Task Start
+Vel y | a: 0.000000 | 0.000000
+Applying harsh stop: 0 0
+Moved to 59.000000 40.000000 from 58.750000 10.875000 | 58.776676 10.887093 0.217422
+26752 Shooter State Set 2 shooterReload, dTimeLst:22301ms, Count:0, Sen:-2, Targ:45, NextTarg:405
+27059 Angler State Set 2 anglerHold. Targ:900, Sen:883, Time:27059, GoodCount:0. AccRange:70
+27178 Reloaded to 230. Targ: 230
+27178 Shooter State Set 3 shooterHold, dTimeLst:426ms, Count:0, Sen:230, Targ:45, NextTarg:405
+	> 27199 Ball Detected (1730). Shooter:244 Angler:853 (err:47). Vel:-0.100000
+	> 27209 Ball Off (2246). Shooter:249 Angler:854 (err:46). Vel:0.100000
+	> 27259 Ball Detected (1593). Shooter:274 Angler:848 (err:52). Vel:-0.200000
+28293Done fast -7.829499 < 0.000000?. pow:30, vel:23, sin0.005567, xVel:0.787269, cos0.999985, yVel:23.221418
+Vel y | a: 3.776043 | 0.168655
+Applying harsh stop: -7 -7
+	> 28689 Ball Off (2009). Shooter:298 Angler:890 (err:10). Vel:-0.200000
+	> 28709 Ball Detected (1993). Shooter:298 Angler:887 (err:13). Vel:-0.100000
+Moved to 59.000000 51.000000 from 58.776676 10.887093 | 58.336948 50.906227 -0.217439
+28883 Angler State Set 1 anglerMove. Targ:1570, Sen:873, Time:28883, GoodCount:0. AccRange:100
+28884 AutoT:2467
+
+44343 Start UserControl
+44344 Start Drive Machine. S:0
+44344 Shooter State Set 0 shooterIdle, dTimeLst:17166ms, Count:0, Sen:298, Targ:45, NextTarg:405
+44344 Start Shooter Machine. S:0
+44345 Start Intake Machine. S:0
+44345 Start Decapper Machine. S:0
+44345 Angler State Set 0 anglerIdle. Targ:1570, Sen:874, Time:44345, GoodCount:0. AccRange:25
+44345 Start Angler Machine. S:0
+44354 Shooter State Set 2 shooterReload, dTimeLst:10ms, Count:0, Sen:298, Targ:45, NextTarg:405
+ 44354 Cycle usercontrol Took 11 instead of 10
+44358 Reloaded to 298. Targ: 230
+44358 Shooter State Set 3 shooterHold, dTimeLst:4ms, Count:0, Sen:298, Targ:45, NextTarg:405
+94374 Angler State Set 3 anglerManual. Targ:1570, Sen:957, Time:94374, GoodCount:0. AccRange:25
+95069 Angler State Set 2 anglerHold. Targ:2040, Sen:2041, Time:95069, GoodCount:0. AccRange:100
+95074 Angler State Set 3 anglerManual. Targ:2040, Sen:2040, Time:95074, GoodCount:0. AccRange:25
+95279 Angler State Set 2 anglerHold. Targ:2041, Sen:2041, Time:95279, GoodCount:0. AccRange:100
+	> 99027 Ball Off (2062). Shooter:298 Angler:1806 (err:60). Vel:0.100000
+	> 112427 Ball Detected (1618). Shooter:298 Angler:2010 (err:-144). Vel:0.100000
+	> 113587 Ball Off (2087). Shooter:298 Angler:2010 (err:-144). Vel:0.000000
+	> 113757 Ball Detected (1979). Shooter:298 Angler:2010 (err:-144). Vel:-0.100000
+	> 113907 Ball Off (2036). Shooter:298 Angler:2010 (err:-144). Vel:0.000000
+
+144072 Start UserControl
+144073 Start Drive Machine. S:0
+144073 Shooter State Set 0 shooterIdle, dTimeLst:99715ms, Count:0, Sen:211, Targ:45, NextTarg:405
+144073 Start Shooter Machine. S:0
+144073 Start Intake Machine. S:0
+144074 Start Decapper Machine. S:0
+144074 Angler State Set 0 anglerIdle. Targ:1866, Sen:1618, Time:144074, GoodCount:0. AccRange:25
+144074 Start Angler Machine. S:0
+144082 Shooter State Set 2 shooterReload, dTimeLst:9ms, Count:0, Sen:211, Targ:45, NextTarg:405
+144175 Reloaded to 234. Targ: 230
+144175 Shooter State Set 3 shooterHold, dTimeLst:93ms, Count:0, Sen:234, Targ:45, NextTarg:405
+
+199723 Start UserControl
+199724 Start Drive Machine. S:0
+199724 Shooter State Set 0 shooterIdle, dTimeLst:55549ms, Count:0, Sen:50, Targ:45, NextTarg:405
+199724 Start Shooter Machine. S:0
+199725 Start Intake Machine. S:0
+199725 Start Decapper Machine. S:0
+199725 Start Angler Machine. S:0
+199734 Shooter State Set 2 shooterReload, dTimeLst:10ms, Count:0, Sen:50, Targ:45, NextTarg:405
+ 199734 Cycle usercontrol Took 11 instead of 10
+199736 ShtrReload->idle: Anglr @ axelPos
+199736 Shooter State Set 0 shooterIdle, dTimeLst:2ms, Count:0, Sen:50, Targ:45, NextTarg:405
+
+207249 Start Autonomous
+207250 Start Shooter Machine. S:0
+207250 Start Intake Machine. S:0
+207250 Start Decapper Machine. S:0
+207250 Start Angler Machine. S:0
+Resetting position 10.821558 58.724312 1.087109 | 10.875000 58.750000 0.000000
+207252 Angler State Set 1 anglerMove. Targ:900, Sen:2249, Time:207252, GoodCount:0. AccRange:70
+207303 autoShooterReload Task Start
+207473 Shooter State Set 2 shooterReload, dTimeLst:7737ms, Count:0, Sen:50, Targ:45, NextTarg:405
+207770 Angler State Set 2 anglerHold. Targ:900, Sen:878, Time:207770, GoodCount:0. AccRange:70
+207820 Reloaded to 233. Targ: 230
+207820 Shooter State Set 3 shooterHold, dTimeLst:347ms, Count:0, Sen:233, Targ:45, NextTarg:405
+	> 207902 Ball Detected (1525). Shooter:278 Angler:854 (err:46). Vel:-0.100000
+208323Done fast -7.920457 < 0.000000?. pow:30, vel:22, sin0.008583, xVel:-1.356337, cos0.999963, yVel:22.905010
+Vel y | a: 0.072894 | 0.674619
+Applying harsh stop: -7 7
+Moved to 59.000000 40.000000 from 58.750000 10.875000 | 57.696552 39.791630 -1.521954
+209437Done fast -7.974804 < 0.000000?. pow:30, vel:11, sin0.115514, xVel:0.232273, cos0.993306, yVel:11.617109
+Vel y | a: 13.510550 | 0.168655
+Applying harsh stop: -10 -8
+Moved to 59.000000 51.000000 from 57.696552 39.791630 | 57.219097 51.220585 -2.391625
+210127 Angler State Set 1 anglerMove. Targ:1570, Sen:866, Time:210127, GoodCount:0. AccRange:100
+210128 AutoT:2879
+
+212800 Start UserControl
+212801 Start Drive Machine. S:0
+212801 Shooter State Set 0 shooterIdle, dTimeLst:4981ms, Count:0, Sen:302, Targ:45, NextTarg:405
+212801 Start Shooter Machine. S:0
+212802 Start Intake Machine. S:0
+212802 Start Decapper Machine. S:0
+212802 Angler State Set 0 anglerIdle. Targ:1570, Sen:868, Time:212802, GoodCount:0. AccRange:25
+212802 Start Angler Machine. S:0
+212812 Shooter State Set 2 shooterReload, dTimeLst:11ms, Count:0, Sen:302, Targ:45, NextTarg:405
+ 212812 Cycle usercontrol Took 12 instead of 10
+212814 Reloaded to 302. Targ: 230
+212814 Shooter State Set 3 shooterHold, dTimeLst:2ms, Count:0, Sen:302, Targ:45, NextTarg:405

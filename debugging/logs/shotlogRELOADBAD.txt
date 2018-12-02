@@ -1,0 +1,95 @@
+2019 Startup Battery: 7623
+Resetting position 0.000000 0.000000 0.000000 | 0.000000 0.000000 0.000000
+2020 Start Drive Machine. S:0
+2021 Start Shooter Machine. S:0
+2021 Start Intake Machine. S:0
+2021 Start Decapper Machine. S:0
+2021 Start Angler Machine. S:0
+2070 Shooter State Set 5 shooterReset, dTimeLst:2070ms, Count:0, Sen:0, Targ:43, NextTarg:403
+2071 Shtr rest(rset). ShtCnt:0. Pos:0
+2871 RSTPow:-14, Pos:-17, PosLst:10, Vel: -27.000000, VelLst:-1
+2921 RSTPow:-14, Pos:-21, PosLst:-17, Vel: -4.000000, VelLst:-27
+2971 RSTPow:-14, Pos:-25, PosLst:-21, Vel: -4.000000, VelLst:-4
+3021 RSTPow:-14, Pos:-31, PosLst:-25, Vel: -6.000000, VelLst:-4
+3071 RSTPow:-14, Pos:-37, PosLst:-31, Vel: -6.000000, VelLst:-6
+3121 RSTPow:-14, Pos:-45, PosLst:-37, Vel: -8.000000, VelLst:-6
+3171 RSTPow:-14, Pos:-52, PosLst:-45, Vel: -7.000000, VelLst:-8
+3221 RSTPow:-14, Pos:-59, PosLst:-52, Vel: -7.000000, VelLst:-7
+3271 RSTPow:-14, Pos:-66, PosLst:-59, Vel: -7.000000, VelLst:-7
+3321 RSTPow:-14, Pos:-73, PosLst:-66, Vel: -7.000000, VelLst:-7
+3371 RSTPow:-14, Pos:-80, PosLst:-73, Vel: -7.000000, VelLst:-7
+3421 RSTPow:-14, Pos:-86, PosLst:-80, Vel: -6.000000, VelLst:-7
+3471 RSTPow:-14, Pos:-93, PosLst:-86, Vel: -7.000000, VelLst:-6
+3521 RSTPow:-14, Pos:-99, PosLst:-93, Vel: -6.000000, VelLst:-7
+3571 RSTPow:-14, Pos:-105, PosLst:-99, Vel: -6.000000, VelLst:-6
+3621 RSTPow:-14, Pos:-108, PosLst:-105, Vel: -3.000000, VelLst:-6
+3671 RSTPow:-14, Pos:-109, PosLst:-108, Vel: -1.000000, VelLst:-3
+3721 RSTPow:-14, Pos:-109, PosLst:-109, Vel: 0.000000, VelLst:-1
+3771 Rst Shtr frm -109. Vel:0. VelLst:-1
+3821 Shooter State Set 0 shooterIdle, dTimeLst:1751ms, Count:0, Sen:0, Targ:43, NextTarg:403
+
+3823 Start UserControl
+3824 Start Drive Machine. S:0
+3824 Start Shooter Machine. S:0
+3825 Start Intake Machine. S:0
+3825 Start Decapper Machine. S:0
+3825 Start Angler Machine. S:0
+3834 Shooter State Set 2 shooterReload, dTimeLst:13ms, Count:0, Sen:0, Targ:43, NextTarg:403
+ 3834 Cycle usercontrol Took 11 instead of 10
+4315 Reloaded to 229. Targ: 228
+4315 Shooter State Set 3 shooterHold, dTimeLst:481ms, Count:0, Sen:229, Targ:43, NextTarg:403
+	> 4336 Ball Detected (1883). Shooter:238 Angler:886 (err:-556). Vel:0.000000
+	> 4346 Ball Off (2192). Shooter:243 Angler:886 (err:-556). Vel:-0.100000
+	> 4376 Ball Detected (1898). Shooter:249 Angler:887 (err:-557). Vel:-0.100000
+tate Set 2 anglerHold. Targ:789, Sen:789, Time:167186, GoodCount:38. AccRange:100
+183032 Angler State Set 3 anglerManual. Targ:789, Sen:800, Time:183032, GoodCount:1350. AccRange:25
+183536 Angler State Set 2 anglerHold. Targ:1907, Sen:1907, Time:183536, GoodCount:1350. AccRange:100
+183542 Angler State Set 3 anglerManual. Targ:1907, Sen:1910, Time:183542, GoodCount:1350. AccRange:25
+184266 Angler State Set 2 anglerHold. Targ:664, Sen:664, Time:184266, GoodCount:1350. AccRange:100
+184432 Angler State Set 3 anglerManual. Targ:664, Sen:827, Time:184432, GoodCount:0. AccRange:25
+184836 Angler State Set 2 anglerHold. Targ:1667, Sen:1667, Time:184836, GoodCount:0. AccRange:100
+184842 Angler State Set 3 anglerManual. Targ:1667, Sen:1670, Time:184842, GoodCount:0. AccRange:25
+185406 Angler State Set 2 anglerHold. Targ:644, Sen:644, Time:185406, GoodCount:0. AccRange:100
+ > 188762 F_PF Shoot <
+ >188762 AnglrShooter: FrstPos:1410. Wait?0. ScndPos:1840. Wait?1. CurAnglrPos:722
+>>188762 AnglShot1
+188762 Angler State Set 1 anglerMove. Targ:1410, Sen:721, Time:188762, GoodCount:0. AccRange:70
+189006 Angler State Set 2 anglerHold. Targ:1410, Sen:1274, Time:189006, GoodCount:0. AccRange:70
+	>>>> 192772 AnglerShooterTask TO. KILL
+192862 Decapper State Set 2 decapperManual, DecapperSen:626, Targ:670, pow:-1, bPow:-1, T:192862, Joy:37, StateL:1, StateLL:2
+193084 Decapper State Set 1 decapperHold, DecapperSen:1023, Targ:670, pow:-1, bPow:-1, T:193084, Joy:0, StateL:2, StateLL:1
+195362 Decapper State Set 4 decapperDown, DecapperSen:1019, Targ:670, pow:-40, bPow:15, T:195362, Joy:0, StateL:1, StateLL:2
+195564 Decapper moved to 764
+195634 Decapper breaked to 718
+195634 Decapper State Set 1 decapperHold, DecapperSen:718, Targ:670, pow:-1, bPow:-1, T:195634, Joy:0, StateL:4, StateLL:1
+207212 Angler State Set 3 anglerManual. Targ:1410, Sen:1385, Time:207212, GoodCount:72. AccRange:25
+207866 Angler State Set 2 anglerHold. Targ:730, Sen:730, Time:207866, GoodCount:72. AccRange:100
+208042 Angler State Set 3 anglerManual. Targ:730, Sen:761, Time:208042, GoodCount:13. AccRange:25
+209216 Angler State Set 2 anglerHold. Targ:2402, Sen:2402, Time:209216, GoodCount:13. AccRange:100
+209402 Angler State Set 3 anglerManual. Targ:2402, Sen:2403, Time:209402, GoodCount:17. AccRange:25
+210566 Angler State Set 2 anglerHold. Targ:734, Sen:734, Time:210566, GoodCount:17. AccRange:100
+210572 Angler State Set 3 anglerManual. Targ:734, Sen:738, Time:210572, GoodCount:17. AccRange:25
+216986 Angler State Set 2 anglerHold. Targ:2816, Sen:2816, Time:216986, GoodCount:17. AccRange:100
+216992 Angler State Set 3 anglerManual. Targ:2816, Sen:2815, Time:216992, GoodCount:17. AccRange:25
+217196 Angler State Set 2 anglerHold. Targ:2806, Sen:2806, Time:217196, GoodCount:17. AccRange:100
+217202 Angler State Set 3 anglerManual. Targ:2806, Sen:2806, Time:217202, GoodCount:17. AccRange:25
+217406 Angler State Set 2 anglerHold. Targ:2808, Sen:2808, Time:217406, GoodCount:17. AccRange:100
+217412 Angler State Set 3 anglerManual. Targ:2808, Sen:2807, Time:217412, GoodCount:17. AccRange:25
+217616 Angler State Set 2 anglerHold. Targ:2808, Sen:2808, Time:217616, GoodCount:17. AccRange:100
+217622 Angler State Set 3 anglerManual. Targ:2808, Sen:2808, Time:217622, GoodCount:17. AccRange:25
+217826 Angler State Set 2 anglerHold. Targ:2808, Sen:2808, Time:217826, GoodCount:17. AccRange:100
+217832 Angler State Set 3 anglerManual. Targ:2808, Sen:2808, Time:217832, GoodCount:17. AccRange:25
+218036 Angler State Set 2 anglerHold. Targ:2809, Sen:2809, Time:218036, GoodCount:17. AccRange:100
+225982 Angler State Set 3 anglerManual. Targ:2809, Sen:2809, Time:225982, GoodCount:793. AccRange:25
+226556 Angler State Set 2 anglerHold. Targ:2083, Sen:2083, Time:226556, GoodCount:793. AccRange:100
+ > 228002 Anglr: grnd p_u pos <
+228002 Angler State Set 1 anglerMove. Targ:900, Sen:2022, Time:228002, GoodCount:0. AccRange:150
+228436 Angler State Set 2 anglerHold. Targ:900, Sen:909, Time:228436, GoodCount:0. AccRange:150
+356092 Angler State Set 3 anglerManual. Targ:900, Sen:834, Time:356092, GoodCount:12762. AccRange:25
+356466 Angler State Set 2 anglerHold. Targ:1469, Sen:1468, Time:356466, GoodCount:12762. AccRange:100
+357412 Angler State Set 3 anglerManual. Targ:1469, Sen:1478, Time:357412, GoodCount:93. AccRange:25
+357906 Angler State Set 2 anglerHold. Targ:907, Sen:907, Time:357906, GoodCount:93. AccRange:100
+361822 Angler State Set 3 anglerManual. Targ:907, Sen:832, Time:361822, GoodCount:149. AccRange:25
+362456 Angler State Set 2 anglerHold. Targ:748, Sen:748, Time:362456, GoodCount:149. AccRange:100
+363514 Angler State Set 3 anglerManual. Targ:748, Sen:748, Time:363514, GoodCount:104. AccRange:25
+364046 Angler State Set 2 anglerHold. Targ:936, Sen:936, Time:364046, GoodCount:104. AccRange:100

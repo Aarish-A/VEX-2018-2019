@@ -1,0 +1,237 @@
+, dTimeLst:12575ms, Count:8, Sen:3132, Targ:2923, NextTarg:3283
+97733 Angler State Set 1 anglerMove. Targ:1820, Sen:822, Time:97733, GoodCount:0. AccRange:70
+97737 Reloaded to 3132. Targ: 3108
+97737 Shooter State Set 3 shooterHold, dTimeLst:5ms, Count:8, Sen:3132, Targ:2923, NextTarg:3283
+	>> 97743 Reload took:11ms.
+97743 Shooter State Set 4 shooterShoot, dTimeLst:6ms, Count:8, Sen:3132, Targ:2923, NextTarg:3283
+98024 Angler State Set 2 anglerHold. Targ:1820, Sen:1658, Time:98024, GoodCount:0. AccRange:70
+	> 98196 Ball Off (3086). Shooter:3296 Angler:1738 (err:82). Vel:1.700000
+98197 ShotBrake: TElpsd:450 Pos:3296 
+  > 98197 BALL HIT. Angler pos:1742 pow:8. Err:78
+98277 Shooter State Set 2 shooterReload, dTimeLst:534ms, Count:9, Sen:3304, Targ:3283, NextTarg:3643
+	>> 98283 Sht+Angl t:551ms. Shot t:540ms
+	>> 98283 Done pntSht in 551ms. Anglr:1784. Shooter:3304
+98627 Reloaded to 3470. Targ: 3468
+98627 Shooter State Set 3 shooterHold, dTimeLst:350ms, Count:9, Sen:3471, Targ:3283, NextTarg:3643
+	> 101356 Ball Detected (1520). Shooter:3490 Angler:1773 (err:47). Vel:-0.100000
+ > 103052 Anglr: grnd p_u pos <
+103052 Angler State Set 1 anglerMove. Targ:900, Sen:1774, Time:103052, GoodCount:0. AccRange:150
+103384 Angler State Set 2 anglerHold. Targ:900, Sen:843, Time:103384, GoodCount:0. AccRange:150
+ > 103652 F_PF Shoot <
+ >103652 AnglrShooter: FrstPos:1820. Wait?0. ScndPos:1410. Wait?0. CurAnglrPos:847
+>>103652 AnglShot1
+103652 Shooter State Set 2 shooterReload, dTimeLst:5025ms, Count:9, Sen:3490, Targ:3283, NextTarg:3643
+103653 Angler State Set 1 anglerMove. Targ:1820, Sen:847, Time:103653, GoodCount:0. AccRange:70
+103657 Reloaded to 3490. Targ: 3468
+103657 Shooter State Set 3 shooterHold, dTimeLst:5ms, Count:9, Sen:3490, Targ:3283, NextTarg:3643
+	>> 103663 Reload took:11ms.
+103663 Shooter State Set 4 shooterShoot, dTimeLst:6ms, Count:9, Sen:3490, Targ:3283, NextTarg:3643
+103964 Angler State Set 2 anglerHold. Targ:1820, Sen:1684, Time:103964, GoodCount:0. AccRange:70
+104117 ShotBrake: TElpsd:450 Pos:3657 
+	> 104126 Ball Off (3074). Shooter:3656 Angler:1745 (err:75). Vel:2.100000
+  > 104127 BALL HIT. Angler pos:1745 pow:7. Err:75
+104197 Shooter State Set 2 shooterReload, dTimeLst:534ms, Count:10, Sen:3662, Targ:3643, NextTarg:4003
+	>> 104203 Sht+Angl t:551ms. Shot t:540ms
+	>> 104203 Done pntSht in 551ms. Anglr:1792. Shooter:3662
+104547 Reloaded to 3828. Targ: 3828
+104547 Shooter State Set 3 shooterHold, dTimeLst:350ms, Count:10, Sen:3828, Targ:3643, NextTarg:4003
+	> 122086 Ball Detected (1682). Shooter:3848 Angler:1781 (err:39). Vel:0.000000
+ > 130762 Anglr: u_cap p_u pos <
+130762 Angler State Set 1 anglerMove. Targ:700, Sen:1781, Time:130762, GoodCount:0. AccRange:70
+131154 Angler State Set 2 anglerHold. Targ:700, Sen:586, Time:131154, GoodCount:0. AccRange:70
+ > 134662 F_PF Shoot <
+ >134662 AnglrShooter: FrstPos:1850. Wait?0. ScndPos:1410. Wait?0. CurAnglrPos:648
+>>134662 AnglShot1
+134662 Shooter State Set 2 shooterReload, dTimeLst:30115ms, Count:10, Sen:3848, Targ:3643, NextTarg:4003
+134663 Angler State Set 1 anglerMove. Targ:1850, Sen:648, Time:134663, GoodCount:0. AccRange:70
+134667 Reloaded to 3848. Targ: 3828
+134667 Shooter State Set 3 shooterHold, dTimeLst:5ms, Count:10, Sen:3848, Targ:3643, NextTarg:4003
+	>> 134673 Reload took:11ms.
+134673 Shooter State Set 4 shooterShoot, dTimeLst:6ms, Count:10, Sen:3848, Targ:3643, NextTarg:4003
+135014 Angler State Set 2 anglerHold. Targ:1850, Sen:1716, Time:135014, GoodCount:0. AccRange:70
+	> 135136 Ball Off (3095). Shooter:4015 Angler:1745 (err:105). Vel:0.400000
+135137 ShotBrake: TElpsd:460 Pos:4015 
+  > 135137 BALL HIT. Angler pos:1745 pow:27. Err:105
+135217 Shooter State Set 2 shooterReload, dTimeLst:544ms, Count:11, Sen:4032, Targ:4003, NextTarg:4363
+	>> 135223 Sht+Angl t:561ms. Shot t:550ms
+	>> 135223 Done pntSht in 561ms. Anglr:1802. Shooter:4032
+135567 Reloaded to 4192. Targ: 4188
+135567 Shooter State Set 3 shooterHold, dTimeLst:350ms, Count:11, Sen:4192, Targ:4003, NextTarg:4363
+260192 Decapper State Set 2 decapperManual, DecapperSen:1275, Targ:0, pow:-1, bPow:-1, T:260192, Joy:-85, StateL:1, StateLL:2
+260192 Angler State Set 3 anglerManual. Targ:1850, Sen:1819, Time:260192, GoodCount:12492. AccRange:25
+260396 Decapper State Set 1 decapperHold, DecapperSen:744, Targ:0, pow:-1, bPow:-1, T:260396, Joy:-64, StateL:2, StateLL:1
+260402 Decapper State Set 2 decapperManual, DecapperSen:721, Targ:0, pow:-1, bPow:-1, T:260402, Joy:-64, StateL:1, StateLL:2
+260406 Decapper State Set 1 decapperHold, DecapperSen:706, Targ:0, pow:-1, bPow:-1, T:260406, Joy:-64, StateL:2, StateLL:1
+260412 Decapper State Set 2 decapperManual, DecapperSen:681, Targ:0, pow:-1, bPow:-1, T:260412, Joy:-64, StateL:1, StateLL:2
+260416 Decapper State Set 1 decapperHold, DecapperSen:666, Targ:0, pow:-1, bPow:-1, T:260416, Joy:-64, StateL:2, StateLL:1
+260422 Decapper State Set 2 decapperManual, DecapperSen:643, Targ:0, pow:-1, bPow:-1, T:260422, Joy:-64, StateL:1, StateLL:2
+260426 Decapper State Set 1 decapperHold, DecapperSen:633, Targ:0, pow:-1, bPow:-1, T:260426, Joy:-64, StateL:2, StateLL:1
+260432 Decapper State Set 2 decapperManual, DecapperSen:621, Targ:0, pow:-1, bPow:-1, T:260432, Joy:-40, StateL:1, StateLL:2
+260436 Decapper State Set 1 decapperHold, DecapperSen:616, Targ:0, pow:-1, bPow:-1, T:260436, Joy:-40, StateL:2, StateLL:1
+260442 Decapper State Set 2 decapperManual, DecapperSen:614, Targ:0, pow:-1, bPow:-1, T:260442, Joy:-40, StateL:1, StateLL:2
+260446 Decapper State Set 1 decapperHold, DecapperSen:606, Targ:0, pow:-1, bPow:-1, T:260446, Joy:-40, StateL:2, StateLL:1
+260452 Decapper State Set 2 decapperManual, DecapperSen:603, Targ:0, pow:-1, bPow:-1, T:260452, Joy:-40, StateL:1, StateLL:2
+260456 Decapper State Set 1 decapperHold, DecapperSen:604, Targ:0, pow:-1, bPow:-1, T:260456, Joy:-40, StateL:2, StateLL:1
+260462 Decapper State Set 2 decapperManual, DecapperSen:603, Targ:0, pow:-1, bPow:-1, T:260462, Joy:-40, StateL:1, StateLL:2
+260466 Decapper State Set 1 decapperHold, DecapperSen:603, Targ:0, pow:-1, bPow:-1, T:260466, Joy:-40, StateL:2, StateLL:1
+260472 Decapper State Set 2 decapperManual, DecapperSen:602, Targ:0, pow:-1, bPow:-1, T:260472, Joy:-40, StateL:1, StateLL:2
+260476 Decapper State Set 1 decapperHold, DecapperSen:602, Targ:0, pow:-1, bPow:-1, T:260476, Joy:-40, StateL:2, StateLL:1
+260482 Decapper State Set 2 decapperManual, DecapperSen:602, Targ:0, pow:-1, bPow:-1, T:260482, Joy:-40, StateL:1, StateLL:2
+260486 Decapper State Set 1 decapperHold, DecapperSen:601, Targ:0, pow:-1, bPow:-1, T:260486, Joy:-40, StateL:2, StateLL:1
+260492 Decapper State Set 2 decapperManual, DecapperSen:602, Targ:0, pow:-1, bPow:-1, T:260492, Joy:-40, StateL:1, StateLL:2
+260496 Decapper State Set 1 decapperHold, DecapperSen:602, Targ:0, pow:-1, bPow:-1, T:260496, Joy:-40, StateL:2, StateLL:1
+260502 Decapper State Set 2 decapperManual, DecapperSen:602, Targ:0, pow:-1, bPow:-1, T:260502, Joy:-40, StateL:1, StateLL:2
+260506 Decapper State Set 1 decapperHold, DecapperSen:603, Targ:0, pow:-1, bPow:-1, T:260506, Joy:-40, StateL:2, StateLL:1
+260512 Decapper State Set 2 decapperManual, DecapperSen:601, Targ:0, pow:-1, bPow:-1, T:260512, Joy:-40, StateL:1, StateLL:2
+260516 Decapper State Set 1 decapperHold, DecapperSen:601, Targ:0, pow:-1, bPow:-1, T:260516, Joy:-40, StateL:2, StateLL:1
+260724 Angler State Set 2 anglerHold. Targ:2732, Sen:2732, Time:260724, GoodCount:12492. AccRange:100
+ > 262853 Bck Shoot <
+ >262853 AnglrShooter: FrstPos:1250. Wait?1. ScndPos:1510. Wait?1. CurAnglrPos:2734
+>>262853 AnglShot1
+262854 Shooter State Set 2 shooterReload, dTimeLst:127286ms, Count:11, Sen:4060, Targ:4003, NextTarg:4363
+262854 Angler State Set 1 anglerMove. Targ:1250, Sen:2733, Time:262854, GoodCount:0. AccRange:25
+right
+262859 ShtrReload->idle: Anglr @ axelPos
+262859 Shooter State Set 0 shooterIdle, dTimeLst:6ms, Count:11, Sen:4060, Targ:4003, NextTarg:4363
+right
+right
+right
+right
+right
+right
+right
+right
+right
+right
+right
+right
+right
+right
+right
+right
+right
+right
+right
+right
+right
+right
+right
+right
+right
+right
+right
+right
+right
+left
+left
+left
+left
+left
+left
+left
+left
+left
+left
+left
+left
+left
+left
+left
+left
+left
+left
+left
+left
+263354 Angler State Set 2 anglerHold. Targ:1250, Sen:1192, Time:263354, GoodCount:0. AccRange:25
+left
+left
+left
+left
+left
+left
+left
+left
+left
+left
+DecapperSen:2926, Targ:670, pow:-1, bPow:-1, T:474353, Joy:127, StateL:2, StateLL:1
+474362 Decapper State Set 2 decapperManual, DecapperSen:2970, Targ:670, pow:-1, bPow:-1, T:474362, Joy:127, StateL:1, StateLL:2
+474363 Decapper State Set 1 decapperHold, DecapperSen:2974, Targ:670, pow:-1, bPow:-1, T:474363, Joy:127, StateL:2, StateLL:1
+474366 Angler State Set 2 anglerHold. Targ:568, Sen:568, Time:474366, GoodCount:615. AccRange:100
+474372 Decapper State Set 2 decapperManual, DecapperSen:3019, Targ:670, pow:-1, bPow:-1, T:474372, Joy:22, StateL:1, StateLL:2
+474373 Decapper State Set 1 decapperHold, DecapperSen:3023, Targ:670, pow:-1, bPow:-1, T:474373, Joy:22, StateL:2, StateLL:1
+474382 Decapper State Set 2 decapperManual, DecapperSen:3061, Targ:670, pow:-1, bPow:-1, T:474382, Joy:22, StateL:1, StateLL:2
+474383 Decapper State Set 1 decapperHold, DecapperSen:3067, Targ:670, pow:-1, bPow:-1, T:474383, Joy:22, StateL:2, StateLL:1
+474392 Decapper State Set 2 decapperManual, DecapperSen:3077, Targ:670, pow:-1, bPow:-1, T:474392, Joy:22, StateL:1, StateLL:2
+474393 Decapper State Set 1 decapperHold, DecapperSen:3076, Targ:670, pow:-1, bPow:-1, T:474393, Joy:22, StateL:2, StateLL:1
+474402 Decapper State Set 2 decapperManual, DecapperSen:3085, Targ:670, pow:-1, bPow:-1, T:474402, Joy:22, StateL:1, StateLL:2
+474403 Decapper State Set 1 decapperHold, DecapperSen:3084, Targ:670, pow:-1, bPow:-1, T:474403, Joy:22, StateL:2, StateLL:1
+474412 Decapper State Set 2 decapperManual, DecapperSen:3092, Targ:670, pow:-1, bPow:-1, T:474412, Joy:22, StateL:1, StateLL:2
+474413 Decapper State Set 1 decapperHold, DecapperSen:3095, Targ:670, pow:-1, bPow:-1, T:474413, Joy:22, StateL:2, StateLL:1
+474422 Decapper State Set 2 decapperManual, DecapperSen:3097, Targ:670, pow:-1, bPow:-1, T:474422, Joy:22, StateL:1, StateLL:2
+474423 Decapper State Set 1 decapperHold, DecapperSen:3095, Targ:670, pow:-1, bPow:-1, T:474423, Joy:22, StateL:2, StateLL:1
+489942 Decapper State Set 4 decapperDown, DecapperSen:2959, Targ:670, pow:-40, bPow:15, T:489942, Joy:0, StateL:1, StateLL:2
+490863 Decapper moved to 757
+490933 Decapper breaked to 691
+490933 Decapper State Set 1 decapperHold, DecapperSen:691, Targ:670, pow:-1, bPow:-1, T:490933, Joy:0, StateL:4, StateLL:1
+	> 495185 Ball Off (2257). Shooter:8529 Angler:594 (err:-26). Vel:-0.100000
+	> 495245 Ball Detected (1989). Shooter:8529 Angler:589 (err:-21). Vel:0.100000
+	> 498115 Ball Off (2213). Shooter:8529 Angler:588 (err:-20). Vel:-0.400000
+	> 498175 Ball Detected (1889). Shooter:8529 Angler:584 (err:-16). Vel:-0.100000
+ > 500182 F_PF Shoot <
+ >500182 AnglrShooter: FrstPos:1840. Wait?0. ScndPos:1410. Wait?0. CurAnglrPos:589
+>>500183 AnglShot1
+500183 Shooter State Set 2 shooterReload, dTimeLst:45406ms, Count:23, Sen:8529, Targ:8323, NextTarg:8683
+500183 Angler State Set 1 anglerMove. Targ:1840, Sen:589, Time:500183, GoodCount:0. AccRange:70
+500187 Reloaded to 8529. Targ: 8508
+500187 Shooter State Set 3 shooterHold, dTimeLst:4ms, Count:23, Sen:8529, Targ:8323, NextTarg:8683
+	>> 500193 Reload took:10ms.
+500193 Shooter State Set 4 shooterShoot, dTimeLst:6ms, Count:23, Sen:8529, Targ:8323, NextTarg:8683
+500556 Angler State Set 2 anglerHold. Targ:1840, Sen:1652, Time:500556, GoodCount:0. AccRange:70
+	> 500655 Ball Off (3081). Shooter:8691 Angler:1699 (err:141). Vel:0.300000
+500658 ShotBrake: TElpsd:460 Pos:8691 
+  > 500658 BALL HIT. Angler pos:1699 pow:30. Err:141
+500738 Shooter State Set 2 shooterReload, dTimeLst:545ms, Count:24, Sen:8703, Targ:8683, NextTarg:9043
+	>> 500743 Sht+Angl t:560ms. Shot t:550ms
+	>> 500743 Done pntSht in 560ms. Anglr:1753. Shooter:8703
+	> 501095 Ball Detected (1709). Shooter:8869 Angler:1810 (err:30). Vel:0.000000
+501098 Reloaded to 8871. Targ: 8868
+501098 Shooter State Set 3 shooterHold, dTimeLst:360ms, Count:24, Sen:8871, Targ:8683, NextTarg:9043
+	> 501155 Ball Off (2037). Shooter:8893 Angler:1809 (err:31). Vel:0.000000
+	> 501165 Ball Detected (1914). Shooter:8893 Angler:1809 (err:31). Vel:0.100000
+2019 Startup Battery: 7801
+Resetting position 0.000000 0.000000 0.000000 | 0.000000 0.000000 0.000000
+2021 Start Drive Machine. S:0
+2021 Start Shooter Machine. S:0
+2021 Start Intake Machine. S:0
+2022 Start Decapper Machine. S:0
+2022 Start Angler Machine. S:0
+2071 Shooter State Set 5 shooterReset, dTimeLst:2071ms, Count:0, Sen:0, Targ:43, NextTarg:403
+2071 Shtr rest(rset). ShtCnt:0. Pos:0
+2871 RSTPow:-14, Pos:-15, PosLst:10, Vel: -25.000000, VelLst:-1
+2921 RSTPow:-14, Pos:-20, PosLst:-15, Vel: -5.000000, VelLst:-25
+2971 RSTPow:-14, Pos:-25, PosLst:-20, Vel: -5.000000, VelLst:-5
+3021 RSTPow:-14, Pos:-32, PosLst:-25, Vel: -7.000000, VelLst:-5
+3071 RSTPow:-14, Pos:-39, PosLst:-32, Vel: -7.000000, VelLst:-7
+3121 RSTPow:-14, Pos:-47, PosLst:-39, Vel: -8.000000, VelLst:-7
+3171 RSTPow:-14, Pos:-53, PosLst:-47, Vel: -6.000000, VelLst:-8
+3221 RSTPow:-14, Pos:-60, PosLst:-53, Vel: -7.000000, VelLst:-6
+3271 RSTPow:-14, Pos:-66, PosLst:-60, Vel: -6.000000, VelLst:-7
+3321 RSTPow:-14, Pos:-73, PosLst:-66, Vel: -7.000000, VelLst:-6
+3371 RSTPow:-14, Pos:-79, PosLst:-73, Vel: -6.000000, VelLst:-7
+3421 RSTPow:-14, Pos:-86, PosLst:-79, Vel: -7.000000, VelLst:-6
+3471 RSTPow:-14, Pos:-90, PosLst:-86, Vel: -4.000000, VelLst:-7
+3521 RSTPow:-14, Pos:-91, PosLst:-90, Vel: -1.000000, VelLst:-4
+3571 RSTPow:-14, Pos:-91, PosLst:-91, Vel: 0.000000, VelLst:-1
+3621 Rst Shtr frm -91. Vel:0. VelLst:-1
+3671 Shooter State Set 0 shooterIdle, dTimeLst:1600ms, Count:0, Sen:0, Targ:43, NextTarg:403
+
+3671 Start UserControl
+3672 Start Drive Machine. S:0
+3672 Start Shooter Machine. S:0
+3673 Start Intake Machine. S:0
+3673 Start Decapper Machine. S:0
+3673 Start Angler Machine. S:0
+3682 Shooter State Set 2 shooterReload, dTimeLst:11ms, Count:0, Sen:0, Targ:43, NextTarg:403
+ 3682 Cycle usercontrol Took 11 instead of 10
+4143 Reloaded to 231. Targ: 228
+4143 Shooter State Set 3 shooterHold, dTimeLst:461ms, Count:0, Sen:231, Targ:43, NextTarg:403
