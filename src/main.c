@@ -243,13 +243,13 @@ task driveStateSet()
 			//	LOG(drive)("%d vel:%f", nPgmTime, gPosition.y);
 			//	sleep(10);
 			//}
-			if(nPgmTime < (gDriveStateTime+300))
+			if(nPgmTime < (gDriveStateTime+450))
 			{
 				setDrive(-50, -15);
 				//LOG(drive)("right", nPgmTime, gPosition.y);
 				sleep(10);
 			}
-			else if(nPgmTime < (gDriveStateTime+600))
+			else if(nPgmTime < (gDriveStateTime+900))
 			{
 				setDrive(-15, -50);
 				//LOG(drive)("left", nPgmTime, gPosition.y);
