@@ -1,7 +1,9 @@
-#define RED_FRONT_X (69 - BACK_OFFSET)
-#define RED_FRONT_Y 11
+//#define RED_FRONT_X (69 - BACK_OFFSET)
+//#define RED_FRONT_Y 12
+#define RED_FRONT_X 58.75
+#define RED_FRONT_Y BACK_OFFSET
 #define RED_BACK_X (115.875 - BACK_OFFSET)
-#define RED_BACK_Y 11
+#define RED_BACK_Y 12
 
 #define BACK_OFFSET (3.875+S_DISTANCE_IN)
 

@@ -205,7 +205,8 @@ task handleLCD()
 				float RTurn = (SensorValue[trackR] - gPosition.rightStart) * SPIN_TO_IN_LR; // The amount the right side of the robot moved since the beginning
       	float t = (float)(LTurn - RTurn);
       	sprintf(line1, "(%3.2f, %3.2f)", gPosition.x, gPosition.y);
-      	sprintf(line2, "a:%3.2f, t:%3.2f", gPosition.a * 180 / PI, t);
+      	sprintf(line2, "a:%3.2f", gPosition.a * 180 / PI);
+      	//sprintf(line2, "a:%3.2f, t:%3.2f", gPosition.a * 180 / PI, t);
       	displayLCDCenteredString(0, line1);
       	displayLCDCenteredString(1, line2);
 

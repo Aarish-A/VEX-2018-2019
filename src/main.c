@@ -608,7 +608,7 @@ void decapperControls()
 #define ANGLER_AXEL_POS (ANGLER_TOP_POS-2000)
 
 #define ANGLER_GROUND_PICKUP_POS 900
-#define ANGLER_CAP_PICKUP_POS 1340
+#define ANGLER_CAP_PICKUP_POS 1570
 #define ANGLER_LOW_PF_PICKUP_POS 1470
 
 #define ANGLER_PICKUP_CAP_POS 1530
@@ -625,7 +625,7 @@ int gAnglerMidPFTopFlag = 1570;//1730;
 int gAnglerMidPFMidFlag = 1250;//1310;
 
 //Positions shooting from back of front platform tile
-int gAnglerBackPFTopFlag = 1510;//1410;
+int gAnglerBackPFTopFlag = 1490;//1410;
 int gAnglerBackPFMidFlag = 1220;//1160;
 
 int gAnglerPower = 0;
@@ -1496,7 +1496,7 @@ bool autoLogs = 1;
 
 #include "auto_runs.h"
 tAlliance allianceForce = allianceRed;
-tAuto autoForce = autoBack;
+tAuto autoForce = autoFront;
 
 #include "auto_runs.c"
 
@@ -1512,9 +1512,6 @@ task autonomous()
 
 	selectAuto(); //selects auto based on potentiometer and gAutoPreloadFlag variable
 	runAuto(); //runs auto depending on gAuto
-
-	//moveToTarget(11, 13, 70, 35, 5, 5, 50, 9.5, (stopSoft|stopHarsh), mttProportional);
-	//turnToTargetSide(10, 18, 60, -15, 10, true);
 
 	writeDebugStreamLine("%d AutoT:%d", nPgmTime, (nPgmTime-autoStartTime));
 	stopTasks();
