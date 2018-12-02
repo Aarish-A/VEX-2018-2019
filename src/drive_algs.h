@@ -1,7 +1,7 @@
 #define DATALOG_TURN -1
 #define DATALOG_SWEEP -1
 
-/* Enumerations */
+/* Structures */
 typedef enum _stopType
 {
 	stopNone =		0b00000000,
@@ -15,6 +15,19 @@ typedef enum _mttMode
 	mttProportional,
 	mttCascading
 } tMttMode;
+
+typedef struct _turnState //For accurate turn that holds to velocity
+{
+	float target;
+	float power;
+	float error;
+	float lstError;
+	float integral;
+	float input;
+	unsigned long time;
+	unsigned long lstTime;
+	unsigned long nextDebug;
+} sTurnState;
 
 /* Variables */
 sVector gTargetLast;

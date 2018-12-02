@@ -42,7 +42,7 @@ void runAuto()
 		{
 			case autoFront:
 
-				resetTracking(gPosition, RED_FRONT_X, RED_FRONT_Y, 0);
+				resetTracking(gPosition, gVelocity, RED_FRONT_X, RED_FRONT_Y, 0);
 
 				////shoot
 				//anglerUnderAxle();
@@ -50,24 +50,24 @@ void runAuto()
 				//	70, false, BTN_SHOOT, dummyBool);
 
 				//1 grab ball
-				anglerMoveToPos(ANGLER_GROUND_PICKUP_POS, 70);
+				anglerMoveToPos(ANGLER_BELOW_CAP_PICKUP_POS, 70);
 				setIntakeState(intakeUp);
 				startTask(autoShooterReload);
 				moveToTarget(59, 40, 90, 40, 4, 8, 40, 0, (stopSoft | stopHarsh), mttProportional);
-				moveToTarget(59, 51, 40, 40, 4, 8, 40, 0, (stopSoft | stopHarsh), mttProportional);
-
+				moveToTarget(59, 52, 40, 40, 4, 8, 40, 0, (stopSoft | stopHarsh), mttProportional);
+				moveToTarget(59, 40, -70, -40, 4, 12, -30, 0, (stopSoft | stopHarsh), mttProportional);
 				//
 
 				anglerMoveToPos(ANGLER_CAP_PICKUP_POS, 100);
 				break;
 
 			case autoBack:
-				resetTracking(gPosition, RED_BACK_X, RED_BACK_Y, -90);
+				resetTracking(gPosition, gVelocity, RED_BACK_X, RED_BACK_Y, -90);
 
 				//1 shoot
 				anglerUnderAxle();
 				angleShoot(gAutoPreloadFlag == flagTop? gAnglerBackPFTopFlag : gAnglerBackPFMidFlag,
-					40, false, BTN_SHOOT, dummyBool);
+					40, false, MAX_ANGLE_TIME, BTN_SHOOT, dummyBool);
 
 				//2 back up and raise angler and start intake
 				anglerMoveToPos(ANGLER_CAP_PICKUP_POS, 100);
@@ -109,21 +109,21 @@ void runAuto()
 		switch (gAuto)
 		{
 			case autoFront:
-				resetTracking(gPosition, 62, 3.6+S_DISTANCE_IN, 0);
+				resetTracking(gPosition, gVelocity, 62, 3.6+S_DISTANCE_IN, 0);
 
 				anglerUnderAxle();
 				angleShoot(gAutoPreloadFlag == flagTop? gAnglerFrontPFTopFlag : gAnglerFrontPFMidFlag,
-					70, false, BTN_SHOOT, dummyBool);
+					70, false, MAX_ANGLE_TIME_FRONT, BTN_SHOOT, dummyBool);
 
 				anglerMoveToPos(ANGLER_CAP_PICKUP_POS, 100);
 				break;
 
 			case autoBack:
-				resetTracking(gPosition, 62, 3.6+S_DISTANCE_IN, 0);
+				resetTracking(gPosition, gVelocity, 62, 3.6+S_DISTANCE_IN, 0);
 
 				anglerUnderAxle();
 				angleShoot(gAutoPreloadFlag == flagTop? gAnglerBackPFTopFlag : gAnglerBackPFMidFlag,
-					40, false, BTN_SHOOT, dummyBool);
+					40, false, MAX_ANGLE_TIME, BTN_SHOOT, dummyBool);
 
 				anglerMoveToPos(ANGLER_CAP_PICKUP_POS, 100);
 				break;

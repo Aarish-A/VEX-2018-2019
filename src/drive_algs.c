@@ -512,6 +512,74 @@ void turnToTargetP(float x, float y, word startPower, float stopOffset, bool har
 
 }
 
+void turnToTargetAccurate(float x, float y, word startPower, float stopOffset, bool harshStop, float kP = 60)
+{
+	unsigned long startTime = nPgmTime;
+	tAutoTurnDir turnDir;
+	float target, error;
+	float absPower;
+
+	if (abs(startPower) < 35) startPower = 35;
+	word lastPower = startPower;
+	word finalPower = startPower;
+
+	if (fmod(atan2(x - gPosition.x, y - gPosition.y) - gPosition.a, PI * 2) > PI) turnDir = ccw; else turnDir = cw;
+	LOG(auto)("%d turnToTargetAccurate:%d", nPgmTime, turnDir);
+
+	switch (turnDir)
+	{
+	case cw:
+		do
+		{
+			target = gPosition.a + fmod(atan2(x - gPosition.x, y - gPosition.y) - gPosition.a, PI * 2);
+			error = target-gPosition.a;
+
+			//absPower = fabs(error * kP);
+			absPower = 80;
+
+			while (gVelocity.a > -4) sleep(10);
+			LOG(auto)("%d done fast", nPgmTime);
+
+
+
+			word delta = absPower-lastPower;
+			LIM_TO_VAL_SET(delta, 5);
+			finalPower = lastPower += delta;
+
+			setDrive(finalPower, -finalPower);
+
+			LOG(auto)("%d P:%d Err:%f, errRad:%f", nPgmTime, finalPower, radToDeg(error), error);
+			sleep(10);
+		} while( error > degToRad(abs(stopOffset)) );
+		break;
+
+	case ccw:
+		do
+		{
+			target = gPosition.a - fmod(gPosition.a - atan2(x - gPosition.x, y - gPosition.y), PI * 2);
+			error = target-gPosition.a;
+			absPower = fabs(error * kP);
+
+			word delta = absPower-lastPower;
+			LIM_TO_VAL_SET(delta, 5);
+			finalPower = lastPower += delta;
+
+			setDrive(-finalPower, finalPower);
+
+			LOG(auto)("%d P:%d Err:%f, errRad:%f", nPgmTime, finalPower, radToDeg(error), error);
+			sleep(10);
+		} while( error < degToRad(-abs(stopOffset)) );
+		break;
+	}
+
+	LOG(auto)("%d turnP done(%f,%f) %f targ:%f, err:%f", nPgmTime, gPosition.x, gPosition.y, gPosition.a, radToDeg(target), radToDeg(target-gPosition.a));
+
+	if (harshStop) applyHarshStop();
+	else setDrive(0,0);
+	LOG(auto)("%d turnP exit(%f,%f) %f targ:%f, err:%f T:%d", nPgmTime, gPosition.x, gPosition.y, radToDeg(gPosition.a), radToDeg(target), radToDeg(target-gPosition.a), (nPgmTime-startTime));
+
+}
+
 void turnToTargetNewAlg(float x, float y, tAutoTurnDir turnDir, float fullRatio, byte coastPower, float stopOffsetDeg, bool harshStop, float offset)
 {
 	////LOG(auto)("Turning to %f %f", y, x);
