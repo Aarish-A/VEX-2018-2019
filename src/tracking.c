@@ -102,7 +102,8 @@ task trackPositionTask()
 
 void resetPositionFull(sPos& position, float x, float y, float a)
 {
-	writeDebugStreamLine("Resetting position %f %f %f | %f %f %f", position.y, position.x, radToDeg(fmod(gPosition.a, PI * 2)), y, x, radToDeg(fmod(a, PI * 2)));
+	a = degToRad(a);
+	writeDebugStreamLine("Resetting position %f %f %f | %f %f %f", position.y, position.x, radToDeg(fmod(gPosition.a, PI * 2)), y, x, a);
 	resetPosition(position);
 
 	SensorValue[trackL] = 0;

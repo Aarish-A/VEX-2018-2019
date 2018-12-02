@@ -11,16 +11,18 @@ typedef enum _tLCDScreen
   //sensorView,
   trackingTune,
   shotCount,
+  autoSelect,
   shootTuneMode,
 
   anglerTargetTuning,
   selectPosition,
   selectFlag,
   changeTarget,
+
   kNumLcdScreens
 } tLCDScreen;
 
-tLCDScreen gLCDScreen = trackingTune;//shootTuneMode;
+tLCDScreen gLCDScreen = autoSelect;//shootTuneMode;
 
 const int kPosNum = 4;
 

@@ -93,17 +93,24 @@ bool autoLogs = true;
 #include "drive_algs.h"
 #include "drive_algs.c"
 
+#define RED_FRONT_X (69 - BACK_OFFSET)
+#define RED_FRONT_Y 11
+#define RED_BACK_X (115.875 - BACK_OFFSET)
+#define RED_BACK_Y 11
+
+#define BACK_OFFSET (3.875+S_DISTANCE_IN)
+
 task main()
 {
 	clearDebugStream();
 	gBatteryLevel = nImmediateBatteryLevel;
 	writeDebugStreamLine("%d battery:%d", nPgmTime, gBatteryLevel);
 	setupMotors();
-	resetPositionFull(gPosition, 62, 3.6+S_DISTANCE_IN, 0);
-	startTask(trackPositionTask);
+	resetTracking(gPosition, RED_BACK_X, RED_BACK_Y, -90);
 
-	moveToTargetY(gPosition.y+1.5, 50, 30, stopHarsh);
-	turnToTargetP(11, 16, 40, 20, true, 70);
+	//moveToTargetY(gPosition.y+1.5, 50, 30, stopHarsh);
+	//turnToTargetP(126, 48, 40, 22, true, 70);
+	turnToAngleP(0, 40, 22, true, 70);
 	//turnToTargetSide(11, 16, 70, -15, 10, true);
 
 	//moveToTargetDis(0, 5, 127, 35, 0, 0, 70, 0, stopNone, mttProportional);

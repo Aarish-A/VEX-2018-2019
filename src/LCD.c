@@ -205,7 +205,8 @@ task handleLCD()
 				float RTurn = (SensorValue[trackR] - gPosition.rightStart) * SPIN_TO_IN_LR; // The amount the right side of the robot moved since the beginning
       	float t = (float)(LTurn - RTurn);
       	sprintf(line1, "(%3.2f, %3.2f)", gPosition.x, gPosition.y);
-      	sprintf(line2, "a:%3.2f, t:%3.2f", gPosition.a * 180 / PI, t);
+      	sprintf(line2, "a:%3.2f", gPosition.a * 180 / PI);
+      	//sprintf(line2, "a:%3.2f, t:%3.2f", gPosition.a * 180 / PI, t);
       	displayLCDCenteredString(0, line1);
       	displayLCDCenteredString(1, line2);
 
@@ -221,6 +222,27 @@ task handleLCD()
      		displayLCDNumber(0, 11, gShooterShotCount);
 
      		if (LCD_R) gLCDScreen++;
+      	else if (LCD_L) gLCDScreen--;
+      	break;
+      }
+      case autoSelect:
+      {
+      	string auto;
+      	sprintf(auto, "allnce:%d auto: %d", gAlliance, gAuto);
+      	displayLCDCenteredString(0, auto);
+      	string preloadFlag;
+      	sprintf(preloadFlag, "flag: %d", gAutoPreloadFlag);
+      	displayLCDCenteredString(1, preloadFlag);
+
+      	selectAuto();
+
+      	if (LCD_M)
+      	{
+      		if (gAutoPreloadFlag == flagTop) gAutoPreloadFlag = flagMid;
+      		else gAutoPreloadFlag = flagTop;
+      	}
+
+      	else if (LCD_R) gLCDScreen++;
       	else if (LCD_L) gLCDScreen--;
       	break;
       }
