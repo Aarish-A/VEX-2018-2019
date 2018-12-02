@@ -1416,11 +1416,12 @@ task monitorVals()
 /* Modes */
 task handleLCD(); //handleLCD task predeclaration
 
-void startTasks()
+void startTasks(bool driveTaskStart)
 {
 	tHog();
 
-	startTask(driveStateSet);
+	if (driveTaskStart) startTask(driveStateSet);
+
 	startTask(shooterStateSet);
 	startTask(intakeStateSet);
 	startTask(decapperStateSet);
@@ -1470,7 +1471,7 @@ void startup()
 	resetPositionFull(gPosition, 0, 0, 0);
 	startTask(trackPositionTask);
 
-	startTasks();
+	startTasks(true);
 	sleep(50);
 
 	gShooterKilled = false;
@@ -1507,11 +1508,11 @@ task autonomous()
 
 	unsigned long autoStartTime = nPgmTime;
 
-	startTasks();
+	startTasks(false);
 	stopTask(driveStateSet);
 
 	selectAuto(); //selects auto based on potentiometer and gAutoPreloadFlag variable
-	runAuto(); //runs auto depending on gAuto
+	runAuto(); //runs auto depending on gAuto and gAlliance
 
 	writeDebugStreamLine("%d AutoT:%d", nPgmTime, (nPgmTime-autoStartTime));
 	stopTasks();
@@ -1523,7 +1524,7 @@ task usercontrol()
 	sCycleData cycle;
 	initCycle(cycle, 10, "usercontrol");
 
-	startTasks();
+	startTasks(true);
 
 
 	bool shootBtn = false;
