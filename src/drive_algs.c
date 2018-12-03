@@ -512,6 +512,102 @@ void turnToTargetP(float x, float y, word startPower, float stopOffset, bool har
 
 }
 
+void turnAccurateInternalCw(float a, sTurnState& state)
+{
+	unsigned long deltaTime = state.time - state.lstTime;
+	float vel = gVelocity.a;
+
+	const float kP = 17, kI = 0.05;
+
+	if (deltaTime >= 1)
+	{
+		state.input = vel;
+
+		state.lstError = state.error;
+		state.error = state.target - state.input;
+
+		state.integral += state.error * deltaTime;
+		if (state.integral < -8) state.integral = 0;
+
+		state.power = state.error * kP + state.integral * kI;
+
+		state.power += 26;
+
+		if (state.power < 0) state.power /= 6.0;
+
+		if (state.power > 50) state.power = 50;
+		if (state.power < -5) state.power = -5;
+
+		setDrive(state.power, -state.power);
+
+		if (state.time >= state.nextDebug)
+		{
+			//writeDebugStreamLine("%f %f %f", state.power, state.error, state.integral);
+			state.nextDebug = state.time + 20;
+
+		}
+
+		state.lstTime = state.time;
+	}
+
+	sleep(1);
+
+	state.time = nPgmTime;
+}
+
+void turnAccurateInternalCcw(float a, sTurnState& state)
+{
+	tHog();
+	unsigned long deltaTime = state.time - state.lstTime;
+	float vel = gVelocity.a;
+
+	const float kP = 17, kI = 0.05;
+
+	if (deltaTime >= 1)
+	{
+		state.input = vel;
+
+		state.lstError = state.error;
+		state.error = state.target - state.input;
+
+		state.integral += state.error * deltaTime;
+		if (state.integral > 8) state.integral = 0;
+
+		state.power = state.error * kP + state.integral * kI;
+
+		//state.power -= 26;
+
+		//if (state.power > 0) state.power /= 6.0;
+
+		if (state.power < -50) state.power = -50;
+		if (state.power > 5) state.power = 5;
+
+		setDrive(state.power, -state.power);
+
+		if (state.time >= state.nextDebug)
+		{
+			//writeDebugStreamLine("%f %f %f", state.power, state.error, state.integral);
+			state.nextDebug = state.time + 20;
+
+		}
+
+		datalogDataGroupStart();
+		datalogAddValue(0, gVelocity.a);
+		datalogAddValue(1, state.power);
+		datalogAddValue(2, state.error);
+		datalogAddValue(3, (state.error*kP));
+		datalogAddValue(4, (state.integral*kI));
+		datalogDataGroupEnd();
+
+		state.lstTime = state.time;
+	}
+
+	sleep(1);
+
+	state.time = nPgmTime;
+	tRelease();
+}
+
 void turnToTargetAccurate(float x, float y, word startPower, float stopOffset, bool harshStop, float kP = 60)
 {
 	unsigned long startTime = nPgmTime;
@@ -526,6 +622,14 @@ void turnToTargetAccurate(float x, float y, word startPower, float stopOffset, b
 	if (fmod(atan2(x - gPosition.x, y - gPosition.y) - gPosition.a, PI * 2) > PI) turnDir = ccw; else turnDir = cw;
 	LOG(auto)("%d turnToTargetAccurate:%d", nPgmTime, turnDir);
 
+	//Set up turn state structure variables for the internal turnAccurate algorithms
+	sTurnState state;
+	state.time = nPgmTime;
+	state.lstTime = state.time;
+	state.nextDebug = 0;
+	state.input = gVelocity.a;
+	state.power = state.error = state.integral = 0;
+
 	switch (turnDir)
 	{
 	case cw:
@@ -535,12 +639,6 @@ void turnToTargetAccurate(float x, float y, word startPower, float stopOffset, b
 			error = target-gPosition.a;
 
 			//absPower = fabs(error * kP);
-			absPower = 80;
-
-			while (gVelocity.a > -4) sleep(10);
-			LOG(auto)("%d done fast", nPgmTime);
-
-
 
 			word delta = absPower-lastPower;
 			LIM_TO_VAL_SET(delta, 5);
@@ -548,27 +646,28 @@ void turnToTargetAccurate(float x, float y, word startPower, float stopOffset, b
 
 			setDrive(finalPower, -finalPower);
 
-			LOG(auto)("%d P:%d Err:%f, errRad:%f", nPgmTime, finalPower, radToDeg(error), error);
+			//LOG(auto)("%d P:%d Err:%f, errRad:%f", nPgmTime, finalPower, radToDeg(error), error);
 			sleep(10);
 		} while( error > degToRad(abs(stopOffset)) );
 		break;
 
 	case ccw:
-		do
-		{
 			target = gPosition.a - fmod(gPosition.a - atan2(x - gPosition.x, y - gPosition.y), PI * 2);
 			error = target-gPosition.a;
-			absPower = fabs(error * kP);
 
-			word delta = absPower-lastPower;
-			LIM_TO_VAL_SET(delta, 5);
-			finalPower = lastPower += delta;
+			absPower = 80;
+			while (gVelocity.a > -4) sleep(10);
+			LOG(auto)("%d done fast", nPgmTime);
 
-			setDrive(-finalPower, finalPower);
+			unsigned long slowStartTime = nPgmTime;
 
-			LOG(auto)("%d P:%d Err:%f, errRad:%f", nPgmTime, finalPower, radToDeg(error), error);
+			while ((nPgmTime-slowStartTime) < 4000)
+			{
+				target = gPosition.a + fmod(atan2(x - gPosition.x, y - gPosition.y) - gPosition.a, PI * 2);
+				turnAccurateInternalCcw(target, state);
+			}
+
 			sleep(10);
-		} while( error < degToRad(-abs(stopOffset)) );
 		break;
 	}
 
