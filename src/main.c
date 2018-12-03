@@ -1240,7 +1240,7 @@ void angleShoot(int pos, int acceptableRange, bool waitForShot, int angleTime, T
 		unsigned long curTime = nPgmTime;
 		waitTimeRel = startTime + waitTimeAbs;
 		LOG(macro)(" >> %d waitTimeAbs = %d, waitTimeRel = %d", nPgmTime, waitTimeAbs, waitTimeRel);
-		while(nPgmTime < waitTimeRel)
+		while(nPgmTime < waitTimeRel && gAnglerGoodCount < 7)
 		{
 			if (!vexRT[btn]) btnReleased = true;
 			sleep(10);
@@ -1294,6 +1294,7 @@ void anglerShooter(int posA, int posB, int acceptableRange, bool waitForFirstSho
 	if (gShootTuneMode)
 	{
 		acceptableRange = 20;
+		angleTime = 2500;
 		waitForFirstShot = true;
 		waitForSecShot = true;
 	}
@@ -1584,7 +1585,7 @@ task usercontrol()
 		decapperControls();
 
 		/* Shooter & Angler Controls */
-		if (gAnglerShooterTaskRunning && gAnglerShooterTaskTime > 0 && nPgmTime > (gAnglerShooterTaskTime+4000))
+		if (gAnglerShooterTaskRunning && gAnglerShooterTaskTime > 0 && nPgmTime > (gAnglerShooterTaskTime+6000))
 		{
 			ANGLER_SHOOTER_TASK_KILL;
 			writeDebugStreamLine("	>>>> %d AnglerShooterTask TO. KILL", nPgmTime);
