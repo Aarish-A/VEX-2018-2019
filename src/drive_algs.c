@@ -67,7 +67,7 @@ void moveToTarget(float x, float y, byte power, byte startPower, float maxErrX, 
 {
 	float xs = gPosition.x;
 	float ys = gPosition.y;
-	//LOG(auto)("Moving to %f %f from %f %f at %d. decelEarly:%f, decelPower:%f, dropEarly:%f", x, y, xs, ys, power, decelEarly, decelPower, dropEarly);
+	//LOG_AUTO(("Moving to %f %f from %f %f at %d. decelEarly:%f, decelPower:%f, dropEarly:%f", x, y, xs, ys, power, decelEarly, decelPower, dropEarly))
 
 	gTargetLast.y = y;
 	gTargetLast.x = x;
@@ -84,7 +84,7 @@ void moveToTarget(float x, float y, byte power, byte startPower, float maxErrX, 
 	followLine.p2.x = x;
 
 	float lineLength = getLengthOfLine(followLine);
-	////LOG(auto)("Line length: %.2f", lineLength);
+	////LOG_AUTO(("Line length: %.2f", lineLength))
 	float lineAngle = getAngleOfLine(followLine); // Get the angle of the line that we're following relative to the vertical
 	float pidAngle = nearAngle(lineAngle - (power < 0 ? PI : 0), gPosition.a);
 	//LOG(auto)("Line | Pid angle: %f | %f", radToDeg(lineAngle), radToDeg(pidAngle));
@@ -243,7 +243,7 @@ void moveToTargetDis(float a, float d, byte power, byte startPower, float maxErr
 
 void turnToAngleNewAlg(float a, tAutoTurnDir turnDir, float fullRatio, byte coastPower, float stopOffsetDeg, bool harshStop)
 {
-	////LOG(auto)("Turning to %f", radToDeg(a));
+	////LOG_AUTO(("Turning to %f", radToDeg(a)))
 	a = degToRad(a);
 
 	if (turnDir == ch)
@@ -289,12 +289,12 @@ void turnToAngleNewAlg(float a, tAutoTurnDir turnDir, float fullRatio, byte coas
 			}
 			sleep(10);
 		}
-		////LOG(auto)("Turn done: %d",  gPosition.a);
+		////LOG_AUTO(("Turn done: %d",  gPosition.a))
 		if (harshStop)
 		{
 			setDrive(-20, 20);
 			sleep(150);
-			////LOG(auto)("Break done: %d",  gPosition.a);
+			////LOG_AUTO(("Break done: %d",  gPosition.a))
 		}
 		setDrive(0, 0);
 		break;
@@ -331,12 +331,12 @@ void turnToAngleNewAlg(float a, tAutoTurnDir turnDir, float fullRatio, byte coas
 			}
 			sleep(10);
 		}
-		////LOG(auto)("Turn done: %d",  gPosition.a);
+		////LOG_AUTO(("Turn done: %d",  gPosition.a))
 		if (harshStop)
 		{
 			setDrive(20, -20);
 			sleep(150);
-			////LOG(auto)("Break done: %d",  gPosition.a);
+			////LOG_AUTO(("Break done: %d",  gPosition.a))
 		}
 		setDrive(0, 0);
 		break;
@@ -351,7 +351,7 @@ void turnToTargetSide(float x, float y, word big, word small, float stopOffset, 
 	float target, error;
 
 	if (fmod(atan2(x - gPosition.x, y - gPosition.y) - gPosition.a, PI * 2) > PI) turnDir = ccw; else turnDir = cw;
-	//LOG(auto)("%d turnSide:%d", nPgmTime, turnDir);
+	//LOG_AUTO(("%d turnSide:%d", nPgmTime, turnDir))
 
 	switch (turnDir)
 	{
@@ -380,11 +380,11 @@ void turnToTargetSide(float x, float y, word big, word small, float stopOffset, 
 		break;
 	}
 
-	//LOG(auto)("%d turnSide done(%f,%f) %f targ:%f, err:%f", nPgmTime, gPosition.x, gPosition.y, gPosition.a, radToDeg(target), radToDeg(target-gPosition.a));
+	//LOG_AUTO(("%d turnSide done(%f,%f) %f targ:%f, err:%f", nPgmTime, gPosition.x, gPosition.y, gPosition.a, radToDeg(target), radToDeg(target-gPosition.a)))
 
 	if (harshStop) applyHarshStop();
 	else setDrive(0,0);
-	//LOG(auto)("%d turnSide exit(%f,%f) %f targ:%f, err:%f T:%d", nPgmTime, gPosition.x, gPosition.y, radToDeg(gPosition.a), radToDeg(target), radToDeg(target-gPosition.a), (nPgmTime-startTime));
+	//LOG_AUTO(("%d turnSide exit(%f,%f) %f targ:%f, err:%f T:%d", nPgmTime, gPosition.x, gPosition.y, radToDeg(gPosition.a), radToDeg(target), radToDeg(target-gPosition.a), (nPgmTime-startTime)))
 
 }
 void turnToAngleP(float target, word startPower, float stopOffset, bool harshStop, float kP = 60)
@@ -402,7 +402,7 @@ void turnToAngleP(float target, word startPower, float stopOffset, bool harshSto
 
 	float absTarget = (target < 0)? ((PI * 2)+target) : target;
 	if (fmod(absTarget - gPosition.a, PI * 2) > PI) turnDir = ccw; else turnDir = cw;
-	//LOG(auto)("%d turnToTargetP:%d", nPgmTime, turnDir);
+	//LOG_AUTO(("%d turnToTargetP:%d", nPgmTime, turnDir))
 
 	switch (turnDir)
 	{
@@ -419,7 +419,7 @@ void turnToAngleP(float target, word startPower, float stopOffset, bool harshSto
 
 			setDrive(finalPower, -finalPower);
 
-			//LOG(auto)("%d P:%d Err:%f, errRad:%f", nPgmTime, finalPower, radToDeg(error), error);
+			//LOG_AUTO(("%d P:%d Err:%f, errRad:%f", nPgmTime, finalPower, radToDeg(error), error))
 			sleep(10);
 		} while( error > degToRad(abs(stopOffset)) );
 		break;
@@ -436,17 +436,17 @@ void turnToAngleP(float target, word startPower, float stopOffset, bool harshSto
 
 			setDrive(-finalPower, finalPower);
 
-			//LOG(auto)("%d P:%d Err:%f, errRad:%f", nPgmTime, finalPower, radToDeg(error), error);
+			//LOG_AUTO(("%d P:%d Err:%f, errRad:%f", nPgmTime, finalPower, radToDeg(error), error))
 			sleep(10);
 		} while( error < degToRad(-abs(stopOffset)) );
 		break;
 	}
 
-	//LOG(auto)("%d turnP done(%f,%f) %f targ:%f, err:%f", nPgmTime, gPosition.x, gPosition.y, gPosition.a, radToDeg(target), radToDeg(target-gPosition.a));
+	//LOG_AUTO(("%d turnP done(%f,%f) %f targ:%f, err:%f", nPgmTime, gPosition.x, gPosition.y, gPosition.a, radToDeg(target), radToDeg(target-gPosition.a)))
 
 	if (harshStop) applyHarshStop();
 	else setDrive(0,0);
-	//LOG(auto)("%d turnP exit(%f,%f) %f targ:%f, err:%f T:%d", nPgmTime, gPosition.x, gPosition.y, radToDeg(gPosition.a), radToDeg(target), radToDeg(target-gPosition.a), (nPgmTime-startTime));
+	//LOG_AUTO(("%d turnP exit(%f,%f) %f targ:%f, err:%f T:%d", nPgmTime, gPosition.x, gPosition.y, radToDeg(gPosition.a), radToDeg(target), radToDeg(target-gPosition.a), (nPgmTime-startTime)))
 
 }
 
@@ -462,7 +462,7 @@ void turnToTargetP(float x, float y, word startPower, float stopOffset, bool har
 	word finalPower = startPower;
 
 	if (fmod(atan2(x - gPosition.x, y - gPosition.y) - gPosition.a, PI * 2) > PI) turnDir = ccw; else turnDir = cw;
-	LOG(auto)("%d turnToTargetP:%d", nPgmTime, turnDir);
+	LOG_AUTO(("%d turnToTargetP:%d", nPgmTime, turnDir))
 
 	switch (turnDir)
 	{
@@ -480,7 +480,7 @@ void turnToTargetP(float x, float y, word startPower, float stopOffset, bool har
 
 			setDrive(finalPower, -finalPower);
 
-			LOG(auto)("%d P:%d Err:%f, errRad:%f", nPgmTime, finalPower, radToDeg(error), error);
+			LOG_AUTO(("%d P:%d Err:%f, errRad:%f", nPgmTime, finalPower, radToDeg(error), error))
 			sleep(10);
 		} while( error > degToRad(abs(stopOffset)) );
 		break;
@@ -498,17 +498,17 @@ void turnToTargetP(float x, float y, word startPower, float stopOffset, bool har
 
 			setDrive(-finalPower, finalPower);
 
-			LOG(auto)("%d P:%d Err:%f, errRad:%f", nPgmTime, finalPower, radToDeg(error), error);
+			LOG_AUTO(("%d P:%d Err:%f, errRad:%f", nPgmTime, finalPower, radToDeg(error), error))
 			sleep(10);
 		} while( error < degToRad(-abs(stopOffset)) );
 		break;
 	}
 
-	LOG(auto)("%d turnP done(%f,%f) %f targ:%f, err:%f", nPgmTime, gPosition.x, gPosition.y, gPosition.a, radToDeg(target), radToDeg(target-gPosition.a));
+	LOG_AUTO(("%d turnP done(%f,%f) %f targ:%f, err:%f", nPgmTime, gPosition.x, gPosition.y, gPosition.a, radToDeg(target), radToDeg(target-gPosition.a)))
 
 	if (harshStop) applyHarshStop();
 	else setDrive(0,0);
-	LOG(auto)("%d turnP exit(%f,%f) %f targ:%f, err:%f T:%d", nPgmTime, gPosition.x, gPosition.y, radToDeg(gPosition.a), radToDeg(target), radToDeg(target-gPosition.a), (nPgmTime-startTime));
+	LOG_AUTO(("%d turnP exit(%f,%f) %f targ:%f, err:%f T:%d", nPgmTime, gPosition.x, gPosition.y, radToDeg(gPosition.a), radToDeg(target), radToDeg(target-gPosition.a), (nPgmTime-startTime)))
 
 }
 
@@ -620,7 +620,7 @@ void turnToTargetAccurate(float x, float y, word startPower, float stopOffset, b
 	word finalPower = startPower;
 
 	if (fmod(atan2(x - gPosition.x, y - gPosition.y) - gPosition.a, PI * 2) > PI) turnDir = ccw; else turnDir = cw;
-	LOG(auto)("%d turnToTargetAccurate:%d", nPgmTime, turnDir);
+	LOG_AUTO(("%d turnToTargetAccurate:%d", nPgmTime, turnDir))
 
 	//Set up turn state structure variables for the internal turnAccurate algorithms
 	sTurnState state;
@@ -646,7 +646,7 @@ void turnToTargetAccurate(float x, float y, word startPower, float stopOffset, b
 
 			setDrive(finalPower, -finalPower);
 
-			//LOG(auto)("%d P:%d Err:%f, errRad:%f", nPgmTime, finalPower, radToDeg(error), error);
+			//LOG_AUTO(("%d P:%d Err:%f, errRad:%f", nPgmTime, finalPower, radToDeg(error), error))
 			sleep(10);
 		} while( error > degToRad(abs(stopOffset)) );
 		break;
@@ -657,7 +657,7 @@ void turnToTargetAccurate(float x, float y, word startPower, float stopOffset, b
 
 			absPower = 80;
 			while (gVelocity.a > -4) sleep(10);
-			LOG(auto)("%d done fast", nPgmTime);
+			LOG_AUTO(("%d done fast", nPgmTime))
 
 			unsigned long slowStartTime = nPgmTime;
 
@@ -671,17 +671,17 @@ void turnToTargetAccurate(float x, float y, word startPower, float stopOffset, b
 		break;
 	}
 
-	LOG(auto)("%d turnP done(%f,%f) %f targ:%f, err:%f", nPgmTime, gPosition.x, gPosition.y, gPosition.a, radToDeg(target), radToDeg(target-gPosition.a));
+	LOG_AUTO(("%d turnP done(%f,%f) %f targ:%f, err:%f", nPgmTime, gPosition.x, gPosition.y, gPosition.a, radToDeg(target), radToDeg(target-gPosition.a)))
 
 	if (harshStop) applyHarshStop();
 	else setDrive(0,0);
-	LOG(auto)("%d turnP exit(%f,%f) %f targ:%f, err:%f T:%d", nPgmTime, gPosition.x, gPosition.y, radToDeg(gPosition.a), radToDeg(target), radToDeg(target-gPosition.a), (nPgmTime-startTime));
+	LOG_AUTO(("%d turnP exit(%f,%f) %f targ:%f, err:%f T:%d", nPgmTime, gPosition.x, gPosition.y, radToDeg(gPosition.a), radToDeg(target), radToDeg(target-gPosition.a), (nPgmTime-startTime)))
 
 }
 
 void turnToTargetNewAlg(float x, float y, tAutoTurnDir turnDir, float fullRatio, byte coastPower, float stopOffsetDeg, bool harshStop, float offset)
 {
-	////LOG(auto)("Turning to %f %f", y, x);
+	////LOG_AUTO(("Turning to %f %f", y, x))
 
 	unsigned long startTime = nPgmTime;
 
@@ -698,7 +698,7 @@ void turnToTargetNewAlg(float x, float y, tAutoTurnDir turnDir, float fullRatio,
 	case cw:
 		target = gPosition.a + fmod(atan2(x - gPosition.x, y - gPosition.y) + offset - gPosition.a, PI * 2);
 		endFull = gPosition.a * (1 - fullRatio) + target * fullRatio;
-		////LOG(auto)("%f %f", radToDeg(target), radToDeg(endFull));
+		////LOG_AUTO(("%f %f", radToDeg(target), radToDeg(endFull)))
 		setDrive(127, -127);
 		while( (gPosition.a < endFull ))
 		{
@@ -729,19 +729,19 @@ void turnToTargetNewAlg(float x, float y, tAutoTurnDir turnDir, float fullRatio,
 			}
 			sleep(10);
 		}
-		////LOG(auto)("Turn done: %d",  gPosition.a);
+		////LOG_AUTO(("Turn done: %d",  gPosition.a))
 		if (harshStop)
 		{
 			setDrive(-20, 20);
 			sleep(150);
-			////LOG(auto)("Break done: %d",  gPosition.a);
+			////LOG_AUTO(("Break done: %d",  gPosition.a))
 		}
 		setDrive(0, 0);
 		break;
 	case ccw:
 		target = gPosition.a - fmod(gPosition.a - atan2(x - gPosition.x, y - gPosition.y) - offset, PI * 2);
 		endFull = gPosition.a * (1 - fullRatio) + (target) * fullRatio;
-		////LOG(auto)("%f %f", radToDeg(target), radToDeg(endFull));
+		////LOG_AUTO(("%f %f", radToDeg(target), radToDeg(endFull)))
 		setDrive(-127, 127);
 		while( (gPosition.a > endFull))
 		{
@@ -772,12 +772,12 @@ void turnToTargetNewAlg(float x, float y, tAutoTurnDir turnDir, float fullRatio,
 			}
 			sleep(10);
 		}
-		////LOG(auto)("Turn done: %d",  gPosition.a);
+		////LOG_AUTO(("Turn done: %d",  gPosition.a))
 		if (harshStop)
 		{
 			setDrive(20, -20);
 			sleep(150);
-			////LOG(auto)("Break done: %d",  gPosition.a);
+			////LOG_AUTO(("Break done: %d",  gPosition.a))
 		}
 		setDrive(0, 0);
 		break;
