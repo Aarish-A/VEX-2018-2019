@@ -1285,15 +1285,13 @@ void anglerShooter(int posA, int posB, int acceptableRange, bool waitForFirstSho
 {
 	anglerAlgLogs = false;
 
-	int kGoodCount = 7;
-
 	bool btnReleased = false;
 	acceptableRange = abs(acceptableRange);
 
 	//Handle test mode
 	if (gShootTuneMode)
 	{
-		acceptableRange = 20;
+		acceptableRange = 15;
 		angleTime = 2500;
 		waitForFirstShot = true;
 		waitForSecShot = true;
@@ -1308,7 +1306,6 @@ void anglerShooter(int posA, int posB, int acceptableRange, bool waitForFirstSho
 	}
 
 	LOG(macro)(" >%d AnglrShooter: FrstPos:%d. Wait?%d. ScndPos:%d. Wait?%d. CurAnglrPos:%d", nPgmTime, posA, waitForFirstShot, posB, waitForSecShot, SensorValue[anglerPoti]);
-	int startShotCount = gShooterShotCount;
 	unsigned long startTime = nPgmTime;
 	unsigned long shotTriggerTime;
 
