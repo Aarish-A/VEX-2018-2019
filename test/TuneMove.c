@@ -25,7 +25,20 @@ int gBackupBatteryLevel;
 #define SHOOTER_SHOOT_UNLOADED_TIME 790
 #define SHOOTER_SHOOT_LOADED_TIME 500
 
-#include "../src/toggle_logging.h"
+#define DECAPPER_STATE_LOGS 1
+
+//#define ANGLER_LOGS 1
+#define ANGLER_STATE_LOGS 1
+bool anglerDatalog = false;
+bool anglerAlgLogs = false;
+
+#define SHOOTER_LOGS 1
+
+#define MACRO_LOGS 1
+
+#define AUTO_LOGS 1
+
+#include "log_toggle.h"
 
 #define LOG(machineIn) if(machineIn##Logs) writeDebugStreamLine
 
@@ -112,7 +125,7 @@ task main()
 	//			turnAccurateInternalCcw(-90, state);
 	//		}
 
-	turnToTargetAccurate(10, 0, ch, 80, 80, 0);
+	turnToTargetAccurate(40, 0, ch, 80, 80, 0);
 	//turnToTargetP(10, 0, 35, 10, true, 60);
 
 }

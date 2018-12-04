@@ -54,9 +54,23 @@ void runAuto()
 				setIntakeState(intakeUp);
 				startTask(autoShooterReload);
 				moveToTarget(59, 40, 90, 40, 4, 8, 40, 0, (stopSoft | stopHarsh), mttProportional);
-				moveToTarget(59, 52, 40, 40, 4, 8, 40, 0, (stopSoft | stopHarsh), mttProportional);
+				moveToTarget(59, 52, 40, 40, 3, 8, 40, 0, (stopSoft | stopHarsh), mttProportional);
+
+				//2 Back up
 				moveToTarget(59, 40, -70, -40, 4, 12, -30, 0, (stopSoft | stopHarsh), mttProportional);
-				//
+				anglerMoveToPos(gAnglerFrontPFMidFlag, 70);
+				moveToTarget(59, 16, -90, -40, 4, 12, -30, 0, (stopSoft | stopHarsh), mttProportional);
+
+				//3 Turn and shoot
+				turnToTargetAccurate(11, 16, ch, 80, 80, 0);
+				angleShoot(gAnglerFrontPFMidFlag, 70, false, MAX_ANGLE_TIME_FRONT, BTN_SHOOT, dummyBool);
+				angleShoot(gAnglerFrontPFTopFlag, 70, true, MAX_ANGLE_TIME_FRONT, BTN_SHOOT, dummyBool);
+
+				//4 Toggle low flag
+				setIntakeState(intakeIdle);
+				anglerMoveToPos(2670, 70);
+				moveToTarget(12, 18, 90, 40, 3, 12, 30, 0, (stopSoft | stopHarsh), mttProportional);
+
 
 				anglerMoveToPos(ANGLER_CAP_PICKUP_POS, 100);
 				break;

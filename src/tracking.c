@@ -92,11 +92,12 @@ void trackVelocity(sPos position, sVel& velocity)
 
 task trackPositionTask()
 {
+	writeDebugStreamLine("%d Start Track Task", nPgmTime);
 	while (true)
 	{
 		trackPosition(SensorValue[trackL], SensorValue[trackR], SensorValue[trackB], gPosition);
 		trackVelocity(gPosition, gVelocity);
-		sleep(5);
+		sleep(1);
 	}
 }
 
