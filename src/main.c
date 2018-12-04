@@ -1289,15 +1289,14 @@ void anglerShooter(int posA, int posB, int acceptableRange, bool waitForFirstSho
 {
 	anglerAlgLogs = false;
 
-	int kGoodCount = 7;
-
 	bool btnReleased = false;
 	acceptableRange = abs(acceptableRange);
 
 	//Handle test mode
 	if (gShootTuneMode)
 	{
-		acceptableRange = 20;
+		acceptableRange = 15;
+		angleTime = 2500;
 		waitForFirstShot = true;
 		waitForSecShot = true;
 	}
@@ -1588,7 +1587,7 @@ task usercontrol()
 		decapperControls();
 
 		/* Shooter & Angler Controls */
-		if (gAnglerShooterTaskRunning && gAnglerShooterTaskTime > 0 && nPgmTime > (gAnglerShooterTaskTime+4000))
+		if (gAnglerShooterTaskRunning && gAnglerShooterTaskTime > 0 && nPgmTime > (gAnglerShooterTaskTime+6000))
 		{
 			ANGLER_SHOOTER_TASK_KILL;
 			writeDebugStreamLine("	>>>> %d AnglerShooterTask TO. KILL", nPgmTime);

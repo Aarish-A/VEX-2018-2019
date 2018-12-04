@@ -25,23 +25,7 @@ int gBackupBatteryLevel;
 #define SHOOTER_SHOOT_UNLOADED_TIME 790
 #define SHOOTER_SHOOT_LOADED_TIME 500
 
-bool driveLogs = false;
-bool driveStateLogs = false;
-
-bool intakeLogs = false;
-bool intakeStateLogs = false;
-
-bool decapperStateLogs = true;
-bool decapperLogs = true;
-
-bool anglerDatalog = false;
-bool anglerStateLogs = false;
-bool anglerLogs = false;
-bool anglerAlgLogs = false;
-
-bool shooterLogs = true;
-
-bool macroLogs = true;
+#include "../src/toggle_logging.h"
 
 #define LOG(machineIn) if(machineIn##Logs) writeDebugStreamLine
 
@@ -106,16 +90,29 @@ task main()
 	gBatteryLevel = nImmediateBatteryLevel;
 	writeDebugStreamLine("%d battery:%d", nPgmTime, gBatteryLevel);
 	setupMotors();
-	resetTracking(gPosition, RED_BACK_X, RED_BACK_Y, -90);
+	resetTracking(gPosition, gVelocity, 20, 0, 0);
 
-	//moveToTargetY(gPosition.y+1.5, 50, 30, stopHarsh);
-	//turnToTargetP(126, 48, 40, 22, true, 70);
-	turnToAngleP(0, 40, 22, true, 70);
-	//turnToTargetSide(11, 16, 70, -15, 10, true);
+	//Set up turn state structure variables for the internal turnAccurate algorithms
+	//sTurnState state;
+	//state.time = nPgmTime;
+	//state.lstTime = state.time;
+	//state.nextDebug = 0;
+	//state.input = gVelocity.a;
+	//state.power = state.error = state.integral = 0;
 
-	//moveToTargetDis(0, 5, 127, 35, 0, 0, 70, 0, stopNone, mttProportional);
-	//turnToTargetNewAlg(11, 15, cw, 0.7, 40, 15, true);
-	//moveToTarget(24, 24, 127, 7, 15, 3, 50, 0, (stopSoft|stopHarsh), mttProportional);
+	//setDrive(-80, 80);
+	//while (gVelocity.a > -6) sleep(10);
+	//		LOG(auto)("%d done fast", nPgmTime);
 
+	//		unsigned long slowStartTime = nPgmTime;
+
+	//		while ((nPgmTime-slowStartTime) < 4000)
+	//		{
+	//			//float target = gPosition.a + fmod(atan2(x - gPosition.x, y - gPosition.y) - gPosition.a, PI * 2);
+	//			turnAccurateInternalCcw(-90, state);
+	//		}
+
+	turnToTargetAccurate(10, 0, ch, 80, 80, 0);
+	//turnToTargetP(10, 0, 35, 10, true, 60);
 
 }
