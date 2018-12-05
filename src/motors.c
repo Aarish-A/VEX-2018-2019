@@ -3,6 +3,7 @@ void setupMotors()
 {
 	// Clear both motor arrays
 	for (ubyte i = 0; i < kNumbOfTotalMotors; ++i) {
+		motor[i] = 0;
 		gMotor[i].powerCur = motor[i] = 0;
 		gMotor[i].powerScale = -1;
 	}

@@ -199,6 +199,7 @@ task driveStateSet()
 	int throttle, turn;
 	word left, right;
 
+	motor[driveL] = motor[driveR] = motor[driveLY] = motor[driveRY] = 0;
 	setDriveState(driveIdle);
 	writeDebugStreamLine("%d Start Drive Machine. S:%d", nPgmTime, gDriveState);
 
@@ -1443,6 +1444,8 @@ task handleLCD(); //handleLCD task predeclaration
 void startTasks(bool driveTaskStart)
 {
 	tHog();
+
+	setupMotors();
 
 	if (driveTaskStart) startTask(driveStateSet);
 
