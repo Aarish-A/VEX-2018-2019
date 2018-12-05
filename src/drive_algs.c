@@ -189,7 +189,7 @@ void moveToTarget(float x, float y, byte power, byte startPower, float maxErrX, 
 		endCycle(cycle);
 	} while( (currentPosVector.y < -dropEarly - MAX((vel * ((stopType & stopSoft) ? 0.175 : 0.098)), decelEarly)) );
 
-	LOG(auto)("%dDone fast %f < %f?. pow:%d, vel:%d, sin%f, xVel:%f, cos%f, yVel:%f", nPgmTime, currentPosVector.y,(currentPosVector.y < -dropEarly - MAX((vel * ((stopType & stopSoft) ? 0.175 : 0.098)), decelEarly)), finalPower, vel, _sin, gVelocity.x, _cos, gVelocity.y, decelEarly);
+	LOG(auto)("%dDone fast %f < %f?. pow:%d, vel:%d, sin%f, xVel:%f, cos%f, yVel:%f. a:%f, velA:%f", nPgmTime, currentPosVector.y,(currentPosVector.y < -dropEarly - MAX((vel * ((stopType & stopSoft) ? 0.175 : 0.098)), decelEarly)), finalPower, vel, _sin, gVelocity.x, _cos, gVelocity.y, decelEarly, gPosition.a, gVelocity.a);
 
 	setDrive(decelPower, decelPower);
 
@@ -228,7 +228,7 @@ void moveToTarget(float x, float y, byte power, byte startPower, float maxErrX, 
 	else
 		setDrive(0, 0);
 
-	LOG(auto)("Moved to %f %f from %f %f | %f %f %f", x, y, xs, ys,  gPosition.x, gPosition.y, radToDeg(gPosition.a));
+	LOG(auto)("Moved to %f %f from %f %f | %f %f %f. velA:%f", x, y, xs, ys,  gPosition.x, gPosition.y, radToDeg(gPosition.a), gVelocity.a);
 }
 
 void moveToTargetDis(float a, float d, byte power, byte startPower, float maxErrX, float decelEarly, byte decelPower, float dropEarly, tStopType stopType, tMttMode mode)

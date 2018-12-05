@@ -50,7 +50,7 @@ void runAuto()
 				//	70, false, BTN_SHOOT, dummyBool);
 
 				//1 grab ball
-				anglerMoveToPos(ANGLER_BELOW_CAP_PICKUP_POS, 70);
+				anglerMoveToPos(ANGLER_BELOW_CAP_PICKUP_POS, 40);
 				setIntakeState(intakeUp);
 				startTask(autoShooterReload);
 				moveToTarget(59, 40, 90, 40, 4, 8, 40, 0, (stopSoft | stopHarsh), mttProportional);
@@ -69,7 +69,7 @@ void runAuto()
 				//4 Toggle low flag
 				setIntakeState(intakeIdle);
 				anglerMoveToPos(2670, 70);
-				moveToTarget(12, 18, 90, 40, 3, 12, 30, 0, (stopSoft | stopHarsh), mttProportional);
+				moveToTarget(12, 15, 90, 40, 3, 12, 30, 0, (stopSoft | stopHarsh), mttProportional);
 
 
 				anglerMoveToPos(ANGLER_CAP_PICKUP_POS, 100);
