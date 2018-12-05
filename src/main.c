@@ -1397,21 +1397,40 @@ void ballTrackLog()
 
 task monitorVals()
 {
+	int trackLVal, trackLLst, trackRVal, trackRLst;
+	float velL, velR;
+	unsigned long time = nPgmTime;
+	unsigned long timeLst = nPgmTime;
 	while(true)
 	{
 		tHog();
 		shooterSafetyCheck();
 		ballTrackLog();
 
+		//trackLVal = SensorValue[trackL];
+		//trackRVal = SensorValue[trackR];
+		//time = nPgmTime;
+		//unsigned long deltaT = time-timeLst;
+		//if (deltaT > 0)
+		//{
+		//	velL = (float)(trackLVal-trackLLst) / (float)deltaT;
+		//	velR = (float)(trackRVal-trackRLst) / (float)deltaT;
+		//}
+		//else writeDebugStreamLine("%d delta t error", nPgmTime);
+
 		datalogDataGroupStart();
-		datalogAddValue(0, SensorValue[anglerPoti]);
-		//datalogAddValue(1, (pVal*10.0));
-		//datalogAddValue(2, (iVal*10.0));
-		datalogAddValue(3, gMotor[angler].powerCur);
-		datalogAddValue(4, SensorValue[shooterEnc]);
-		datalogAddValue(5, SensorValue[ballDetector]);
+		//datalogAddValue(0, SensorValue[anglerPoti]);
+		datalogAddValue(1, SensorValue[trackL]);
+		datalogAddValue(2, SensorValue[trackR]);
+		datalogAddValue(3, radToDeg(gPosition.a)*10);
+		datalogAddValue(4, gVelocity.a*100);
+		//datalogAddValue(4, (velL)*100);
+		//datalogAddValue(5, (velR)*100);
 		datalogDataGroupEnd();
 
+		//trackLLst = trackLVal;
+		//trackRLst = trackRVal;
+		//timeLst = nPgmTime;
 		tRelease();
 
 		sleep(10);
