@@ -1621,9 +1621,16 @@ task usercontrol()
 		}
 		else if (!gAnglerShooterTaskRunning)
 		{
-			if (shootBtn && !shootBtnLst)
+			if (shootBtn && !shootBtnLst && gShooterState != shooterReset)
 			{
-				if (SensorValue[shooterEnc] < SHOOTER_RELOAD_POS)
+				if (vexRT[BTN_SHIFT])
+				{
+					gShooterKilled = false;
+					setShooterState(shooterReset);
+					sleep(50);
+					while(gShooterState != shooterHold && gShooterState != shooterIdle) sleep(10);
+				}
+				else if (SensorValue[shooterEnc] < SHOOTER_RELOAD_POS)
 				{
 					setShooterState(shooterReload);
 				}
@@ -1644,28 +1651,28 @@ task usercontrol()
 				setShooterState(shooterShoot);
 				lstShotTimer = 0;
 			}
-			if ((shootFrontPFBtn && !shootFrontPFBtnLst) && !(shootBtn && !shootBtnLst))
+			if ((shootFrontPFBtn && !shootFrontPFBtnLst) && !(shootBtn && !shootBtnLst) && gShooterState != shooterReset)
 			{
 				tHog();
 				writeDebugStreamLine(" > %d F_PF Shoot <", nPgmTime);
 				ANGLER_SHOOTER_TASK(gAnglerFrontPFMidFlag, gAnglerFrontPFTopFlag, 70, false, true, MAX_ANGLE_TIME_FRONT, BTN_SHOOT_FRONT_PF, vexRT[BTN_SHIFT]);
 				tRelease();
 			}
-			else if ((shootMidPFBtn && !shootMidPFBtnLst) && !(shootBtn && !shootBtnLst))
+			else if ((shootMidPFBtn && !shootMidPFBtnLst) && !(shootBtn && !shootBtnLst) && gShooterState != shooterReset)
 			{
 				tHog();
 				writeDebugStreamLine(" > %d M_PF Shoot <", nPgmTime);
 				ANGLER_SHOOTER_TASK(gAnglerMidPFMidFlag, gAnglerMidPFTopFlag, 60, true, true, MAX_ANGLE_TIME, BTN_SHOOT_MID_PF, vexRT[BTN_SHIFT]);
 				tRelease();
 			}
-			else if ((shootBackPFBtn && !shootBackPFBtnLst) && !(shootBtn && !shootBtnLst))
+			else if ((shootBackPFBtn && !shootBackPFBtnLst) && !(shootBtn && !shootBtnLst) && gShooterState != shooterReset)
 			{
 				tHog();
 				writeDebugStreamLine("%d B_PF Shoot <", nPgmTime);
 				ANGLER_SHOOTER_TASK(gAnglerBackPFMidFlag, gAnglerBackPFTopFlag, 50, true, true, MAX_ANGLE_TIME, BTN_SHOOT_BACK_PF, vexRT[BTN_SHIFT]);
 				tRelease();
 			}
-			else if ((shootBackBtn && !shootBackBtnLst) && !(shootBtn && !shootBtnLst))
+			else if ((shootBackBtn && !shootBackBtnLst) && !(shootBtn && !shootBtnLst) && gShooterState != shooterReset)
 			{
 				tHog();
 				writeDebugStreamLine(" > %d Bck Shoot <", nPgmTime);
@@ -1713,7 +1720,7 @@ task usercontrol()
 				if (vexRT[BTN_SHIFT])
 				{
 					writeDebugStreamLine(" > %d Anglr: u_cap p_u pos <", nPgmTime);
-					anglerMoveToPos(ANGLER_BELOW_CAP_PICKUP_POS, 70);
+					anglerMoveToPos(ANGLER_BELOW_CAP_PICKUP_POS, 40);
 				}
 				else
 				{
