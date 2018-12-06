@@ -82,6 +82,7 @@ task main()
 
 		else
 		{
+			stopTask(autonomous);
 			startTask(usercontrol);
 
 			// Here we repeat loop waiting for user control to end and (optionally) start
