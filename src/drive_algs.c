@@ -67,7 +67,7 @@ void moveToTarget(float x, float y, byte power, byte startPower, float maxErrX, 
 {
 	float xs = gPosition.x;
 	float ys = gPosition.y;
-	//LOG_AUTO(("Moving to %f %f from %f %f at %d. decelEarly:%f, decelPower:%f, dropEarly:%f", x, y, xs, ys, power, decelEarly, decelPower, dropEarly))
+	LOG_AUTO(("Moving to %f %f from %f %f at %d. decelEarly:%f, decelPower:%f, dropEarly:%f", x, y, xs, ys, power, decelEarly, decelPower, dropEarly))
 
 	gTargetLast.y = y;
 	gTargetLast.x = x;

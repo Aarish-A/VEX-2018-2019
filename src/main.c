@@ -1504,8 +1504,8 @@ bool autoLogs = 1;
 #include "drive_algs.c"
 
 #include "auto_runs.h"
-tAlliance allianceForce = allianceRed;
-tAuto autoForce = autoFront;
+tAlliance allianceForce = allianceBlue;
+tAuto autoForce = autoBack;
 
 #include "auto_runs.c"
 
@@ -1520,6 +1520,7 @@ task autonomous()
 	stopTask(driveStateSet);
 
 	selectAuto(); //selects auto based on potentiometer and gAutoPreloadFlag variable
+	writeDebugStream("%d Auto:%d", nPgmTime, gAuto);
 	runAuto(); //runs auto depending on gAuto and gAlliance
 
 	writeDebugStreamLine("%d AutoT:%d", nPgmTime, (nPgmTime-autoStartTime));
