@@ -2,6 +2,8 @@
 //#define RED_FRONT_Y 12
 //#define RED_BACK_X (115.875 - BACK_OFFSET)
 //#define RED_BACK_Y 12
+
+/* Starting Positions */
 #define RED_FRONT_X 58.75
 #define RED_FRONT_Y BACK_OFFSET
 #define RED_BACK_X 107
@@ -14,6 +16,15 @@
 
 #define BACK_OFFSET (3.875+S_DISTANCE_IN)
 
+
+/* String Constants (displayed on LCD) */
+#define S_ALLIANCE_BLUE "blue"
+#define S_ALLIANCE_RED "red"
+
+#define S_AUTO_FRONT "front"
+#define S_AUTO_BACK "back"
+#define S_AUTO_SKILLS "skills"
+
 typedef enum _tAlliance
 {
 	allianceRed,
@@ -24,7 +35,7 @@ typedef enum _tAuto
 {
 	autoFront,
 	autoBack,
-	skills,
+	autoSkills,
 	kAutoOptionsCount
 } tAuto;
 
@@ -36,8 +47,12 @@ typedef enum _tFlag
 } tFlag;
 
 tAlliance gAlliance = allianceRed;
+string gSAlliance = S_ALLIANCE_RED;
 tAuto gAuto = autoBack;
-tFlag gAutoPreloadFlag = flagTop;
+string gSAuto = S_AUTO_BACK;
+bool gAutoPark = true;
+
+//tFlag gAutoPreloadFlag = flagTop;
 
 void selectAuto(); //selects auto based on potentiometer and gAutoPreloadFlag variable
 void runAuto(); //runs auto depending on gAuto

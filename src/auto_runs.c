@@ -17,6 +17,20 @@ void selectAuto()
 			gAuto = autoVal * kAutoOptionsCount / 2048;
 	}
 
+	switch (gAlliance) //Set Alliance String
+	{
+		case allianceBlue: gSAlliance = S_ALLIANCE_BLUE; break;
+		case allianceRed: gSAlliance = S_ALLIANCE_RED; break;
+		default: gSAlliance = "UD ALLNCE"; break;
+	}
+	switch (gAuto) //Set Auto String
+	{
+		case autoFront: gSAuto = S_AUTO_FRONT; break;
+		case autoBack: gSAuto = S_AUTO_BACK; break;
+		case autoSkills: gSAuto = S_AUTO_SKILLS; break;
+		default: gSAuto = "UD AUTO"; break;
+	}
+
 	//writeDebugStream("	>Run Auto: %d, Alliance: %d, pLFlag: %d", gAuto, gAlliance, gAutoPreloadFlag);
 
 	//if (oldAlliance != gAlliance || selected - gCurAuto != 1 || autoVal % (2048 / AUTO_OPTIONS_COUNT) > 100)
@@ -37,7 +51,7 @@ void runAuto()
 	bool dummyBool = false;
 	unsigned long autoStartTime = nPgmTime;
 
-	if (gAuto == skills)
+	if (gAuto == autoSkills)
 	{
 		resetTracking(gPosition, gVelocity, RED_FRONT_X, RED_FRONT_Y, 0);
 

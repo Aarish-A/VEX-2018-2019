@@ -1505,7 +1505,7 @@ bool autoLogs = 1;
 
 #include "auto_runs.h"
 tAlliance allianceForce = allianceRed;
-tAuto autoForce = skills;
+tAuto autoForce = autoSkills;
 
 #include "auto_runs.c"
 

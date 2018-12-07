@@ -228,19 +228,19 @@ task handleLCD()
       case autoSelect:
       {
       	string auto;
-      	sprintf(auto, "allnce:%d auto: %d", gAlliance, gAuto);
+      	sprintf(auto, "allnce:%s auto: %s", gSAlliance, gSAuto);
       	displayLCDCenteredString(0, auto);
-      	string preloadFlag;
-      	sprintf(preloadFlag, "flag: %d", gAutoPreloadFlag);
-      	displayLCDCenteredString(1, preloadFlag);
+      	string park;
+      	sprintf(park, "park? %d", gAutoPark);
+      	displayLCDCenteredString(1, park);
 
       	selectAuto();
 
-      	if (LCD_M)
-      	{
-      		if (gAutoPreloadFlag == flagTop) gAutoPreloadFlag = flagMid;
-      		else gAutoPreloadFlag = flagTop;
-      	}
+      	if (LCD_M) gAutoPark = !gAutoPark;
+      	//{
+      	//	if (gAutoPark == flagTop) gAutoPreloadFlag = flagMid;
+      	//	else gAutoPreloadFlag = flagTop;
+      	//}
 
       	else if (LCD_R) gLCDScreen++;
       	else if (LCD_L) gLCDScreen--;
