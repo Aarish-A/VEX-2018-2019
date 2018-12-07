@@ -21,14 +21,14 @@ void selectAuto()
 	{
 		case allianceBlue: gSAlliance = S_ALLIANCE_BLUE; break;
 		case allianceRed: gSAlliance = S_ALLIANCE_RED; break;
-		default: gSAlliance = "UD ALLNCE"; break;
+		default: gSAlliance = "U_D"; break;
 	}
 	switch (gAuto) //Set Auto String
 	{
 		case autoFront: gSAuto = S_AUTO_FRONT; break;
 		case autoBack: gSAuto = S_AUTO_BACK; break;
 		case autoSkills: gSAuto = S_AUTO_SKILLS; break;
-		default: gSAuto = "UD AUTO"; break;
+		default: gSAuto = "U_D"; break;
 	}
 
 	//writeDebugStream("	>Run Auto: %d, Alliance: %d, pLFlag: %d", gAuto, gAlliance, gAutoPreloadFlag);
@@ -162,28 +162,31 @@ void runAuto()
 				moveToTarget(11, 15, 127, 40, 3, 12, 30, 0, (stopSoft | stopHarsh), mttProportional);
 				LOG_AUTO(("%d t:%d", nPgmTime-autoStartTime));
 
-				//5 Back up and get on platform
-				moveToTarget(82, 15, -90, -40, 4, 12, -30, 0, (stopSoft | stopHarsh), mttProportional);
-				turnToAngleNewAlg(5,ch,0.35,20,10,true);
-				//turnToTargetAccurate(84, 50, ch, 80, 80, 0);
-				setDrive(90, 90);
-				sleep(400);
-				while (gVelocity.y > 0.1)
+				if (gAutoPark)
 				{
-					//LOG(auto)("%d vel:%f", nPgmTime, gVelocity.y);
-					sleep(10);
+					//5 Back up and get on platform
+					moveToTarget(82, 15, -90, -40, 4, 12, -30, 0, (stopSoft | stopHarsh), mttProportional);
+					turnToAngleNewAlg(5,ch,0.35,20,10,true);
+					//turnToTargetAccurate(84, 50, ch, 80, 80, 0);
+					setDrive(90, 90);
+					sleep(400);
+					while (gVelocity.y > 0.1)
+					{
+						//LOG(auto)("%d vel:%f", nPgmTime, gVelocity.y);
+						sleep(10);
+					}
+					setDrive(-15,-15);
+					sleep(150);
+					setDrive(127,127);
+					sleep(1200);
+					setDrive(0, 0);
+					sleep(0);
+					//moveToTargetDisY(84, 50, 100, 40, 4, 12, 30, 0, (stopSoft|stopHarsh), mttSimple);
+					//moveToTarget(84, 40, 50, 40, 3, 8, 40, 0, (stopSoft | stopHarsh), mttProportional);
 				}
-				setDrive(-15,-15);
-				sleep(150);
-				setDrive(127,127);
-				sleep(1200);
-				setDrive(0, 0);
-				sleep(0);
-				//moveToTargetDisY(84, 50, 100, 40, 4, 12, 30, 0, (stopSoft|stopHarsh), mttSimple);
-				//moveToTarget(84, 40, 50, 40, 3, 8, 40, 0, (stopSoft | stopHarsh), mttProportional);
 
 
-				anglerMoveToPos(ANGLER_CAP_PICKUP_POS, 100);
+				//anglerMoveToPos(ANGLER_CAP_PICKUP_POS, 100);
 				break;
 
 			case autoBack:
@@ -207,23 +210,26 @@ void runAuto()
 				angleShoot(gAnglerBackPFMidFlag, 40, true, MAX_ANGLE_TIME, BTN_SHOOT, dummyBool);
 				angleShoot(gAnglerBackPFTopFlag, 40, true, MAX_ANGLE_TIME, BTN_SHOOT, dummyBool);
 
-				//4 Get on platform
-				moveToTarget(84, 15, 90, 40, 4, 12, 30, 0, (stopSoft | stopHarsh), mttProportional);
-				turnToAngleNewAlg(0,ch,0.35,20,10,true);
-				//turnToTargetAccurate(84, 50, ch, 80, 80, 0);
-				setDrive(90, 90);
-				sleep(400);
-				while (gVelocity.y > 0.1)
+				if (gAutoPark)
 				{
-					//LOG(auto)("%d vel:%f", nPgmTime, gVelocity.y);
-					sleep(10);
+					//4 Get on platform
+					moveToTarget(84, 15, 90, 40, 4, 12, 30, 0, (stopSoft | stopHarsh), mttProportional);
+					turnToAngleNewAlg(0,ch,0.35,20,10,true);
+					//turnToTargetAccurate(84, 50, ch, 80, 80, 0);
+					setDrive(90, 90);
+					sleep(400);
+					while (gVelocity.y > 0.1)
+					{
+						//LOG(auto)("%d vel:%f", nPgmTime, gVelocity.y);
+						sleep(10);
+					}
+					setDrive(-15,-15);
+					sleep(150);
+					setDrive(127,127);
+					sleep(1200);
+					setDrive(0, 0);
+					sleep(0);
 				}
-				setDrive(-15,-15);
-				sleep(150);
-				setDrive(127,127);
-				sleep(1200);
-				setDrive(0, 0);
-				sleep(0);
 
 				break;
 		}
@@ -258,25 +264,28 @@ void runAuto()
 				setShooterState(shooterIdle);
 				anglerMoveToPos(2800, 70);
 				moveToTarget(11, (144-12), 127, 40, 2, 12, 30, 0, (stopSoft | stopHarsh), mttProportional);
-				LOG_AUTO(("%d t:%d", nPgmTime-autoStartTime));
+				LOG_AUTO(("%d t:%d", nPgmTime, nPgmTime-autoStartTime));
 
-				//5 Back up and get on platform
-				moveToTarget(79, (144-12), -90, -40, 4, 12, -30, 0, (stopSoft | stopHarsh), mttProportional);
-				//turnToTargetAccurate(82, (144-50), ch, 80, 80, 0);
-				turnToAngleNewAlg(185,ch,0.35,20,10,true);
-				setDrive(90, 90);
-				sleep(400);
-				while (gVelocity.y < -0.1)
+				if (gAutoPark)
 				{
-					//LOG(auto)("%d vel:%f", nPgmTime, gVelocity.y);
-					sleep(10);
+					//5 Back up and get on platform
+					moveToTarget(79, (144-12), -90, -40, 4, 12, -30, 0, (stopSoft | stopHarsh), mttProportional);
+					//turnToTargetAccurate(82, (144-50), ch, 80, 80, 0);
+					turnToAngleNewAlg(185,ch,0.35,20,10,true);
+					setDrive(90, 90);
+					sleep(400);
+					while (gVelocity.y < -0.1)
+					{
+						//LOG(auto)("%d vel:%f", nPgmTime, gVelocity.y);
+						sleep(10);
+					}
+					setDrive(-15,-15);
+					sleep(150);
+					setDrive(127,127);
+					sleep(1200);
+					setDrive(0, 0);
+					sleep(0);
 				}
-				setDrive(-15,-15);
-				sleep(150);
-				setDrive(127,127);
-				sleep(1200);
-				setDrive(0, 0);
-				sleep(0);
 
 				//resetTracking(gPosition, gVelocity, 62, 3.6+S_DISTANCE_IN, 0);
 				//anglerUnderAxle();
@@ -305,22 +314,26 @@ void runAuto()
 				angleShoot(gAnglerBackPFMidFlag, 40, true, MAX_ANGLE_TIME, BTN_SHOOT, dummyBool);
 				angleShoot(gAnglerBackPFTopFlag, 40, true, MAX_ANGLE_TIME, BTN_SHOOT, dummyBool);
 
-				//4 Get on platform
-				moveToTarget(83, (144-12), 90, 40, 4, 12, 30, 0, (stopSoft | stopHarsh), mttProportional);
-				turnToTargetAccurate(82, (144-50), ch, 80, 80, 0);
-				setDrive(90, 90);
-				sleep(400);
-				while (gVelocity.y < -0.1)
+
+				if (gAutoPark)
 				{
-					//LOG(auto)("%d vel:%f", nPgmTime, gVelocity.y);
-					sleep(10);
+					//4 Get on platform
+					moveToTarget(83, (144-12), 90, 40, 4, 12, 30, 0, (stopSoft | stopHarsh), mttProportional);
+					turnToTargetAccurate(82, (144-50), ch, 80, 80, 0);
+					setDrive(90, 90);
+					sleep(400);
+					while (gVelocity.y < -0.1)
+					{
+						//LOG(auto)("%d vel:%f", nPgmTime, gVelocity.y);
+						sleep(10);
+					}
+					setDrive(-15,-15);
+					sleep(150);
+					setDrive(127,127);
+					sleep(1200);
+					setDrive(0, 0);
+					sleep(0);
 				}
-				setDrive(-15,-15);
-				sleep(150);
-				setDrive(127,127);
-				sleep(1200);
-				setDrive(0, 0);
-				sleep(0);
 
 				//resetTracking(gPosition, gVelocity, 62, 3.6+S_DISTANCE_IN, 0);
 				//anglerUnderAxle();
