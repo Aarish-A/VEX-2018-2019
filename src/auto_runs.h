@@ -24,7 +24,7 @@ typedef enum _tAuto
 {
 	autoFront,
 	autoBack,
-
+	skills,
 	kAutoOptionsCount
 } tAuto;
 

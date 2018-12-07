@@ -632,8 +632,8 @@ int gAnglerMidPFTopFlag = 1570;//1730;
 int gAnglerMidPFMidFlag = 1250;//1310;
 
 //Positions shooting from back of front platform tile
-int gAnglerBackPFTopFlag = 1490;//1410;
-int gAnglerBackPFMidFlag = 1220;//1160;
+int gAnglerBackPFTopFlag = 1580;//1410;
+int gAnglerBackPFMidFlag = 1310;//1160;
 
 int gAnglerPower = 0;
 void setAngler(word val)
@@ -1504,8 +1504,8 @@ bool autoLogs = 1;
 #include "drive_algs.c"
 
 #include "auto_runs.h"
-tAlliance allianceForce = allianceBlue;
-tAuto autoForce = autoBack;
+tAlliance allianceForce = allianceRed;
+tAuto autoForce = skills;
 
 #include "auto_runs.c"
 
