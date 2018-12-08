@@ -1067,7 +1067,7 @@ task shooterStateSet()
 			{
 				LOG_SHOOTER(("%d Shtr rest(rset). ShtCnt:%d. Pos:%d", nPgmTime, gShooterShotCount, SensorValue[shooterEnc]))
 				setShooter(0);
-				sleep(500);
+				sleep(700);
 
 				//LOG_SHOOTER(("%d Rst shtr at -14", nPgmTime))
 				setShooter(-14);
@@ -1159,9 +1159,9 @@ void shooterSafetyCheck()
 		if (gShooterState == shooterReset)
 		{
 			//TODO: REVERT THIS SAFETY BACK TO COMMENTED OUT LINE
-			if (stateElpsdTime > 8000) shooterSafetySet(shooterIdle);
+			if (stateElpsdTime > 10000) shooterSafetySet(shooterIdle);
 			//if (stateElpsdTime > 500) shooterSafetySet(shooterIdle);
-			else if (stateElpsdTime > 100 && senChange > 10) killShooter();
+			//else if (stateElpsdTime > 250 && senChange > 10) killShooter();
 		}
 		else if (gShooterState == shooterReload)
 		{
@@ -1599,7 +1599,7 @@ task usercontrol()
 		else if (gAnglerShooterTaskRunning && (shootBtn && !shootBtnLst))
 		{
 			ANGLER_SHOOTER_TASK_KILL;
-			writeDebugStreamLine("> %d AnglerShooterTask Cncl <", nPgmTime);
+			writeDebugStreamLine("> %d AnglerShooterTask Cancl <", nPgmTime);
 		}
 		else if (!gAnglerShooterTaskRunning)
 		{
@@ -1607,8 +1607,13 @@ task usercontrol()
 			{
 				if (vexRT[BTN_SHIFT])
 				{
+					tHog();
+					stopTask(shooterStateSet);
+					startTask(shooterStateSet);
 					gShooterKilled = false;
+					sleep(50);
 					setShooterState(shooterReset);
+					tRelease();
 					sleep(50);
 					while(gShooterState != shooterHold && gShooterState != shooterIdle) sleep(10);
 				}
