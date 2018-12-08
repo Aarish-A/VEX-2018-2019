@@ -1504,8 +1504,8 @@ bool autoLogs = 1;
 #include "drive_algs.c"
 
 #include "auto_runs.h"
-tAlliance allianceForce = allianceRed; //-1
-tAuto autoForce = autoSkills; //-1
+tAlliance allianceForce = -1;
+tAuto autoForce = -1;
 
 #include "auto_runs.c"
 
