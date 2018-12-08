@@ -1599,7 +1599,7 @@ task usercontrol()
 		else if (gAnglerShooterTaskRunning && (shootBtn && !shootBtnLst))
 		{
 			ANGLER_SHOOTER_TASK_KILL;
-			writeDebugStreamLine("> %d AnglerShooterTask Cncl <", nPgmTime);
+			writeDebugStreamLine("> %d AnglerShooterTask Cancl <", nPgmTime);
 		}
 		else if (!gAnglerShooterTaskRunning)
 		{
@@ -1607,8 +1607,13 @@ task usercontrol()
 			{
 				if (vexRT[BTN_SHIFT])
 				{
+					tHog();
+					stopTask(shooterStateSet);
+					startTask(shooterStateSet);
 					gShooterKilled = false;
+					sleep(50);
 					setShooterState(shooterReset);
+					tRelease();
 					sleep(50);
 					while(gShooterState != shooterHold && gShooterState != shooterIdle) sleep(10);
 				}
