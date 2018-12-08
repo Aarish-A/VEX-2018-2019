@@ -228,7 +228,7 @@ task handleLCD()
       case autoSelect:
       {
       	string auto;
-      	sprintf(auto, "allnce:%s auto: %s", gSAlliance, gSAuto);
+      	sprintf(auto, "a:%s %s", gSAlliance, gSAuto);
       	displayLCDCenteredString(0, auto);
       	string park;
       	sprintf(park, "park? %d", gAutoPark);

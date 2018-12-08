@@ -1,0 +1,212 @@
+2018 Startup Battery: 7742
+Resetting position 0.000000 0.000000 0.000000 | 0.000000 0.000000 0.000000
+2020 Start Track Task
+2020 Start Drive Machine. S:0
+2021 Start Shooter Machine. S:0
+2021 Start Intake Machine. S:0
+2021 Start Decapper Machine. S:0
+2021 Start Angler Machine. S:0
+2070 Shooter State Set 5 shooterReset, dTimeLst:2070ms, Count:0, Sen:0, Targ:43, NextTarg:403
+2071 Shtr rest(rset). ShtCnt:0. Pos:0
+2871 RSTPow:-14, Pos:-17, PosLst:10, Vel: -27.000000, VelLst:-1
+2921 RSTPow:-14, Pos:-20, PosLst:-17, Vel: -3.000000, VelLst:-27
+2971 RSTPow:-14, Pos:-26, PosLst:-20, Vel: -6.000000, VelLst:-3
+3021 RSTPow:-14, Pos:-33, PosLst:-26, Vel: -7.000000, VelLst:-6
+3071 RSTPow:-14, Pos:-40, PosLst:-33, Vel: -7.000000, VelLst:-7
+3121 RSTPow:-14, Pos:-47, PosLst:-40, Vel: -7.000000, VelLst:-7
+3171 RSTPow:-14, Pos:-54, PosLst:-47, Vel: -7.000000, VelLst:-7
+3221 RSTPow:-14, Pos:-60, PosLst:-54, Vel: -6.000000, VelLst:-7
+3271 RSTPow:-14, Pos:-68, PosLst:-60, Vel: -8.000000, VelLst:-6
+3321 RSTPow:-14, Pos:-75, PosLst:-68, Vel: -7.000000, VelLst:-8
+3371 RSTPow:-14, Pos:-82, PosLst:-75, Vel: -7.000000, VelLst:-7
+3421 RSTPow:-14, Pos:-89, PosLst:-82, Vel: -7.000000, VelLst:-7
+3471 RSTPow:-14, Pos:-96, PosLst:-89, Vel: -7.000000, VelLst:-7
+3521 RSTPow:-14, Pos:-103, PosLst:-96, Vel: -7.000000, VelLst:-7
+3571 RSTPow:-14, Pos:-110, PosLst:-103, Vel: -7.000000, VelLst:-7
+3621 RSTPow:-14, Pos:-115, PosLst:-110, Vel: -5.000000, VelLst:-7
+3671 RSTPow:-14, Pos:-118, PosLst:-115, Vel: -3.000000, VelLst:-5
+3721 RSTPow:-14, Pos:-118, PosLst:-118, Vel: 0.000000, VelLst:-3
+3771 RSTPow:-14, Pos:-118, PosLst:-118, Vel: 0.000000, VelLst:0
+3821 Rst Shtr frm -118. Vel:0. VelLst:0
+3871 Shooter State Set 0 shooterIdle, dTimeLst:1801ms, Count:0, Sen:0, Targ:43, NextTarg:403
+
+3880 Start UserControl
+3881 Start Drive Machine. S:0
+3882 Start Shooter Machine. S:0
+3882 Start Intake Machine. S:0
+3882 Start Decapper Machine. S:0
+3883 Start Angler Machine. S:0
+3891 Shooter State Set 2 shooterReload, dTimeLst:20ms, Count:0, Sen:0, Targ:43, NextTarg:403
+ 3892 Cycle usercontrol Took 12 instead of 10
+3892 ShtrReload->idle: Anglr @ axelPos
+3892 Shooter State Set 0 shooterIdle, dTimeLst:1ms, Count:0, Sen:0, Targ:43, NextTarg:403
+
+5181 Start Autonomous
+5183 Start Shooter Machine. S:0
+5183 Start Intake Machine. S:0
+5183 Start Decapper Machine. S:0
+5183 Start Angler Machine. S:0
+5184 Auto:1Resetting position 0.000000 0.000000 0.000000 | 107.000000 10.875000 0.000000
+5185 Start Track Task
+5190 Angler State Set 1 anglerMove. Targ:700, Sen:2928, Time:5190, GoodCount:0. AccRange:20
+Moving to 108.000000 40.000000 from 107.000000 10.875000 at 127. decelEarly:8.000000, decelPower:40.000000, dropEarly:0.000000
+5240 autoShooterReload Task Start
+5600 Shooter State Set 2 shooterReload, dTimeLst:1708ms, Count:0, Sen:0, Targ:43, NextTarg:403
+5963 Angler State Set 2 anglerHold. Targ:700, Sen:711, Time:5963, GoodCount:0. AccRange:20
+6084 Reloaded to 230. Targ: 228
+6084 Shooter State Set 3 shooterHold, dTimeLst:484ms, Count:0, Sen:230, Targ:43, NextTarg:403
+	> 6104 Ball Detected (1996). Shooter:238 Angler:682 (err:18). Vel:0.200000
+6315Done fast -7.927717 < 0.000000?. pow:30, vel:22, sin0.034315, xVel:-0.520288, cos0.999411, yVel:22.213774. a:8.000000, velA:0.007592
+Moved to 108.000000 40.000000 from 107.000000 10.875000 | 106.463013 40.127472 0.000000. velA:-0.555500
+Moving to 107.000000 55.000000 from 106.463013 40.127472 at 40. decelEarly:8.000000, decelPower:40.000000, dropEarly:0.000000
+7479Done fast -7.999958 < 0.000000?. pow:30, vel:14, sin0.036082, xVel:-0.395984, cos0.999349, yVel:14.523948. a:8.000000, velA:0.018980
+Vel y | a: 6.260118 | 0.648076
+Applying harsh stop: -8 0
+Moved to 107.000000 55.000000 from 106.463013 40.127472 | 107.522194 53.697861 1.739920. velA:0.000000
+Moving to 107.000000 40.000000 from 107.522194 53.697861 at -70. decelEarly:12.000000, decelPower:-30.000000, dropEarly:0.000000
+8443Done fast -11.969336 < 0.000000?. pow:-30, vel:9, sin-0.038095, xVel:1.108079, cos-0.999274, yVel:-9.848458. a:12.000000, velA:0.007592
+Moved to 107.000000 40.000000 from 107.522194 53.697861 | 107.189774 39.822590 -0.217490. velA:-0.185167
+9286 Angler State Set 1 anglerMove. Targ:1410, Sen:698, Time:9286, GoodCount:0. AccRange:70
+Moving to 107.000000 16.000000 from 107.189774 39.822590 at -127. decelEarly:12.000000, decelPower:-30.000000, dropEarly:0.000000
+9524 Angler State Set 2 anglerHold. Targ:1410, Sen:1224, Time:9524, GoodCount:0. AccRange:70
+10090Done fast -11.877357 < 0.000000?. pow:-30, vel:19, sin-0.007966, xVel:1.604171, cos-0.999968, yVel:-19.055231. a:12.000000, velA:-0.022775
+Vel y | a: -14.172334 | -0.090379
+Applying harsh stop: 10 9
+Moved to 107.000000 16.000000 from 107.189774 39.822590 | 107.475067 15.244560 -1.304940. velA:0.277750
+Turning to 16.000000 11.000000
+-1.559170
+11086 turn fast done(106.938477,15.658078) -0.155632 targ:-89.795799, err:-80.878716 vel:-2.592331
+12379 turn slow done(105.887169,15.025434) -1.469019 targ:-89.428215, err:-5.259649 vel:-0.903788
+12530 turn break done(105.871735,14.998266) -1.556325 targ:-89.428215, err:-0.257375 vel:-0.180758
+Turned to 16.000000 11.000000 | 14.998266 105.871735 -89.170837
+12531 Shooter State Set 2 shooterReload, dTimeLst:6447ms, Count:0, Sen:248, Targ:43, NextTarg:403
+12531 Angler State Set 1 anglerMove. Targ:1310, Sen:1381, Time:12531, GoodCount:0. AccRange:40
+12535 Reloaded to 248. Targ: 228
+12535 Shooter State Set 3 shooterHold, dTimeLst:4ms, Count:0, Sen:248, Targ:43, NextTarg:403
+	>> 12543 Reload took:12ms.
+ >> 12543 waitTimeAbs = 500, waitTimeRel = 13031
+12554 Angler State Set 2 anglerHold. Targ:1310, Sen:1380, Time:12554, GoodCount:0. AccRange:40
+	>> 13033 AnglerWait took 502ms. Pos: 1324
+13033 Shooter State Set 4 shooterShoot, dTimeLst:498ms, Count:0, Sen:248, Targ:43, NextTarg:403
+	> 13526 Ball Off (3076). Shooter:412 Angler:1305 (err:5). Vel:0.200000
+13536 ShotBrake: TElpsd:500 Pos:410 
+  > 13536 BALL HIT. Angler pos:1308 pow:6. Err:2
+13616 Shooter State Set 2 shooterReload, dTimeLst:583ms, Count:1, Sen:429, Targ:403, NextTarg:763
+	>> 13623 Sht+Angl t:1092ms. Shot t:590ms
+13623 Angler State Set 1 anglerMove. Targ:1580, Sen:1300, Time:13623, GoodCount:0. AccRange:40
+13644 Angler State Set 2 anglerHold. Targ:1580, Sen:1301, Time:13644, GoodCount:0. AccRange:40
+13976 Reloaded to 588. Targ: 588
+13976 Shooter State Set 3 shooterHold, dTimeLst:360ms, Count:1, Sen:588, Targ:403, NextTarg:763
+	>> 13983 Reload took:360ms.
+ >> 13983 waitTimeAbs = 500, waitTimeRel = 14123
+	> 13996 Ball Detected (1846). Shooter:597 Angler:1549 (err:31). Vel:0.400000
+	>> 14123 AnglerWait took 500ms. Pos: 1568
+14123 Shooter State Set 4 shooterShoot, dTimeLst:147ms, Count:1, Sen:606, Targ:403, NextTarg:763
+14616 ShotBrake: TElpsd:490 Pos:773 
+  > 14616 BALL HIT. Angler pos:1577 pow:0. Err:3
+	> 14616 Ball Off (3079). Shooter:773 Angler:1577 (err:3). Vel:1.100000
+14696 Shooter State Set 2 shooterReload, dTimeLst:573ms, Count:2, Sen:784, Targ:763, NextTarg:1123
+	>> 14703 Sht+Angl t:1080ms. Shot t:580ms
+Moving to 84.000000 15.000000 from 105.992722 14.973011 at 90. decelEarly:12.000000, decelPower:30.000000, dropEarly:0.000000
+15066 Reloaded to 948. Targ: 948
+15066 Shooter State Set 3 shooterHold, dTimeLst:370ms, Count:2, Sen:948, Targ:763, NextTarg:1123
+15519Done fast -11.970098 < 0.000000?. pow:30, vel:17, sin-0.999999, xVel:-17.070951, cos0.001227, yVel:-0.159014. a:12.000000, velA:-1.552529
+Vel y | a: 4.146262 | 0.000006
+Applying harsh stop: -7 -7
+Moved to 84.000000 15.000000 from 105.992722 14.973011 | 84.201149 15.385613 -89.388306. velA:-0.092585
+Turned to 0.000000 | 16.974464 87.070129 8.699582
+18865 AutoT:13684
+
+48591 Start Autonomous
+48592 Shooter State Set 0 shooterIdle, dTimeLst:33526ms, Count:2, Sen:825, Targ:763, NextTarg:1123
+48592 Start Shooter Machine. S:0
+48593 Start Intake Machine. S:0
+48593 Start Decapper Machine. S:0
+48593 Angler State Set 0 anglerIdle. Targ:1580, Sen:1559, Time:48593, GoodCount:231. AccRange:25
+48594 Start Angler Machine. S:0
+48594 Auto:2 >> 48594 Auto Skills
+Resetting position 87.862785 16.675776 19.791571 | 58.750000 10.875000 0.000000
+48595 Start Track Task
+48601 Angler State Set 1 anglerMove. Targ:700, Sen:1560, Time:48601, GoodCount:0. AccRange:20
+Moving to 59.000000 40.000000 from 58.750000 10.875000 at 127. decelEarly:8.000000, decelPower:40.000000, dropEarly:0.000000
+48651 autoShooterReload Task Start
+48651 Shooter State Set 2 shooterReload, dTimeLst:59ms, Count:2, Sen:825, Targ:763, NextTarg:1123
+
+48668 Start UserControl
+48670 Start Drive Machine. S:0
+48670 Shooter State Set 0 shooterIdle, dTimeLst:19ms, Count:2, Sen:825, Targ:763, NextTarg:1123
+48670 Start Shooter Machine. S:0
+48670 Start Intake Machine. S:0
+48671 Start Decapper Machine. S:0
+48671 Angler State Set 0 anglerIdle. Targ:700, Sen:1522, Time:48671, GoodCount:0. AccRange:25
+48671 Start Angler Machine. S:0
+48679 Shooter State Set 2 shooterReload, dTimeLst:9ms, Count:2, Sen:825, Targ:763, NextTarg:1123
+ 48679 Cycle usercontrol Took 11 instead of 10
+48990 Reloaded to 950. Targ: 948
+48990 Shooter State Set 3 shooterHold, dTimeLst:311ms, Count:2, Sen:950, Targ:763, NextTarg:1123
+
+90127 Start Autonomous
+90128 Shooter State Set 0 shooterIdle, dTimeLst:41138ms, Count:2, Sen:964, Targ:763, NextTarg:1123
+90128 Start Shooter Machine. S:0
+90129 Start Intake Machine. S:0
+90129 Start Decapper Machine. S:0
+90129 Start Angler Machine. S:0
+90130 Auto:0Resetting position 79.042999 11.520097 344.123260 | 58.750000 10.875000 0.000000
+90130 Start Track Task
+90136 Angler State Set 1 anglerMove. Targ:700, Sen:911, Time:90136, GoodCount:0. AccRange:20
+Moving to 59.000000 40.000000 from 58.750000 10.875000 at 127. decelEarly:8.000000, decelPower:40.000000, dropEarly:0.000000
+90186 autoShooterReload Task Start
+90186 Shooter State Set 2 shooterReload, dTimeLst:58ms, Count:2, Sen:964, Targ:763, NextTarg:1123
+90190 Reloaded to 964. Targ: 948
+90190 Shooter State Set 3 shooterHold, dTimeLst:4ms, Count:2, Sen:964, Targ:763, NextTarg:1123
+91250Done fast -7.934330 < 0.000000?. pow:30, vel:22, sin0.008583, xVel:0.074712, cos0.999963, yVel:22.508715. a:8.000000, velA:0.003796
+91600 Angler State Set 2 anglerHold. Targ:700, Sen:773, Time:91600, GoodCount:0. AccRange:20
+Moved to 59.000000 40.000000 from 58.750000 10.875000 | 58.704868 40.078846 0.434980. velA:-0.370333
+Moving to 59.000000 55.000000 from 58.704868 40.078846 at 40. decelEarly:8.000000, decelPower:40.000000, dropEarly:0.000000
+92344Done fast -7.911441 < 0.000000?. pow:30, vel:15, sin0.019776, xVel:-1.525507, cos0.999804, yVel:15.154490. a:8.000000, velA:0.022775
+Vel y | a: 3.288247 | 0.462924
+Applying harsh stop: -7 0
+Moved to 59.000000 55.000000 from 58.704868 40.078846 | 59.809837 53.739697 2.392373. velA:0.090386
+Moving to 59.000000 40.000000 from 59.809837 53.739697 at -70. decelEarly:12.000000, decelPower:-30.000000, dropEarly:0.000000
+93308Done fast -11.924858 < 0.000000?. pow:-30, vel:10, sin-0.058839, xVel:0.439993, cos-0.998267, yVel:-10.377931. a:12.000000, velA:0.018980
+Moved to 59.000000 40.000000 from 59.809837 53.739697 | 59.369537 39.857147 0.434980. velA:0.092583
+94139 Angler State Set 1 anglerMove. Targ:1410, Sen:713, Time:94139, GoodCount:0. AccRange:70
+Moving to 59.000000 16.000000 from 59.369537 39.857147 at -127. decelEarly:12.000000, decelPower:-30.000000, dropEarly:0.000000
+94350 Angler State Set 2 anglerHold. Targ:1410, Sen:1215, Time:94350, GoodCount:0. AccRange:70
+94951Done fast -11.894629 < 0.000000?. pow:-30, vel:18, sin-0.015488, xVel:2.046166, cos-0.999880, yVel:-18.938948. a:12.000000, velA:-0.007592
+	> 95254 Ball Detected (1846). Shooter:964 Angler:1379 (err:31). Vel:0.100000
+Vel y | a: -13.334394 | -0.277750
+Applying harsh stop: 11 7
+Moved to 59.000000 16.000000 from 59.369537 39.857147 | 59.402958 15.172980 -0.869960. velA:0.092583
+Turned to -90.000000 | 15.018773 57.920170 -91.998207
+96416 Shooter State Set 2 shooterReload, dTimeLst:6226ms, Count:2, Sen:964, Targ:763, NextTarg:1123
+96417 Angler State Set 1 anglerMove. Targ:1410, Sen:1387, Time:96417, GoodCount:0. AccRange:70
+96425 Reloaded to 964. Targ: 948
+96425 Shooter State Set 3 shooterHold, dTimeLst:9ms, Count:2, Sen:964, Targ:763, NextTarg:1123
+	>> 96427 Reload took:11ms.
+96427 Shooter State Set 4 shooterShoot, dTimeLst:2ms, Count:2, Sen:964, Targ:763, NextTarg:1123
+96441 Angler State Set 2 anglerHold. Targ:1410, Sen:1386, Time:96441, GoodCount:0. AccRange:70
+	> 96924 Ball Off (2861). Shooter:1130 Angler:1377 (err:33). Vel:0.300000
+96925 ShotBrake: TElpsd:490 Pos:1130 
+  > 96925 BALL HIT. Angler pos:1378 pow:9. Err:32
+97005 Shooter State Set 2 shooterReload, dTimeLst:578ms, Count:3, Sen:1142, Targ:1123, NextTarg:1483
+	>> 97008 Sht+Angl t:592ms. Shot t:581ms
+97008 Angler State Set 1 anglerMove. Targ:1840, Sen:1374, Time:97008, GoodCount:0. AccRange:70
+97171 Angler State Set 2 anglerHold. Targ:1840, Sen:1652, Time:97171, GoodCount:0. AccRange:70
+97375 Reloaded to 1308. Targ: 1308
+97375 Shooter State Set 3 shooterHold, dTimeLst:370ms, Count:3, Sen:1308, Targ:1123, NextTarg:1483
+	>> 97378 Reload took:370ms.
+ >> 97378 waitTimeAbs = 200, waitTimeRel = 97208
+	>> 97378 AnglerWait took 370ms. Pos: 1773
+97378 Shooter State Set 4 shooterShoot, dTimeLst:3ms, Count:3, Sen:1309, Targ:1123, NextTarg:1483
+	> 97414 Ball Detected (1921). Shooter:1326 Angler:1801 (err:39). Vel:0.400000
+	> 97854 Ball Off (3070). Shooter:1490 Angler:1800 (err:40). Vel:0.000000
+97855 ShotBrake: TElpsd:470 Pos:1490 
+  > 97855 BALL HIT. Angler pos:1798 pow:3. Err:42
+97935 Shooter State Set 2 shooterReload, dTimeLst:557ms, Count:4, Sen:1495, Targ:1483, NextTarg:1843
+	>> 97938 Sht+Angl t:930ms. Shot t:560ms
+97938 Shooter State Set 0 shooterIdle, dTimeLst:3ms, Count:4, Sen:1495, Targ:1483, NextTarg:1843
+97938 Angler State Set 1 anglerMove. Targ:2800, Sen:1803, Time:97938, GoodCount:0. AccRange:70
+Moving to 11.000000 15.000000 from 58.066837 14.995157 at 127. decelEarly:12.000000, decelPower:30.000000, dropEarly:0.000000
+98341 Angler State Set 2 anglerHold. Targ:2800, Sen:2725, Time:98341, GoodCount:0. AccRange:70
+99066Done fast -11.946500 < 0.000000?. pow:30, vel:33, sin-1.000000, xVel:-33.456245, cos0.000103, yVel:-3.081112. a:12.000000, velA:-1.506978

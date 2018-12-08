@@ -341,7 +341,7 @@ void turnToAngleNewAlg(float a, tAutoTurnDir turnDir, float fullRatio, byte coas
 		setDrive(0, 0);
 		break;
 	}
-	////LOG(auto)("Turned to %f | %f %f %f", radToDeg(a), gPosition.y, gPosition.x, radToDeg(gPosition.a));
+	LOG(auto)("Turned to %f | %f %f %f", radToDeg(a), gPosition.y, gPosition.x, radToDeg(gPosition.a));
 }
 
 void turnToTargetSide(float x, float y, word big, word small, float stopOffset, bool harshStop)
@@ -786,5 +786,5 @@ void turnToTargetNewAlg(float x, float y, tAutoTurnDir turnDir, float fullRatio,
 		break;
 	}
 
-	//LOG(auto)("Turned to %f %f ATarg:%f Err:%f| %f %f %f. T:%d", y, x, radToDeg(target), radToDeg(target-gPosition.a), gPosition.y, gPosition.x, radToDeg(gPosition.a), (nPgmTime-startTime));
+	LOG(auto)("Turned to %f %f ATarg:%f Err:%f| %f %f %f. T:%d", y, x, radToDeg(target), radToDeg(target-gPosition.a), gPosition.y, gPosition.x, radToDeg(gPosition.a), (nPgmTime-startTime));
 }

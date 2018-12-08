@@ -106,7 +106,7 @@ unsigned long gAnglerShooterTaskTime = 0;
 int gShootTuneMode = false;
 
 int gShooterShotCount = 0;
-#define RESET_OFFSET 43//45 //40
+#define RESET_OFFSET 45//43//40
 #define SHOOTER_GEAR_RATIO 1.0
 #define SHOOTER_RELOAD_HOLD 11
 #define SHOOTER_SHOOT_POS ((gShooterShotCount*360.0*SHOOTER_GEAR_RATIO) + RESET_OFFSET)
@@ -1504,8 +1504,8 @@ bool autoLogs = 1;
 #include "drive_algs.c"
 
 #include "auto_runs.h"
-tAlliance allianceForce = allianceRed;
-tAuto autoForce = autoSkills;
+tAlliance allianceForce = allianceRed; //-1
+tAuto autoForce = autoSkills; //-1
 
 #include "auto_runs.c"
 

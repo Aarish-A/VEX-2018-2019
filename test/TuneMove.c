@@ -38,7 +38,7 @@ bool anglerAlgLogs = false;
 
 #define AUTO_LOGS 1
 
-#include "log_toggle.h"
+#include "../src/log_toggle.h"
 
 #define LOG(machineIn) if(machineIn##Logs) writeDebugStreamLine
 
@@ -104,7 +104,23 @@ task main()
 	writeDebugStreamLine("%d battery:%d", nPgmTime, gBatteryLevel);
 	setupMotors();
 	resetTracking(gPosition, gVelocity, 20, 0, 0);
-
+	sleep(100);
+	setDrive(-60,-15);
+	LOG_AUTO(("%d motor:%d", nPgmTime, gMotor[driveL].powerCur));
+	sleep(350);
+	do{
+		LOG_AUTO(("%d vel:%f", nPgmTime, gVelocity.a));
+		sleep(10);
+	}while(gVelocity.a < -0.05);
+	setDrive(0,0);
+	setDrive(-15,-60);
+	LOG_AUTO(("%d motor:%d", nPgmTime, gMotor[driveL].powerCur));
+	sleep(350);
+	do{
+		LOG_AUTO(("%d vel:%f", nPgmTime, gVelocity.a));
+		sleep(10);
+	}while(gVelocity.a > 0.05);
+	setDrive(-16,-16);
 	//Set up turn state structure variables for the internal turnAccurate algorithms
 	//sTurnState state;
 	//state.time = nPgmTime;
@@ -125,7 +141,7 @@ task main()
 	//			turnAccurateInternalCcw(-90, state);
 	//		}
 
-	turnToTargetAccurate(40, 0, ch, 80, 80, 0);
+	//turnToTargetAccurate(40, 0, ch, 80, 80, 0);
 	//turnToTargetP(10, 0, 35, 10, true, 60);
 
 }
