@@ -614,7 +614,7 @@ void decapperControls()
 #define ANGLER_AXEL_POS (ANGLER_TOP_POS-2000)
 
 #define ANGLER_GROUND_PICKUP_POS 900
-#define ANGLER_BELOW_CAP_PICKUP_POS 700
+#define ANGLER_BELOW_CAP_PICKUP_POS 680
 #define ANGLER_CAP_PICKUP_POS 1570
 #define ANGLER_LOW_PF_PICKUP_POS 1470
 
@@ -622,18 +622,18 @@ void decapperControls()
 
 #define ANGLER_CAP_FLIP_POS 820
 
-int gAnglerBackTopFlag = 1510; //1430; //1390; //1490
-int gAnglerBackMidFlag = 1280; //1235; //1175; //1270
+int gAnglerBackTopFlag = 1590; //1430; //1390; //1490
+int gAnglerBackMidFlag = 1340; //1235; //1175; //1270
 
-int gAnglerFrontPFTopFlag = 1840;//1790;//1730;
-int gAnglerFrontPFMidFlag = 1410;//1310;
+int gAnglerFrontPFTopFlag = 1885;//1790;//1730;
+int gAnglerFrontPFMidFlag = 1460;//1310;
 
 int gAnglerMidPFTopFlag = 1570;//1730;
 int gAnglerMidPFMidFlag = 1250;//1310;
 
 //Positions shooting from back of front platform tile
-int gAnglerBackPFTopFlag = 1580;//1410;
-int gAnglerBackPFMidFlag = 1310;//1160;
+int gAnglerBackPFTopFlag = 1630;//1410;
+int gAnglerBackPFMidFlag = 1370;//1160;
 
 int gAnglerPower = 0;
 void setAngler(word val)
@@ -1504,8 +1504,8 @@ bool autoLogs = 1;
 #include "drive_algs.c"
 
 #include "auto_runs.h"
-tAlliance allianceForce = -1;
-tAuto autoForce = -1;
+tAlliance allianceForce = -1;//allianceRed;///-1;
+tAuto autoForce = -1;//autoSkills;//-1;
 
 #include "auto_runs.c"
 
