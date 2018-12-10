@@ -103,24 +103,32 @@ task main()
 	gBatteryLevel = nImmediateBatteryLevel;
 	writeDebugStreamLine("%d battery:%d", nPgmTime, gBatteryLevel);
 	setupMotors();
-	resetTracking(gPosition, gVelocity, 20, 0, 0);
+	resetTracking(gPosition, gVelocity, (144-BACK_OFFSET), 14, -90);
 	sleep(100);
-	setDrive(-60,-15);
-	LOG_AUTO(("%d motor:%d", nPgmTime, gMotor[driveL].powerCur));
-	sleep(350);
-	do{
-		LOG_AUTO(("%d vel:%f", nPgmTime, gVelocity.a));
-		sleep(10);
-	}while(gVelocity.a < -0.05);
-	setDrive(0,0);
-	setDrive(-15,-60);
-	LOG_AUTO(("%d motor:%d", nPgmTime, gMotor[driveL].powerCur));
-	sleep(350);
-	do{
-		LOG_AUTO(("%d vel:%f", nPgmTime, gVelocity.a));
-		sleep(10);
-	}while(gVelocity.a > 0.05);
-	setDrive(-16,-16);
+
+	//turnToAngleAccurate((23-90), cw, 70, -15, 0);
+
+	turnToTargetAccurate(10, 63, ch, 80, 80, 0);
+
+	// reset
+	//setDrive(-60,-15);
+	//LOG_AUTO(("%d motor:%d", nPgmTime, gMotor[driveL].powerCur));
+	//sleep(350);
+	//do{
+	//	LOG_AUTO(("%d vel:%f", nPgmTime, gVelocity.a));
+	//	sleep(10);
+	//}while(gVelocity.a < -0.05);
+	//setDrive(0,0);
+	//setDrive(-15,-60);
+	//LOG_AUTO(("%d motor:%d", nPgmTime, gMotor[driveL].powerCur));
+	//sleep(350);
+	//do{
+	//	LOG_AUTO(("%d vel:%f", nPgmTime, gVelocity.a));
+	//	sleep(10);
+	//}while(gVelocity.a > 0.05);
+	//setDrive(-16,-16);
+
+
 	//Set up turn state structure variables for the internal turnAccurate algorithms
 	//sTurnState state;
 	//state.time = nPgmTime;

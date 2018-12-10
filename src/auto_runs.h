@@ -36,7 +36,10 @@ typedef enum _tAuto
 	autoFront,
 	autoBack,
 	autoSkills,
-	kAutoOptionsCount
+
+	kAutoOptionsCount,
+
+	autoTest
 } tAuto;
 
 typedef enum _tFlag

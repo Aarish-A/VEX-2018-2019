@@ -51,7 +51,14 @@ void runAuto()
 	bool dummyBool = false;
 	unsigned long autoStartTime = nPgmTime;
 
-	if (gAuto == autoSkills)
+	if (gAuto == autoTest)
+	{
+		resetTracking(gPosition, gVelocity, RED_FRONT_X, RED_FRONT_Y, 0);
+		resetPositionFull(gPosition, RED_FRONT_X, RED_FRONT_Y, 0);
+
+		//turnToTargetAccurate();
+	}
+	else if (gAuto == autoSkills)
 	{
 		writeDebugStreamLine(" >> %d Auto Skills" ,nPgmTime);
 		resetTracking(gPosition, gVelocity, RED_FRONT_X, RED_FRONT_Y, 0);
