@@ -1589,8 +1589,8 @@ task usercontrol()
 	while (true)
 	{
 		/* Drive Controls */
-		gDriveThrottleRaw = (!gAnglerShooterTaskRunning)? vexRT[JOY_DRIVE_THROTTLE] : vexRT[JOY_ANGLER];
-		gDriveTurnRaw = (!gAnglerShooterTaskRunning)? vexRT[JOY_DRIVE_TURN] : (vexRT[JOY_DECAPPER]);
+		gDriveThrottleRaw = vexRT[JOY_DRIVE_THROTTLE];
+		gDriveTurnRaw = vexRT[JOY_DRIVE_TURN];
 		if ( ((abs(gDriveTurnRaw) > DRIVE_TURN_DZ) || (abs(gDriveThrottleRaw) > DRIVE_THROTTLE_DZ)) && gDriveState != driveMoveTime) setDriveState(driveManual);
 
 		/* Intake Controls */
