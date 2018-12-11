@@ -14,9 +14,6 @@
 #define BLUE_BACK_X 107
 #define BLUE_BACK_Y (144-BACK_OFFSET)
 
-#define BACK_OFFSET (3.875+S_DISTANCE_IN)
-
-
 /* String Constants (displayed on LCD) */
 #define S_ALLIANCE_BLUE "blue"
 #define S_ALLIANCE_RED "red"

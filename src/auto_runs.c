@@ -48,7 +48,7 @@ task autoShooterReload()
 
 void runAuto()
 {
-	bool dummyBool = false;
+	sNextShot dummyNextShot;
 	unsigned long autoStartTime = nPgmTime;
 
 	if (gAuto == autoTest)
@@ -77,8 +77,8 @@ void runAuto()
 
 		//3 Turn and shoot
 		turnToTargetAccurate(11, 16, ch, 80, 80, 0);
-		angleShoot(gAnglerFrontPFMidFlag, 70, false, MAX_ANGLE_TIME_FRONT, BTN_SHOOT, dummyBool);
-		angleShoot(gAnglerFrontPFTopFlag, 70, true, MAX_ANGLE_TIME_FRONT, BTN_SHOOT, dummyBool);
+		angleShoot(gAnglerFrontPFMidFlag, 70, false, MAX_ANGLE_TIME_FRONT, BTN_SHOOT, dummyNextShot);
+		angleShoot(gAnglerFrontPFTopFlag, 70, true, MAX_ANGLE_TIME_FRONT, BTN_SHOOT, dummyNextShot);
 
 		//4 Toggle low flag
 		setIntakeState(intakeIdle);
@@ -128,9 +128,9 @@ void runAuto()
 		//7 Shoot mid flags (top + mid)
 		sleep(1500);
 		setIntakeState(intakeIdle);
-		angleShoot(gAnglerFrontPFMidFlag, 70, true, MAX_ANGLE_TIME_FRONT, BTN_SHOOT, dummyBool);
+		angleShoot(gAnglerFrontPFMidFlag, 70, true, MAX_ANGLE_TIME_FRONT, BTN_SHOOT, dummyNextShot);
 		//turnToTargetAccurate(12,65,ch,80,80,0);
-		angleShoot(gAnglerFrontPFTopFlag+250, 70, true, MAX_ANGLE_TIME, BTN_SHOOT, dummyBool);
+		angleShoot(gAnglerFrontPFTopFlag+250, 70, true, MAX_ANGLE_TIME, BTN_SHOOT, dummyNextShot);
 		sleep(250);
 
 		//8 Back up and flip cap
@@ -195,8 +195,8 @@ void runAuto()
 
 		//3 Turn and shoot
 		turnToTargetAccurate(11, 16, ch, 80, 80, 0);
-		angleShoot(gAnglerFrontPFMidFlag, 70, false, MAX_ANGLE_TIME_FRONT, BTN_SHOOT, dummyBool);
-		angleShoot(gAnglerFrontPFTopFlag, 70, true, MAX_ANGLE_TIME_FRONT, BTN_SHOOT, dummyBool);
+		angleShoot(gAnglerFrontPFMidFlag, 70, false, MAX_ANGLE_TIME_FRONT, BTN_SHOOT, dummyNextShot);
+		angleShoot(gAnglerFrontPFTopFlag, 70, true, MAX_ANGLE_TIME_FRONT, BTN_SHOOT, dummyNextShot);
 
 		//4 Toggle low flag
 		setIntakeState(intakeIdle);
@@ -250,8 +250,8 @@ void runAuto()
 				//3 Turn and shoot
 				//turnToAngleNewAlg(-90,ch,0.35,20,10,true);
 				turnToTargetAccurate(11, 16, ch, 80, 80, 0);
-				angleShoot(gAnglerBackPFMidFlag, 40, true, MAX_ANGLE_TIME, BTN_SHOOT, dummyBool);
-				angleShoot(gAnglerBackPFTopFlag, 40, true, MAX_ANGLE_TIME, BTN_SHOOT, dummyBool);
+				angleShoot(gAnglerBackPFMidFlag, 40, true, MAX_ANGLE_TIME, BTN_SHOOT, dummyNextShot);
+				angleShoot(gAnglerBackPFTopFlag, 40, true, MAX_ANGLE_TIME, BTN_SHOOT, dummyNextShot);
 
 				if (gAutoPark)
 				{
@@ -299,8 +299,8 @@ void runAuto()
 				//3 Turn and shoot
 				//turnToAngleNewAlg(-91,ch,0.35,20,10,true);
 				turnToTargetAccurate(11, (144-16), ch, 80, 80, 0);
-				angleShoot(gAnglerFrontPFMidFlag, 70, false, MAX_ANGLE_TIME_FRONT, BTN_SHOOT, dummyBool);
-				angleShoot(gAnglerFrontPFTopFlag, 70, true, MAX_ANGLE_TIME_FRONT, BTN_SHOOT, dummyBool);
+				angleShoot(gAnglerFrontPFMidFlag, 70, false, MAX_ANGLE_TIME_FRONT, BTN_SHOOT, dummyNextShot);
+				angleShoot(gAnglerFrontPFTopFlag, 70, true, MAX_ANGLE_TIME_FRONT, BTN_SHOOT, dummyNextShot);
 
 				//4 Toggle low flag
 				setIntakeState(intakeIdle);
@@ -333,7 +333,7 @@ void runAuto()
 				//resetTracking(gPosition, gVelocity, 62, 3.6+S_DISTANCE_IN, 0);
 				//anglerUnderAxle();
 				//angleShoot(gAutoPreloadFlag == flagTop? gAnglerFrontPFTopFlag : gAnglerFrontPFMidFlag,
-				//	70, false, MAX_ANGLE_TIME_FRONT, BTN_SHOOT, dummyBool);
+				//	70, false, MAX_ANGLE_TIME_FRONT, BTN_SHOOT, dummyNextShot);
 				//anglerMoveToPos(ANGLER_CAP_PICKUP_POS, 100);
 				break;
 
@@ -354,8 +354,8 @@ void runAuto()
 
 				//3 Turn and shoot
 				turnToTargetAccurate(11, (144-16), ch, 80, 80, 0);
-				angleShoot(gAnglerBackPFMidFlag, 40, true, MAX_ANGLE_TIME, BTN_SHOOT, dummyBool);
-				angleShoot(gAnglerBackPFTopFlag, 40, true, MAX_ANGLE_TIME, BTN_SHOOT, dummyBool);
+				angleShoot(gAnglerBackPFMidFlag, 40, true, MAX_ANGLE_TIME, BTN_SHOOT, dummyNextShot);
+				angleShoot(gAnglerBackPFTopFlag, 40, true, MAX_ANGLE_TIME, BTN_SHOOT, dummyNextShot);
 
 
 				if (gAutoPark)
@@ -381,7 +381,7 @@ void runAuto()
 				//resetTracking(gPosition, gVelocity, 62, 3.6+S_DISTANCE_IN, 0);
 				//anglerUnderAxle();
 				//angleShoot(gAutoPreloadFlag == flagTop? gAnglerBackPFTopFlag : gAnglerBackPFMidFlag,
-				//	40, false, MAX_ANGLE_TIME, BTN_SHOOT, dummyBool);
+				//	40, false, MAX_ANGLE_TIME, BTN_SHOOT, dummyNextShot);
 				//anglerMoveToPos(ANGLER_CAP_PICKUP_POS, 100);
 				break;
 		}

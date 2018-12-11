@@ -145,6 +145,10 @@ void setDrive(word left, word right)
 	setMotor(driveRY, right);
 }
 
+//Auto Drive Algs
+#include "drive_algs.h"
+#include "drive_algs.c"
+
 typedef enum _tDriveState
 {
 	driveIdle,
@@ -1221,7 +1225,40 @@ void anglerReachedAlert(int targ)
 	if (abs(SensorValue[anglerPoti]-targ) > 30) playTone(fStart, 15); //Play third tone if out of range
 }
 
-void angleShoot(int pos, int acceptableRange, bool waitForShot, int angleTime, TVexJoysticks btn, bool& btnReleased)
+typedef struct _sNextShot
+{
+	bool backShot;
+	bool btnReleased;
+	int anglerPos;
+	int yTarg;
+} sNextShot;
+
+void setNextShot(sNextShot& nextShot, TVexJoysticks btn)
+{
+	if (RISING(BTN_FLAG_LT))
+	{
+		nextShot.anglerPos = nextShot.backShot? gAnglerBackTopFlag : gAnglerFrontPFTopFlag;
+		nextShot.yTarg = -35;
+	}
+	else if (RISING(BTN_FLAG_LM))
+	{
+		nextShot.anglerPos = nextShot.backShot? gAnglerBackMidFlag : gAnglerFrontPFMidFlag;
+		nextShot.yTarg = -35;
+	}
+	else if (RISING(BTN_FLAG_RT))
+	{
+		nextShot.anglerPos = nextShot.backShot? gAnglerBackTopFlag : gAnglerFrontPFTopFlag;
+		nextShot.yTarg = 63;
+	}
+	else if (RISING(BTN_FLAG_RM))
+	{
+		nextShot.anglerPos = nextShot.backShot? gAnglerBackMidFlag : gAnglerFrontPFMidFlag;
+		nextShot.yTarg = 63;
+	}
+	else if (!vexRT[btn]) nextShot.btnReleased = true;
+}
+
+void angleShoot(int pos, int acceptableRange, bool waitForShot, int angleTime, TVexJoysticks btn, sNextShot& nextShot)
 {
 	unsigned long startTime = nPgmTime;
 	int startShotCount = gShooterShotCount;
@@ -1233,7 +1270,7 @@ void angleShoot(int pos, int acceptableRange, bool waitForShot, int angleTime, T
 	//Move shooter once it's in hold (protects from reload state overwriting our state-change-request)
 	while (gShooterState != shooterHold)
 	{
-		if (!vexRT[btn]) btnReleased = true;
+		setNextShot(nextShot, btn);
 		sleep(10);
 	}
 	LOG_MACRO(("	>> %d Reload took:%dms.", nPgmTime, (nPgmTime-startTime)))
@@ -1249,7 +1286,7 @@ void angleShoot(int pos, int acceptableRange, bool waitForShot, int angleTime, T
 		LOG_MACRO((" >> %d waitTimeAbs = %d, waitTimeRel = %d", nPgmTime, waitTimeAbs, waitTimeRel))
 		while(nPgmTime < waitTimeRel)
 		{
-			if (!vexRT[btn]) btnReleased = true;
+			setNextShot(nextShot, btn);
 			sleep(10);
 		}
 		LOG_MACRO(("	>> %d AnglerWait took %dms. Pos: %d", nPgmTime, (nPgmTime-startTime), SensorValue[anglerPoti]))
@@ -1262,7 +1299,7 @@ void angleShoot(int pos, int acceptableRange, bool waitForShot, int angleTime, T
 
 	while (gShooterState != shooterReload) //Start moving angler immediately after first shot applies breaking
 	{
-		if (!vexRT[btn]) btnReleased = true;
+		setNextShot(nextShot, btn);
 		sleep(10);
 	}
 
@@ -1271,14 +1308,14 @@ void angleShoot(int pos, int acceptableRange, bool waitForShot, int angleTime, T
 		LOG_MACRO(("	>> %d RETRY SHOT", nPgmTime))
 		while (gShooterState != shooterHold)
 		{
-			if (!vexRT[btn]) btnReleased = true;
+			setNextShot(nextShot, btn);
 			sleep(10);
 		}
 		setShooterState(shooterShoot);
 		shotTriggerTime = nPgmTime;
 		while (gShooterState != shooterReload) //Start moving angler immediately after first shot applies breaking
 		{
-			if (!vexRT[btn]) btnReleased = true;
+			setNextShot(nextShot, btn);
 			sleep(10);
 		}
 	}
@@ -1287,24 +1324,17 @@ void angleShoot(int pos, int acceptableRange, bool waitForShot, int angleTime, T
 																//(should not ever do anything b/c it should already be in reload state)
 }
 
-typedef struct _sNextShot
-{
-	int anglerPos;
-	int xTarg;
-} sNextShot;
-
-
-//void setNextShot()
-//{
-//	if (
-//}
 //ToDo: Add safeties to anglerShooter
-void anglerShooter(int posA, int posB, int acceptableRange, bool waitForFirstShot = true, bool waitForSecShot = true, int angleTime, TVexJoysticks btn, bool reversePos = false)
+void anglerShooter(int posA, int posB, int acceptableRange, bool waitForFirstShot = true, bool waitForSecShot = true, int angleTime, TVexJoysticks btn)
 {
-	anglerAlgLogs = false;
-
-	bool btnReleased = false;
 	acceptableRange = abs(acceptableRange);
+
+	//Initialize next shot queue information
+	sNextShot nextShot;
+	nextShot.backShot = (posA == gAnglerBackPFTopFlag || posA == gAnglerBackPFMidFlag)? true : false;
+	nextShot.btnReleased = false;
+	nextShot.anglerPos = -1;
+	nextShot.yTarg = -1;
 
 	//Handle test mode
 	if (gShootTuneMode)
@@ -1315,33 +1345,35 @@ void anglerShooter(int posA, int posB, int acceptableRange, bool waitForFirstSho
 		waitForSecShot = true;
 	}
 
-	//Handle reverse request
-	if (reversePos)
-	{
-		int temp = posA;
-		posA = posB;
-		posB = temp;
-	}
-
-	LOG_MACRO((" >%d AnglrShooter: FrstPos:%d. Wait?%d. ScndPos:%d. Wait?%d. CurAnglrPos:%d", nPgmTime, posA, waitForFirstShot, posB, waitForSecShot, SensorValue[anglerPoti]))
-	int startShotCount = gShooterShotCount;
+	LOG_MACRO((" >%d AnglrShooter: FrstPos:%d. Wait?%d. ScndPos:%d. Wait?%d. CurAnglrPos:%d", nPgmTime, posA, waitForFirstShot, posB, waitForSecShot, SensorValue[anglerPoti]));
 	unsigned long startTime = nPgmTime;
-	unsigned long shotTriggerTime;
 
 	//First shot
 	LOG_MACRO((">>%d AnglShot1", nPgmTime))
-	angleShoot(posA, acceptableRange, waitForFirstShot, angleTime, btn, btnReleased);
+	angleShoot(posA, acceptableRange, waitForFirstShot, angleTime, btn, nextShot);
+	resetPositionFull(gPosition, (144-BACK_OFFSET), 14, -90);
 
-	//Second Shot
-	if (!btnReleased && vexRT[btn])
+	//Second Shot Turn
+	if (nextShot.yTarg != -1)
+	{
+		turnToTargetAccurate(10, nextShot.yTarg, ch, 50, 50, 0);
+	}
+
+	//Second Shot Execution
+	if ((!nextShot.btnReleased && vexRT[btn]) || (nextShot.anglerPos != -1))
 	{
 		LOG_MACRO((">>%d AnglShot2", nPgmTime))
-		angleShoot(posB, acceptableRange, waitForSecShot, angleTime, btn, btnReleased);
+
+		if (!nextShot.btnReleased && vexRT[btn])
+			angleShoot(posB, acceptableRange, waitForSecShot, angleTime, btn, nextShot);
+		else if (nextShot.anglerPos != -1)
+			angleShoot(nextShot.anglerPos, acceptableRange, waitForSecShot, angleTime, btn, nextShot);
 
 		LOG_MACRO((" >> %d Anglr(sht): grnd p_u pos", nPgmTime))
 		anglerMoveToPos(ANGLER_GROUND_PICKUP_POS, 150);
 	}
-	anglerAlgLogs = false;
+
+
 	LOG_MACRO(("	>> %d Done pntSht in %dms. Anglr:%d. Shooter:%d", nPgmTime, (nPgmTime-startTime), SensorValue[anglerPoti], SensorValue[shooterEnc]))
 
 	if(SensorValue[anglerPoti] > ANGLER_AXEL_POS)
@@ -1352,20 +1384,20 @@ void anglerShooter(int posA, int posB, int acceptableRange, bool waitForFirstSho
 }
 
 int anglerShooterPosA, anglerShooterPosB, anglerShooterAcceptableRange, anglerAngleTime;
-bool anglerShooterWaitForFirstShot, anglerShooterWaitForSecShot, anglerShooterReversePos;
+bool anglerShooterWaitForFirstShot, anglerShooterWaitForSecShot;
 TVexJoysticks anglerShooterBtn;
 task anglerShooterTask()
 {
 	gAnglerShooterTaskRunning = true;
 	gAnglerShooterTaskTime = nPgmTime;
-	anglerShooter(anglerShooterPosA, anglerShooterPosB, anglerShooterAcceptableRange, anglerShooterWaitForFirstShot, anglerShooterWaitForSecShot, anglerAngleTime, anglerShooterBtn, anglerShooterReversePos);
+	anglerShooter(anglerShooterPosA, anglerShooterPosB, anglerShooterAcceptableRange, anglerShooterWaitForFirstShot, anglerShooterWaitForSecShot, anglerAngleTime, anglerShooterBtn);
 	gAnglerShooterTaskTime = 0;
 	gAnglerShooterTaskRunning = false;
 	return;
 }
 #define ANGLER_SHOOTER_TASK(posA, posB, acceptableRange, waitForFirstShot, waitForSecShot, angleTime, btn, reversePos) \
 anglerShooterPosA = posA; anglerShooterPosB = posB; anglerShooterAcceptableRange = acceptableRange; anglerAngleTime = angleTime; \
-anglerShooterWaitForFirstShot = waitForFirstShot; anglerShooterWaitForSecShot = waitForSecShot; anglerShooterReversePos = (bool)reversePos; \
+anglerShooterWaitForFirstShot = waitForFirstShot; anglerShooterWaitForSecShot = waitForSecShot; \
 anglerShooterBtn = btn; \
 startTask(anglerShooterTask)
 
@@ -1515,11 +1547,6 @@ void disabled()
 	//handleLcd();
 }
 
-bool autoLogs = 1;
-
-#include "drive_algs.h"
-#include "drive_algs.c"
-
 #include "auto_runs.h"
 tAlliance allianceForce = -1;//allianceRed;///-1;
 tAuto autoForce = -1;//autoSkills;//-1;
@@ -1567,10 +1594,12 @@ task usercontrol()
 		if ( ((abs(gDriveTurnRaw) > DRIVE_TURN_DZ) || (abs(gDriveThrottleRaw) > DRIVE_THROTTLE_DZ)) && gDriveState != driveMoveTime) setDriveState(driveManual);
 
 		/* Intake Controls */
-		intakeControls();
+		if (!gAnglerShooterTaskRunning)
+			intakeControls();
 
 		/* Decapper Controls */
-		decapperControls();
+		if (!gAnglerShooterTaskRunning)
+			decapperControls();
 
 		/* Shooter & Angler Controls */
 		if (gAnglerShooterTaskRunning && gAnglerShooterTaskTime > 0 && nPgmTime > (gAnglerShooterTaskTime+6000))
@@ -1583,9 +1612,9 @@ task usercontrol()
 			ANGLER_SHOOTER_TASK_KILL;
 			writeDebugStreamLine("> %d AnglerShooterTask Cancl <", nPgmTime);
 		}
-		else if (!gAnglerShooterTaskRunning)
+		else if (!gAnglerShooterTaskRunning && gShooterState != shooterReset)
 		{
-			if (RISING(BTN_SHOOT) && gShooterState != shooterReset)
+			if (RISING(BTN_SHOOT))
 			{
 				if (gJoy[BTN_SHIFT].cur)
 				{
@@ -1621,8 +1650,36 @@ task usercontrol()
 				lstShotTimer = 0;
 			}
 			/* Fancy Shot Selection */
-
-
+			if (RISING(BTN_SHOOT_BACK_TOP))
+			{
+				tHog();
+				writeDebugStreamLine(" > %d Bck Shoot T <", nPgmTime);
+				setDriveState(driveBackHold);
+				ANGLER_SHOOTER_TASK(gAnglerBackTopFlag, gAnglerBackMidFlag, 25, true, true, MAX_ANGLE_TIME, BTN_SHOOT_BACK_TOP);
+				tRelease();
+			}
+			else if (RISING(BTN_SHOOT_BACK_MID))
+			{
+				tHog();
+				writeDebugStreamLine(" > %d Bck Shoot M <", nPgmTime);
+				setDriveState(driveBackHold);
+				ANGLER_SHOOTER_TASK(gAnglerBackMidFlag, gAnglerBackTopFlag, 25, true, true, MAX_ANGLE_TIME, BTN_SHOOT_BACK_MID);
+				tRelease();
+			}
+			else if (RISING(BTN_SHOOT_FRONT_TOP))
+			{
+				tHog();
+				writeDebugStreamLine(" > %d F_PF Shoot T <", nPgmTime);
+				ANGLER_SHOOTER_TASK(gAnglerFrontPFTopFlag, gAnglerFrontPFMidFlag, 70, false, true, MAX_ANGLE_TIME_FRONT, BTN_SHOOT_FRONT_TOP);
+				tRelease();
+			}
+			else if (RISING(BTN_SHOOT_FRONT_MID))
+			{
+				tHog();
+				writeDebugStreamLine(" > %d F_PF Shoot M <", nPgmTime);
+				ANGLER_SHOOTER_TASK(gAnglerFrontPFMidFlag, gAnglerFrontPFTopFlag, 70, false, true, MAX_ANGLE_TIME_FRONT, BTN_SHOOT_FRONT_MID);
+				tRelease();
+			}
 			/* Angler Controls */
 			else if (RISING(BTN_ANGLER_CAP_PICKUP))
 			{

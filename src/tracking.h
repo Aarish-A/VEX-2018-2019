@@ -1,4 +1,6 @@
 /* Defines */
+#define BACK_OFFSET (3.875+S_DISTANCE_IN) //Distance from tracking centre to back of standoffs
+
 // The diameter of the tracking wheels in inches
 #define WHEEL_DIAMETER_IN_LR 2.783 // 2.843
 #define WHEEL_DIAMETER_IN_S 2.783 // 2.843
