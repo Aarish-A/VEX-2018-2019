@@ -381,18 +381,12 @@ task intakeStateSet()
 	}
 }
 
-bool intakeUpBtn = false;
-bool intakeUpBtnLst = false;
-bool intakeDownBtn = false;
-bool intakeDownBtnLst = false;
 void intakeControls()
 {
-	intakeUpBtn = (bool)vexRT[BTN_INTAKE_UP];
-	intakeDownBtn = (bool)vexRT[BTN_INTAKE_DOWN];
 
-	if (intakeUpBtn && !intakeUpBtnLst)
+	if (RISING(BTN_INTAKE_UP))
 	{
-		if (vexRT[BTN_SHIFT])
+		if (gJoy[BTN_SHIFT].cur)
 		{
 			gDriveFlip = !gDriveFlip;
 		}
@@ -403,7 +397,7 @@ void intakeControls()
 		}
 		else setIntakeState(intakeUp);
 	}
-	else if (intakeDownBtn && !intakeDownBtnLst)
+	else if (RISING(BTN_INTAKE_DOWN))
 	{
 		if (gIntakeState != intakeIdle)
 		{
@@ -412,9 +406,6 @@ void intakeControls()
 		}
 		else setIntakeState(intakeDown);
 	}
-
-	intakeUpBtnLst = intakeUpBtn;
-	intakeDownBtnLst = intakeDownBtn;
 }
 
 
@@ -555,11 +546,9 @@ task decapperStateSet()
 }
 
 bool doExtraRaise = false;
-bool decapperMoveBtn = false;
-bool decapperMoveBtnLst = false;
+
 void decapperControls()
 {
-	decapperMoveBtn = (bool) vexRT[BTN_DECAPPER_MOVE];
 
 	if (doExtraRaise && SensorValue[decapperPoti] > (DECAPPER_GRAB_POS+200))
 	{
@@ -568,9 +557,9 @@ void decapperControls()
 		doExtraRaise = false;
 	}
 
-	if(decapperMoveBtn && !decapperMoveBtnLst)
+	if(RISING(BTN_DECAPPER_MOVE))
 	{
-		if (vexRT[BTN_SHIFT])
+		if (gJoy[BTN_SHIFT].cur)
 		{
 			//if (SensorValue[decapperPoti] > (DECAPPER_GRAB_POS-100))
 			//	setDecapperState(decapperUp, DECAPPER_TOP_POS, 60);
@@ -595,7 +584,6 @@ void decapperControls()
 		// &&	!((vexRT[JOY_DECAPPER]>0 && SensorValue[decapperPoti] > (DECAPPER_TOP_POS-150)) ||(vexRT[JOY_DECAPPER]<0 && SensorValue[decapperPoti] < (DECAPPER_BOTTOM_POS+150)))	)
 		setDecapperState(decapperManual);
 
-	decapperMoveBtnLst = decapperMoveBtn;
 
 	//Safety
 	if ((gDecapperState == decapperUp || gDecapperState == decapperDown) && (nPgmTime-gDecapperStateTime) > 2000)
@@ -1255,7 +1243,7 @@ void setNextShot(sNextShot& nextShot, TVexJoysticks btn)
 		nextShot.anglerPos = nextShot.backShot? gAnglerBackMidFlag : gAnglerFrontPFMidFlag;
 		nextShot.yTarg = 63;
 	}
-	else if (!vexRT[btn]) nextShot.btnReleased = true;
+	else if (!gJoy[btn].cur) nextShot.btnReleased = true;
 }
 
 void angleShoot(int pos, int acceptableRange, bool waitForShot, int angleTime, TVexJoysticks btn, sNextShot& nextShot)
@@ -1360,11 +1348,11 @@ void anglerShooter(int posA, int posB, int acceptableRange, bool waitForFirstSho
 	}
 
 	//Second Shot Execution
-	if ((!nextShot.btnReleased && vexRT[btn]) || (nextShot.anglerPos != -1))
+	if ((!nextShot.btnReleased && gJoy[btn].cur) || (nextShot.anglerPos != -1))
 	{
 		LOG_MACRO((">>%d AnglShot2", nPgmTime))
 
-		if (!nextShot.btnReleased && vexRT[btn])
+		if (!nextShot.btnReleased && gJoy[btn].cur)
 			angleShoot(posB, acceptableRange, waitForSecShot, angleTime, btn, nextShot);
 		else if (nextShot.anglerPos != -1)
 			angleShoot(nextShot.anglerPos, acceptableRange, waitForSecShot, angleTime, btn, nextShot);
