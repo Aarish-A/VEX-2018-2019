@@ -1596,8 +1596,8 @@ task usercontrol()
 					sleep(10);
 					setShooterState(shooterReset);
 					tRelease();
-					sleep(50);
-					while(gShooterState != shooterHold && gShooterState != shooterIdle) sleep(10);
+					//sleep(50);
+					//while(gShooterState != shooterHold && gShooterState != shooterIdle) sleep(10);
 				}
 				else if (SensorValue[shooterEnc] < SHOOTER_RELOAD_POS)
 				{
@@ -1621,6 +1621,7 @@ task usercontrol()
 				lstShotTimer = 0;
 			}
 			/* Fancy Shot Selection */
+
 
 			/* Angler Controls */
 			else if (RISING(BTN_ANGLER_CAP_PICKUP))
