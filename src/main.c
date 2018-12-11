@@ -41,7 +41,6 @@ int gBackupBatteryLevel;
 //#define ANGLER_LOGS 1
 #define ANGLER_STATE_LOGS 1
 bool anglerDatalog = false;
-bool anglerAlgLogs = false;
 
 #define SHOOTER_LOGS 1
 
@@ -1674,7 +1673,7 @@ task usercontrol()
 				tRelease();
 			}
 			/* Angler Controls */
-			else if (RISING(BTN_ANGLER_CAP_PICKUP))
+			else if (RISING(BTN_ANGLER_GROUND_PICKUP))
 			{
 				if (gJoy[BTN_SHIFT].cur)
 				{
@@ -1692,6 +1691,19 @@ task usercontrol()
 			{
 				writeDebugStreamLine(" > %d Anglr: p_u cap pos <", nPgmTime);
 				anglerMoveToPos(ANGLER_PICKUP_CAP_POS, 150);
+			}
+			else if (RISING(BTN_ANGLER_PF_PICKUP))
+			{
+				if (vexRT[BTN_SHIFT])
+				{
+					writeDebugStreamLine(" > %d Anglr: u_cap p_u pos <", nPgmTime);
+					anglerMoveToPos(ANGLER_BELOW_CAP_PICKUP_POS, 40);
+				}
+				else
+				{
+					writeDebugStreamLine(" > %d Anglr: p_f p_u pos <", nPgmTime);
+					anglerMoveToPos(ANGLER_LOW_PF_PICKUP_POS, 150);
+				}
 			}
 			else if (abs(vexRT[JOY_ANGLER]) > ANGLER_DZ)
 			{

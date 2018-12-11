@@ -14,11 +14,11 @@
 //#define BTN_ANGLER_PICKUP
 #define BTN_ANGLER_GROUND_PICKUP Btn7R
 #define BTN_ANGLER_CAP_PICKUP Btn7U
-//#define BTN_ANGLER_LOW_PF_PICKUP
+#define BTN_ANGLER_PF_PICKUP Btn7L
 
 /* Decapper Controls */
 #define JOY_DECAPPER Ch1
-#define BTN_DECAPPER_MOVE Btn7L
+#define BTN_DECAPPER_MOVE Btn5D
 
 /* Macros */
 	//Shot Trigger
