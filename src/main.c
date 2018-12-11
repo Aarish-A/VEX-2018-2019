@@ -1342,9 +1342,14 @@ void anglerShooter(int posA, int posB, int acceptableRange, bool waitForFirstSho
 	resetPositionFull(gPosition, (144-BACK_OFFSET), 14, -90);
 
 	//Second Shot Turn
-	if (nextShot.yTarg != -1)
+	if (nextShot.yTarg != -1) //TODO1: run this from a task
 	{
+		stopTask(driveStateSet);
+		sleep(10);
+		setDrive(60, 60);
+		sleep(100);
 		turnToTargetAccurate(10, nextShot.yTarg, ch, 50, 50, 0);
+		startTask(driveStateSet);
 	}
 
 	//Second Shot Execution
