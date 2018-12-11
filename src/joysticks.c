@@ -21,8 +21,8 @@ void updateJoystick(TVexJoysticks joy)
 	gJoy[joy].lst = gJoy[joy].cur;
 	short val = vexRT[joy];
 	gJoy[joy].cur = abs(val) > gJoy[joy].deadzone ? val : 0;
-	if (gJoy[joy].mirror != -1)
-		gJoy[gJoy[joy].mirror].cur |= gJoy[joy].cur;
+	//if (gJoy[joy].mirror != -1)
+	//	gJoy[gJoy[joy].mirror].cur |= gJoy[joy].cur;
 }
 
 void enableJoystick(TVexJoysticks joy)

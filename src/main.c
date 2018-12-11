@@ -72,6 +72,7 @@ void tRelease()
 // Year-independent libraries (headers)
 #include "cycle.h"
 #include "motors.h"
+#include "joysticks.h"
 #include "utilities.h"
 #include "tracking.h"
 #include "custom_turning.h"
@@ -79,6 +80,7 @@ void tRelease()
 // Year-independent libraries (source)
 #include "cycle.c"
 #include "motors.c"
+#include "joysticks.c"
 #include "utilities.c"
 #include "tracking.c"
 #include "custom_turning.c"
@@ -1292,10 +1294,10 @@ typedef struct _sNextShot
 } sNextShot;
 
 
-void setNextShot()
-{
-	if (
-}
+//void setNextShot()
+//{
+//	if (
+//}
 //ToDo: Add safeties to anglerShooter
 void anglerShooter(int posA, int posB, int acceptableRange, bool waitForFirstShot = true, bool waitForSecShot = true, int angleTime, TVexJoysticks btn, bool reversePos = false)
 {
@@ -1493,12 +1495,16 @@ void startup()
 	startTasks(true);
 	sleep(50);
 
+	//Reset Shooter
 	gShooterKilled = false;
 	setShooterState(shooterReset);
 	tRelease();
 	sleep(50);
 	while(gShooterState != shooterHold && gShooterState != shooterIdle) sleep(10);
+
 	//Setup Joysticks & Buttons
+	setupJoysticks();
+	enableAllButtons();
 }
 
 void disabled()
@@ -1546,31 +1552,6 @@ task usercontrol()
 
 	startTasks(true);
 
-
-	bool shootBtn = false;
-	bool shootBtnLst = false;
-
-	bool shootFrontPFBtn = false;
-	bool shootFrontPFBtnLst = false;
-
-	bool shootMidPFBtn = false;
-	bool shootMidPFBtnLst = false;
-
-	bool shootBackPFBtn = false;
-	bool shootBackPFBtnLst = false;
-
-	bool shootBackBtn = false;
-	bool shootBackBtnLst = false;
-
-	bool anglerPickupGroundBtn = false;
-	bool anglerPickupGroundBtnLst = false;
-
-	bool anglerPickupCapBtn = false;
-	bool anglerPickupCapBtnLst = false;
-
-	bool anglerPickupLowPFBtn = false;
-	bool anglerPickupLowPFBtnLst = false;
-
 	//int lstShotCount = 0;
 	unsigned long lstShotTimer = 0;
 
@@ -1580,16 +1561,6 @@ task usercontrol()
 	//setDriveState(driveManual);
 	while (true)
 	{
-		/* Handle Btns */
-		shootBtn = (bool)vexRT[BTN_SHOOT];
-		shootFrontPFBtn = (bool)vexRT[BTN_SHOOT_FRONT_PF];
-		shootMidPFBtn = (bool)vexRT[BTN_SHOOT_MID_PF];
-		shootBackPFBtn = (bool)vexRT[BTN_SHOOT_BACK_PF];
-		shootBackBtn = (bool)vexRT[BTN_SHOOT_BACK];
-		anglerPickupGroundBtn = (bool)vexRT[BTN_ANGLER_GROUND_PICKUP];
-		anglerPickupCapBtn = (bool)vexRT[BTN_ANGLER_CAP_PICKUP];
-		anglerPickupLowPFBtn = (bool)vexRT[BTN_ANGLER_LOW_PF_PICKUP];
-
 		/* Drive Controls */
 		gDriveThrottleRaw = (!gAnglerShooterTaskRunning)? vexRT[JOY_DRIVE_THROTTLE] : vexRT[JOY_ANGLER];
 		gDriveTurnRaw = (!gAnglerShooterTaskRunning)? vexRT[JOY_DRIVE_TURN] : (vexRT[JOY_DECAPPER]);
@@ -1607,22 +1578,22 @@ task usercontrol()
 			ANGLER_SHOOTER_TASK_KILL;
 			writeDebugStreamLine("	>>>> %d AnglerShooterTask TO. KILL", nPgmTime);
 		}
-		else if (gAnglerShooterTaskRunning && (shootBtn && !shootBtnLst))
+		else if (gAnglerShooterTaskRunning && RISING(BTN_SHOOT))
 		{
 			ANGLER_SHOOTER_TASK_KILL;
 			writeDebugStreamLine("> %d AnglerShooterTask Cancl <", nPgmTime);
 		}
 		else if (!gAnglerShooterTaskRunning)
 		{
-			if (shootBtn && !shootBtnLst && gShooterState != shooterReset)
+			if (RISING(BTN_SHOOT) && gShooterState != shooterReset)
 			{
-				if (vexRT[BTN_SHIFT])
+				if (gJoy[BTN_SHIFT].cur)
 				{
 					tHog();
 					stopTask(shooterStateSet);
 					startTask(shooterStateSet);
 					gShooterKilled = false;
-					sleep(50);
+					sleep(10);
 					setShooterState(shooterReset);
 					tRelease();
 					sleep(50);
@@ -1643,57 +1614,22 @@ task usercontrol()
 					lstShotTimer = nPgmTime;
 				}
 			}
-			if (!shootBtn) lstShotTimer = 0;
-			else if (shootBtn && gShooterState == shooterHold && (lstShotTimer != 0 && (nPgmTime-lstShotTimer) < 900))
+			if (!gJoy[BTN_SHOOT].cur) lstShotTimer = 0;
+			else if (gJoy[BTN_SHOOT].cur && gShooterState == shooterHold && (lstShotTimer != 0 && (nPgmTime-lstShotTimer) < 900))
 			{
 				setShooterState(shooterShoot);
 				lstShotTimer = 0;
 			}
-			if ((shootFrontPFBtn && !shootFrontPFBtnLst) && !(shootBtn && !shootBtnLst) && gShooterState != shooterReset)
+			/* Fancy Shot Selection */
+
+			/* Angler Controls */
+			else if (RISING(BTN_ANGLER_CAP_PICKUP))
 			{
-				tHog();
-				writeDebugStreamLine(" > %d F_PF Shoot <", nPgmTime);
-				ANGLER_SHOOTER_TASK(gAnglerFrontPFMidFlag, gAnglerFrontPFTopFlag, 70, false, true, MAX_ANGLE_TIME_FRONT, BTN_SHOOT_FRONT_PF, vexRT[BTN_SHIFT]);
-				tRelease();
-			}
-			else if ((shootMidPFBtn && !shootMidPFBtnLst) && !(shootBtn && !shootBtnLst) && gShooterState != shooterReset)
-			{
-				tHog();
-				writeDebugStreamLine(" > %d M_PF Shoot <", nPgmTime);
-				ANGLER_SHOOTER_TASK(gAnglerMidPFMidFlag, gAnglerMidPFTopFlag, 60, true, true, MAX_ANGLE_TIME, BTN_SHOOT_MID_PF, vexRT[BTN_SHIFT]);
-				tRelease();
-			}
-			else if ((shootBackPFBtn && !shootBackPFBtnLst) && !(shootBtn && !shootBtnLst) && gShooterState != shooterReset)
-			{
-				tHog();
-				writeDebugStreamLine("%d B_PF Shoot <", nPgmTime);
-				ANGLER_SHOOTER_TASK(gAnglerBackPFMidFlag, gAnglerBackPFTopFlag, 50, true, true, MAX_ANGLE_TIME, BTN_SHOOT_BACK_PF, vexRT[BTN_SHIFT]);
-				tRelease();
-			}
-			else if ((shootBackBtn && !shootBackBtnLst) && !(shootBtn && !shootBtnLst) && gShooterState != shooterReset)
-			{
-				tHog();
-				writeDebugStreamLine(" > %d Bck Shoot <", nPgmTime);
-				setDriveState(driveBackHold);
-				ANGLER_SHOOTER_TASK(gAnglerBackMidFlag, gAnglerBackTopFlag, 25, true, true, MAX_ANGLE_TIME, BTN_SHOOT_BACK, vexRT[BTN_SHIFT]);
-				tRelease();
-			}
-			else if (anglerPickupGroundBtn && !anglerPickupGroundBtnLst)
-			{
-				if (vexRT[BTN_SHIFT])
+				if (gJoy[BTN_SHIFT].cur)
 				{
 					writeDebugStreamLine(" > %d Anglr: flip cap pos <", nPgmTime);
 					anglerMoveToPos(ANGLER_CAP_FLIP_POS, 100);
 					setIntakeState(intakeDown);
-
-					//while(gAnglerGoodCount < 5) sleep(10);
-					//setIntakeState(intakeDown);
-					//setDriveState(driveMoveTime, 70, 250);
-					//while(gDriveState != driveIdle) sleep(10);
-					//anglerMoveToPos(2800, 100);
-					//setDriveState(driveMoveTime, 70, 250);
-					//while(gDriveState != driveIdle) sleep(10);
-					//setDriveState(driveMoveTime, -11, 400);
 				}
 				else
 				{
@@ -1701,64 +1637,16 @@ task usercontrol()
 					anglerMoveToPos(ANGLER_GROUND_PICKUP_POS, 150);
 				}
 			}
-			else if (anglerPickupCapBtn && !anglerPickupCapBtnLst)
+			else if (RISING(BTN_ANGLER_CAP_PICKUP))
 			{
 				writeDebugStreamLine(" > %d Anglr: p_u cap pos <", nPgmTime);
 				anglerMoveToPos(ANGLER_PICKUP_CAP_POS, 150);
-
-
-				//Back Angle Adjust Test
-				//resetPositionFull(gPosition, (144-BACK_OFFSET), 14, -90);
-				//stopTask(driveStateSet);
-				//sleep(10);
-				//setDrive(60, 60);
-				//sleep(100);
-				//turnToTargetAccurate(10, 63, ch, 50, 50, 0); //63,-35
-				//startTask(driveStateSet);
-				//sleep(10);
-
-				//writeDebugStreamLine("%d Angler pos1", nPgmTime);
-				//unsigned long startTime = nPgmTime;
-				//anglerMoveToPos(gAnglerBackMidFlag, 25);
-				//while (gAnglerGoodCount < 7) sleep(10);
-				//writeDebugStreamLine("%d Angler done pos1 in %d ms", nPgmTime, (nPgmTime-startTime));
-
-			}
-			else if (anglerPickupLowPFBtn && !anglerPickupLowPFBtnLst)
-			{
-				if (vexRT[BTN_SHIFT])
-				{
-					writeDebugStreamLine(" > %d Anglr: u_cap p_u pos <", nPgmTime);
-					anglerMoveToPos(ANGLER_BELOW_CAP_PICKUP_POS, 40);
-				}
-				else
-				{
-					writeDebugStreamLine(" > %d Anglr: p_f p_u pos <", nPgmTime);
-					anglerMoveToPos(ANGLER_LOW_PF_PICKUP_POS, 150);
-				}
-
-				//writeDebugStreamLine("%d Angler pos2", nPgmTime);
-				//unsigned long startTime = nPgmTime;
-				//anglerMoveToPos(gAnglerBackTopFlag, 25);
-				//while (gAnglerGoodCount < 7) sleep(10);
-				//writeDebugStreamLine("%d Angler done pos2 in %d ms", nPgmTime, (nPgmTime-startTime));
 			}
 			else if (abs(vexRT[JOY_ANGLER]) > ANGLER_DZ)
 			{
 				setAnglerState(anglerManual);
 			}
 		}
-
-		/* Handle Btns */
-		shootBtnLst = shootBtn;
-		shootFrontPFBtnLst = shootFrontPFBtn;
-		shootMidPFBtnLst = shootMidPFBtn;
-		shootBackPFBtnLst = shootBackPFBtn;
-		shootBackBtnLst = shootBackBtn;
-
-		anglerPickupGroundBtnLst = anglerPickupGroundBtn;
-		anglerPickupCapBtnLst = anglerPickupCapBtn;
-		anglerPickupLowPFBtnLst = anglerPickupLowPFBtn;
 
 		endCycle(cycle);
 	}
