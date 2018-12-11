@@ -1695,6 +1695,17 @@ task usercontrol()
 				writeDebugStreamLine(" > %d Anglr: p_u cap pos <", nPgmTime);
 				anglerMoveToPos(ANGLER_PICKUP_CAP_POS, 150);
 
+
+				//Back Angle Adjust Test
+				//resetPositionFull(gPosition, (144-BACK_OFFSET), 14, -90);
+				//stopTask(driveStateSet);
+				//sleep(10);
+				//setDrive(60, 60);
+				//sleep(100);
+				//turnToTargetAccurate(10, 63, ch, 50, 50, 0); //63,-35
+				//startTask(driveStateSet);
+				//sleep(10);
+
 				//writeDebugStreamLine("%d Angler pos1", nPgmTime);
 				//unsigned long startTime = nPgmTime;
 				//anglerMoveToPos(gAnglerBackMidFlag, 25);

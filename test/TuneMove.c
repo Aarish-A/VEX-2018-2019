@@ -99,7 +99,8 @@ bool autoLogs = true;
 
 task main()
 {
-	clearDebugStream();
+	//clearDebugStream();
+	datalogClear();
 	gBatteryLevel = nImmediateBatteryLevel;
 	writeDebugStreamLine("%d battery:%d", nPgmTime, gBatteryLevel);
 	setupMotors();
@@ -108,7 +109,30 @@ task main()
 
 	//turnToAngleAccurate((23-90), cw, 70, -15, 0);
 
-	turnToTargetAccurate(10, 63, ch, 80, 80, 0);
+	//setDrive(31, -31);
+	//while (true)
+	//{
+	//	writeDebugStreamLine("%f", gVelocity.a*100);
+	//datalogAddValueWithTimeStamp(0, gVelocity.a);
+	//sleep(10);
+	//}
+
+	//setDrive(80, -80);
+	//while (gVelocity.a < 1.5) sleep(10);
+	//sTurnState state;
+	//state.time = nPgmTime;
+	//state.lstTime = state.time;
+	//state.nextDebug = 0;
+	//state.input = gVelocity.a;
+	//state.power = state.error = state.integral = 0;
+	//state.target = 0.749;
+	//while (true)
+	//	{
+	//		//float a = gPosition.a + fmod(atan2(x - gPosition.x, y - gPosition.y) + offset - gPosition.a, PI * 2);
+	//		turnAccurateInternalCw(200, state);
+	//	}
+
+	turnToTargetAccurate(10, 63, ch, 50, 50, 0);
 
 	// reset
 	//setDrive(-60,-15);
