@@ -1285,6 +1285,17 @@ void angleShoot(int pos, int acceptableRange, bool waitForShot, int angleTime, T
 																//(should not ever do anything b/c it should already be in reload state)
 }
 
+typedef struct _sNextShot
+{
+	int anglerPos;
+	int xTarg;
+} sNextShot;
+
+
+void setNextShot()
+{
+	if (
+}
 //ToDo: Add safeties to anglerShooter
 void anglerShooter(int posA, int posB, int acceptableRange, bool waitForFirstShot = true, bool waitForSecShot = true, int angleTime, TVexJoysticks btn, bool reversePos = false)
 {
