@@ -517,7 +517,7 @@ void turnAccurateInternalCw(float a, sTurnState& state)
 	unsigned long deltaTime = state.time - state.lstTime;
 	float vel = gVelocity.a;
 
-	const float kP = 10, kI = 0.05;
+	const float kP = 15, kI = 0.05;
 
 	if (deltaTime >= 1)
 	{
@@ -569,7 +569,7 @@ void turnAccurateInternalCcw(float a, sTurnState& state)
 	unsigned long deltaTime = state.time - state.lstTime;
 	float vel = gVelocity.a;
 
-	const float kP = 10, kI = 0.05;
+	const float kP = 15, kI = 0.05;
 
 	if (deltaTime >= 1)
 	{
@@ -674,7 +674,7 @@ void turnToTargetAccurate(float x, float y, tAutoTurnDir turnDir, byte left, byt
 		//writeDebugStreamLine("%f", gVelocity.a);
 		//
 		state.target = -0.749;//0.940;
-		while (gPosition.a > a - degToRad(-5.3 + (state.target - gVelocity.a) * 0.25))
+		while (gPosition.a > a - degToRad(-3.5 + (state.target - gVelocity.a) * 0.15))
 		{
 			a = gPosition.a - fmod(gPosition.a - atan2(x - gPosition.x, y - gPosition.y) - offset, PI * 2);
 			turnAccurateInternalCcw(a, state);

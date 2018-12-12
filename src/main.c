@@ -36,7 +36,7 @@ int gBackupBatteryLevel;
 //#define INTAKE_STATE_LOGS 1
 
 //#define DECAPPER_LOGS 1
-#define DECAPPER_STATE_LOGS 1
+//#define DECAPPER_STATE_LOGS 1
 
 //#define ANGLER_LOGS 1
 #define ANGLER_STATE_LOGS 1
@@ -598,16 +598,16 @@ void decapperControls()
 /* Angler Controls */
 #define ANGLER_DZ 15
 
-#define ANGLER_BOTTOM_POS  330
-#define ANGLER_HORIZONTAL_POS 1165
-#define ANGLER_TOP_POS 3866
+#define ANGLER_BOTTOM_POS  460 //330
+#define ANGLER_HORIZONTAL_POS 1440
+#define ANGLER_TOP_POS 2987
 
-#define ANGLER_TOP_LIM_POS (ANGLER_TOP_POS-1000)
+#define ANGLER_TOP_LIM_POS (ANGLER_TOP_POS-150)
 
-#define ANGLER_AXEL_POS (ANGLER_TOP_POS-2000)
+#define ANGLER_AXEL_POS 2000//(ANGLER_TOP_POS-2000)
 
 #define ANGLER_GROUND_PICKUP_POS 900
-#define ANGLER_BELOW_CAP_PICKUP_POS 680
+#define ANGLER_BELOW_CAP_PICKUP_POS 800//600
 #define ANGLER_CAP_PICKUP_POS 1570
 #define ANGLER_LOW_PF_PICKUP_POS 1470
 
@@ -1311,6 +1311,23 @@ void angleShoot(int pos, int acceptableRange, bool waitForShot, int angleTime, T
 																//(should not ever do anything b/c it should already be in reload state)
 }
 
+int gBackPivotYTarg = 63;
+task backPivotTask()
+{
+	unsigned long startTime = nPgmTime;
+	stopTask(driveStateSet);
+	sleep(10);
+	setDrive(60, 60);
+	sleep(100);
+	turnToTargetAccurate(10, gBackPivotYTarg, ch, 50, 50, 0);
+	startTask(driveStateSet);
+	sleep(10);
+
+	LOG_MACRO(("%d BackPivot t:%d", nPgmTime, (nPgmTime-startTime)));
+
+	return;
+}
+
 //ToDo: Add safeties to anglerShooter
 void anglerShooter(int posA, int posB, int acceptableRange, bool waitForFirstShot = true, bool waitForSecShot = true, int angleTime, TVexJoysticks btn)
 {
@@ -1318,7 +1335,7 @@ void anglerShooter(int posA, int posB, int acceptableRange, bool waitForFirstSho
 
 	//Initialize next shot queue information
 	sNextShot nextShot;
-	nextShot.backShot = (posA == gAnglerBackPFTopFlag || posA == gAnglerBackPFMidFlag)? true : false;
+	nextShot.backShot = (posA == gAnglerBackTopFlag || posA == gAnglerBackMidFlag)? true : false;
 	nextShot.btnReleased = false;
 	nextShot.anglerPos = -1;
 	nextShot.yTarg = -1;
@@ -1343,12 +1360,14 @@ void anglerShooter(int posA, int posB, int acceptableRange, bool waitForFirstSho
 	//Second Shot Turn
 	if (nextShot.yTarg != -1) //TODO1: run this from a task
 	{
-		stopTask(driveStateSet);
-		sleep(10);
-		setDrive(60, 60);
-		sleep(100);
-		turnToTargetAccurate(10, nextShot.yTarg, ch, 50, 50, 0);
-		startTask(driveStateSet);
+		gBackPivotYTarg = nextShot.yTarg;
+		startTask(backPivotTask);
+		//stopTask(driveStateSet);
+		//sleep(10);
+		//setDrive(60, 60);
+		//sleep(100);
+		//turnToTargetAccurate(10, nextShot.yTarg, ch, 50, 50, 0);
+		//startTask(driveStateSet);
 	}
 
 	//Second Shot Execution
@@ -1580,6 +1599,9 @@ task usercontrol()
 	//setDriveState(driveManual);
 	while (true)
 	{
+		/* Update Joysticks */
+		updateJoysticks();
+
 		/* Drive Controls */
 		gDriveThrottleRaw = vexRT[JOY_DRIVE_THROTTLE];
 		gDriveTurnRaw = vexRT[JOY_DRIVE_TURN];
@@ -1697,7 +1719,7 @@ task usercontrol()
 				if (vexRT[BTN_SHIFT])
 				{
 					writeDebugStreamLine(" > %d Anglr: u_cap p_u pos <", nPgmTime);
-					anglerMoveToPos(ANGLER_BELOW_CAP_PICKUP_POS, 40);
+					anglerMoveToPos(ANGLER_BELOW_CAP_PICKUP_POS, 20);
 				}
 				else
 				{

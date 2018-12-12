@@ -95,7 +95,7 @@ bool autoLogs = true;
 #define RED_BACK_X (115.875 - BACK_OFFSET)
 #define RED_BACK_Y 11
 
-#define BACK_OFFSET (3.875+S_DISTANCE_IN)
+//#define BACK_OFFSET (3.875+S_DISTANCE_IN)
 
 task main()
 {
@@ -131,8 +131,12 @@ task main()
 	//		//float a = gPosition.a + fmod(atan2(x - gPosition.x, y - gPosition.y) + offset - gPosition.a, PI * 2);
 	//		turnAccurateInternalCw(200, state);
 	//	}
-
-	turnToTargetAccurate(10, 63, ch, 50, 50, 0);
+	writeDebugStreamLine("%d Forwards", nPgmTime);
+	setDrive(50,50);
+	sleep(100);
+	//while (gPosition.x > (144-BACK_OFFSET-0.1)) sleep(10);
+	writeDebugStreamLine("%d Forwards done", nPgmTime);
+	turnToTargetAccurate(10, -35, ch, 50, 50, 0);
 
 	// reset
 	//setDrive(-60,-15);
