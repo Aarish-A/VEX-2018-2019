@@ -3,6 +3,11 @@
 //#define RED_BACK_X (115.875 - BACK_OFFSET)
 //#define RED_BACK_Y 12
 
+/* Flag Locations */
+#define FLAG_X 10
+#define RED_FLAG_Y 14
+#define BLUE_FLAG_Y (144-14)
+
 /* Starting Positions */
 #define RED_FRONT_X 58.75
 #define RED_FRONT_Y BACK_OFFSET

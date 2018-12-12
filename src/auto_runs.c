@@ -73,10 +73,10 @@ void runAuto()
 		//2 Back up
 		moveToTarget(59, 40, -70, -40, 4, 12, -30, 0, (stopSoft), mttProportional);
 		anglerMoveToPos(gAnglerFrontPFMidFlag, 70);
-		moveToTarget(59, 16, -127, -40, 4, 12, -30, 0, (stopSoft | stopHarsh), mttProportional);
+		moveToTarget(59, (RED_FLAG_Y+0.5), -127, -40, 4, 12, -30, 0, (stopSoft | stopHarsh), mttProportional);
 
 		//3 Turn and shoot
-		turnToTargetAccurate(11, 16, ch, 80, 80, 0);
+		turnToTargetAccurate(FLAG_X, RED_FLAG_Y, ch, 80, 80, 0);
 		angleShoot(gAnglerFrontPFMidFlag, 70, false, MAX_ANGLE_TIME_FRONT, BTN_SHOOT, dummyNextShot);
 		angleShoot(gAnglerFrontPFTopFlag, 70, true, MAX_ANGLE_TIME_FRONT, BTN_SHOOT, dummyNextShot);
 
@@ -191,10 +191,10 @@ void runAuto()
 		//2 Back up
 		moveToTarget(59, 40, -70, -40, 4, 12, -30, 0, (stopSoft), mttProportional);
 		anglerMoveToPos(gAnglerFrontPFMidFlag, 70);
-		moveToTarget(59, 16, -127, -40, 4, 12, -30, 0, (stopSoft | stopHarsh), mttProportional);
+		moveToTarget(59, (RED_FLAG_Y+0.5), -127, -40, 4, 12, -30, 0, (stopSoft | stopHarsh), mttProportional);
 
 		//3 Turn and shoot
-		turnToTargetAccurate(11, 16, ch, 80, 80, 0);
+		turnToTargetAccurate(FLAG_X, RED_FLAG_Y, ch, 80, 80, 0);
 		angleShoot(gAnglerFrontPFMidFlag, 70, false, MAX_ANGLE_TIME_FRONT, BTN_SHOOT, dummyNextShot);
 		angleShoot(gAnglerFrontPFTopFlag, 70, true, MAX_ANGLE_TIME_FRONT, BTN_SHOOT, dummyNextShot);
 
@@ -202,13 +202,13 @@ void runAuto()
 		setIntakeState(intakeIdle);
 		setShooterState(shooterIdle);
 		anglerMoveToPos(2800, 70);
-		moveToTarget(11, 15, 127, 40, 3, 12, 30, 0, (stopSoft | stopHarsh), mttProportional);
+		moveToTarget(FLAG_X, 15, 127, 40, 3, 12, 30, 0, (stopSoft | stopHarsh), mttProportional);
 		LOG_AUTO(("%d t:%d", nPgmTime-autoStartTime));
 
 				if (gAutoPark)
 				{
 					//5 Back up and get on platform
-					moveToTarget(82, 15, -90, -40, 4, 12, -30, 0, (stopSoft | stopHarsh), mttProportional);
+					moveToTarget(80, RED_FLAG_Y, -90, -40, 4, 12, -30, 0, (stopSoft | stopHarsh), mttProportional);
 					turnToAngleNewAlg(5,ch,0.35,20,10,true);
 					//turnToTargetAccurate(84, 50, ch, 80, 80, 0);
 					setDrive(90, 90);
@@ -249,14 +249,14 @@ void runAuto()
 
 				//3 Turn and shoot
 				//turnToAngleNewAlg(-90,ch,0.35,20,10,true);
-				turnToTargetAccurate(11, 16, ch, 80, 80, 0);
+				turnToTargetAccurate(FLAG_X, RED_FLAG_Y, ch, 80, 80, 0);
 				angleShoot(gAnglerBackPFMidFlag, 40, true, MAX_ANGLE_TIME, BTN_SHOOT, dummyNextShot);
 				angleShoot(gAnglerBackPFTopFlag, 40, true, MAX_ANGLE_TIME, BTN_SHOOT, dummyNextShot);
 
 				if (gAutoPark)
 				{
 					//4 Get on platform
-					moveToTarget(84, 15, 90, 40, 4, 12, 30, 0, (stopSoft | stopHarsh), mttProportional);
+					moveToTarget(81, RED_FLAG_Y, 90, 40, 4, 12, 30, 0, (stopSoft | stopHarsh), mttProportional);
 					turnToAngleNewAlg(0,ch,0.35,20,10,true);
 					//turnToTargetAccurate(84, 50, ch, 80, 80, 0);
 					setDrive(90, 90);
@@ -362,7 +362,7 @@ void runAuto()
 				{
 					//4 Get on platform
 					moveToTarget(83, (144-12), 90, 40, 4, 12, 30, 0, (stopSoft | stopHarsh), mttProportional);
-					turnToTargetAccurate(82, (144-50), ch, 80, 80, 0);
+					turnToTargetAccurate(80, (144-50), ch, 80, 80, 0);
 					setDrive(90, 90);
 					sleep(400);
 					while (gVelocity.y < -0.1)
@@ -386,6 +386,9 @@ void runAuto()
 				break;
 		}
 	}
+
+	setIntakeState(intakeIdle);
+	setAnglerState(anglerIdle);
 }
 
 void anglerUnderAxle()
