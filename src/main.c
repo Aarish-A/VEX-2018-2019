@@ -37,7 +37,7 @@ int gBackupBatteryLevel;
 //#define INTAKE_STATE_LOGS 1
 
 //#define DECAPPER_LOGS 1
-//#define DECAPPER_STATE_LOGS 1
+#define DECAPPER_STATE_LOGS 1
 
 //#define ANGLER_LOGS 1
 #define ANGLER_STATE_LOGS 1
@@ -48,6 +48,7 @@ bool anglerDatalog = false;
 #define MACRO_LOGS 1
 
 #define AUTO_LOGS 1
+//#define AUTO_LOGS_2 1
 
 #include "log_toggle.h"
 /* /////////////////////// */

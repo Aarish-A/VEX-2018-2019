@@ -85,7 +85,6 @@ void runAuto()
 		setShooterState(shooterIdle);
 		anglerMoveToPos(2800, 70);
 		moveToTarget(11, 15, 127, 40, 3, 12, 30, 0, (stopSoft | stopHarsh), mttProportional);
-		LOG_AUTO(("%d t:%d", nPgmTime-autoStartTime));
 
 		//5 Back up and reset angle
 		moveToTarget(60, 15, -90, -40, 4, 12, -30, 0, (stopSoft | stopHarsh), mttProportional);
@@ -204,7 +203,6 @@ void runAuto()
 		setShooterState(shooterIdle);
 		anglerMoveToPos(ANGLER_TOP_POS, 70);
 		moveToTarget((FLAG_X-1), 15, 127, 40, 1, 12, 30, 0, (stopSoft | stopHarsh), mttProportional);
-		LOG_AUTO(("%d t:%d", nPgmTime-autoStartTime));
 
 				if (gAutoPark)
 				{
@@ -310,7 +308,6 @@ void runAuto()
 				setShooterState(shooterIdle);
 				anglerMoveToPos(ANGLER_TOP_POS, 70);
 				moveToTarget((FLAG_X-1), (BLUE_FLAG_Y+1), 127, 40, 1, 12, 30, 0, (stopSoft | stopHarsh), mttProportional);
-				LOG_AUTO(("%d t:%d", nPgmTime, nPgmTime-autoStartTime));
 
 				if (gAutoPark)
 				{

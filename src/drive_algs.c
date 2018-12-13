@@ -189,7 +189,7 @@ void moveToTarget(float x, float y, byte power, byte startPower, float maxErrX, 
 		endCycle(cycle);
 	} while( (currentPosVector.y < -dropEarly - MAX((vel * ((stopType & stopSoft) ? 0.175 : 0.098)), decelEarly)) );
 
-	LOG_AUTO(("%dDone fast %f < %f?. pow:%d, vel:%d, sin%f, xVel:%f, cos%f, yVel:%f. a:%f, velA:%f", nPgmTime, currentPosVector.y,(currentPosVector.y < -dropEarly - MAX((vel * ((stopType & stopSoft) ? 0.175 : 0.098)), decelEarly)), finalPower, vel, _sin, gVelocity.x, _cos, gVelocity.y, decelEarly, gPosition.a, gVelocity.a));
+	LOG_AUTO_2(("%dDone fast %f < %f?. pow:%d, vel:%d, sin%f, xVel:%f, cos%f, yVel:%f. a:%f, velA:%f", nPgmTime, currentPosVector.y,(currentPosVector.y < -dropEarly - MAX((vel * ((stopType & stopSoft) ? 0.175 : 0.098)), decelEarly)), finalPower, vel, _sin, gVelocity.x, _cos, gVelocity.y, decelEarly, gPosition.a, gVelocity.a));
 
 	setDrive(decelPower, decelPower);
 
@@ -462,7 +462,7 @@ void turnToTargetP(float x, float y, word startPower, float stopOffset, bool har
 	word finalPower = startPower;
 
 	if (fmod(atan2(x - gPosition.x, y - gPosition.y) - gPosition.a, PI * 2) > PI) turnDir = ccw; else turnDir = cw;
-	LOG_AUTO(("%d turnToTargetP:%d", nPgmTime, turnDir))
+	LOG_AUTO_2(("%d turnToTargetP:%d", nPgmTime, turnDir))
 
 	switch (turnDir)
 	{
@@ -480,7 +480,7 @@ void turnToTargetP(float x, float y, word startPower, float stopOffset, bool har
 
 			setDrive(finalPower, -finalPower);
 
-			LOG_AUTO(("%d P:%d Err:%f, errRad:%f", nPgmTime, finalPower, radToDeg(error), error))
+			LOG_AUTO_2(("%d P:%d Err:%f, errRad:%f", nPgmTime, finalPower, radToDeg(error), error))
 			sleep(10);
 		} while( error > degToRad(abs(stopOffset)) );
 		break;
@@ -498,17 +498,17 @@ void turnToTargetP(float x, float y, word startPower, float stopOffset, bool har
 
 			setDrive(-finalPower, finalPower);
 
-			LOG_AUTO(("%d P:%d Err:%f, errRad:%f", nPgmTime, finalPower, radToDeg(error), error))
+			LOG_AUTO_2(("%d P:%d Err:%f, errRad:%f", nPgmTime, finalPower, radToDeg(error), error))
 			sleep(10);
 		} while( error < degToRad(-abs(stopOffset)) );
 		break;
 	}
 
-	LOG_AUTO(("%d turnP done(%f,%f) %f targ:%f, err:%f", nPgmTime, gPosition.x, gPosition.y, gPosition.a, radToDeg(target), radToDeg(target-gPosition.a)))
+	LOG_AUTO_2(("%d turnP done(%f,%f) %f targ:%f, err:%f", nPgmTime, gPosition.x, gPosition.y, gPosition.a, radToDeg(target), radToDeg(target-gPosition.a)))
 
 	if (harshStop) applyHarshStop();
 	else setDrive(0,0);
-	LOG_AUTO(("%d turnP exit(%f,%f) %f targ:%f, err:%f T:%d", nPgmTime, gPosition.x, gPosition.y, radToDeg(gPosition.a), radToDeg(target), radToDeg(target-gPosition.a), (nPgmTime-startTime)))
+	LOG_AUTO_2(("%d turnP exit(%f,%f) %f targ:%f, err:%f T:%d", nPgmTime, gPosition.x, gPosition.y, radToDeg(gPosition.a), radToDeg(target), radToDeg(target-gPosition.a), (nPgmTime-startTime)))
 
 }
 
@@ -647,7 +647,7 @@ void turnToTargetAccurate(float x, float y, tAutoTurnDir turnDir, byte left, byt
 			a = gPosition.a + fmod(atan2(x - gPosition.x, y - gPosition.y) + offset - gPosition.a, PI * 2);
 			sleep(1);
 		}
-		LOG_AUTO(("%d turn fast done(%f,%f) %f targ:%f, err:%f vel:%f", nPgmTime, gPosition.x, gPosition.y, gPosition.a, radToDeg(a), radToDeg(a-gPosition.a), gVelocity.a));
+		LOG_AUTO(("%d turn fast done err:%f vel:%f", nPgmTime, radToDeg(a-gPosition.a), gVelocity.a));
 		//
 		state.target = 0.749; //0.940;
 		while (gPosition.a < a + degToRad(-3.5 + (state.target - gVelocity.a) * 0.15))//+ degToRad(-5.3 + (state.target - gVelocity.a) * 0.25))
@@ -655,7 +655,7 @@ void turnToTargetAccurate(float x, float y, tAutoTurnDir turnDir, byte left, byt
 			a = gPosition.a + fmod(atan2(x - gPosition.x, y - gPosition.y) + offset - gPosition.a, PI * 2);
 			turnAccurateInternalCw(a, state);
 		}
-		LOG_AUTO(("%d turn slow done(%f,%f) %f targ:%f, err:%f vel:%f", nPgmTime, gPosition.x, gPosition.y, gPosition.a, radToDeg(a), radToDeg(a-gPosition.a), gVelocity.a));
+		LOG_AUTO(("%d turn slow done err:%f vel:%f", nPgmTime, radToDeg(a-gPosition.a), gVelocity.a));
 		setDrive(-15, 15);
 		sleep(150);
 		setDrive(0, 0);
@@ -670,7 +670,7 @@ void turnToTargetAccurate(float x, float y, tAutoTurnDir turnDir, byte left, byt
 			a = gPosition.a - fmod(gPosition.a - atan2(x - gPosition.x, y - gPosition.y) - offset, PI * 2);
 			sleep(1);
 		}
-		LOG_AUTO(("%d turn fast done(%f,%f) %f targ:%f, err:%f vel:%f", nPgmTime, gPosition.x, gPosition.y, gPosition.a, radToDeg(a), radToDeg(a-gPosition.a), gVelocity.a));
+		LOG_AUTO(("%d turn fast done err:%f vel:%f", nPgmTime, radToDeg(a-gPosition.a), gVelocity.a));
 		//writeDebugStreamLine("%f", gVelocity.a);
 		//
 		state.target = -0.749;//0.940;
@@ -679,7 +679,7 @@ void turnToTargetAccurate(float x, float y, tAutoTurnDir turnDir, byte left, byt
 			a = gPosition.a - fmod(gPosition.a - atan2(x - gPosition.x, y - gPosition.y) - offset, PI * 2);
 			turnAccurateInternalCcw(a, state);
 		}
-		LOG_AUTO(("%d turn slow done(%f,%f) %f targ:%f, err:%f vel:%f", nPgmTime, gPosition.x, gPosition.y, gPosition.a, radToDeg(a), radToDeg(a-gPosition.a), gVelocity.a));
+		LOG_AUTO(("%d turn slow done err:%f vel:%f", nPgmTime, radToDeg(a-gPosition.a), gVelocity.a));
 		setDrive(15, -15);
 		sleep(150);
 		setDrive(0, 0);
