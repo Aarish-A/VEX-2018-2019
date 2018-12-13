@@ -3,7 +3,7 @@
 #define JOY_DRIVE_TURN Ch4
 
 /* Shooter Controls */
-#define BTN_SHOOT Btn7D
+#define BTN_SHOOT Btn7R
 
 /* Intake Controls */
 #define BTN_INTAKE_UP Btn6U
@@ -12,7 +12,7 @@
 /* Angler Controls */
 #define JOY_ANGLER Ch2
 //#define BTN_ANGLER_PICKUP
-#define BTN_ANGLER_GROUND_PICKUP Btn7R
+#define BTN_ANGLER_GROUND_PICKUP Btn7D
 #define BTN_ANGLER_CAP_PICKUP Btn7U
 #define BTN_ANGLER_PF_PICKUP Btn7L
 

@@ -617,8 +617,8 @@ void decapperControls()
 
 #define ANGLER_CAP_FLIP_POS 820
 
-int gAnglerBackTopFlag = 1590; //1430; //1390; //1490
-int gAnglerBackMidFlag = 1340; //1235; //1175; //1270
+int gAnglerBackTopFlag = 1575; //1430; //1390; //1490
+int gAnglerBackMidFlag = 1380; //1235; //1175; //1270
 
 int gAnglerFrontPFTopFlag = 1885;//1790;//1730;
 int gAnglerFrontPFMidFlag = 1460;//1310;
@@ -1421,6 +1421,7 @@ startTask(anglerShooterTask)
 
 //Declarations for ball log
 bool gBallThere = false;
+
 bool gBallThereLst = gBallThere;
 
 float gAnglerSen = SensorValue[anglerPoti];

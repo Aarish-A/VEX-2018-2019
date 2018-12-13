@@ -204,8 +204,8 @@ task handleLCD()
       	float LTurn = (SensorValue[trackL] - gPosition.leftStart) * SPIN_TO_IN_LR; // The amount the left side of the robot moved since the beginning
 				float RTurn = (SensorValue[trackR] - gPosition.rightStart) * SPIN_TO_IN_LR; // The amount the right side of the robot moved since the beginning
       	float t = (float)(LTurn - RTurn);
-      	//sprintf(line1, "(%3.2f, %3.2f)", gPosition.x, gPosition.y);
-      	sprintf(line1, "%d, %d", SensorValue[trackL], SensorValue[trackR]);
+      	sprintf(line1, "(%3.2f, %3.2f)", gPosition.x, gPosition.y);
+      	//sprintf(line1, "%d, %d", SensorValue[trackL], SensorValue[trackR]);
       	sprintf(line2, "a:%3.2f", radToDeg(gPosition.a));
       	//sprintf(line2, "a:%3.2f, t:%3.2f", gPosition.a * 180 / PI, t);
       	displayLCDCenteredString(0, line1);

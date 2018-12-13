@@ -101,9 +101,9 @@ void testTurn(bool right)
 	setDrive(127, 127);
 	sleep(100);
 	if (right)
-		turnToTargetAccurate(RED_FRONT_X-1, RED_FRONT_Y+10, cw, 80, 80, 0);
+		turnToAngleNewAlg(358,cw,0.35,30,30,true);
 	else
-		turnToTargetAccurate(RED_FRONT_X+1, RED_FRONT_Y+10, ccw, 80, 80, 0);
+		turnToAngleNewAlg(2,ccw,0.35,30,30,true);
 
 	setDrive(0,0);
 }
@@ -121,7 +121,7 @@ task main()
 	testTurn(true);
 	while (true)
 	{
-		writeDebugStreamLine("%d (%f, %f) a:%f", nPgmTime, gPosition.x, gPosition.y, gPosition.a);
+		writeDebugStreamLine("%d (%f, %f) a:%f", nPgmTime, gPosition.x, gPosition.y, radToDeg(gPosition.a));
 		sleep(10);
 	}
 	//resetTracking(gPosition, gVelocity, RED_FRONT_X, RED_FRONT_Y, 0);
