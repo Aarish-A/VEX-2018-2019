@@ -247,6 +247,17 @@ task handleLCD()
       	else if (LCD_L) gLCDScreen--;
       	break;
       }
+      case autoLock:
+      {
+      	string autoLock;
+      	sprintf(autoLock, "LockA: %d", gAutoLock);
+      	displayLCDCenteredString(0, autoLock);
+
+      	if (LCD_M) gAutoLock = !gAutoLock;
+      	else if (LCD_R) gLCDScreen++;
+      	else if (LCD_L) gLCDScreen--;
+      	break;
+      }
       case shootTuneMode:
       {
       	displayLCDCenteredString(0, "Shoot Tune Mode?");

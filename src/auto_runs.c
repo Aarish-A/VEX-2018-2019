@@ -1,5 +1,7 @@
 void selectAuto()
 {
+	if (gAutoLock) return;
+
 	if (allianceForce > -1 && autoForce > -1)
 	{
 		gAlliance = allianceForce;

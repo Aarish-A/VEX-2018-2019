@@ -59,6 +59,8 @@ tAuto gAuto = autoBack;
 string gSAuto = S_AUTO_BACK;
 bool gAutoPark = true;
 
+bool gAutoLock = false;
+
 //tFlag gAutoPreloadFlag = flagTop;
 
 void testTurn();

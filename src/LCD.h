@@ -12,6 +12,7 @@ typedef enum _tLCDScreen
   trackingTune,
   shotCount,
   autoSelect,
+  autoLock,
   shootTuneMode,
 
   anglerTargetTuning,
