@@ -1579,6 +1579,10 @@ task autonomous()
 	runAuto(); //runs auto depending on gAuto and gAlliance
 
 	writeDebugStreamLine("%d AutoT:%d", nPgmTime, (nPgmTime-autoStartTime));
+
+	setIntakeState(intakeIdle);
+	setAnglerState(anglerIdle);
+	sleep(10);
 	stopTasks();
 }
 

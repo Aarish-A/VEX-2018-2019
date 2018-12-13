@@ -104,8 +104,10 @@ task main()
 	gBatteryLevel = nImmediateBatteryLevel;
 	writeDebugStreamLine("%d battery:%d", nPgmTime, gBatteryLevel);
 	setupMotors();
-	resetTracking(gPosition, gVelocity, (144-BACK_OFFSET), 14, -90);
+	resetTracking(gPosition, gVelocity, RED_FRONT_X, RED_FRONT_Y, 0);
 	sleep(100);
+
+	moveToTarget(RED_FRONT_X+5, RED_FRONT_Y+40, 127, 40, 1, 12, 30, 0, (stopSoft | stopHarsh), mttProportional);
 
 	//turnToAngleAccurate((23-90), cw, 70, -15, 0);
 
@@ -116,6 +118,9 @@ task main()
 	//datalogAddValueWithTimeStamp(0, gVelocity.a);
 	//sleep(10);
 	//}
+
+
+	/* Tune Velocity Holding Alg */
 
 	//setDrive(80, -80);
 	//while (gVelocity.a < 1.5) sleep(10);
@@ -131,53 +136,13 @@ task main()
 	//		//float a = gPosition.a + fmod(atan2(x - gPosition.x, y - gPosition.y) + offset - gPosition.a, PI * 2);
 	//		turnAccurateInternalCw(200, state);
 	//	}
-	writeDebugStreamLine("%d Forwards", nPgmTime);
-	setDrive(50,50);
-	sleep(100);
-	//while (gPosition.x > (144-BACK_OFFSET-0.1)) sleep(10);
-	writeDebugStreamLine("%d Forwards done", nPgmTime);
-	turnToTargetAccurate(10, -35, ch, 50, 50, 0);
 
-	// reset
-	//setDrive(-60,-15);
-	//LOG_AUTO(("%d motor:%d", nPgmTime, gMotor[driveL].powerCur));
-	//sleep(350);
-	//do{
-	//	LOG_AUTO(("%d vel:%f", nPgmTime, gVelocity.a));
-	//	sleep(10);
-	//}while(gVelocity.a < -0.05);
-	//setDrive(0,0);
-	//setDrive(-15,-60);
-	//LOG_AUTO(("%d motor:%d", nPgmTime, gMotor[driveL].powerCur));
-	//sleep(350);
-	//do{
-	//	LOG_AUTO(("%d vel:%f", nPgmTime, gVelocity.a));
-	//	sleep(10);
-	//}while(gVelocity.a > 0.05);
-	//setDrive(-16,-16);
-
-
-	//Set up turn state structure variables for the internal turnAccurate algorithms
-	//sTurnState state;
-	//state.time = nPgmTime;
-	//state.lstTime = state.time;
-	//state.nextDebug = 0;
-	//state.input = gVelocity.a;
-	//state.power = state.error = state.integral = 0;
-
-	//setDrive(-80, 80);
-	//while (gVelocity.a > -6) sleep(10);
-	//		LOG(auto)("%d done fast", nPgmTime);
-
-	//		unsigned long slowStartTime = nPgmTime;
-
-	//		while ((nPgmTime-slowStartTime) < 4000)
-	//		{
-	//			//float target = gPosition.a + fmod(atan2(x - gPosition.x, y - gPosition.y) - gPosition.a, PI * 2);
-	//			turnAccurateInternalCcw(-90, state);
-	//		}
-
-	//turnToTargetAccurate(40, 0, ch, 80, 80, 0);
-	//turnToTargetP(10, 0, 35, 10, true, 60);
+	/* Test Turn */
+	//writeDebugStreamLine("%d Forwards", nPgmTime);
+	//setDrive(50,50);
+	//sleep(100);
+	////while (gPosition.x > (144-BACK_OFFSET-0.1)) sleep(10);
+	//writeDebugStreamLine("%d Forwards done", nPgmTime);
+	//turnToTargetAccurate(10, -35, ch, 50, 50, 0);
 
 }
