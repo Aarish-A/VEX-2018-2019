@@ -86,7 +86,6 @@ void setDrive(word left, word right)
 	setMotor(driveRY, right);
 }
 
-bool autoLogs = true;
 #include "drive_algs.h"
 #include "drive_algs.c"
 
@@ -94,6 +93,20 @@ bool autoLogs = true;
 #define RED_FRONT_Y 11
 #define RED_BACK_X (115.875 - BACK_OFFSET)
 #define RED_BACK_Y 11
+
+void testTurn(bool right)
+{
+	resetTracking(gPosition, gVelocity, RED_FRONT_X, RED_FRONT_Y, 0);
+	sleep(10);
+	setDrive(127, 127);
+	sleep(100);
+	if (right)
+		turnToTargetAccurate(RED_FRONT_X-1, RED_FRONT_Y+10, cw, 80, 80, 0);
+	else
+		turnToTargetAccurate(RED_FRONT_X+1, RED_FRONT_Y+10, ccw, 80, 80, 0);
+
+	setDrive(0,0);
+}
 
 //#define BACK_OFFSET (3.875+S_DISTANCE_IN)
 
@@ -104,10 +117,17 @@ task main()
 	gBatteryLevel = nImmediateBatteryLevel;
 	writeDebugStreamLine("%d battery:%d", nPgmTime, gBatteryLevel);
 	setupMotors();
-	resetTracking(gPosition, gVelocity, RED_FRONT_X, RED_FRONT_Y, 0);
-	sleep(100);
 
-	moveToTarget(RED_FRONT_X+5, RED_FRONT_Y+40, 127, 40, 1, 12, 30, 0, (stopSoft | stopHarsh), mttProportional);
+	testTurn(true);
+	while (true)
+	{
+		writeDebugStreamLine("%d (%f, %f) a:%f", nPgmTime, gPosition.x, gPosition.y, gPosition.a);
+		sleep(10);
+	}
+	//resetTracking(gPosition, gVelocity, RED_FRONT_X, RED_FRONT_Y, 0);
+	//sleep(100);
+
+	//moveToTarget(RED_FRONT_X+5, RED_FRONT_Y+40, 127, 40, 1, 12, 30, 0, (stopSoft | stopHarsh), mttProportional);
 
 	//turnToAngleAccurate((23-90), cw, 70, -15, 0);
 
