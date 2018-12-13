@@ -59,6 +59,8 @@ bool gAutoPark = true;
 
 //tFlag gAutoPreloadFlag = flagTop;
 
+void testTurn();
+
 void selectAuto(); //selects auto based on potentiometer and gAutoPreloadFlag variable
 void runAuto(); //runs auto depending on gAuto
 

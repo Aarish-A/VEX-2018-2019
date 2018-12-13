@@ -34,6 +34,8 @@
 
 #define BTN_SHIFT Btn5U
 
+#define BTN_TEST_TURN (BTN_DECAPPER_MOVE)
+
 void enableAllButtons()
 {
 	for (TVexJoysticks btn = Btn5D; btn <= Btn7R; btn++)

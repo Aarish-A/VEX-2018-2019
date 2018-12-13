@@ -400,3 +400,15 @@ void anglerUnderAxle()
 		while (SensorValue[anglerPoti] >= ANGLER_AXEL_POS) sleep(10);
 	}
 }
+
+void testTurn(bool right)
+{
+	resetTracking(gPosition, gVelocity, RED_FRONT_X, RED_FRONT_Y, 0);
+	sleep(10);
+	setDrive(127, 127);
+	sleep(100);
+	if (right)
+		turnToTargetAccurate(RED_FRONT_X-1, RED_FRONT_Y+10, cw, 80, 80, 0);
+	else
+		turnToTargetAccurate(RED_FRONT_X+1, RED_FRONT_Y+10, ccw, 80, 80, 0);
+}

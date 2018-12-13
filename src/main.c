@@ -7,6 +7,7 @@
 #pragma config(Sensor, dgtl5,  trackR,         sensorQuadEncoder)
 #pragma config(Sensor, dgtl7,  shooterEnc,     sensorQuadEncoder)
 #pragma config(Sensor, dgtl9,  LED1,           sensorLEDtoVCC)
+#pragma config(Sensor, dgtl10, jmpr,           sensorTouch)
 #pragma config(Motor,  port1,           decapper,      tmotorVex393_HBridge, openLoop, reversed)
 #pragma config(Motor,  port2,           driveLY,       tmotorVex393TurboSpeed_MC29, openLoop, reversed)
 #pragma config(Motor,  port3,           intake,        tmotorVex393TurboSpeed_MC29, openLoop)
@@ -1616,7 +1617,7 @@ task usercontrol()
 			intakeControls();
 
 		/* Decapper Controls */
-		if (!gAnglerShooterTaskRunning)
+		if (!gAnglerShooterTaskRunning && !SensorValue[jmpr])
 			decapperControls();
 
 		/* Shooter & Angler Controls */
@@ -1720,7 +1721,7 @@ task usercontrol()
 			}
 			else if (RISING(BTN_ANGLER_PF_PICKUP))
 			{
-				if (vexRT[BTN_SHIFT])
+				if (gJoy[BTN_SHIFT].cur)
 				{
 					writeDebugStreamLine(" > %d Anglr: u_cap p_u pos <", nPgmTime);
 					anglerMoveToPos(ANGLER_BELOW_CAP_PICKUP_POS, 20);
@@ -1735,6 +1736,12 @@ task usercontrol()
 			{
 				setAnglerState(anglerManual);
 			}
+		}
+
+		/* Jmpr Code */
+		if (SensorValue[jmpr] && RISING(BTN_TEST_TURN))
+		{
+			testTurn(gJoy[BTN_SHIFT].cur);
 		}
 
 		endCycle(cycle);
