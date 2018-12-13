@@ -309,15 +309,15 @@ void runAuto()
 				setIntakeState(intakeIdle);
 				setShooterState(shooterIdle);
 				anglerMoveToPos(ANGLER_TOP_POS, 70);
-				moveToTarget((FLAG_X-1), BLUE_FLAG_Y, 127, 40, 3, 12, 30, 0, (stopSoft | stopHarsh), mttProportional);
+				moveToTarget((FLAG_X-1), (BLUE_FLAG_Y+1), 127, 40, 1, 12, 30, 0, (stopSoft | stopHarsh), mttProportional);
 				LOG_AUTO(("%d t:%d", nPgmTime, nPgmTime-autoStartTime));
 
 				if (gAutoPark)
 				{
 					//5 Back up and get on platform
-					moveToTarget(80, BLUE_FLAG_Y, -90, -40, 4, 12, -30, 0, (stopSoft | stopHarsh), mttProportional);
+					moveToTarget(81, BLUE_FLAG_Y, -90, -40, 4, 12, -30, 0, (stopSoft | stopHarsh), mttProportional);
 					//turnToTargetAccurate(82, (144-50), ch, 80, 80, 0);
-					turnToAngleNewAlg(180,ch,0.35,20,10,true);
+					turnToTargetNewAlg(81,(144-50),ch,0.35,20,10,true);
 					setDrive(90, 90);
 					sleep(400);
 					while (gVelocity.y < -0.1)
@@ -365,7 +365,7 @@ void runAuto()
 				if (gAutoPark)
 				{
 					//4 Get on platform
-					moveToTarget(81, RED_FLAG_Y, 90, 40, 4, 12, 30, 0, (stopSoft | stopHarsh), mttProportional);
+					moveToTarget(81, BLUE_FLAG_Y, 90, 40, 4, 12, 30, 0, (stopSoft | stopHarsh), mttProportional);
 					turnToTargetNewAlg(81,(144-50),ch,0.35,20,10,true);
 					setDrive(90, 90);
 					sleep(400);
