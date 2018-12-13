@@ -300,8 +300,8 @@ void runAuto()
 				moveToTarget(BLUE_FRONT_X, (144-20), -127, -40, 4, 12, -30, 0, (stopSoft | stopHarsh), mttProportional);
 
 				//3 Turn and shoot
-				//turnToAngleNewAlg(-91,ch,0.35,20,10,true);
-				turnToTargetAccurate(FLAG_X, BLUE_FLAG_Y, ch, 80, 80, 0);
+				turnToTargetAccurate(11, (144-16), ch, 80, 80, 0);
+				//turnToTargetAccurate(FLAG_X, BLUE_FLAG_Y, ch, 80, 80, 0);
 				angleShoot(gAnglerFrontPFMidFlag, 70, false, MAX_ANGLE_TIME_FRONT, BTN_SHOOT, dummyNextShot);
 				angleShoot(gAnglerFrontPFTopFlag, 70, true, MAX_ANGLE_TIME_FRONT, BTN_SHOOT, dummyNextShot);
 
