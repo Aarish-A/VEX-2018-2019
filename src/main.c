@@ -1585,7 +1585,7 @@ task autonomous()
 	setIntakeState(intakeIdle);
 	setAnglerState(anglerIdle);
 	sleep(10);
-	stopTasks();
+	//stopTasks();
 }
 
 task usercontrol()
