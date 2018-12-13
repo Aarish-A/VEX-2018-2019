@@ -51,6 +51,8 @@ typedef enum _tFlag
 	flagBottom
 } tFlag;
 
+sNextShot gDummyNextShot; //Dummy variable to pass to angleShot function
+
 tAlliance gAlliance = allianceRed;
 string gSAlliance = S_ALLIANCE_RED;
 tAuto gAuto = autoBack;
@@ -65,3 +67,5 @@ void selectAuto(); //selects auto based on potentiometer and gAutoPreloadFlag va
 void runAuto(); //runs auto depending on gAuto
 
 void anglerUnderAxle(); //waits for angler to move below the axle (call at beginning of auton, before shooting)
+void redFrontBeginning(bool skills); //used for red front auto and skills
+void redFrontPark(bool skills); //used for red front auto and skills
