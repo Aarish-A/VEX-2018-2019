@@ -53,7 +53,6 @@ bool anglerDatalog = false;
 #include "log_toggle.h"
 /* /////////////////////// */
 
-
 #define LOG(machineIn) if(machineIn##Logs) writeDebugStreamLine
 
 unsigned char _hogLevel = 0;
