@@ -549,14 +549,14 @@ void turnAccurateInternalCw(float a, sTurnState& state)
 
 		}
 
-		datalogDataGroupStart();
-		datalogAddValue(0, 10*gVelocity.a);
-		datalogAddValue(1, state.power);
-		datalogAddValue(2, state.error*10);
-		datalogAddValue(3, (state.error*kP));
-		datalogAddValue(4, (state.integral*kI));
-		datalogAddValue(5, state.target*10);
-		datalogDataGroupEnd();
+		//datalogDataGroupStart();
+		//datalogAddValue(0, 10*gVelocity.a);
+		//datalogAddValue(1, state.power);
+		//datalogAddValue(2, state.error*10);
+		//datalogAddValue(3, (state.error*kP));
+		//datalogAddValue(4, (state.integral*kI));
+		//datalogAddValue(5, state.target*10);
+		//datalogDataGroupEnd();
 
 		state.lstTime = state.time;
 	}
@@ -602,14 +602,14 @@ void turnAccurateInternalCcw(float a, sTurnState& state)
 
 		}
 
-		datalogDataGroupStart();
-		datalogAddValue(0, 10*gVelocity.a);
-		datalogAddValue(1, state.power);
-		datalogAddValue(2, state.error*10);
-		datalogAddValue(3, (state.error*kP));
-		datalogAddValue(4, (state.integral*kI));
-		datalogAddValue(5, state.target*10);
-		datalogDataGroupEnd();
+		//datalogDataGroupStart();
+		//datalogAddValue(0, 10*gVelocity.a);
+		//datalogAddValue(1, state.power);
+		//datalogAddValue(2, state.error*10);
+		//datalogAddValue(3, (state.error*kP));
+		//datalogAddValue(4, (state.integral*kI));
+		//datalogAddValue(5, state.target*10);
+		//datalogDataGroupEnd();
 
 		state.lstTime = state.time;
 	}
