@@ -1,0 +1,183 @@
+  
+
+ 577781 Cycle driveCycle Took 12 instead of 10
+577993 Angler State Set 2 anglerHold. Targ:1380, Sen:1303, Time:577993, GoodCount:0. AccRange:25
+	>> 578266 AnglerWait took 500ms. Pos: 1331
+578266 Shooter State Set 4 shooterShoot, dTimeLst:495ms, Count:55, Sen:20057, Targ:19845, NextTarg:20205
+578732 ShotBrake: TElpsd:460 Pos:20205 
+  > 578732 BALL HIT. Angler pos:1398 pow:-1. Err:-18
+	> 578732 Ball Off (3047). Shooter:20205 Angler:1398 (err:-18). Vel:0.800000
+578812 Shooter State Set 2 shooterReload, dTimeLst:546ms, Count:56, Sen:20224, Targ:20205, NextTarg:20565
+	>> 578816 Sht+Angl t:1050ms. Shot t:550ms
+Resetting position 133.929214 10.581519 260.219482 | 133.125000 14.000000 -1.570796
+>>578817 AnglShot2
+578817 Angler State Set 1 anglerMove. Targ:1575, Sen:1408, Time:578817, GoodCount:0. AccRange:25
+578843 Angler State Set 2 anglerHold. Targ:1575, Sen:1402, Time:578843, GoodCount:0. AccRange:25
+Turning to 63.000000 10.000000
+-1.193668
+579057 turn fast done err:19.476734 vel:0.567744
+579192 Reloaded to 20392. Targ: 20390
+579192 Shooter State Set 3 shooterHold, dTimeLst:380ms, Count:56, Sen:20392, Targ:20205, NextTarg:20565
+	>> 579197 Reload took:380ms.
+ >> 579197 waitTimeAbs = 500, waitTimeRel = 579317
+	> 579232 Ball Detected (1693). Shooter:20408 Angler:1601 (err:-26). Vel:-0.300000
+	>> 579317 AnglerWait took 500ms. Pos: 1601
+579317 Shooter State Set 4 shooterShoot, dTimeLst:125ms, Count:56, Sen:20410, Targ:20205, NextTarg:20565
+579416 turn slow done err:3.347278 vel:0.461859
+579566 turn break done(130.744110,13.950019) -1.221633 targ:-67.980835, err:2.013574 vel:0.094626
+Turned to 63.000000 10.000000 | 13.950019 130.744110 -69.994415
+579567 Start Drive Machine. S:0
+579578 BackPivot t:761
+579792 ShotBrake: TElpsd:470 Pos:20568 
+  > 579792 BALL HIT. Angler pos:1603 pow:-8. Err:-29
+	> 579793 Ball Off (3091). Shooter:20567 Angler:1604 (err:-29). Vel:0.600000
+579872 Shooter State Set 2 shooterReload, dTimeLst:555ms, Count:57, Sen:20578, Targ:20565, NextTarg:20925
+	>> 579878 Sht+Angl t:1061ms. Shot t:561ms
+ >> 579878 Anglr(sht): grnd p_u pos
+579878 Angler State Set 1 anglerMove. Targ:900, Sen:1600, Time:579878, GoodCount:0. AccRange:150
+	>> 579878 Done pntSht in 2112ms. Anglr:1600. Shooter:20578
+580177 Angler State Set 2 anglerHold. Targ:900, Sen:926, Time:580177, GoodCount:0. AccRange:150
+580252 Reloaded to 20752. Targ: 20750
+580252 Shooter State Set 3 shooterHold, dTimeLst:380ms, Count:57, Sen:20752, Targ:20565, NextTarg:20925
+	> 584173 Ball Detected (1753). Shooter:20772 Angler:793 (err:107). Vel:-0.100000
+ > 595538 Bck Shoot T <
+ >595538 AnglrShooter: FrstPos:1575. Wait?1. ScndPos:1380. Wait?1. CurAnglrPos:794
+>>595539 AnglShot1
+595539 Shooter State Set 2 shooterReload, dTimeLst:15287ms, Count:57, Sen:20772, Targ:20565, NextTarg:20925
+595539 Angler State Set 1 anglerMove. Targ:1575, Sen:794, Time:595539, GoodCount:0. AccRange:25
+595542 Reloaded to 20772. Targ: 20750
+595542 Shooter State Set 3 shooterHold, dTimeLst:3ms, Count:57, Sen:20772, Targ:20565, NextTarg:20925
+	>> 595549 Reload took:10ms.
+ >> 595549 waitTimeAbs = 500, waitTimeRel = 596039
+ 595558 Cycle driveCycle Took 11 instead of 10
+595817 Angler State Set 2 anglerHold. Targ:1575, Sen:1453, Time:595817, GoodCount:0. AccRange:25
+	>> 596039 AnglerWait took 500ms. Pos: 1540
+596039 Shooter State Set 4 shooterShoot, dTimeLst:497ms, Count:57, Sen:20772, Targ:20565, NextTarg:20925
+	> 596503 Ball Off (2412). Shooter:20924 Angler:1614 (err:-39). Vel:0.500000
+596503 ShotBrake: TElpsd:460 Pos:20924 
+  > 596503 BALL HIT. Angler pos:1615 pow:-7. Err:-40
+596584 Shooter State Set 2 shooterReload, dTimeLst:545ms, Count:58, Sen:20940, Targ:20925, NextTarg:21285
+	>> 596589 Sht+Angl t:1050ms. Shot t:550ms
+Resetting position 130.905106 14.226789 289.783325 | 133.125000 14.000000 -1.570796
+	>> 596589 Done pntSht in 1050ms. Anglr:1627. Shooter:20940
+596964 Reloaded to 21112. Targ: 21110
+596964 Shooter State Set 3 shooterHold, dTimeLst:380ms, Count:58, Sen:21112, Targ:20925, NextTarg:21285
+nt:30, Sen:11032, Targ:10845, NextTarg:11205
+	> 399293 Ball Detected (1918). Shooter:11046 Angler:835 (err:65). Vel:-0.100000
+	> 399313 Ball Off (2020). Shooter:11046 Angler:833 (err:67). Vel:-0.100000
+	> 399373 Ball Detected (1988). Shooter:11046 Angler:850 (err:50). Vel:0.800000
+	> 399843 Ball Off (2335). Shooter:11046 Angler:1026 (err:-126). Vel:0.300000
+	> 400313 Ball Detected (1989). Shooter:11046 Angler:1020 (err:-120). Vel:-0.100000
+	> 402443 Ball Off (2017). Shooter:11046 Angler:878 (err:22). Vel:-0.200000
+	> 402513 Ball Detected (1987). Shooter:11046 Angler:866 (err:34). Vel:-0.200000
+	> 405103 Ball Off (2211). Shooter:11046 Angler:856 (err:44). Vel:-0.300000
+	> 405143 Ball Detected (1719). Shooter:11046 Angler:872 (err:28). Vel:-0.200000
+ > 405535 Anglr: grnd p_u pos <
+405535 Angler State Set 1 anglerMove. Targ:900, Sen:798, Time:405535, GoodCount:0. AccRange:150
+405559 Angler State Set 2 anglerHold. Targ:900, Sen:797, Time:405559, GoodCount:0. AccRange:150
+ > 409567 Bck Shoot M <
+ >409568 AnglrShooter: FrstPos:1380. Wait?1. ScndPos:1575. Wait?1. CurAnglrPos:793
+>>409568 AnglShot1
+409568 Shooter State Set 2 shooterReload, dTimeLst:17829ms, Count:30, Sen:11046, Targ:10845, NextTarg:11205
+409568 Angler State Set 1 anglerMove. Targ:1380, Sen:793, Time:409568, GoodCount:0. AccRange:25
+409569 Reloaded to 11046. Targ: 11030
+409570 Shooter State Set 3 shooterHold, dTimeLst:2ms, Count:30, Sen:11046, Targ:10845, NextTarg:11205
+	>> 409578 Reload took:10ms.
+ >> 409578 waitTimeAbs = 500, waitTimeRel = 410068
+409769 Angler State Set 2 anglerHold. Targ:1380, Sen:1256, Time:409769, GoodCount:0. AccRange:25
+ 410037 Cycle driveCycle Took 11 instead of 10
+	>> 410068 AnglerWait took 500ms. Pos: 1347
+410068 Shooter State Set 4 shooterShoot, dTimeLst:498ms, Count:30, Sen:11046, Targ:10845, NextTarg:11205
+	> 410553 Ball Off (3087). Shooter:11207 Angler:1389 (err:-9). Vel:0.800000
+410561 ShotBrake: TElpsd:490 Pos:11205 
+  > 410561 BALL HIT. Angler pos:1393 pow:-1. Err:-13
+410641 Shooter State Set 2 shooterReload, dTimeLst:573ms, Count:31, Sen:11222, Targ:11205, NextTarg:11565
+	>> 410648 Sht+Angl t:1080ms. Shot t:580ms
+Resetting position 144.584396 74.915268 233.201431 | 133.125000 14.000000 -1.570796
+>>410648 AnglShot2
+410649 Angler State Set 1 anglerMove. Targ:1380, Sen:1401, Time:410649, GoodCount:0. AccRange:25
+410669 Angler State Set 2 anglerHold. Targ:1380, Sen:1397, Time:410669, GoodCount:0. AccRange:25
+Turning to 63.000000 10.000000
+-1.191267
+410893 turn fast done err:20.014194 vel:0.851617
+411021 Reloaded to 11394. Targ: 11390
+411021 Shooter State Set 3 shooterHold, dTimeLst:380ms, Count:31, Sen:11394, Targ:11205, NextTarg:11565
+	>> 411029 Reload took:380ms.
+ >> 411029 waitTimeAbs = 500, waitTimeRel = 411149
+	> 411063 Ball Detected (1688). Shooter:11410 Angler:1358 (err:22). Vel:-0.600000
+	>> 411149 AnglerWait took 500ms. Pos: 1356
+411149 Shooter State Set 4 shooterShoot, dTimeLst:128ms, Count:31, Sen:11412, Targ:11205, NextTarg:11565
+411226 turn slow done err:3.282193 vel:0.473121
+411378 turn break done(131.358170,16.544157) -1.225513 targ:-68.935059, err:1.281630 vel:0.092370
+Turned to 63.000000 10.000000 | 16.544157 131.358170 -70.216690
+411378 Start Drive Machine. S:0
+411389 BackPivot t:741
+411612 ShotBrake: TElpsd:460 Pos:11563 
+	> 411614 Ball Off (2133). Shooter:11566 Angler:1405 (err:-25). Vel:0.100000
+  > 411622 BALL HIT. Angler pos:1413 pow:-5. Err:-33
+411692 Shooter State Set 2 shooterReload, dTimeLst:543ms, Count:32, Sen:11572, Targ:11565, NextTarg:11925
+	>> 411699 Sht+Angl t:1050ms. Shot t:550ms
+ >> 411699 Anglr(sht): grnd p_u pos
+411699 Angler State Set 1 anglerMove. Targ:900, Sen:1422, Time:411699, GoodCount:0. AccRange:150
+	>> 411699 Done pntSht in 2131ms. Anglr:1422. Shooter:11572
+411952 Angler State Set 2 anglerHold. Targ:900, Sen:880, Time:411952, GoodCount:0. AccRange:150
+412082 Reloaded to 11752. Targ: 11750
+412082 Shooter State Set 3 shooterHold, dTimeLst:390ms, Count:32, Sen:11752, Targ:11565, NextTarg:11925
+:58, Sen:20954, Targ:20925, NextTarg:21285
+840566 Reloaded to 21111. Targ: 21110
+840566 Shooter State Set 3 shooterHold, dTimeLst:350ms, Count:58, Sen:21111, Targ:20925, NextTarg:21285
+ > 846131 Anglr: grnd p_u pos <
+846131 Angler State Set 1 anglerMove. Targ:900, Sen:1372, Time:846131, GoodCount:0. AccRange:150
+846397 Angler State Set 2 anglerHold. Targ:900, Sen:901, Time:846397, GoodCount:0. AccRange:150
+	> 852104 Ball Detected (1409). Shooter:21128 Angler:987 (err:-87). Vel:-0.400000
+	> 853544 Ball Off (2025). Shooter:21128 Angler:918 (err:-18). Vel:0.000000
+	> 853574 Ball Detected (1876). Shooter:21128 Angler:918 (err:-18). Vel:0.000000
+	> 857014 Ball Off (2095). Shooter:21128 Angler:844 (err:56). Vel:0.000000
+	> 857044 Ball Detected (1849). Shooter:21128 Angler:847 (err:53). Vel:0.000000
+	> 859564 Ball Off (2131). Shooter:21128 Angler:859 (err:41). Vel:-0.200000
+	> 859624 Ball Detected (1954). Shooter:21128 Angler:807 (err:93). Vel:-0.300000
+	> 860624 Ball Off (2036). Shooter:21128 Angler:826 (err:74). Vel:-3.000000
+	> 860734 Ball Detected (1741). Shooter:21128 Angler:812 (err:88). Vel:1.200000
+ > 863692 Anglr: grnd p_u pos <
+863692 Angler State Set 1 anglerMove. Targ:900, Sen:792, Time:863692, GoodCount:0. AccRange:150
+863717 Angler State Set 2 anglerHold. Targ:900, Sen:792, Time:863717, GoodCount:0. AccRange:150
+ > 871931 Bck Shoot M <
+ >871931 AnglrShooter: FrstPos:1380. Wait?1. ScndPos:1575. Wait?1. CurAnglrPos:787
+>>871931 AnglShot1
+871931 Shooter State Set 2 shooterReload, dTimeLst:31365ms, Count:58, Sen:21128, Targ:20925, NextTarg:21285
+871932 Angler State Set 1 anglerMove. Targ:1380, Sen:787, Time:871932, GoodCount:0. AccRange:25
+871936 Reloaded to 21128. Targ: 21110
+871936 Shooter State Set 3 shooterHold, dTimeLst:5ms, Count:58, Sen:21128, Targ:20925, NextTarg:21285
+	>> 871942 Reload took:11ms.
+ >> 871942 waitTimeAbs = 500, waitTimeRel = 872431
+ 871943 Cycle driveCycle Took 11 instead of 10
+872127 Angler State Set 2 anglerHold. Targ:1380, Sen:1247, Time:872127, GoodCount:0. AccRange:25
+	>> 872432 AnglerWait took 501ms. Pos: 1361
+872432 Shooter State Set 4 shooterShoot, dTimeLst:496ms, Count:58, Sen:21128, Targ:20925, NextTarg:21285
+872907 ShotBrake: TElpsd:470 Pos:21283 
+	> 872914 Ball Off (3083). Shooter:21290 Angler:1387 (err:-7). Vel:0.600000
+  > 872917 BALL HIT. Angler pos:1385 pow:0. Err:-5
+872987 Shooter State Set 2 shooterReload, dTimeLst:555ms, Count:59, Sen:21296, Targ:21285, NextTarg:21645
+	>> 872992 Sht+Angl t:1061ms. Shot t:560ms
+Resetting position 96.837051 62.739189 186.521713 | 133.125000 14.000000 -1.570796
+>>872992 AnglShot2
+872993 Angler State Set 1 anglerMove. Targ:1575, Sen:1404, Time:872993, GoodCount:0. AccRange:25
+873017 Angler State Set 2 anglerHold. Targ:1575, Sen:1397, Time:873017, GoodCount:0. AccRange:25
+873367 Reloaded to 21474. Targ: 21470
+873367 Shooter State Set 3 shooterHold, dTimeLst:380ms, Count:59, Sen:21474, Targ:21285, NextTarg:21645
+	>> 873374 Reload took:381ms.
+ >> 873374 waitTimeAbs = 500, waitTimeRel = 873493
+	> 873374 Ball Detected (1552). Shooter:21476 Angler:1576 (err:-1). Vel:0.400000
+	>> 873494 AnglerWait took 501ms. Pos: 1587
+873494 Shooter State Set 4 shooterShoot, dTimeLst:127ms, Count:59, Sen:21490, Targ:21285, NextTarg:21645
+	> 873946 Ball Off (3086). Shooter:21648 Angler:1593 (err:-18). Vel:0.700000
+873947 ShotBrake: TElpsd:450 Pos:21648 
+  > 873947 BALL HIT. Angler pos:1594 pow:-2. Err:-19
+874027 Shooter State Set 2 shooterReload, dTimeLst:533ms, Count:60, Sen:21664, Targ:21645, NextTarg:22005
+	>> 874034 Sht+Angl t:1041ms. Shot t:540ms
+ >> 874034 Anglr(sht): grnd p_u pos
+874034 Angler State Set 1 anglerMove. Targ:900, Sen:1604, Time:874034, GoodCount:0. AccRange:150
+	>> 874034 Done pntSht in 2103ms. Anglr:1604. Shooter:21664
+874317 Angler State Set 2 anglerHold. Targ:900, Sen:921, Time:874317, GoodCount:0. AccRange:150
+874397 Reloaded to 21832. Targ: 21830
+874397 Shooter State Set 3 shooterHold, dTimeLst:370ms, Count:60, Sen:21832, Targ:21645, NextTarg:22005

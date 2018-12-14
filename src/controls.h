@@ -12,13 +12,13 @@
 /* Angler Controls */
 #define JOY_ANGLER Ch2
 //#define BTN_ANGLER_PICKUP
-#define BTN_ANGLER_GROUND_PICKUP Btn7D
+#define BTN_ANGLER_GROUND_PICKUP Btn5D
 #define BTN_ANGLER_CAP_PICKUP Btn7U
 #define BTN_ANGLER_PF_PICKUP Btn7L
 
 /* Decapper Controls */
 #define JOY_DECAPPER Ch1
-#define BTN_DECAPPER_MOVE Btn5D
+#define BTN_DECAPPER_MOVE Btn7D
 
 /* Macros */
 	//Shot Trigger
