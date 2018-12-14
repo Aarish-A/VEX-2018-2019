@@ -382,14 +382,17 @@ void redFrontPark(bool skills)
 
 void testTurn(bool right)
 {
+	stopTask(driveStateSet);
+	writeDebugStreamLine("%d Test Turn", nPgmTime);
 	resetTracking(gPosition, gVelocity, RED_FRONT_X, RED_FRONT_Y, 0);
 	sleep(10);
-	setDrive(127, 127);
-	sleep(100);
+	setDrive(60, 60);
+	sleep(200);
 	if (right)
-		turnToAngleNewAlg(358,cw,0.35,30,30,true);
+		turnToAngleNewAlg(359,cw,0.15,30,30,true);
 	else
-		turnToAngleNewAlg(2,ccw,0.35,30,30,true);
+		turnToAngleNewAlg(1,ccw,0.15,30,30,true);
 
 	setDrive(0,0);
+	startTask(driveStateSet);
 }

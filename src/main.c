@@ -1024,11 +1024,11 @@ task backPivotTask()
 	unsigned long startTime = nPgmTime;
 	stopTask(driveStateSet);
 	sleep(10);
-	setDrive(60, 60);
+	setDrive(50, 50);
 	tRelease();
 	sleep(100);
 	tHog();
-	turnToTargetAccurate(10, gBackPivotYTarg, ch, 50, 50, 0);
+	turnToTargetAccurate(10, gBackPivotYTarg, ch, 33, 33, 0);
 	startTask(driveStateSet);
 	tRelease();
 	sleep(10);

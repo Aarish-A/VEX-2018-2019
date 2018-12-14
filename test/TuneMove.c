@@ -99,12 +99,12 @@ void testTurn(bool right)
 {
 	resetTracking(gPosition, gVelocity, RED_FRONT_X, RED_FRONT_Y, 0);
 	sleep(10);
-	setDrive(127, 127);
-	sleep(100);
+	setDrive(60, 60);
+	sleep(200);
 	if (right)
-		turnToAngleNewAlg(358,cw,0.35,30,30,true);
+		turnToAngleNewAlg(358,cw,0.15,30,30,true);
 	else
-		turnToAngleNewAlg(2,ccw,0.35,30,30,true);
+		turnToAngleNewAlg(2,ccw,0.15,30,30,true);
 
 	setDrive(0,0);
 }
@@ -119,7 +119,7 @@ task main()
 	writeDebugStreamLine("%d battery:%d", nPgmTime, gBatteryLevel);
 	setupMotors();
 
-	//testTurn(true);
+	testTurn(false);
 	//while (true)
 	//{
 	//	writeDebugStreamLine("%d (%f, %f) a:%f", nPgmTime, gPosition.x, gPosition.y, radToDeg(gPosition.a));
@@ -142,22 +142,23 @@ task main()
 
 
 	/* Tune Velocity Holding Alg */
-	resetTracking(gPosition, gVelocity, (144-BACK_OFFSET), 14, -90);
-	sleep(10);
-	setDrive(80, -80);
-	while (gVelocity.a < 3.5) sleep(10);
-	sTurnState state;
-	state.time = nPgmTime;
-	state.lstTime = state.time;
-	state.nextDebug = 0;
-	state.input = gVelocity.a;
-	state.power = state.error = state.integral = 0;
-	state.target = 0.780;
-	while (true)
-		{
-			//float a = gPosition.a + fmod(atan2(x - gPosition.x, y - gPosition.y) + offset - gPosition.a, PI * 2);
-			turnAccurateInternalCw(200, state);
-		}
+	//resetTracking(gPosition, gVelocity, (144-BACK_OFFSET), 14, -90);
+	//sleep(10);
+	//setDrive(-80, 80);
+	//sleep(50);
+	//while (gVelocity.a > -1) sleep(10);
+	//sTurnState state;
+	//state.time = nPgmTime;
+	//state.lstTime = state.time;
+	//state.nextDebug = 0;
+	//state.input = gVelocity.a;
+	//state.power = state.error = state.integral = 0;
+	//state.target = -0.780;
+	//while (true)
+	//	{
+	//		//float a = gPosition.a + fmod(atan2(x - gPosition.x, y - gPosition.y) + offset - gPosition.a, PI * 2);
+	//		turnAccurateInternalCcw(200, state);
+	//	}
 
 	///* Test Turn */
 	//resetTracking(gPosition, gVelocity, (144-BACK_OFFSET), 14, -90);

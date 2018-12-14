@@ -654,7 +654,7 @@ void turnToTargetAccurate(float x, float y, tAutoTurnDir turnDir, byte left, byt
 		LOG_AUTO(("%d turn fast done err:%f vel:%f", nPgmTime, radToDeg(a-gPosition.a), gVelocity.a));
 		//
 		state.target = 0.78; //0.940;
-		while (gPosition.a < a + degToRad(-3.5 + (state.target - gVelocity.a) * 0.15))//+ degToRad(-5.3 + (state.target - gVelocity.a) * 0.25))
+		while (gPosition.a < a + degToRad(-3.6 + (state.target - gVelocity.a) * 0.1))//+ degToRad(-5.3 + (state.target - gVelocity.a) * 0.25))
 		{
 			a = gPosition.a + fmod(atan2(x - gPosition.x, y - gPosition.y) + offset - gPosition.a, PI * 2);
 			turnAccurateInternalCw(a, state);
@@ -678,7 +678,7 @@ void turnToTargetAccurate(float x, float y, tAutoTurnDir turnDir, byte left, byt
 		//writeDebugStreamLine("%f", gVelocity.a);
 		//
 		state.target = -0.78;//0.940;
-		while (gPosition.a > a - degToRad(-3.5 + (state.target - gVelocity.a) * 0.15))
+		while (gPosition.a > a - degToRad(-3.6 + (state.target - gVelocity.a) * 0.1))//+ (state.target - gVelocity.a) * 0.15
 		{
 			a = gPosition.a - fmod(gPosition.a - atan2(x - gPosition.x, y - gPosition.y) - offset, PI * 2);
 			turnAccurateInternalCcw(a, state);
