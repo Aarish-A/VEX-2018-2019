@@ -36,6 +36,7 @@ bool anglerAlgLogs = false;
 
 #define MACRO_LOGS 1
 
+#define AUTO_LOGS_2 1
 #define AUTO_LOGS 1
 
 #include "../src/log_toggle.h"
@@ -131,42 +132,42 @@ task main()
 
 	//turnToAngleAccurate((23-90), cw, 70, -15, 0);
 //resetTracking(gPosition, gVelocity, (144-BACK_OFFSET), 14, -90);
-//	setDrive(29, -29);
+//	setDrive(31, -31);
 //	while (true)
 //	{
 //		writeDebugStreamLine("%f", gVelocity.a*100);
-//	datalogAddValueWithTimeStamp(0, gVelocity.a);
+//	datalogAddValueWithTimeStamp(0, gVelocity.a*10);
 //	sleep(10);
 //	}
 
 
 	/* Tune Velocity Holding Alg */
-	//resetTracking(gPosition, gVelocity, (144-BACK_OFFSET), 14, -90);
-	//sleep(10);
-	//setDrive(80, -80);
-	//while (gVelocity.a < 1) sleep(10);
-	//sTurnState state;
-	//state.time = nPgmTime;
-	//state.lstTime = state.time;
-	//state.nextDebug = 0;
-	//state.input = gVelocity.a;
-	//state.power = state.error = state.integral = 0;
-	//state.target = 0.840;
-	//while (true)
-	//	{
-	//		//float a = gPosition.a + fmod(atan2(x - gPosition.x, y - gPosition.y) + offset - gPosition.a, PI * 2);
-	//		turnAccurateInternalCw(200, state);
-	//	}
+	resetTracking(gPosition, gVelocity, (144-BACK_OFFSET), 14, -90);
+	sleep(10);
+	setDrive(80, -80);
+	while (gVelocity.a < 3.5) sleep(10);
+	sTurnState state;
+	state.time = nPgmTime;
+	state.lstTime = state.time;
+	state.nextDebug = 0;
+	state.input = gVelocity.a;
+	state.power = state.error = state.integral = 0;
+	state.target = 0.780;
+	while (true)
+		{
+			//float a = gPosition.a + fmod(atan2(x - gPosition.x, y - gPosition.y) + offset - gPosition.a, PI * 2);
+			turnAccurateInternalCw(200, state);
+		}
 
 	///* Test Turn */
-	resetTracking(gPosition, gVelocity, (144-BACK_OFFSET), 14, -90);
-	setDrive(-15, -15);
-	sleep(300);
-	writeDebugStreamLine("%d Forwards", nPgmTime);
-	setDrive(50,50);
-	sleep(100);
-	//while (gPosition.x > (144-BACK_OFFSET-0.1)) sleep(10);
-	writeDebugStreamLine("%d Forwards done", nPgmTime);
-	turnToTargetAccurate(10, 63, ch, 50, 50, 0);
+	//resetTracking(gPosition, gVelocity, (144-BACK_OFFSET), 14, -90);
+	//setDrive(-15, -15);
+	//sleep(300);
+	//writeDebugStreamLine("%d Forwards", nPgmTime);
+	//setDrive(50,50);
+	//sleep(100);
+	////while (gPosition.x > (144-BACK_OFFSET-0.1)) sleep(10);
+	//writeDebugStreamLine("%d Forwards done", nPgmTime);
+	//turnToTargetAccurate(10, -35, ch, 33, 33, 0);
 
 }

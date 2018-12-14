@@ -517,7 +517,7 @@ void turnAccurateInternalCw(float a, sTurnState& state)
 	unsigned long deltaTime = state.time - state.lstTime;
 	float vel = gVelocity.a;
 
-	const float kP = 15, kI = 0.05;
+	const float kP = 16, kI = 0.00;
 
 	if (deltaTime >= 1)
 	{
@@ -527,15 +527,17 @@ void turnAccurateInternalCw(float a, sTurnState& state)
 		state.error = state.target - state.input;
 
 		state.integral += state.error * deltaTime;
-		if (state.integral < -8) state.integral = 0;
+		//if (state.integral < -8) state.integral = 0;
 
 		state.power = state.error * kP + state.integral * kI;
 
 		state.power += 29;//31;
 
-		if (state.power < 0) state.power /= 6.0;
+		if (state.power < 28 && gVelocity.a < 1.3) state.power = 28;
 
-		if (state.power > 50) state.power = 50;
+		//if (state.power < 0) state.power /= 6.0;
+
+		//if (state.power > 50) state.power = 50;
 		if (state.power < -5) state.power = -5;
 
 		setDrive(state.power, -state.power);
@@ -547,13 +549,14 @@ void turnAccurateInternalCw(float a, sTurnState& state)
 
 		}
 
-		//datalogDataGroupStart();
-		//datalogAddValue(0, 10*gVelocity.a);
-		//datalogAddValue(1, state.power);
-		//datalogAddValue(2, state.error);
-		//datalogAddValue(3, (state.error*kP));
-		//datalogAddValue(4, (state.integral*kI));
-		//datalogDataGroupEnd();
+		datalogDataGroupStart();
+		datalogAddValue(0, 10*gVelocity.a);
+		datalogAddValue(1, state.power);
+		datalogAddValue(2, state.error*10);
+		datalogAddValue(3, (state.error*kP));
+		datalogAddValue(4, (state.integral*kI));
+		datalogAddValue(5, state.target*10);
+		datalogDataGroupEnd();
 
 		state.lstTime = state.time;
 	}
@@ -569,7 +572,7 @@ void turnAccurateInternalCcw(float a, sTurnState& state)
 	unsigned long deltaTime = state.time - state.lstTime;
 	float vel = gVelocity.a;
 
-	const float kP = 15, kI = 0.05;
+	const float kP = 16, kI = 0.00;
 
 	if (deltaTime >= 1)
 	{
@@ -579,15 +582,15 @@ void turnAccurateInternalCcw(float a, sTurnState& state)
 		state.error = state.target - state.input;
 
 		state.integral += state.error * deltaTime;
-		if (state.integral > 8) state.integral = 0;
+		//if (state.integral > 8) state.integral = 0;
 
 		state.power = state.error * kP + state.integral * kI;
 
 		state.power -= 29;//31;
 
-		if (state.power > 0) state.power /= 6.0;
+		//if (state.power > 0) state.power /= 6.0;
 
-		if (state.power < -50) state.power = -50;
+		//if (state.power < -50) state.power = -50;
 		if (state.power > 5) state.power = 5;
 
 		setDrive(state.power, -state.power);
@@ -599,13 +602,14 @@ void turnAccurateInternalCcw(float a, sTurnState& state)
 
 		}
 
-		//datalogDataGroupStart();
-		//datalogAddValue(0, gVelocity.a);
-		//datalogAddValue(1, state.power);
-		//datalogAddValue(2, state.error);
-		//datalogAddValue(3, (state.error*kP));
-		//datalogAddValue(4, (state.integral*kI));
-		//datalogDataGroupEnd();
+		datalogDataGroupStart();
+		datalogAddValue(0, 10*gVelocity.a);
+		datalogAddValue(1, state.power);
+		datalogAddValue(2, state.error*10);
+		datalogAddValue(3, (state.error*kP));
+		datalogAddValue(4, (state.integral*kI));
+		datalogAddValue(5, state.target*10);
+		datalogDataGroupEnd();
 
 		state.lstTime = state.time;
 	}
@@ -619,7 +623,7 @@ void turnAccurateInternalCcw(float a, sTurnState& state)
 void turnToTargetAccurate(float x, float y, tAutoTurnDir turnDir, byte left, byte right, float offset)
 {
 	offset = degToRad(offset);
-	writeDebugStreamLine("Turning to %f %f", y, x);
+	LOG_AUTO_2(("%d Turning to %f %f", nPgmTime, x, y));
 
 	sTurnState state;
 	state.time = nPgmTime;
@@ -649,7 +653,7 @@ void turnToTargetAccurate(float x, float y, tAutoTurnDir turnDir, byte left, byt
 		}
 		LOG_AUTO(("%d turn fast done err:%f vel:%f", nPgmTime, radToDeg(a-gPosition.a), gVelocity.a));
 		//
-		state.target = 0.8; //0.940;
+		state.target = 0.78; //0.940;
 		while (gPosition.a < a + degToRad(-3.5 + (state.target - gVelocity.a) * 0.15))//+ degToRad(-5.3 + (state.target - gVelocity.a) * 0.25))
 		{
 			a = gPosition.a + fmod(atan2(x - gPosition.x, y - gPosition.y) + offset - gPosition.a, PI * 2);
@@ -673,7 +677,7 @@ void turnToTargetAccurate(float x, float y, tAutoTurnDir turnDir, byte left, byt
 		LOG_AUTO(("%d turn fast done err:%f vel:%f", nPgmTime, radToDeg(a-gPosition.a), gVelocity.a));
 		//writeDebugStreamLine("%f", gVelocity.a);
 		//
-		state.target = -0.8;//0.940;
+		state.target = -0.78;//0.940;
 		while (gPosition.a > a - degToRad(-3.5 + (state.target - gVelocity.a) * 0.15))
 		{
 			a = gPosition.a - fmod(gPosition.a - atan2(x - gPosition.x, y - gPosition.y) - offset, PI * 2);
