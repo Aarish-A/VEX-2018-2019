@@ -1724,7 +1724,7 @@ task usercontrol()
 					sleep(1000);
 					gBackPivotYTarg = -35;
 					startTask(backPivotTask);
-					ANGLER_SHOOTER_TASK(gAnglerBackMidFlag, gAnglerBackTopFlag, 25, true, true, MAX_ANGLE_TIME, BTN_INTAKE_DOWN, false);
+					ANGLER_SHOOTER_TASK(gAnglerBackMidFlag, gAnglerBackTopFlag, 25, true, true, MAX_ANGLE_TIME, BTN_ANGLER_GROUND_PICKUP, false);
 				}
 				else
 				{
