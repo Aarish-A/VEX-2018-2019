@@ -1,5 +1,7 @@
 void selectAuto()
 {
+	if (gAutoLock) return;
+
 	if (allianceForce > -1 && autoForce > -1)
 	{
 		gAlliance = allianceForce;
@@ -46,40 +48,23 @@ task autoShooterReload()
 	return;
 }
 
-bool dummyBool = false;
 void runAuto()
 {
-	//bool dummyBool = false;
 	unsigned long autoStartTime = nPgmTime;
 
-	if (gAuto == autoSkills)
+	if (gAuto == autoTest)
+	{
+		resetTracking(gPosition, gVelocity, RED_FRONT_X, RED_FRONT_Y, 0);
+		resetPositionFull(gPosition, RED_FRONT_X, RED_FRONT_Y, 0);
+
+		//turnToTargetAccurate();
+	}
+	else if (gAuto == autoSkills)
 	{
 		writeDebugStreamLine(" >> %d Auto Skills" ,nPgmTime);
-		resetTracking(gPosition, gVelocity, RED_FRONT_X, RED_FRONT_Y, 0);
 
-		//1 Grab balls
-		anglerMoveToPos(ANGLER_BELOW_CAP_PICKUP_POS, 20);
-		setIntakeState(intakeUp);
-		startTask(autoShooterReload);
-		moveToTarget(59, 40, 127, 40, 4, 8, 40, 0, (stopSoft), mttProportional);
-		moveToTarget(59, 55, 40, 40, 3, 8, 40, 0, (stopSoft | stopHarsh), mttProportional);
-
-		//2 Back up
-		moveToTarget(59, 40, -70, -40, 4, 12, -30, 0, (stopSoft), mttProportional);
-		anglerMoveToPos(gAnglerFrontPFMidFlag, 70);
-		moveToTarget(59, 16, -127, -40, 4, 12, -30, 0, (stopSoft | stopHarsh), mttProportional);
-
-		//3 Turn and shoot
-		turnToTargetAccurate(11, 16, ch, 80, 80, 0);
-		angleShoot(gAnglerFrontPFMidFlag, 70, false, MAX_ANGLE_TIME_FRONT, BTN_SHOOT, dummyBool);
-		angleShoot(gAnglerFrontPFTopFlag, 70, true, MAX_ANGLE_TIME_FRONT, BTN_SHOOT, dummyBool);
-
-		//4 Toggle low flag
-		setIntakeState(intakeIdle);
-		setShooterState(shooterIdle);
-		anglerMoveToPos(2800, 70);
-		moveToTarget(11, 15, 127, 40, 3, 12, 30, 0, (stopSoft | stopHarsh), mttProportional);
-		LOG_AUTO(("%d t:%d", nPgmTime-autoStartTime));
+		//1-4 Grab balls, shoot, toggle flag
+		redFrontBeginning(true); //Finishes on toggle flag
 
 		//5 Back up and reset angle
 		moveToTarget(60, 15, -90, -40, 4, 12, -30, 0, (stopSoft | stopHarsh), mttProportional);
@@ -113,7 +98,7 @@ void runAuto()
 		sleep(1000);
 		anglerMoveToPos(gAnglerFrontPFMidFlag, 70);
 		sleep(1000);
-		turnToTargetAccurate(12,65,ch,80,80,0);
+		turnToTargetAccurate(12,64,ch,80,80,0);
 		//sleep(1000);
 		//turnToTargetAccurate(12,65,ch,80,80,0);
 		//sleep(2000); //Delete?
@@ -122,49 +107,34 @@ void runAuto()
 		//7 Shoot mid flags (top + mid)
 		sleep(1500);
 		setIntakeState(intakeIdle);
-		angleShoot(gAnglerFrontPFMidFlag, 70, true, MAX_ANGLE_TIME_FRONT, BTN_SHOOT, dummyBool);
+		angleShoot(gAnglerFrontPFMidFlag, 70, true, MAX_ANGLE_TIME_FRONT, BTN_SHOOT, gDummyBool);
 		//turnToTargetAccurate(12,65,ch,80,80,0);
-		angleShoot(gAnglerFrontPFTopFlag+250, 70, true, MAX_ANGLE_TIME, BTN_SHOOT, dummyBool);
+		angleShoot(gAnglerFrontPFTopFlag+180, 70, true, MAX_ANGLE_TIME, BTN_SHOOT, gDummyBool);
 		sleep(250);
 
 		//8 Back up and flip cap
-		moveToTarget(48, 15, -90, -40, 4, 12, -30, 0, (stopSoft | stopHarsh), mttProportional);
+		moveToTarget(48, 24, -90, -40, 4, 12, -30, 0, (stopSoft | stopHarsh), mttProportional);
 		anglerMoveToPos(ANGLER_CAP_FLIP_POS,70);
 		setIntakeState(intakeDown);
-		moveToTarget(32, 43, 40, 40, 3, 8, 40, 0, (stopSoft), mttProportional);
+		moveToTarget(24, 48, 40, 40, 3, 8, 40, 0, (stopSoft), mttProportional);
 		anglerMoveToPos(ANGLER_CAP_FLIP_POS+300,70);
 
 		//9 Get on platform
 		moveToTarget(60, 24, -90, -40, 4, 12, -30, 0, (stopSoft | stopHarsh), mttProportional);
-		turnToTargetAccurate(82, 15, ch,80,80,180);
 		setIntakeState(intakeIdle);
-		moveToTarget(82, 15, -90, -40, 4, 12, -30, 0, (stopSoft | stopHarsh), mttProportional);
-		turnToAngleNewAlg(5,ch,0.35,20,10,true);
-					//turnToTargetAccurate(84, 50, ch, 80, 80, 0);
-					setDrive(90, 90);
-					sleep(400);
-					while (gVelocity.y > 0.1)
-					{
-						//LOG(auto)("%d vel:%f", nPgmTime, gVelocity.y);
-						sleep(10);
-					}
-					setDrive(-15,-15);
-					sleep(150);
-					setDrive(127,127);
-					sleep(1200);
-					setDrive(0, 0);
-					sleep(100);
-			//setDrive(35, 35);
-			//		sleep(300);
-			//		while (gVelocity.y > 0.1)
-			//		{
-			//			//LOG(auto)("%d vel:%f", nPgmTime, gVelocity.y);
-			//			sleep(10);
-			//		}
-			//	anglerMoveToPos(950, 50);
-			//	sleep(200);
-			//	setDrive(60, 60);
-			//	sleep(600);
+		turnToTargetAccurate(82, 15, ch,80,80,180);
+		redFrontPark(true);
+		//setDrive(35, 35);
+		//		sleep(300);
+		//		while (gVelocity.y > 0.1)
+		//		{
+		//			//LOG(auto)("%d vel:%f", nPgmTime, gVelocity.y);
+		//			sleep(10);
+		//		}
+		//	anglerMoveToPos(950, 50);
+		//	sleep(200);
+		//	setDrive(60, 60);
+		//	sleep(600);
 
 	}
 	else if (gAlliance == allianceRed) //red autos
@@ -172,56 +142,13 @@ void runAuto()
 		switch (gAuto)
 		{
 			case autoFront:
-
-				resetTracking(gPosition, gVelocity, RED_FRONT_X, RED_FRONT_Y, 0);
-
-		//1 Grab balls
-		anglerMoveToPos(ANGLER_BELOW_CAP_PICKUP_POS, 20);
-		setIntakeState(intakeUp);
-		startTask(autoShooterReload);
-		moveToTarget(59, 40, 127, 40, 4, 8, 40, 0, (stopSoft), mttProportional);
-		moveToTarget(59, 55, 40, 40, 3, 8, 40, 0, (stopSoft | stopHarsh), mttProportional);
-
-		//2 Back up
-		moveToTarget(59, 40, -70, -40, 4, 12, -30, 0, (stopSoft), mttProportional);
-		anglerMoveToPos(gAnglerFrontPFMidFlag, 70);
-		moveToTarget(59, 16, -127, -40, 4, 12, -30, 0, (stopSoft | stopHarsh), mttProportional);
-
-		//3 Turn and shoot
-		turnToTargetAccurate(11, 16, ch, 80, 80, 0);
-		angleShoot(gAnglerFrontPFMidFlag, 70, false, MAX_ANGLE_TIME_FRONT, BTN_SHOOT, dummyBool);
-		angleShoot(gAnglerFrontPFTopFlag, 70, true, MAX_ANGLE_TIME_FRONT, BTN_SHOOT, dummyBool);
-
-		//4 Toggle low flag
-		setIntakeState(intakeIdle);
-		setShooterState(shooterIdle);
-		anglerMoveToPos(2800, 70);
-		moveToTarget(11, 15, 127, 40, 3, 12, 30, 0, (stopSoft | stopHarsh), mttProportional);
-		LOG_AUTO(("%d t:%d", nPgmTime-autoStartTime));
+				redFrontBeginning(false); //finishes on flag toggle
 
 				if (gAutoPark)
 				{
 					//5 Back up and get on platform
-					moveToTarget(82, 15, -90, -40, 4, 12, -30, 0, (stopSoft | stopHarsh), mttProportional);
-					turnToAngleNewAlg(5,ch,0.35,20,10,true);
-					//turnToTargetAccurate(84, 50, ch, 80, 80, 0);
-					setDrive(90, 90);
-					sleep(400);
-					while (gVelocity.y > 0.1)
-					{
-						//LOG(auto)("%d vel:%f", nPgmTime, gVelocity.y);
-						sleep(10);
-					}
-					setDrive(-15,-15);
-					sleep(150);
-					setDrive(127,127);
-					sleep(1200);
-					setDrive(0, 0);
-					sleep(0);
-					//moveToTargetDisY(84, 50, 100, 40, 4, 12, 30, 0, (stopSoft|stopHarsh), mttSimple);
-					//moveToTarget(84, 40, 50, 40, 3, 8, 40, 0, (stopSoft | stopHarsh), mttProportional);
+					redFrontPark(false);
 				}
-
 
 				//anglerMoveToPos(ANGLER_CAP_PICKUP_POS, 100);
 				break;
@@ -233,25 +160,27 @@ void runAuto()
 				anglerMoveToPos(ANGLER_BELOW_CAP_PICKUP_POS, 20);
 				setIntakeState(intakeUp);
 				startTask(autoShooterReload);
-				moveToTarget(108, 40, 127, 40, 4, 8, 40, 0, (stopSoft), mttProportional);
-				moveToTarget(RED_BACK_X, 55, 40, 40, 3, 8, 40, 0, (stopSoft | stopHarsh), mttProportional);
+				moveToTarget(RED_BACK_X, 54.5, 127, 40, 5, 18, 30, 0, (stopSoft | stopHarsh), mttProportional);
+				//moveToTarget(108, 40, 127, 40, 4, 8, 40, 0, (stopSoft), mttProportional);
+				//moveToTarget(RED_BACK_X, 55, 40, 40, 3, 8, 40, 0, (stopSoft | stopHarsh), mttProportional);
 
 				//2 Back up
 				moveToTarget(RED_BACK_X, 40, -70, -40, 4, 12, -30, 0, (stopSoft), mttProportional);
-				anglerMoveToPos(gAnglerFrontPFMidFlag, 70);
+				anglerMoveToPos(gAnglerBackPFMidFlag, 70);
 				moveToTarget(RED_BACK_X, 16, -127, -40, 4, 12, -30, 0, (stopSoft | stopHarsh), mttProportional);
 
 				//3 Turn and shoot
 				//turnToAngleNewAlg(-90,ch,0.35,20,10,true);
-				turnToTargetAccurate(11, 16, ch, 80, 80, 0);
-				angleShoot(gAnglerBackPFMidFlag, 40, true, MAX_ANGLE_TIME, BTN_SHOOT, dummyBool);
-				angleShoot(gAnglerBackPFTopFlag, 40, true, MAX_ANGLE_TIME, BTN_SHOOT, dummyBool);
+				turnToTargetAccurate(FLAG_X, RED_FLAG_Y, ch, 80, 80, 0);
+				angleShoot(gAnglerBackPFMidFlag, 40, true, MAX_ANGLE_TIME, BTN_SHOOT, gDummyBool);
+				angleShoot(gAnglerBackPFTopFlag, 40, true, MAX_ANGLE_TIME, BTN_SHOOT, gDummyBool);
 
 				if (gAutoPark)
 				{
 					//4 Get on platform
-					moveToTarget(84, 15, 90, 40, 4, 12, 30, 0, (stopSoft | stopHarsh), mttProportional);
-					turnToAngleNewAlg(0,ch,0.35,20,10,true);
+					moveToTarget(81, RED_FLAG_Y, 90, 40, 4, 12, 30, 0, (stopSoft | stopHarsh), mttProportional);
+					//turnToAngleNewAlg(0,ch,0.35,20,10,true);
+					turnToTargetNewAlg(81,(144-50),ch,0.35,20,10,true);
 					//turnToTargetAccurate(84, 50, ch, 80, 80, 0);
 					setDrive(90, 90);
 					sleep(400);
@@ -282,33 +211,38 @@ void runAuto()
 				anglerMoveToPos(ANGLER_BELOW_CAP_PICKUP_POS, 20);
 				setIntakeState(intakeUp);
 				startTask(autoShooterReload);
-				moveToTarget(59, (144-40), 127, 40, 4, 8, 40, 0, (stopSoft), mttProportional);
-				moveToTarget(59, (144-57), 40, 40, 3, 8, 40, 0, (stopSoft | stopHarsh), mttProportional);
+				moveToTarget(BLUE_FRONT_X, (144-55), 127, 40, 5, 18, 30, 0, (stopSoft | stopHarsh), mttProportional);
+				//moveToTarget(59, (144-40), 127, 40, 4, 8, 40, 0, (stopSoft), mttProportional);
+				//moveToTarget(59, (144-57), 40, 40, 3, 8, 40, 0, (stopSoft | stopHarsh), mttProportional);
 
 				//2 Back up
-				moveToTarget(59, (144-40), -70, -40, 4, 12, -30, 0, (stopSoft), mttProportional);
+				moveToTarget(BLUE_FRONT_X, (144-40), -70, -40, 4, 12, -30, 0, (stopSoft), mttProportional);
 				anglerMoveToPos(gAnglerFrontPFMidFlag, 70);
-				moveToTarget(59, (144-20), -127, -40, 4, 12, -30, 0, (stopSoft | stopHarsh), mttProportional);
+				moveToTarget(BLUE_FRONT_X, BLUE_FLAG_Y, -127, -40, 4, 12, -30, 0, (stopSoft | stopHarsh), mttProportional);
 
 				//3 Turn and shoot
-				//turnToAngleNewAlg(-91,ch,0.35,20,10,true);
-				turnToTargetAccurate(11, (144-16), ch, 80, 80, 0);
-				angleShoot(gAnglerFrontPFMidFlag, 70, false, MAX_ANGLE_TIME_FRONT, BTN_SHOOT, dummyBool);
-				angleShoot(gAnglerFrontPFTopFlag, 70, true, MAX_ANGLE_TIME_FRONT, BTN_SHOOT, dummyBool);
+				//turnToTargetAccurate(11, (144-16), ch, 80, 80, 0);
+				turnToTargetAccurate(FLAG_X, BLUE_FLAG_Y, ch, 80, 80, 0);
+				angleShoot(gAnglerFrontPFMidFlag, 70, false, MAX_ANGLE_TIME_FRONT, BTN_SHOOT, gDummyBool);
+				angleShoot(gAnglerFrontPFTopFlag, 70, true, MAX_ANGLE_TIME_FRONT, BTN_SHOOT, gDummyBool);
 
 				//4 Toggle low flag
 				setIntakeState(intakeIdle);
+				//anglerMoveToPos(ANGLER_GROUND_PICKUP_POS, 70);
+				//setIntakeState(intakeUp);
 				setShooterState(shooterIdle);
-				anglerMoveToPos(2800, 70);
-				moveToTarget(9, (144-13), 127, 40, 3, 12, 30, 0, (stopSoft | stopHarsh), mttProportional);
-				LOG_AUTO(("%d t:%d", nPgmTime, nPgmTime-autoStartTime));
+				anglerMoveToPos(ANGLER_TOP_POS, 70);
+				moveToTarget((FLAG_X-4), (144-11.5), 127, 40, 1, 12, 30, 0, (stopSoft), mttProportional);
+				//anglerMoveToPos(ANGLER_HORIZONTAL_POS, 70);
+				//sleep(250);
+				//anglerMoveToPos(ANGLER_TOP_POS, 70);
 
 				if (gAutoPark)
 				{
 					//5 Back up and get on platform
-					moveToTarget(79, (144-12), -90, -40, 4, 12, -30, 0, (stopSoft | stopHarsh), mttProportional);
+					moveToTarget(80, BLUE_FLAG_Y, -90, -40, 4, 12, -30, 0, (stopSoft | stopHarsh), mttProportional);
 					//turnToTargetAccurate(82, (144-50), ch, 80, 80, 0);
-					turnToAngleNewAlg(185,ch,0.35,20,10,true);
+					turnToTargetNewAlg(81,(144-50),ch,0.35,20,10,true);
 					setDrive(90, 90);
 					sleep(400);
 					while (gVelocity.y < -0.1)
@@ -327,7 +261,7 @@ void runAuto()
 				//resetTracking(gPosition, gVelocity, 62, 3.6+S_DISTANCE_IN, 0);
 				//anglerUnderAxle();
 				//angleShoot(gAutoPreloadFlag == flagTop? gAnglerFrontPFTopFlag : gAnglerFrontPFMidFlag,
-				//	70, false, MAX_ANGLE_TIME_FRONT, BTN_SHOOT, dummyBool);
+				//	70, false, MAX_ANGLE_TIME_FRONT, BTN_SHOOT, gDummyBool);
 				//anglerMoveToPos(ANGLER_CAP_PICKUP_POS, 100);
 				break;
 
@@ -338,25 +272,26 @@ void runAuto()
 				anglerMoveToPos(ANGLER_BELOW_CAP_PICKUP_POS, 20);
 				setIntakeState(intakeUp);
 				startTask(autoShooterReload);
-				moveToTarget(108, (144-40), 127, 40, 4, 8, 40, 0, (stopSoft), mttProportional);
-				moveToTarget(RED_BACK_X, (144-57), 40, 40, 3, 8, 40, 0, (stopSoft | stopHarsh), mttProportional);
+				moveToTarget(BLUE_BACK_X, (144-55), 127, 40, 5, 18, 30, 0, (stopSoft | stopHarsh), mttProportional);
+				//moveToTarget(108, (144-40), 127, 40, 4, 8, 40, 0, (stopSoft), mttProportional);
+				//moveToTarget(RED_BACK_X, (144-57), 40, 40, 3, 8, 40, 0, (stopSoft | stopHarsh), mttProportional);
 
 				//2 Back up
-				moveToTarget(RED_BACK_X, (144-40), -70, -40, 4, 12, -30, 0, (stopSoft), mttProportional);
-				anglerMoveToPos(gAnglerFrontPFMidFlag, 70);
-				moveToTarget(RED_BACK_X, (144-20), -127, -40, 4, 12, -30, 0, (stopSoft | stopHarsh), mttProportional);
+				moveToTarget(BLUE_BACK_X, (144-40), -70, -40, 4, 12, -30, 0, (stopSoft), mttProportional);
+				anglerMoveToPos(gAnglerBackPFMidFlag, 70);
+				moveToTarget(BLUE_BACK_X, BLUE_FLAG_Y, -127, -40, 4, 12, -30, 0, (stopSoft | stopHarsh), mttProportional);
 
 				//3 Turn and shoot
-				turnToTargetAccurate(11, (144-16), ch, 80, 80, 0);
-				angleShoot(gAnglerBackPFMidFlag, 40, true, MAX_ANGLE_TIME, BTN_SHOOT, dummyBool);
-				angleShoot(gAnglerBackPFTopFlag, 40, true, MAX_ANGLE_TIME, BTN_SHOOT, dummyBool);
+				turnToTargetAccurate(FLAG_X, BLUE_FLAG_Y, ch, 80, 80, 0);
+				angleShoot(gAnglerBackPFMidFlag, 40, true, MAX_ANGLE_TIME, BTN_SHOOT, gDummyBool);
+				angleShoot(gAnglerBackPFTopFlag, 40, true, MAX_ANGLE_TIME, BTN_SHOOT, gDummyBool);
 
 
 				if (gAutoPark)
 				{
 					//4 Get on platform
-					moveToTarget(83, (144-12), 90, 40, 4, 12, 30, 0, (stopSoft | stopHarsh), mttProportional);
-					turnToTargetAccurate(82, (144-50), ch, 80, 80, 0);
+					moveToTarget(81, BLUE_FLAG_Y, 90, 40, 4, 12, 30, 0, (stopSoft | stopHarsh), mttProportional);
+					turnToTargetNewAlg(81,(144-50),ch,0.35,20,10,true);
 					setDrive(90, 90);
 					sleep(400);
 					while (gVelocity.y < -0.1)
@@ -375,7 +310,7 @@ void runAuto()
 				//resetTracking(gPosition, gVelocity, 62, 3.6+S_DISTANCE_IN, 0);
 				//anglerUnderAxle();
 				//angleShoot(gAutoPreloadFlag == flagTop? gAnglerBackPFTopFlag : gAnglerBackPFMidFlag,
-				//	40, false, MAX_ANGLE_TIME, BTN_SHOOT, dummyBool);
+				//	40, false, MAX_ANGLE_TIME, BTN_SHOOT, gDummyBool);
 				//anglerMoveToPos(ANGLER_CAP_PICKUP_POS, 100);
 				break;
 		}
@@ -389,4 +324,77 @@ void anglerUnderAxle()
 		anglerMoveToPos(ANGLER_AXEL_POS-100, 100);
 		while (SensorValue[anglerPoti] >= ANGLER_AXEL_POS) sleep(10);
 	}
+}
+
+void redFrontBeginning(bool skills)
+{
+	resetTracking(gPosition, gVelocity, RED_FRONT_X, RED_FRONT_Y, 0);
+	LOG_AUTO(("%d Red Front Beginning", nPgmTime));
+	//1 Grab balls
+	anglerMoveToPos(ANGLER_BELOW_CAP_PICKUP_POS, 20);
+	setIntakeState(intakeUp);
+	startTask(autoShooterReload);
+	//(skills? 54 : 54.5)
+	moveToTarget(RED_FRONT_X, 55.5, 127, 40, 0, 18, 30, 0, (stopSoft | stopHarsh), mttProportional);
+	//moveToTarget(59, 44, 127, 40, 4, 8, 40, 0, (stopSoft | stopHarsh), mttProportional);
+	//moveToTarget(59, 54, 30, 40, 3, 8, 40, 0, (stopSoft | stopHarsh), mttProportional);
+
+	//2 Back up
+	moveToTarget(59, 40, -70, -40, 4, 12, -30, 0, (stopSoft), mttProportional);
+	anglerMoveToPos(gAnglerFrontPFMidFlag, 70);
+	moveToTarget(59, (RED_FLAG_Y+0.5), -127, -40, 4, 12, -30, 0, (stopSoft | stopHarsh), mttProportional);
+
+	//3 Turn and shoot
+	turnToTargetAccurate(FLAG_X, RED_FLAG_Y, ch, 80, 80, 0);
+	angleShoot(gAnglerFrontPFMidFlag, 70, false, MAX_ANGLE_TIME_FRONT, BTN_SHOOT, gDummyBool);
+	angleShoot(gAnglerFrontPFTopFlag, 70, true, MAX_ANGLE_TIME_FRONT, BTN_SHOOT, gDummyBool);
+
+	//4 Toggle low flag
+	setIntakeState(intakeIdle);
+	setShooterState(shooterIdle);
+	anglerMoveToPos(ANGLER_TOP_POS, 70);
+	//anglerMoveToPos(ANGLER_GROUND_PICKUP_POS, 70);
+	//setIntakeState(intakeUp);
+	moveToTarget((FLAG_X-4), 13, 127, 40, 1, 12, 30, 0, (stopSoft), mttProportional);
+	//anglerMoveToPos((ANGLER_HORIZONTAL_POS+200), 70);
+	//sleep(250);
+	//anglerMoveToPos(ANGLER_TOP_POS, 70);
+}
+
+void redFrontPark(bool skills)
+{
+	moveToTarget(80, RED_FLAG_Y, -90, -40, 4, 12, -30, 0, (stopSoft | stopHarsh), mttProportional);
+	turnToTargetNewAlg(84, 50, ch,0.35,20,10,true);
+	//turnToAngleNewAlg(5,ch,0.35,20,10,true);
+	//turnToTargetAccurate(84, 50, ch, 80, 80, 0);
+	setDrive(90, 90);
+	sleep(400);
+	while (gVelocity.y > 0.1)
+	{
+		//LOG(auto)("%d vel:%f", nPgmTime, gVelocity.y);
+		sleep(10);
+	}
+	setDrive(-15,-15);
+	sleep(150);
+	setDrive(127,127);
+	sleep(2000);
+	setDrive(0, 0);
+	sleep(0);
+}
+
+void testTurn(bool right)
+{
+	stopTask(driveStateSet);
+	writeDebugStreamLine("%d Test Turn", nPgmTime);
+	resetTracking(gPosition, gVelocity, RED_FRONT_X, RED_FRONT_Y, 0);
+	sleep(10);
+	setDrive(60, 60);
+	sleep(200);
+	if (right)
+		turnToAngleNewAlg(359,cw,0.15,30,30,true);
+	else
+		turnToAngleNewAlg(1,ccw,0.15,30,30,true);
+
+	setDrive(0,0);
+	startTask(driveStateSet);
 }
