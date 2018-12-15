@@ -334,7 +334,8 @@ void redFrontBeginning(bool skills)
 	anglerMoveToPos(ANGLER_BELOW_CAP_PICKUP_POS, 20);
 	setIntakeState(intakeUp);
 	startTask(autoShooterReload);
-	moveToTarget(RED_FRONT_X, (skills? 54 : 54.5), 127, 40, 0, 18, 30, 0, (stopSoft | stopHarsh), mttProportional);
+	//(skills? 54 : 54.5)
+	moveToTarget(RED_FRONT_X, 54, 127, 40, 0, 18, 30, 0, (stopSoft | stopHarsh), mttProportional);
 	//moveToTarget(59, 44, 127, 40, 4, 8, 40, 0, (stopSoft | stopHarsh), mttProportional);
 	//moveToTarget(59, 54, 30, 40, 3, 8, 40, 0, (stopSoft | stopHarsh), mttProportional);
 
