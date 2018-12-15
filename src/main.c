@@ -6,8 +6,7 @@
 #pragma config(Sensor, dgtl3,  trackB,         sensorQuadEncoder)
 #pragma config(Sensor, dgtl5,  trackR,         sensorQuadEncoder)
 #pragma config(Sensor, dgtl7,  shooterEnc,     sensorQuadEncoder)
-#pragma config(Sensor, dgtl9,  LED1,           sensorLEDtoVCC)
-#pragma config(Sensor, dgtl10, jmpr,           sensorTouch)
+#pragma config(Sensor, dgtl9, jmpr,           sensorTouch)
 #pragma config(Motor,  port1,           decapper,      tmotorVex393_HBridge, openLoop, reversed)
 #pragma config(Motor,  port2,           driveLY,       tmotorVex393TurboSpeed_MC29, openLoop, reversed)
 #pragma config(Motor,  port3,           intake,        tmotorVex393TurboSpeed_MC29, openLoop)
@@ -511,14 +510,14 @@ task anglerStateSet()
 				if (abs(deltaSen) < 5 && abs(error) < gAnglerAcceptableRange)// && abs(gAnglerGoodCount) < 25)
 				{
 					gAnglerGoodCount++;
-					SensorValue[LED1] = 300;
+					//SensorValue[LED1] = 300;
 					//playTone(300, 1);
 					//LOG_ANGLER(("  %d Angler Stopped at %d. Inc gAnglerGoodCount to %d. Err:%d", nPgmTime, sen, gAnglerGoodCount, (gAnglerTarget-sen)));
 				}
 				else
 				{
 					gAnglerGoodCount = 0;
-					SensorValue[LED1] = 0;
+					//SensorValue[LED1] = 0;
 				}
 
 				int power = pVal + iVal;// + 5;
