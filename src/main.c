@@ -1580,8 +1580,8 @@ void disabled()
 }
 
 #include "auto_runs.h"
-tAlliance allianceForce = -1;//allianceRed;///-1;
-tAuto autoForce = -1;//autoSkills;//-1;
+tAlliance allianceForce = allianceRed;//allianceRed;///-1;
+tAuto autoForce = autoSkills;//autoSkills;//-1;
 
 #include "auto_runs.c"
 
@@ -1597,21 +1597,21 @@ task autonomous()
 
 	selectAuto(); //selects auto based on potentiometer and gAutoPreloadFlag variable
 
-	if (gAuto == autoFront)
-	{
-		resetTracking(gPosition, gVelocity, RED_FRONT_X, 3.6+S_DISTANCE_IN, -90);
-		anglerUnderAxle();
-		angleShoot(gAnglerFrontPFTopFlag, 70, true, MAX_ANGLE_TIME_FRONT, BTN_SHOOT, gDummyNextShot);
+	//if (gAuto == autoFront)
+	//{
+	//	resetTracking(gPosition, gVelocity, RED_FRONT_X, 3.6+S_DISTANCE_IN, -90);
+	//	anglerUnderAxle();
+	//	angleShoot(gAnglerFrontPFTopFlag, 70, true, MAX_ANGLE_TIME_FRONT, BTN_SHOOT, gDummyNextShot);
 
-		//Toggle Flag
-		setIntakeState(intakeIdle);
-		setShooterState(shooterIdle);
-		anglerMoveToPos(ANGLER_TOP_POS, 70);
-		moveToTarget((FLAG_X-4), 11, 127, 40, 1, 12, 30, 0, (stopSoft), mttProportional);
-				//anglerMoveToPos(ANGLER_HORIZONTAL_POS, 70);
-	}
-	//writeDebugStream("%d Auto:%d", nPgmTime, gAuto);
-	//runAuto(); //runs auto depending on gAuto and gAlliance
+	//	//Toggle Flag
+	//	setIntakeState(intakeIdle);
+	//	setShooterState(shooterIdle);
+	//	anglerMoveToPos(ANGLER_TOP_POS, 70);
+	//	moveToTarget((FLAG_X-4), 11, 127, 40, 1, 12, 30, 0, (stopSoft), mttProportional);
+	//			//anglerMoveToPos(ANGLER_HORIZONTAL_POS, 70);
+	//}
+	writeDebugStream("%d Auto:%d", nPgmTime, gAuto);
+	runAuto(); //runs auto depending on gAuto and gAlliance
 
 	writeDebugStreamLine("%d AutoT:%d", nPgmTime, (nPgmTime-autoStartTime));
 
