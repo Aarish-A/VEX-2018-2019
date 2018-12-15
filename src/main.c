@@ -1525,7 +1525,7 @@ task autonomous()
 	{
 		resetTracking(gPosition, gVelocity, RED_FRONT_X, 3.6+S_DISTANCE_IN, -90);
 		anglerUnderAxle();
-		angleShoot(gAnglerFrontPFTopFlag, 70, true, MAX_ANGLE_TIME_FRONT, BTN_SHOOT, dummyBool);
+		angleShoot(gAnglerFrontPFTopFlag, 70, true, MAX_ANGLE_TIME_FRONT, BTN_SHOOT, gDummyBool);
 
 		//Toggle Flag
 		setIntakeState(intakeIdle);
