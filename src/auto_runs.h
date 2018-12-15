@@ -6,7 +6,7 @@
 /* Flag Locations */
 #define FLAG_X 10
 #define RED_FLAG_Y 16
-#define BLUE_FLAG_Y (144-19)
+#define BLUE_FLAG_Y (144-18)
 
 /* Starting Positions */
 #define RED_FRONT_X 58.75

@@ -320,8 +320,8 @@ task driveStateSet()
 
 #define ANGLER_CAP_FLIP_POS 820
 
-int gAnglerBackTopFlag = 1575; //1430; //1390; //1490
-int gAnglerBackMidFlag = 1355; //1235; //1175; //1270
+int gAnglerBackTopFlag = 1535; //1575; //1430; //1390; //1490
+int gAnglerBackMidFlag = 1270; //1355; //1235; //1175; //1270
 
 int gAnglerFrontPFTopFlag = 1885;//1790;//1730;
 int gAnglerFrontPFMidFlag = 1460;//1310;
@@ -929,7 +929,7 @@ void setNextShot(sNextShot& nextShot, TVexJoysticks btn)
 {
 	if (RISING(BTN_FLAG_LT))
 	{
-		nextShot.anglerPos = nextShot.backShot? gAnglerBackTopFlag : gAnglerFrontPFTopFlag;
+		nextShot.anglerPos = nextShot.backShot? (gAnglerBackTopFlag-25) : gAnglerFrontPFTopFlag;
 		nextShot.yTarg = -35;
 	}
 	else if (RISING(BTN_FLAG_LM))
@@ -939,7 +939,7 @@ void setNextShot(sNextShot& nextShot, TVexJoysticks btn)
 	}
 	else if (RISING(BTN_FLAG_RT))
 	{
-		nextShot.anglerPos = nextShot.backShot? gAnglerBackTopFlag : gAnglerFrontPFTopFlag;
+		nextShot.anglerPos = nextShot.backShot? (gAnglerBackTopFlag-25) : gAnglerFrontPFTopFlag;
 		nextShot.yTarg = 63;
 	}
 	else if (RISING(BTN_FLAG_RM))
@@ -1090,7 +1090,7 @@ void anglerShooter(int posA, int posB, int acceptableRange, bool waitForFirstSho
 		if (!nextShot.btnReleased && gJoy[btn].cur)
 			angleShoot(posB, acceptableRange, waitForSecShot, angleTime, btn, nextShot);
 		else if (nextShot.anglerPos != -1)
-			angleShoot((nextShot.anglerPos-25), acceptableRange, waitForSecShot, angleTime, btn, nextShot);
+			angleShoot((nextShot.anglerPos), acceptableRange, waitForSecShot, angleTime, btn, nextShot);
 
 		LOG_MACRO((" >> %d Anglr(sht): grnd p_u pos", nPgmTime))
 		anglerMoveToPos(ANGLER_GROUND_PICKUP_POS, 150);
@@ -1515,7 +1515,7 @@ void startTasks(bool driveTaskStart)
 	startTask(monitorVals);
 
 	startTask(handleLCD);
-
+	sleep(10);
 	tRelease();
 }
 
@@ -1596,8 +1596,22 @@ task autonomous()
 	stopTask(driveStateSet);
 
 	selectAuto(); //selects auto based on potentiometer and gAutoPreloadFlag variable
-	writeDebugStream("%d Auto:%d", nPgmTime, gAuto);
-	runAuto(); //runs auto depending on gAuto and gAlliance
+
+	if (gAuto == autoFront)
+	{
+		resetTracking(gPosition, gVelocity, RED_FRONT_X, 3.6+S_DISTANCE_IN, -90);
+		anglerUnderAxle();
+		angleShoot(gAnglerFrontPFTopFlag, 70, true, MAX_ANGLE_TIME_FRONT, BTN_SHOOT, gDummyNextShot);
+
+		//Toggle Flag
+		setIntakeState(intakeIdle);
+		setShooterState(shooterIdle);
+		anglerMoveToPos(ANGLER_TOP_POS, 70);
+		moveToTarget((FLAG_X-4), 11, 127, 40, 1, 12, 30, 0, (stopSoft), mttProportional);
+				//anglerMoveToPos(ANGLER_HORIZONTAL_POS, 70);
+	}
+	//writeDebugStream("%d Auto:%d", nPgmTime, gAuto);
+	//runAuto(); //runs auto depending on gAuto and gAlliance
 
 	writeDebugStreamLine("%d AutoT:%d", nPgmTime, (nPgmTime-autoStartTime));
 
@@ -1694,6 +1708,7 @@ task usercontrol()
 				tHog();
 				writeDebugStreamLine(" > %d Bck Shoot T <", nPgmTime);
 				setDriveState(driveBackHold);
+				ANGLER_SHOOTER_TASK(gAnglerBackTopFlag, gAnglerBackMidFlag, 20, true, true, MAX_ANGLE_TIME, BTN_SHOOT_BACK_TOP, true);
 				tRelease();
 			}
 			else if (RISING(BTN_SHOOT_BACK_MID))

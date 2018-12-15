@@ -329,12 +329,12 @@ void anglerUnderAxle()
 void redFrontBeginning(bool skills)
 {
 	resetTracking(gPosition, gVelocity, RED_FRONT_X, RED_FRONT_Y, 0);
-
+	LOG_AUTO(("%d Red Front Beginning", nPgmTime));
 	//1 Grab balls
 	anglerMoveToPos(ANGLER_BELOW_CAP_PICKUP_POS, 20);
 	setIntakeState(intakeUp);
 	startTask(autoShooterReload);
-	moveToTarget(RED_FRONT_X, skills? 56.5 : 54.5, 127, 40, 5, 18, 30, 0, (stopSoft | stopHarsh), mttProportional);
+	moveToTarget(RED_FRONT_X, skills? 56.5 : 54.5, 127, 40, 0, 18, 30, 0, (stopSoft | stopHarsh), mttProportional);
 	//moveToTarget(59, 44, 127, 40, 4, 8, 40, 0, (stopSoft | stopHarsh), mttProportional);
 	//moveToTarget(59, 54, 30, 40, 3, 8, 40, 0, (stopSoft | stopHarsh), mttProportional);
 

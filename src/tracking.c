@@ -127,7 +127,7 @@ void resetTracking(sPos& position, sVel& velocity, float x, float y, float a)
 	resetVelocity(velocity, position);
 	startTask(trackPositionTask);
 
-	sleep(5);
+	sleep(10);
 }
 /* Vector Translation Functions */
 void constructTrianglePos(sTrianglePos& pos, float x, float y, bool findAngle)
