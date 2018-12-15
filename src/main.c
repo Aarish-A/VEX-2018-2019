@@ -331,8 +331,8 @@ int gAnglerMidPFTopFlag = 1570;//1730;
 int gAnglerMidPFMidFlag = 1250;//1310;
 
 //Positions shooting from back of front platform tile
-int gAnglerBackPFTopFlag = 1630;//1410;
-int gAnglerBackPFMidFlag = 1370;//1160;
+int gAnglerBackPFTopFlag = 1530;//1630;//1410;
+int gAnglerBackPFMidFlag = 1260;//1370;//1160;
 
 int gAnglerPower = 0;
 void setAngler(word val)
@@ -1250,7 +1250,7 @@ void intakeControls()
 
 
 /* Decapper Controls */
-#define DECAPPER_BOTTOM_POS 620
+#define DECAPPER_BOTTOM_POS 610
 #define DECAPPER_TOP_POS 3030
 
 #define DECAPPER_DZ 15
@@ -1695,7 +1695,6 @@ task usercontrol()
 				tHog();
 				writeDebugStreamLine(" > %d Bck Shoot T <", nPgmTime);
 				setDriveState(driveBackHold);
-				ANGLER_SHOOTER_TASK(gAnglerBackTopFlag, gAnglerBackMidFlag, 20, true, true, MAX_ANGLE_TIME, BTN_SHOOT_BACK_TOP, true);
 				tRelease();
 			}
 			else if (RISING(BTN_SHOOT_BACK_MID))
@@ -1710,8 +1709,18 @@ task usercontrol()
 			else if (RISING(BTN_SHOOT_FRONT_TOP))
 			{
 				tHog();
-				writeDebugStreamLine(" > %d F_PF Shoot T <", nPgmTime);
-				ANGLER_SHOOTER_TASK(gAnglerFrontPFTopFlag, gAnglerFrontPFMidFlag, 70, false, true, MAX_ANGLE_TIME_FRONT, BTN_SHOOT_FRONT_TOP, false);
+				if (!SensorValue[jmpr])
+				{
+					//writeDebugStreamLine(" > %d BckTile Shoot T <", nPgmTime);
+					//ANGLER_SHOOTER_TASK(gAnglerBackPFMidFlag, gAnglerBackPFTopFlag, 50, true, true, MAX_ANGLE_TIME, BTN_SHOOT_FRONT_TOP, false);
+					writeDebugStreamLine(" > %d F_PF Shoot T <", nPgmTime);
+					ANGLER_SHOOTER_TASK(gAnglerFrontPFTopFlag, gAnglerFrontPFMidFlag, 70, false, true, MAX_ANGLE_TIME_FRONT, BTN_SHOOT_FRONT_TOP, false);
+				}
+				else
+				{
+					writeDebugStreamLine(" > %d BckTile Shoot T <", nPgmTime);
+					ANGLER_SHOOTER_TASK(gAnglerBackPFMidFlag, gAnglerBackPFTopFlag, 50, true, true, MAX_ANGLE_TIME, BTN_SHOOT_FRONT_TOP, false);
+				}
 				tRelease();
 			}
 			else if (RISING(BTN_SHOOT_FRONT_MID))
