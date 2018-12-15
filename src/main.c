@@ -1531,7 +1531,7 @@ task autonomous()
 		setIntakeState(intakeIdle);
 		setShooterState(shooterIdle);
 		anglerMoveToPos(ANGLER_TOP_POS, 70);
-		moveToTarget(6, 11, 127, 40, 1, 12, 30, 0, (stopSoft), mttProportional);
+		moveToTarget(6, 11, 127, 40, 0, 12, 30, 0, (stopSoft), mttProportional);
 				//anglerMoveToPos(ANGLER_HORIZONTAL_POS, 70);
 	}
 	//writeDebugStream("%d Auto:%d", nPgmTime, gAuto);
