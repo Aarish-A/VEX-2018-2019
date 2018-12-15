@@ -323,7 +323,7 @@ task driveStateSet()
 int gAnglerBackTopFlag = 1535; //1575; //1430; //1390; //1490
 int gAnglerBackMidFlag = 1270; //1355; //1235; //1175; //1270
 
-int gAnglerFrontPFTopFlag = 1885;//1790;//1730;
+int gAnglerFrontPFTopFlag = 1905;//1790;//1730;
 int gAnglerFrontPFMidFlag = 1460;//1310;
 
 int gAnglerMidPFTopFlag = 1570;//1730;

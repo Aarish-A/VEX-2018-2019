@@ -335,7 +335,7 @@ void redFrontBeginning(bool skills)
 	setIntakeState(intakeUp);
 	startTask(autoShooterReload);
 	//(skills? 54 : 54.5)
-	moveToTarget(RED_FRONT_X, 54, 127, 40, 0, 18, 30, 0, (stopSoft | stopHarsh), mttProportional);
+	moveToTarget(RED_FRONT_X, 55.5, 127, 40, 0, 18, 30, 0, (stopSoft | stopHarsh), mttProportional);
 	//moveToTarget(59, 44, 127, 40, 4, 8, 40, 0, (stopSoft | stopHarsh), mttProportional);
 	//moveToTarget(59, 54, 30, 40, 3, 8, 40, 0, (stopSoft | stopHarsh), mttProportional);
 
@@ -377,7 +377,7 @@ void redFrontPark(bool skills)
 	setDrive(-15,-15);
 	sleep(150);
 	setDrive(127,127);
-	sleep(1200);
+	sleep(2000);
 	setDrive(0, 0);
 	sleep(0);
 }
