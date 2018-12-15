@@ -46,9 +46,10 @@ task autoShooterReload()
 	return;
 }
 
+bool dummyBool = false;
 void runAuto()
 {
-	bool dummyBool = false;
+	//bool dummyBool = false;
 	unsigned long autoStartTime = nPgmTime;
 
 	if (gAuto == autoSkills)
