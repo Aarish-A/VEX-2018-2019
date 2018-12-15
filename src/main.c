@@ -622,8 +622,8 @@ void decapperControls()
 
 #define ANGLER_CAP_FLIP_POS 820
 
-int gAnglerBackTopFlag = 1590; //1430; //1390; //1490
-int gAnglerBackMidFlag = 1340; //1235; //1175; //1270
+int gAnglerBackTopFlag = 1535; //1575; //1430; //1390; //1490
+int gAnglerBackMidFlag = 1270; //1355; //1235; //1175; //1270
 
 int gAnglerFrontPFTopFlag = 1885;//1790;//1730;
 int gAnglerFrontPFMidFlag = 1460;//1310;
@@ -632,8 +632,8 @@ int gAnglerMidPFTopFlag = 1570;//1730;
 int gAnglerMidPFMidFlag = 1250;//1310;
 
 //Positions shooting from back of front platform tile
-int gAnglerBackPFTopFlag = 1630;//1410;
-int gAnglerBackPFMidFlag = 1370;//1160;
+int gAnglerBackPFTopFlag = 1530;//1630;//1410;
+int gAnglerBackPFMidFlag = 1260;//1370;//1160;
 
 int gAnglerPower = 0;
 void setAngler(word val)
