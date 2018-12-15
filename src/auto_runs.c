@@ -179,7 +179,8 @@ void runAuto()
 				{
 					//4 Get on platform
 					moveToTarget(81, RED_FLAG_Y, 90, 40, 4, 12, 30, 0, (stopSoft | stopHarsh), mttProportional);
-					turnToAngleNewAlg(0,ch,0.35,20,10,true);
+					//turnToAngleNewAlg(0,ch,0.35,20,10,true);
+					turnToTargetNewAlg(81,(144-50),ch,0.35,20,10,true);
 					//turnToTargetAccurate(84, 50, ch, 80, 80, 0);
 					setDrive(90, 90);
 					sleep(400);
