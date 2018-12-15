@@ -160,7 +160,7 @@ void runAuto()
 				anglerMoveToPos(ANGLER_BELOW_CAP_PICKUP_POS, 20);
 				setIntakeState(intakeUp);
 				startTask(autoShooterReload);
-				moveToTarget(RED_BACK_X, 54.5, 127, 40, 5, 15, 30, 0, (stopSoft | stopHarsh), mttProportional);
+				moveToTarget(RED_BACK_X, 54.5, 127, 40, 5, 18, 30, 0, (stopSoft | stopHarsh), mttProportional);
 				//moveToTarget(108, 40, 127, 40, 4, 8, 40, 0, (stopSoft), mttProportional);
 				//moveToTarget(RED_BACK_X, 55, 40, 40, 3, 8, 40, 0, (stopSoft | stopHarsh), mttProportional);
 
@@ -211,7 +211,7 @@ void runAuto()
 				anglerMoveToPos(ANGLER_BELOW_CAP_PICKUP_POS, 20);
 				setIntakeState(intakeUp);
 				startTask(autoShooterReload);
-				moveToTarget(BLUE_FRONT_X, (144-55), 127, 40, 5, 15, 30, 0, (stopSoft | stopHarsh), mttProportional);
+				moveToTarget(BLUE_FRONT_X, (144-55), 127, 40, 5, 18, 30, 0, (stopSoft | stopHarsh), mttProportional);
 				//moveToTarget(59, (144-40), 127, 40, 4, 8, 40, 0, (stopSoft), mttProportional);
 				//moveToTarget(59, (144-57), 40, 40, 3, 8, 40, 0, (stopSoft | stopHarsh), mttProportional);
 
@@ -272,7 +272,7 @@ void runAuto()
 				anglerMoveToPos(ANGLER_BELOW_CAP_PICKUP_POS, 20);
 				setIntakeState(intakeUp);
 				startTask(autoShooterReload);
-				moveToTarget(BLUE_BACK_X, (144-55), 127, 40, 5, 15, 30, 0, (stopSoft | stopHarsh), mttProportional);
+				moveToTarget(BLUE_BACK_X, (144-55), 127, 40, 5, 18, 30, 0, (stopSoft | stopHarsh), mttProportional);
 				//moveToTarget(108, (144-40), 127, 40, 4, 8, 40, 0, (stopSoft), mttProportional);
 				//moveToTarget(RED_BACK_X, (144-57), 40, 40, 3, 8, 40, 0, (stopSoft | stopHarsh), mttProportional);
 
@@ -334,7 +334,7 @@ void redFrontBeginning(bool skills)
 	anglerMoveToPos(ANGLER_BELOW_CAP_PICKUP_POS, 20);
 	setIntakeState(intakeUp);
 	startTask(autoShooterReload);
-	moveToTarget(59, skills? 56.5 : 54.5, 127, 40, 5, 15, 30, 0, (stopSoft | stopHarsh), mttProportional);
+	moveToTarget(59, skills? 56.5 : 54.5, 127, 40, 5, 18, 30, 0, (stopSoft | stopHarsh), mttProportional);
 	//moveToTarget(59, 44, 127, 40, 4, 8, 40, 0, (stopSoft | stopHarsh), mttProportional);
 	//moveToTarget(59, 54, 30, 40, 3, 8, 40, 0, (stopSoft | stopHarsh), mttProportional);
 
