@@ -24,10 +24,12 @@
 int gBatteryLevel;
 int gBackupBatteryLevel;
 
+#define MAX_BACK_PIVOT_TIME 750
+
 #define MAX_ANGLE_TIME 1000
 #define MAX_ANGLE_TIME_FRONT 700
-#define SHOOTER_SHOOT_UNLOADED_TIME 790
-#define SHOOTER_SHOOT_LOADED_TIME 500
+#define SHOOTER_SHOOT_UNLOADED_TIME 880
+#define SHOOTER_SHOOT_LOADED_TIME 450
 
 /*			Toggle Logging 			*/
 //#define DRIVE_LOGS 1
@@ -320,7 +322,7 @@ task driveStateSet()
 #define ANGLER_CAP_FLIP_POS 820
 
 int gAnglerBackTopFlag = 1575; //1430; //1390; //1490
-int gAnglerBackMidFlag = 1380; //1235; //1175; //1270
+int gAnglerBackMidFlag = 1355; //1235; //1175; //1270
 
 int gAnglerFrontPFTopFlag = 1885;//1790;//1730;
 int gAnglerFrontPFMidFlag = 1460;//1310;
@@ -1026,9 +1028,11 @@ task backPivotTask()
 	sleep(10);
 	setDrive(50, 50);
 	tRelease();
-	sleep(100);
+	while (gPosition.x > (144-BACK_OFFSET-0.15)) sleep(10);
+	LOG_MACRO(("%d BackPivotTask FW Dne %d", nPgmTime, gPosition.x));
+	//sleep(100);
 	tHog();
-	turnToTargetAccurate(10, gBackPivotYTarg, ch, 33, 33, 0);
+	turnToTargetAccurate(12, gBackPivotYTarg, ch, 34, 34, 0);
 	startTask(driveStateSet);
 	tRelease();
 	sleep(10);
@@ -1087,7 +1091,7 @@ void anglerShooter(int posA, int posB, int acceptableRange, bool waitForFirstSho
 		if (!nextShot.btnReleased && gJoy[btn].cur)
 			angleShoot(posB, acceptableRange, waitForSecShot, angleTime, btn, nextShot);
 		else if (nextShot.anglerPos != -1)
-			angleShoot(nextShot.anglerPos, acceptableRange, waitForSecShot, angleTime, btn, nextShot);
+			angleShoot((nextShot.anglerPos-25), acceptableRange, waitForSecShot, angleTime, btn, nextShot);
 
 		LOG_MACRO((" >> %d Anglr(sht): grnd p_u pos", nPgmTime))
 		anglerMoveToPos(ANGLER_GROUND_PICKUP_POS, 150);
@@ -1231,6 +1235,8 @@ void intakeControls()
 			sleep(1000);
 			gBackPivotYTarg = 63;
 			startTask(backPivotTask);
+			anglerMoveToPos(gAnglerBackMidFlag, 25);
+			sleep(MAX_BACK_PIVOT_TIME-MAX_ANGLE_TIME);
 			ANGLER_SHOOTER_TASK(gAnglerBackMidFlag, gAnglerBackTopFlag, 25, true, true, MAX_ANGLE_TIME, BTN_INTAKE_DOWN, false);
 		}
 		else if (gIntakeState != intakeIdle)
@@ -1724,6 +1730,8 @@ task usercontrol()
 					sleep(1000);
 					gBackPivotYTarg = -35;
 					startTask(backPivotTask);
+					anglerMoveToPos(gAnglerBackMidFlag, 25);
+					sleep(MAX_BACK_PIVOT_TIME-MAX_ANGLE_TIME);
 					ANGLER_SHOOTER_TASK(gAnglerBackMidFlag, gAnglerBackTopFlag, 25, true, true, MAX_ANGLE_TIME, BTN_ANGLER_GROUND_PICKUP, false);
 				}
 				else
