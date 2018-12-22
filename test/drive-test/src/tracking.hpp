@@ -1,6 +1,9 @@
 #include "main.h"
 #include <cmath>
 
+#ifndef PILONS_TRACKING_H
+#define PILONS_TRACKING_H
+
 namespace pilons::tracking {
   const double WHL_DIA_L = 2.783;
   const double WHL_DIA_R = 2.783;
@@ -42,6 +45,8 @@ namespace pilons::tracking {
     double xLst, yLst, aLst;
     uint32_t velLstTime;
 
+    pros::Task *task;
+
   public:
     double x, y, a = 0;
     double xVel = 0, yVel = 0, aVel = 0;
@@ -50,5 +55,9 @@ namespace pilons::tracking {
 
     void update();
     void reset(double x = 0, double y = 0, double a = 0);
+    void startTask();
+    void stopTask();
   };
 }
+
+#endif

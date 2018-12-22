@@ -1,5 +1,7 @@
 #include "main.h"
-#include "tracking.h"
+#include "tracking.hpp"
+#include "config.hpp"
+#include "auto.hpp"
 
 /**
  * Runs the operator control code. This function will be started in its own task
@@ -19,26 +21,24 @@ using namespace pros;
 using namespace pilons::tracking;
 
 void opcontrol() {
-	Controller controller(E_CONTROLLER_MASTER);
-	Motor driveFL(1, true);
-	Motor driveBL(11, true);
-	Motor driveFR(10);
-	Motor driveBR(20);
-	ADIEncoder encL(1, 2);
-	ADIEncoder encR(5, 6, true);
-	ADIEncoder encS(3, 4);
-	Tracking pos(encL, encR, encS);
-
 	controller.clear();
+
+	printf("Hello, world\n");
+
+	pos.startTask();
+	pros::delay(1000);
+	moveToTargetAngle(pos, 0, 24, 0);
+
+	return;
 
 	uint32_t update = 0;
 	while (true) {
+		/*
 		int y = controller.get_analog(E_CONTROLLER_ANALOG_LEFT_Y);
 		int x = controller.get_analog(E_CONTROLLER_ANALOG_LEFT_X);
 		int a = controller.get_analog(E_CONTROLLER_ANALOG_RIGHT_X);
 
-		driveFL.move(y + x + a);
-		driveBL.move(y - x + a);
+		driveFL.moveVx + a);
 		driveFR.move(y - x - a);
 		driveBR.move(y + x - a);
 
@@ -52,6 +52,7 @@ void opcontrol() {
 			controller.print(2, 0, "%2d %2d %2d %2d", (int)driveFL.get_temperature(), (int)driveBL.get_temperature(), (int)driveFR.get_temperature(), (int)driveBR.get_temperature());
 			update = millis() + 100;
 		}
+		*/
 
 		pros::delay(1);
 	}

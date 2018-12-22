@@ -1,4 +1,4 @@
-#include "tracking.h"
+#include "tracking.hpp"
 
 namespace pilons::tracking {
   Tracking::Tracking(pros::ADIEncoder &encL, pros::ADIEncoder &encR, pros::ADIEncoder &encS, double x, double y, double a) : encL(encL), encR(encR), encS(encS) {
@@ -94,8 +94,26 @@ namespace pilons::tracking {
     this->aRst = a;
   }
 
-  void moveToTarget(double x, double y, double a) {
-    
+  static void trackingTask(void *obj) {
+    Tracking *tracking = static_cast<Tracking *>(obj);
+    while (true) {
+      tracking->update();
+      pros::delay(1);
+    }
+  }
+
+  void Tracking::startTask() {
+    if (!this->task) {
+      this->task = new pros::Task(&trackingTask, this);
+    }
+  }
+
+  void Tracking::stopTask() {
+    if (this->task) {
+      this->task->remove();
+      delete this->task;
+      this->task = nullptr;
+    }
   }
 
   double operator "" _in(long double val) {
