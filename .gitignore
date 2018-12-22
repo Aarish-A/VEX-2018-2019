@@ -1,1 +1,4 @@
 **/.vscode/cquery_cached_index/
+**/*.o
+**/*.bin
+**/*.elf
