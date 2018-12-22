@@ -51,6 +51,4 @@ namespace pilons::tracking {
     void update();
     void reset(double x = 0, double y = 0, double a = 0);
   };
-
-  void moveToTarget(double x, double y, double a);
 }
