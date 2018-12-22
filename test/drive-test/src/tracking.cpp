@@ -2,13 +2,23 @@
 
 namespace pilons::tracking {
   Tracking::Tracking(pros::ADIEncoder &encL, pros::ADIEncoder &encR, pros::ADIEncoder &encS, double x, double y, double a) : encL(encL), encR(encR), encS(encS) {
-    this->x = x;
-    this->y = y;
-    this->aRst = a;
+    this->x = this->xLst = x;
+    this->y = this->yLst = y;
+    this->aRst = this->aLst = a;
 
-    encLLst = encL.get_value();
-    encRLst = encR.get_value();
-    encSLst = encS.get_value();
+    encL.reset();
+    encR.reset();
+    encS.reset();
+
+    this->encLLst = 0;
+    this->encRLst = 0;
+    this->encSLst = 0;
+
+    this->xVel = 0;
+    this->yVel = 0;
+    this->aVel = 0;
+
+    this->velLstTime = pros::millis();
   }
 
   void Tracking::update() {
@@ -54,6 +64,20 @@ namespace pilons::tracking {
     this->x += h * sinP + h2 * cosP;
     this->y += h * cosP - h2 * sinP;
     this->a = a;
+
+    uint32_t curTime = pros::millis();
+    if (curTime > velLstTime + VEL_TIME) {
+      uint32_t dt = curTime - velLstTime;
+      velLstTime = curTime;
+
+      xVel = 1000 * (this->x - xLst) / dt;
+      yVel = 1000 * (this->y - yLst) / dt;
+      aVel = 1000 * (this->a - aLst) / dt;
+
+      xLst = this->x;
+      yLst = this->y;
+      aLst = this->a;
+    }
   }
 
   void Tracking::reset(double x, double y, double a) {
@@ -68,6 +92,10 @@ namespace pilons::tracking {
     this->y = y;
     this->a = 0;
     this->aRst = a;
+  }
+
+  void moveToTarget(double x, double y, double a) {
+    
   }
 
   double operator "" _in(long double val) {

@@ -49,9 +49,8 @@ void opcontrol() {
 		pos.update();
 
 		if (millis() > update) {
-			controller.print(2, 0, "%.0f %.5f         ", RAD_TO_DEG(pos.a), ((encL.get_value() * SPN_TO_IN_L) - (encR.get_value() * SPN_TO_IN_R)) / 3600_deg);
-			//printf("%d %d %d\n", encL.get_value(), encR.get_value(), encS.get_value());
-			update = millis() + 500;
+			controller.print(2, 0, "%2d %2d %2d %2d", (int)driveFL.get_temperature(), (int)driveBL.get_temperature(), (int)driveFR.get_temperature(), (int)driveBR.get_temperature());
+			update = millis() + 100;
 		}
 
 		pros::delay(1);
