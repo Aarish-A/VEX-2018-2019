@@ -1521,21 +1521,8 @@ task autonomous()
 
 	selectAuto(); //selects auto based on potentiometer and gAutoPreloadFlag variable
 
-	if (gAuto == autoFront)
-	{
-		resetTracking(gPosition, gVelocity, RED_FRONT_X, 3.6+S_DISTANCE_IN, -90);
-		anglerUnderAxle();
-		angleShoot(gAnglerFrontPFTopFlag, 70, true, MAX_ANGLE_TIME_FRONT, BTN_SHOOT, gDummyBool);
-
-		//Toggle Flag
-		setIntakeState(intakeIdle);
-		setShooterState(shooterIdle);
-		anglerMoveToPos(ANGLER_TOP_POS, 70);
-		moveToTarget(6, 11, 127, 40, 0, 12, 30, 0, (stopSoft), mttProportional);
-				//anglerMoveToPos(ANGLER_HORIZONTAL_POS, 70);
-	}
-	//writeDebugStream("%d Auto:%d", nPgmTime, gAuto);
-	//runAuto(); //runs auto depending on gAuto and gAlliance
+	writeDebugStream("%d Auto:%d", nPgmTime, gAuto);
+	runAuto(); //runs auto depending on gAuto and gAlliance
 
 	writeDebugStreamLine("%d AutoT:%d", nPgmTime, (nPgmTime-autoStartTime));
 

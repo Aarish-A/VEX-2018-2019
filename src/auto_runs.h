@@ -65,6 +65,7 @@ bool gAutoLock = false;
 
 void testTurn();
 
+void angleResetRed(int x);
 void selectAuto(); //selects auto based on potentiometer and gAutoPreloadFlag variable
 void runAuto(); //runs auto depending on gAuto
 
