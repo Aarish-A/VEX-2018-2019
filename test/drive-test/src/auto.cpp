@@ -99,7 +99,7 @@ namespace pilons::tracking {
     Slew slewY(10, 0, 0);
     Slew slewA(10, 0, 0);
 
-    printf("%x\n", angle_target.get());
+    printf("MC PTR %x\n", this->angle_target.get());
 
     while (true) {
       if (!angle_target) {
@@ -124,21 +124,25 @@ namespace pilons::tracking {
       vector velLine = {kPx * linePos.x, kPy * linePos.y};
       double velAngle = kPa * da;
 
+      double velXRaw = velLine.x;
+
       //Add cap to x and y velocities
       if (fabs(velLine.y) > 200) velLine.y = 200 * SGN(velLine.y);
+
       if (fabs(velLine.x) > 200) velLine.x = 200 * SGN(velLine.x);
 
       // Convert to robot coordinates
       vector velRobot = rotate(velLine, lineAngle - pos.a);
       velRobot.x *= 2;
+      //if (fabs(velLine.x) > 5 && fabs(velLine.x) < 25 && fabs(velLine.y) > 180) velLine.x = 25 * SGN(velLine.x);
 
       //Use slew for y and a velocities + set motors
       double ySlew = slewY.slewSet(velRobot.y);
       double aSlew = slewA.slewSet(velAngle);
       setDrive(velRobot.x, ySlew, aSlew);
 
-      printf("%f %f %f | %f (%f: %f) (%f: %f)\n", pos.x, pos.y, RAD_TO_DEG(pos.a), velRobot.x, velRobot.y, ySlew, velAngle, aSlew);
-
+      printf("%f %f %f | dD:%f dA:%f | (%f %f %f) (%f: %f) (%f: %f)\n", pos.x, pos.y, RAD_TO_DEG(pos.a), this->dDistance(), this->dAngle(), dV.x, velXRaw, velRobot.x, velRobot.y, ySlew, velAngle, aSlew);
+      controller.print(2, 0, "%.1f %.1f %.1f", pos.x, pos.y, RAD_TO_DEG(pos.a));
       pros::delay(10);
     }
   }

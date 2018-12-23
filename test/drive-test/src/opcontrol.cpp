@@ -33,15 +33,19 @@ void opcontrol() {
 	MotionController mc;
 	mc.setStart({0, 0});
 	mc.setEnd({0, 120});
-	mc.setAngleTarget(new FixedAngleTarget(0_deg));
+	mc.setAngleTarget(new PointAngleTarget({0, 120}));
 	//(new FixedAngleTarget(-90_deg));
-	printf("\n\n\t%f Start Move", millis());
+	uint32_t tStart = millis();
+	printf("\n\n\t%d Start Move", millis());
 	mc.startTask();
-	while (pos.y < 100) pros::delay(10);
+	while (mc.dDistance() > 20) pros::delay(10);
+	printf("\n\n\t%d Start Angle", millis());
 	mc.setAngleTarget(new PointAngleTarget({-48, 66}));
 
-	while (fabs(mc.dAngle()) < 1_deg ) pros::delay(10);
-	printf("\n\n\t%f DONE MOVE + ANGLE", millis());
+	while (fabs(mc.dAngle()) > 1_deg ) pros::delay(10);
+	printf("\n\n\t%d DONE MOVE + ANGLE in %d", millis(), (millis()-tStart));
+	mc.setEnd({0, 0});
+	mc.setAngleTarget(new FixedAngleTarget(0_deg));
 
 	while (true) pros::delay(10);
 
