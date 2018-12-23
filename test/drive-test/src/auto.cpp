@@ -8,10 +8,27 @@
 namespace pilons::tracking {
   void setDrive(double x, double y, double a) {
 
-    driveFL.move_velocity(y + x + a);
-    driveBL.move_velocity(y - x + a);
-    driveFR.move_velocity(y - x - a);
-    driveBR.move_velocity(y + x - a);
+    double fL = (y + x + a);
+    double bL = (y - x + a);
+    double fR = (y - x - a);
+    double bR = (y + x - a);
+
+    double max = fmax(fmax(fabs(fL), fabs(fR)), fmax(fabs(bL), fabs(bR)));
+    if (max > 200)
+    {
+      double scale = fabs(200/max);
+
+      fL *= scale;
+      bL *= scale;
+      fR *= scale;
+      bR *= scale;
+    }
+
+    //printf("%f %f %f | %f %f %f %f\n", pos.x, pos.y, RAD_TO_DEG(pos.a), fL, bL, fR, bR);
+    driveFL.move_velocity(fL);
+    driveBL.move_velocity(bL);
+    driveFR.move_velocity(fR);
+    driveBR.move_velocity(bR);
   }
 
   void moveToTargetAngle(Tracking &tracking, double x, double y, double a) {
@@ -49,7 +66,6 @@ namespace pilons::tracking {
       velRobot.x *= 2;
 
       // Write to motors
-
       double ySlew = slewY.slewSet(velRobot.y);
       double aSlew = slewA.slewSet(velAngle);
 
@@ -72,10 +88,18 @@ namespace pilons::tracking {
     return target;
   }
 
+  PointAngleTarget::PointAngleTarget(vector target) : target(target) {}
+
+  double PointAngleTarget::getTarget() {
+    return (target - pos.position()).phase();
+  }
+
   void MotionController::taskImpl() {
     Slew slewX(10, 0, 0);
     Slew slewY(10, 0, 0);
     Slew slewA(10, 0, 0);
+
+    printf("%x\n", angle_target.get());
 
     while (true) {
       if (!angle_target) {
@@ -100,15 +124,17 @@ namespace pilons::tracking {
       vector velLine = {kPx * linePos.x, kPy * linePos.y};
       double velAngle = kPa * da;
 
+      //Add cap to x and y velocities
+      if (fabs(velLine.y) > 200) velLine.y = 200 * SGN(velLine.y);
+      if (fabs(velLine.x) > 200) velLine.x = 200 * SGN(velLine.x);
+
       // Convert to robot coordinates
       vector velRobot = rotate(velLine, lineAngle - pos.a);
       velRobot.x *= 2;
 
-      // Write to motors
-
+      //Use slew for y and a velocities + set motors
       double ySlew = slewY.slewSet(velRobot.y);
       double aSlew = slewA.slewSet(velAngle);
-
       setDrive(velRobot.x, ySlew, aSlew);
 
       printf("%f %f %f | %f (%f: %f) (%f: %f)\n", pos.x, pos.y, RAD_TO_DEG(pos.a), velRobot.x, velRobot.y, ySlew, velAngle, aSlew);
@@ -131,5 +157,13 @@ namespace pilons::tracking {
 
   void MotionController::setEnd(vector end) {
     this->end = end;
+  }
+
+  double MotionController::dDistance() {
+    return (this->end - pos.position()).magnitude();
+  }
+
+  double MotionController::dAngle() {
+    return (this->angle_target->getTarget() - pos.a);
   }
 }

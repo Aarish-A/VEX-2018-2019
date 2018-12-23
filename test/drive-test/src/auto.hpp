@@ -23,6 +23,14 @@ namespace pilons::tracking {
     double getTarget() override;
   };
 
+  class PointAngleTarget final : public AngleTarget {
+    vector target;
+
+  public:
+    PointAngleTarget(vector target);
+    double getTarget() override;
+  };
+
   class MotionController final : public util::BackgroundTask {
     std::unique_ptr<AngleTarget> angle_target;
     vector start;
@@ -36,6 +44,9 @@ namespace pilons::tracking {
     void setStartToCurrent();
     void setStart(vector start);
     void setEnd(vector end);
+
+    double dDistance();
+    double dAngle(); 
   };
 }
 

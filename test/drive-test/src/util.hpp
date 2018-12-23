@@ -4,6 +4,8 @@
 #include "main.h"
 #include <memory>
 
+#define SGN(x) ((x > 0) - (x < 0))
+
 namespace pilons::util {
   class BackgroundTask {
     std::unique_ptr<pros::Task> task;
