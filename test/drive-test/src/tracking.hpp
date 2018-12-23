@@ -37,6 +37,20 @@ namespace pilons::tracking {
   double operator "" _rad(unsigned long long val);
   double operator "" _deg(unsigned long long val);
 
+  struct vector {
+    double x, y;
+
+    vector operator+(vector other);
+    vector operator-(vector other);
+    vector operator+();
+    vector operator-();
+
+    double phase();
+    double magnitude();
+  };
+
+  vector rotate(vector v, double offset);
+
   class Tracking : public util::BackgroundTask {
   private:
     pros::ADIEncoder &encL, &encR, &encS;
@@ -57,6 +71,7 @@ namespace pilons::tracking {
 
     void update();
     void reset(double x = 0, double y = 0, double a = 0);
+    vector position();
   };
 }
 

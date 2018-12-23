@@ -6,12 +6,6 @@
 #include <cmath>
 
 namespace pilons::tracking {
-  vector rotate(vector v, double offset) {
-    double m = sqrt(v.x * v.x + v.y * v.y);
-    double a = atan2(v.x, v.y) + offset;
-    return {m * sin(a), m * cos(a)};
-  }
-
   void setDrive(double x, double y, double a) {
 
     driveFL.move_velocity(y + x + a);
@@ -78,8 +72,57 @@ namespace pilons::tracking {
     return target;
   }
 
+  void MotionController::taskImpl() {
+    Slew slewX(10, 0, 0);
+    Slew slewY(10, 0, 0);
+    Slew slewA(10, 0, 0);
+
+    while (true) {
+      if (!angle_target) {
+        pros::delay(10);
+        continue;
+      }
+
+      // Calculate offsets in global coordinates
+      vector dV = end - pos.position();
+      double da = angle_target->getTarget() - pos.a;
+      double lineAngle = (end - start).phase();
+
+      // Calculate position in line coordinates
+      vector linePos = rotate(dV, -lineAngle);
+
+      // P loop constants
+      const double kPx = 10.0;
+      const double kPy = 10.0;
+      const double kPa = 200 / 90_deg;
+
+      // Calculate target velocities (velLine is still line coordinates)
+      vector velLine = {kPx * linePos.x, kPy * linePos.y};
+      double velAngle = kPa * da;
+
+      // Convert to robot coordinates
+      vector velRobot = rotate(velLine, lineAngle - pos.a);
+      velRobot.x *= 2;
+
+      // Write to motors
+
+      double ySlew = slewY.slewSet(velRobot.y);
+      double aSlew = slewA.slewSet(velAngle);
+
+      setDrive(velRobot.x, ySlew, aSlew);
+
+      printf("%f %f %f | %f (%f: %f) (%f: %f)\n", pos.x, pos.y, RAD_TO_DEG(pos.a), velRobot.x, velRobot.y, ySlew, velAngle, aSlew);
+
+      pros::delay(10);
+    }
+  }
+
   void MotionController::setAngleTarget(AngleTarget *target) {
     angle_target.reset(target);
+  }
+
+  void MotionController::setStartToCurrent() {
+    setStart(pos.position());
   }
 
   void MotionController::setStart(vector start) {

@@ -1,6 +1,69 @@
 #include "tracking.hpp"
 
 namespace pilons::tracking {
+  double operator "" _in(long double val) {
+    return val;
+  }
+
+  double operator "" _cm(long double val) {
+    return val * 2.54;
+  }
+
+  double operator "" _in(unsigned long long val) {
+    return val;
+  }
+
+  double operator "" _cm(unsigned long long val) {
+    return val * 2.54;
+  }
+
+
+  double operator "" _rad(long double val) {
+    return val;
+  }
+
+  double operator "" _deg(long double val) {
+    return  DEG_TO_RAD(val);
+  }
+
+  double operator "" _rad(unsigned long long val) {
+    return val;
+  }
+
+  double operator "" _deg(unsigned long long val) {
+    return  DEG_TO_RAD(val);
+  }
+
+  vector vector::operator+(vector other) {
+    return {x + other.x, y + other.y};
+  }
+
+  vector vector::operator-(vector other) {
+    return *this + -other;
+  }
+
+  vector vector::operator+() {
+    return *this;
+  }
+
+  vector vector::operator-() {
+    return {-x, -y};
+  }
+
+  double vector::phase() {
+    return atan2(x, y);
+  }
+
+  double vector::magnitude() {
+    return sqrt(x * x + y * y);
+  }
+
+  vector rotate(vector v, double offset) {
+    double m = v.magnitude();
+    double a = v.phase() + offset;
+    return {m * sin(a), m * cos(a)};
+  }
+
   Tracking::Tracking(pros::ADIEncoder &encL, pros::ADIEncoder &encR, pros::ADIEncoder &encS, double x, double y, double a) : encL(encL), encR(encR), encS(encS) {
     this->x = this->xLst = x;
     this->y = this->yLst = y;
@@ -19,6 +82,13 @@ namespace pilons::tracking {
     this->aVel = 0;
 
     this->velLstTime = pros::millis();
+  }
+
+  void Tracking::taskImpl() {
+    while (true) {
+      update();
+      pros::delay(1);
+    }
   }
 
   void Tracking::update() {
@@ -94,43 +164,7 @@ namespace pilons::tracking {
     this->aRst = a;
   }
 
-  void Tracking::taskImpl() {
-    while (true) {
-      update();
-      pros::delay(1);
-    }
-  }
-
-  double operator "" _in(long double val) {
-    return val;
-  }
-
-  double operator "" _cm(long double val) {
-    return val * 2.54;
-  }
-
-  double operator "" _in(unsigned long long val) {
-    return val;
-  }
-
-  double operator "" _cm(unsigned long long val) {
-    return val * 2.54;
-  }
-
-
-  double operator "" _rad(long double val) {
-    return val;
-  }
-
-  double operator "" _deg(long double val) {
-    return  DEG_TO_RAD(val);
-  }
-
-  double operator "" _rad(unsigned long long val) {
-    return val;
-  }
-
-  double operator "" _deg(unsigned long long val) {
-    return  DEG_TO_RAD(val);
+  vector Tracking::position() {
+    return {x, y};
   }
 }

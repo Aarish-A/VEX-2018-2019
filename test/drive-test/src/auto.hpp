@@ -6,11 +6,6 @@
 #include "util.hpp"
 
 namespace pilons::tracking {
-  struct vector {
-    double x, y;
-  };
-
-  vector rotate(vector v, double offset);
   void setDrive(double x, double y, double a);
   void moveToTargetAngle(Tracking &tracking, double x, double y, double a);
 
@@ -32,10 +27,13 @@ namespace pilons::tracking {
     std::unique_ptr<AngleTarget> angle_target;
     vector start;
     vector end;
-    std::unique_ptr<pros::Task> task;
+
+  protected:
+    void taskImpl() override;
 
   public:
     void setAngleTarget(AngleTarget *target);
+    void setStartToCurrent();
     void setStart(vector start);
     void setEnd(vector end);
   };

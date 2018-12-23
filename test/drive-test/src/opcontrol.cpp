@@ -29,7 +29,12 @@ void opcontrol() {
 
 	pos.startTask();
 	pros::delay(1000);
-	moveToTargetAngle(pos, 0, 24, -90_deg);
+	//moveToTargetAngle(pos, 0, 24, -90_deg);
+	MotionController mc;
+	mc.setStart({0, 0});
+	mc.setEnd({0, 24});
+	mc.setAngleTarget(new FixedAngleTarget(-90_deg));
+	mc.startTask();
 
 	return;
 
