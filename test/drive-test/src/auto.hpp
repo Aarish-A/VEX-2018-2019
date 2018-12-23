@@ -3,6 +3,7 @@
 
 #include <memory>
 #include "tracking.hpp"
+#include "util.hpp"
 
 namespace pilons::tracking {
   struct vector {
@@ -27,13 +28,16 @@ namespace pilons::tracking {
     double getTarget() override;
   };
 
-  class MotionController final {
+  class MotionController final : public util::BackgroundTask {
     std::unique_ptr<AngleTarget> angle_target;
     vector start;
     vector end;
     std::unique_ptr<pros::Task> task;
 
   public:
+    void setAngleTarget(AngleTarget *target);
+    void setStart(vector start);
+    void setEnd(vector end);
   };
 }
 

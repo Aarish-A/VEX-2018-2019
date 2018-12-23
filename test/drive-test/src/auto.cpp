@@ -77,4 +77,16 @@ namespace pilons::tracking {
   double FixedAngleTarget::getTarget() {
     return target;
   }
+
+  void MotionController::setAngleTarget(AngleTarget *target) {
+    angle_target.reset(target);
+  }
+
+  void MotionController::setStart(vector start) {
+    this->start = start;
+  }
+
+  void MotionController::setEnd(vector end) {
+    this->end = end;
+  }
 }

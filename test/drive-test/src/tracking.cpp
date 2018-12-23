@@ -94,24 +94,10 @@ namespace pilons::tracking {
     this->aRst = a;
   }
 
-  static void trackingTask(void *obj) {
-    Tracking *tracking = static_cast<Tracking *>(obj);
+  void Tracking::taskImpl() {
     while (true) {
-      tracking->update();
+      update();
       pros::delay(1);
-    }
-  }
-
-  void Tracking::startTask() {
-    if (!this->task) {
-      this->task.reset(new pros::Task(&trackingTask, this));
-    }
-  }
-
-  void Tracking::stopTask() {
-    if (this->task) {
-      this->task->remove();
-      this->task = nullptr;
     }
   }
 
