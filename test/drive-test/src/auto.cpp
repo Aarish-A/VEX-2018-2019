@@ -1,3 +1,5 @@
+#include "main.h"
+#include "tracking.hpp"
 #include "auto.hpp"
 #include "config.hpp"
 #include "slew.hpp"
@@ -19,11 +21,16 @@ namespace pilons::tracking {
   }
 
   void moveToTargetAngle(Tracking &tracking, double x, double y, double a) {
-    Slew slewX(20, 0, 0);
+    controller.clear();
+    Slew slewX(10, 0, 0);
     Slew slewY(10, 0, 0);
+    Slew slewA(10, 0, 0);
     double lineAngle = atan2(x - tracking.x, y - tracking.y);
     double d2;
     double da;
+    bool angle_end;
+    uint32_t tStart = pros::c::millis();
+
     do {
       // Calculate offsets in global coordinates
       double dx = x - tracking.x;
@@ -37,7 +44,7 @@ namespace pilons::tracking {
       // P loop constants
       const double kPx = 10.0;
       const double kPy = 10.0;
-      const double kPa = 0 / 90_deg;
+      const double kPa = 200 / 90_deg;
 
       // Calculate target velocities (velLine is still line coordinates)
       vector velLine = {kPx * linePos.x, kPy * linePos.y};
@@ -50,16 +57,21 @@ namespace pilons::tracking {
       // Write to motors
 
       double ySlew = slewY.slewSet(velRobot.y);
+      double aSlew = slewA.slewSet(velAngle);
 
-      setDrive((velRobot.x), ySlew, velAngle);
+      setDrive((velRobot.x), ySlew, aSlew);
 
-      printf("%f %f %f | %f (%f: %f) %f\n", tracking.x, tracking.y, RAD_TO_DEG(tracking.a), velRobot.x, velRobot.y, ySlew, velAngle);
+      angle_end = fabs(da) > 1_deg;
+
+      printf("%f %f %f | %f (%f: %f) (%f: %f)\n", tracking.x, tracking.y, RAD_TO_DEG(tracking.a), velRobot.x, velRobot.y, ySlew, velAngle, aSlew);
+      controller.print(2, 0, "%.1f %.1f %.1f", tracking.x, tracking.y, RAD_TO_DEG(tracking.a));
 
       pros::delay(10);
-    } while (d2 > 1 || da > 1_deg);
+    } while (d2 > 1 || angle_end);//d2 > 1 ||
     setDrive(0, 0, 0);
+    uint32_t tElpsd = pros::c::millis() - tStart;
+    printf("Done Move in %d %f %f %f \n", tElpsd, tracking.x, tracking.y, RAD_TO_DEG(tracking.a));
   }
-
   FixedAngleTarget::FixedAngleTarget(double target) : target(target) {}
 
   double FixedAngleTarget::getTarget() {

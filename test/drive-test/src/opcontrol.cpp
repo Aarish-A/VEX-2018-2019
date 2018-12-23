@@ -22,8 +22,10 @@ using namespace pilons::tracking;
 
 void opcontrol() {
 	controller.clear();
+	pos.startTask();
 
-	printf("Hello, world\n");
+
+	printf("Hello, world %f\n", 1_deg);
 
 	pos.startTask();
 	pros::delay(1000);
@@ -32,15 +34,14 @@ void opcontrol() {
 	return;
 
 	uint32_t update = 0;
+
 	while (true) {
-		/*
+
 		int y = controller.get_analog(E_CONTROLLER_ANALOG_LEFT_Y);
 		int x = controller.get_analog(E_CONTROLLER_ANALOG_LEFT_X);
 		int a = controller.get_analog(E_CONTROLLER_ANALOG_RIGHT_X);
 
-		driveFL.moveVx + a);
-		driveFR.move(y - x - a);
-		driveBR.move(y + x - a);
+		setDrive(x, y, a);
 
 		if (controller.get_digital_new_press(E_CONTROLLER_DIGITAL_Y)) {
 			pos.reset();
@@ -49,10 +50,12 @@ void opcontrol() {
 		pos.update();
 
 		if (millis() > update) {
-			controller.print(2, 0, "%2d %2d %2d %2d", (int)driveFL.get_temperature(), (int)driveBL.get_temperature(), (int)driveFR.get_temperature(), (int)driveBR.get_temperature());
+			controller.print(2, 0, "%f %f %f", pos.x, pos.y, pos.a);
+			//controller.print(2, 0, "%2d %2d %2d %2d", (int)driveFL.get_temperature(), (int)driveBL.get_temperature(), (int)driveFR.get_temperature(), (int)driveBR.get_temperature());
 			update = millis() + 100;
 		}
-		*/
+		pros::delay(10);
+
 
 		pros::delay(1);
 	}
