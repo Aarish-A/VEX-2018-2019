@@ -2,6 +2,7 @@
 #define PILONS_TRACKING_H
 #include "main.h"
 #include <cmath>
+#include <memory>
 
 namespace pilons::tracking {
   const double WHL_DIA_L = 2.783;
@@ -44,7 +45,7 @@ namespace pilons::tracking {
     double xLst, yLst, aLst;
     uint32_t velLstTime;
 
-    pros::Task *task;
+    std::unique_ptr<pros::Task> task;
 
   public:
     double x, y, a = 0;

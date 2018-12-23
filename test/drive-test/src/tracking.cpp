@@ -104,14 +104,13 @@ namespace pilons::tracking {
 
   void Tracking::startTask() {
     if (!this->task) {
-      this->task = new pros::Task(&trackingTask, this);
+      this->task.reset(new pros::Task(&trackingTask, this));
     }
   }
 
   void Tracking::stopTask() {
     if (this->task) {
       this->task->remove();
-      delete this->task;
       this->task = nullptr;
     }
   }

@@ -59,4 +59,10 @@ namespace pilons::tracking {
     } while (d2 > 1 || da > 1_deg);
     setDrive(0, 0, 0);
   }
+
+  FixedAngleTarget::FixedAngleTarget(double target) : target(target) {}
+
+  double FixedAngleTarget::getTarget() {
+    return target;
+  }
 }
