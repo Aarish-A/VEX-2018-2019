@@ -1,5 +1,7 @@
 #include "main.h"
-#include "tracking.h"
+#include "tracking.hpp"
+#include "config.hpp"
+#include "auto.hpp"
 
 /**
  * Runs the operator control code. This function will be started in its own task
@@ -19,28 +21,45 @@ using namespace pros;
 using namespace pilons::tracking;
 
 void opcontrol() {
-	Controller controller(E_CONTROLLER_MASTER);
-	Motor driveFL(1, true);
-	Motor driveBL(11, true);
-	Motor driveFR(10);
-	Motor driveBR(20);
-	ADIEncoder encL(1, 2);
-	ADIEncoder encR(5, 6, true);
-	ADIEncoder encS(3, 4);
-	Tracking pos(encL, encR, encS);
-
 	controller.clear();
+	pos.startTask();
+
+
+	printf("Hello, world %f\n", 1_deg);
+
+	pos.startTask();
+	pros::delay(1000);
+	//moveToTargetAngle(pos, 0, 24, -90_deg);
+	MotionController mc;
+	mc.setStart({0, 0});
+	mc.setEnd({0, 120});
+	mc.setAngleTarget(new PointAngleTarget({0, 120}));
+	//(new FixedAngleTarget(-90_deg));
+	uint32_t tStart = millis();
+	printf("\n\n\t%d Start Move", millis());
+	mc.startTask();
+	while (mc.dDistance() > 20) pros::delay(10);
+	printf("\n\n\t%d Start Angle", millis());
+	mc.setAngleTarget(new PointAngleTarget({-48, 66}));
+
+	while (fabs(mc.dAngle()) > 1_deg ) pros::delay(10);
+	printf("\n\n\t%d DONE MOVE + ANGLE in %d", millis(), (millis()-tStart));
+	mc.setEnd({0, 0});
+	mc.setAngleTarget(new FixedAngleTarget(0_deg));
+
+	while (true) pros::delay(10);
+
+	return;
 
 	uint32_t update = 0;
+
 	while (true) {
+
 		int y = controller.get_analog(E_CONTROLLER_ANALOG_LEFT_Y);
 		int x = controller.get_analog(E_CONTROLLER_ANALOG_LEFT_X);
 		int a = controller.get_analog(E_CONTROLLER_ANALOG_RIGHT_X);
 
-		driveFL.move(y + x + a);
-		driveBL.move(y - x + a);
-		driveFR.move(y - x - a);
-		driveBR.move(y + x - a);
+		setDrive(x, y, a);
 
 		if (controller.get_digital_new_press(E_CONTROLLER_DIGITAL_Y)) {
 			pos.reset();
@@ -49,9 +68,12 @@ void opcontrol() {
 		pos.update();
 
 		if (millis() > update) {
-			controller.print(2, 0, "%2d %2d %2d %2d", (int)driveFL.get_temperature(), (int)driveBL.get_temperature(), (int)driveFR.get_temperature(), (int)driveBR.get_temperature());
+			controller.print(2, 0, "%f %f %f", pos.x, pos.y, pos.a);
+			//controller.print(2, 0, "%2d %2d %2d %2d", (int)driveFL.get_temperature(), (int)driveBL.get_temperature(), (int)driveFR.get_temperature(), (int)driveBR.get_temperature());
 			update = millis() + 100;
 		}
+		pros::delay(10);
+
 
 		pros::delay(1);
 	}

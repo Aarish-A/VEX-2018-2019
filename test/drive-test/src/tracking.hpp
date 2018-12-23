@@ -1,5 +1,9 @@
+#ifndef PILONS_TRACKING_H
+#define PILONS_TRACKING_H
 #include "main.h"
+#include "util.hpp"
 #include <cmath>
+#include <memory>
 
 namespace pilons::tracking {
   const double WHL_DIA_L = 2.783;
@@ -33,7 +37,21 @@ namespace pilons::tracking {
   double operator "" _rad(unsigned long long val);
   double operator "" _deg(unsigned long long val);
 
-  class Tracking {
+  struct vector {
+    double x, y;
+
+    vector operator+(vector other);
+    vector operator-(vector other);
+    vector operator+();
+    vector operator-();
+
+    double phase();
+    double magnitude();
+  };
+
+  vector rotate(vector v, double offset);
+
+  class Tracking : public util::BackgroundTask {
   private:
     pros::ADIEncoder &encL, &encR, &encS;
     int encLLst, encRLst, encSLst;
@@ -41,6 +59,9 @@ namespace pilons::tracking {
 
     double xLst, yLst, aLst;
     uint32_t velLstTime;
+
+  protected:
+    void taskImpl() override;
 
   public:
     double x, y, a = 0;
@@ -50,5 +71,8 @@ namespace pilons::tracking {
 
     void update();
     void reset(double x = 0, double y = 0, double a = 0);
+    vector position();
   };
 }
+
+#endif
