@@ -19,7 +19,7 @@ using namespace pros;
 
 enum class PunState { Load, ShotStart, ShotWait };
 
-const int PUN_OFFSET = 60;
+const int PUN_OFFSET = 45;
 const int PUN_HOLD = 250; // Relative to the slip point
 const int PUN_TPR = 360; // Relative to the slip point
 const int PUN_NO_RETURN = 50; // Back from the slip point
