@@ -11,6 +11,7 @@ double Slew::slewSet(double valCur)
 
   if (valCur_ > upLim) valCur_ = upLim;
   else if (valCur_ < lowLim) valCur_ = lowLim;
+  else valCur_ = valCur;
 
   valLst_ = valCur_;
 

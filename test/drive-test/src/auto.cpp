@@ -1,5 +1,6 @@
 #include "auto.hpp"
 #include "config.hpp"
+#include "slew.hpp"
 #include <cmath>
 
 namespace pilons::tracking {
@@ -18,6 +19,8 @@ namespace pilons::tracking {
   }
 
   void moveToTargetAngle(Tracking &tracking, double x, double y, double a) {
+    Slew slewX(50, 50, 50);
+    Slew slewY(50, 50, 50);
     double lineAngle = atan2(x - tracking.x, y - tracking.y);
     double d2;
     double da;
@@ -46,7 +49,7 @@ namespace pilons::tracking {
 
       // Write to motors
 
-      setDrive(velRobot.x, velRobot.y, velAngle);
+      setDrive((velRobot.x), slewY.slewSet(velRobot.y), velAngle);
 
       printf("%f %f %f | %f %f %f\n", tracking.x, tracking.y, RAD_TO_DEG(tracking.a), velRobot.x, velRobot.y, velAngle);
 

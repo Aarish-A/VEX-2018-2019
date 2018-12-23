@@ -1,8 +1,7 @@
-#include "main.h"
-#include <cmath>
-
 #ifndef PILONS_TRACKING_H
 #define PILONS_TRACKING_H
+#include "main.h"
+#include <cmath>
 
 namespace pilons::tracking {
   const double WHL_DIA_L = 2.783;
