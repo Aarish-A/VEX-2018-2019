@@ -1,5 +1,6 @@
 #include "main.h"
 #include "tracking.hpp"
+#include "auto.hpp"
 
 extern pros::Controller controller;
 extern pros::Motor driveFL;

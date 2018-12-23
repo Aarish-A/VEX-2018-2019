@@ -10,6 +10,7 @@ namespace pilons::tracking {
   }
 
   void setDrive(double x, double y, double a) {
+
     driveFL.move_velocity(y + x + a);
     driveBL.move_velocity(y - x + a);
     driveFR.move_velocity(y - x - a);
@@ -17,7 +18,6 @@ namespace pilons::tracking {
   }
 
   void moveToTargetAngle(Tracking &tracking, double x, double y, double a) {
-    double xLst
     double lineAngle = atan2(x - tracking.x, y - tracking.y);
     double d2;
     double da;
