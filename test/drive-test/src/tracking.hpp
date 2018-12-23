@@ -1,6 +1,7 @@
 #ifndef PILONS_TRACKING_H
 #define PILONS_TRACKING_H
 #include "main.h"
+#include "util.hpp"
 #include <cmath>
 #include <memory>
 
@@ -36,7 +37,7 @@ namespace pilons::tracking {
   double operator "" _rad(unsigned long long val);
   double operator "" _deg(unsigned long long val);
 
-  class Tracking {
+  class Tracking : public util::BackgroundTask {
   private:
     pros::ADIEncoder &encL, &encR, &encS;
     int encLLst, encRLst, encSLst;
@@ -45,7 +46,8 @@ namespace pilons::tracking {
     double xLst, yLst, aLst;
     uint32_t velLstTime;
 
-    std::unique_ptr<pros::Task> task;
+  protected:
+    void taskImpl() override;
 
   public:
     double x, y, a = 0;
@@ -55,8 +57,6 @@ namespace pilons::tracking {
 
     void update();
     void reset(double x = 0, double y = 0, double a = 0);
-    void startTask();
-    void stopTask();
   };
 }
 
