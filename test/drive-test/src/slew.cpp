@@ -9,8 +9,8 @@ double Slew::slewSet(double valCur)
   double upLim = valLst_ + dLim_;
   double lowLim = valLst_ - dLim_;
 
-  if (valCur_ > upLim) valCur_ = upLim;
-  else if (valCur_ < lowLim) valCur_ = lowLim;
+  if (valCur > upLim) valCur_ = upLim;
+  else if (valCur < lowLim) valCur_ = lowLim;
   else valCur_ = valCur;
 
   valLst_ = valCur_;

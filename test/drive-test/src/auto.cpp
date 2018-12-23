@@ -19,8 +19,8 @@ namespace pilons::tracking {
   }
 
   void moveToTargetAngle(Tracking &tracking, double x, double y, double a) {
-    Slew slewX(50, 50, 50);
-    Slew slewY(50, 50, 50);
+    Slew slewX(20, 0, 0);
+    Slew slewY(10, 0, 0);
     double lineAngle = atan2(x - tracking.x, y - tracking.y);
     double d2;
     double da;
@@ -35,8 +35,8 @@ namespace pilons::tracking {
       vector linePos = rotate({dx, dy}, -lineAngle);
 
       // P loop constants
-      const double kPx = 2.0;
-      const double kPy = 5.0;
+      const double kPx = 10.0;
+      const double kPy = 10.0;
       const double kPa = 0 / 90_deg;
 
       // Calculate target velocities (velLine is still line coordinates)
@@ -49,9 +49,11 @@ namespace pilons::tracking {
 
       // Write to motors
 
-      setDrive((velRobot.x), slewY.slewSet(velRobot.y), velAngle);
+      double ySlew = slewY.slewSet(velRobot.y);
 
-      printf("%f %f %f | %f %f %f\n", tracking.x, tracking.y, RAD_TO_DEG(tracking.a), velRobot.x, velRobot.y, velAngle);
+      setDrive((velRobot.x), ySlew, velAngle);
+
+      printf("%f %f %f | %f (%f: %f) %f\n", tracking.x, tracking.y, RAD_TO_DEG(tracking.a), velRobot.x, velRobot.y, ySlew, velAngle);
 
       pros::delay(10);
     } while (d2 > 1 || da > 1_deg);
