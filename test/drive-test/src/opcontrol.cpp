@@ -27,7 +27,7 @@ void opcontrol() {
 
 	pos.startTask();
 	pros::delay(1000);
-	moveToTargetAngle(pos, 0, 24, 0);
+	moveToTargetAngle(pos, 0, 24, -90_deg);
 
 	return;
 
