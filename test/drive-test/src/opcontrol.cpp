@@ -1,7 +1,6 @@
 #include "main.h"
 #include "tracking.hpp"
 #include "config.hpp"
-#include "auto.hpp"
 
 /**
  * Runs the operator control code. This function will be started in its own task
@@ -21,36 +20,6 @@ using namespace pros;
 using namespace pilons::tracking;
 
 void opcontrol() {
-	controller.clear();
-	pos.startTask();
-
-
-	printf("Hello, world %f\n", 1_deg);
-
-	pos.startTask();
-	pros::delay(1000);
-	//moveToTargetAngle(pos, 0, 24, -90_deg);
-	MotionController mc;
-	mc.setStart({0, 0});
-	mc.setEnd({0, 120});
-	mc.setAngleTarget(new FixedAngleTarget(0_deg));
-	//(new FixedAngleTarget(-90_deg));
-	uint32_t tStart = millis();
-	printf("\n\n\t%d Start Move", millis());
-	mc.startTask();
-	while (mc.dDistance() > 20) pros::delay(10);
-	printf("\n\n\t%d Start Angle", millis());
-	// mc.setAngleTarget(new PointAngleTarget({-48, 66}));
-
-	while (fabs(mc.dAngle()) > 1_deg ) pros::delay(10);
-	printf("\n\n\t%d DONE MOVE + ANGLE in %d", millis(), (millis()-tStart));
-	mc.setStart({0, 120});
-	mc.setEnd({0, 0});
-	mc.setAngleTarget(new FixedAngleTarget(0_deg));
-
-	while (true) pros::delay(10);
-
-	return;
 
 	uint32_t update = 0;
 
@@ -66,16 +35,10 @@ void opcontrol() {
 			pos.reset();
 		}
 
-		pos.update();
-
 		if (millis() > update) {
 			controller.print(2, 0, "%f %f %f", pos.x, pos.y, pos.a);
-			//controller.print(2, 0, "%2d %2d %2d %2d", (int)driveFL.get_temperature(), (int)driveBL.get_temperature(), (int)driveFR.get_temperature(), (int)driveBR.get_temperature());
 			update = millis() + 100;
 		}
 		pros::delay(10);
-
-
-		pros::delay(1);
 	}
 }

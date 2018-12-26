@@ -1,13 +1,14 @@
 #ifndef SLEW_H
 #define SLEW_H
+
 class Slew {
 private:
-    double dLim_, valLst_, valCur_;
+    double upLim, downLim, value;
 
 public:
-  Slew(double dLim, double valLst, double valCur);
+  Slew(double upLim, double downLim, double value);
 
-  double slewSet(double valCur);
-
+  double slewSet(double newVal);
 };
+
 #endif

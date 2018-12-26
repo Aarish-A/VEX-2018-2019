@@ -95,9 +95,9 @@ namespace pilons::tracking {
   }
 
   void MotionController::taskImpl() {
-    Slew slewX(70, 0, 0);
-    Slew slewY(2, 0, 0);
-    Slew slewA(20, 0, 0);
+    Slew slewX(10, 10, 0);
+    Slew slewY(10, 10, 0);
+    Slew slewA(10, 10, 0);
 
     printf("MC PTR %x\n", this->angle_target.get());
 
