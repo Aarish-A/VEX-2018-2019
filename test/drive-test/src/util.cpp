@@ -15,4 +15,8 @@ namespace pilons::util {
       this->task = nullptr;
     }
   }
+
+  BackgroundTask::~BackgroundTask() {
+    stopTask();
+  }
 }

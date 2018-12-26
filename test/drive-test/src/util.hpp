@@ -16,6 +16,8 @@ namespace pilons::util {
   public:
     void startTask();
     void stopTask();
+
+    ~BackgroundTask();
   };
 }
 

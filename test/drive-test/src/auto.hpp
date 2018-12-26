@@ -46,7 +46,7 @@ namespace pilons::tracking {
     void setEnd(vector end);
 
     double dDistance();
-    double dAngle(); 
+    double dAngle();
   };
 }
 
