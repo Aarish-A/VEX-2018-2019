@@ -1,6 +1,7 @@
 #include "main.h"
 #include "auto.hpp"
 #include "config.hpp"
+#include "slew.hpp"
 
 using namespace pros;
 using namespace pilons::tracking;
@@ -36,5 +37,5 @@ void autonomous() {
 	mc.setEnd({0, 0});
 	mc.setAngleTarget(new FixedAngleTarget(0_deg));
 
-	while (true) pros::delay(10);
+	while (mc.dDistance() > 1.0) pros::delay(10);
 }

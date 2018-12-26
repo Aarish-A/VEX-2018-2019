@@ -167,4 +167,8 @@ namespace pilons::tracking {
   vector Tracking::position() {
     return {x, y};
   }
+
+  vector Tracking::velocity() {
+    return {xVel, yVel};
+  }
 }

@@ -114,14 +114,19 @@ namespace pilons::tracking {
 
       // Calculate position in line coordinates
       vector linePos = rotate(dV, -lineAngle);
+      vector lineVel = rotate(pos.velocity(), -lineAngle);
 
       // P loop constants
-      const double kPx = 10.0;
+      const double kPx = 15.0;
+      const double kDx = 2.0;
       const double kPy = 10.0;
       const double kPa = 200 / 90_deg;
 
       // Calculate target velocities (velLine is still line coordinates)
-      vector velLine = {kPx * linePos.x, kPy * linePos.y};
+      vector velLine = {kPx * linePos.x - kDx * lineVel.x, kPy * linePos.y};
+      if (fabs(linePos.x) > 1.5 && fabs(velLine.x) < 50) {
+        velLine.x = 50 * SGN(velLine.x);
+      }
       double velAngle = kPa * da;
 
       double velXRaw = velLine.x;

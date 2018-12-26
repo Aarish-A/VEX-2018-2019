@@ -29,7 +29,11 @@ void opcontrol() {
 		int x = controller.get_analog(E_CONTROLLER_ANALOG_LEFT_X);
 		int a = controller.get_analog(E_CONTROLLER_ANALOG_RIGHT_X);
 
-		setDrive(x, y, a);
+		// setDrive(x, y, a);
+		driveFL.move(y + x + a);
+		driveBL.move(y - x + a);
+		driveFR.move(y - x - a);
+		driveBR.move(y + x - a);
 
 		if (controller.get_digital_new_press(E_CONTROLLER_DIGITAL_Y)) {
 			pos.reset();
