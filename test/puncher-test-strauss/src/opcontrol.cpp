@@ -20,7 +20,7 @@ using namespace pros;
 enum class PunState { Load, ShotStart, ShotWait };
 
 const int PUN_OFFSET = 45;
-const int PUN_HOLD = 250; // Relative to the slip point
+const int PUN_HOLD = 160; // Relative to the slip point
 const int PUN_TPR = 360; // Relative to the slip point
 const int PUN_NO_RETURN = 50; // Back from the slip point
 const int PUN_BALL_CHK_START = PUN_TPR - (PUN_HOLD + 5); // Back from the slip point
@@ -29,16 +29,16 @@ const int PUN_BALL_THRESH = 2200;
 const uint32_t PUN_BALL_OFF_TIME = 50;
 
 Motor punMtr1(10, E_MOTOR_GEARSET_18, true); // Left
-Motor punMtr2(11, E_MOTOR_GEARSET_18, false); // Right
+//Motor punMtr2(11, E_MOTOR_GEARSET_18, false); // Right
 
 void setPuncher(int power) {
 	punMtr1.move(power);
-	punMtr2.move(power);
+	//punMtr2.move(power);
 }
 
 void movePuncher(double position, int32_t velocity = 200) {
 	punMtr1.move_absolute(position, velocity);
-	punMtr2.move_absolute(position, velocity);
+	//punMtr2.move_absolute(position, velocity);
 }
 
 void logPuncher(void *param) {
@@ -85,9 +85,9 @@ void opcontrol() {
 	Controller ctrler(E_CONTROLLER_MASTER);
 	ADILineSensor ballSensor(7);
 	punMtr1.set_brake_mode(E_MOTOR_BRAKE_HOLD);
-	punMtr2.set_brake_mode(E_MOTOR_BRAKE_HOLD);
+	//punMtr2.set_brake_mode(E_MOTOR_BRAKE_HOLD);
 	punMtr1.set_encoder_units(E_MOTOR_ENCODER_DEGREES);
-	punMtr2.set_encoder_units(E_MOTOR_ENCODER_DEGREES);
+	//punMtr2.set_encoder_units(E_MOTOR_ENCODER_DEGREES);
 
 	int shots = 0;
 	bool ball = false;
@@ -105,7 +105,7 @@ void opcontrol() {
 		delay(10);
 	}
 	punMtr1.tare_position();
-	punMtr2.tare_position();
+	//punMtr2.tare_position();
 	setPuncher(0);
 
 	movePuncher(PUN_OFFSET + PUN_HOLD);
@@ -170,7 +170,7 @@ void opcontrol() {
 
 		if (millis() >= nextLCD) {
 			nextLCD = millis() + 100;
-			ctrler.print(2, 0, "%d %d    ", (int)punMtr1.get_temperature(), (int)punMtr2.get_temperature());
+			ctrler.print(2, 0, "%d   ", (int)punMtr1.get_temperature());
 		}
 
 		/*if (ctrler.get_digital_new_press(E_CONTROLLER_DIGITAL_Y)) {
