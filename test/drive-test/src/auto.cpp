@@ -118,7 +118,7 @@ namespace pilons::tracking {
 
       // P loop constants
       const double kPx = 15.0;
-      const double kDx = 2.0;
+      const double kDx = 0.0;
       const double kPy = 10.0;
       const double kPa = 200 / 90_deg;
 
