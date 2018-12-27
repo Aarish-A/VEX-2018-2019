@@ -40,9 +40,10 @@ void opcontrol() {
 		}
 
 		if (millis() > update) {
-			controller.print(2, 0, "%f %f %f", pos.x, pos.y, pos.a);
+			controller.print(2, 0, "%.2f %.2f %.2f    ", pos.x, pos.y, RAD_TO_DEG(pos.a));
 			update = millis() + 100;
 		}
+		printf("%.4f %.4f %.4f %d %d %d\n", pos.x, pos.y, RAD_TO_DEG(pos.a), encL.get_value(), encR.get_value(), encS.get_value());
 		pros::delay(10);
 	}
 }

@@ -8,15 +8,15 @@
 namespace pilons::tracking {
   const double WHL_DIA_L = 2.783;
   const double WHL_DIA_R = 2.783;
-  const double WHL_DIA_S = 2.783;
+  const double WHL_DIA_S = 4;
 
   const double WHL_DIS_L = 7.207894;
   const double WHL_DIS_R = 7.207894;
-  const double WHL_DIS_S = 5;
+  const double WHL_DIS_S = 4.75;
 
   const double WHL_TPR_L = 360;
   const double WHL_TPR_R = 360;
-  const double WHL_TPR_S = 1080;
+  const double WHL_TPR_S = 360;
 
   const double SPN_TO_IN_L = (WHL_DIA_L * M_PI / WHL_TPR_L);
   const double SPN_TO_IN_R = (WHL_DIA_R * M_PI / WHL_TPR_R);
