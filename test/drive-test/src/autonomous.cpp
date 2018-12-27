@@ -19,15 +19,19 @@ using namespace pilons::tracking;
  */
 void autonomous() {
 	MotionController mc;
-  pos.reset(0, 0, 0);
-	mc.setStart({0, 0});
-	mc.setEnd({0, 120});
+	int startY = WHL_DIA_S + 4;
+  pos.reset(60, 0, 0);
+	//mc.setStart({60, 0});
+	mc.setStartToCurrent();
+	mc.setEnd({pos.x, 48});
 	mc.setAngleTarget(new FixedAngleTarget(0_deg));
 	//(new FixedAngleTarget(-90_deg));
 	uint32_t tStart = millis();
 	printf("\n\n\t%d Start Move", millis());
 	mc.startTask();
-	while (mc.dDistance() > 20) pros::delay(10);
+	while (mc.dDistance() > 1) pros::delay(10);
+
+	/*
 	printf("\n\n\t%d Start Angle", millis());
 	// mc.setAngleTarget(new PointAngleTarget({-48, 66}));
 
@@ -38,4 +42,5 @@ void autonomous() {
 	mc.setAngleTarget(new FixedAngleTarget(0_deg));
 
 	while (mc.dDistance() > 1.0) pros::delay(10);
+	*/
 }

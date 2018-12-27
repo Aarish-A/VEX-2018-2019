@@ -99,7 +99,7 @@ namespace pilons::tracking {
     Slew slewY(10, 10, 0);
     Slew slewA(10, 10, 0);
 
-    printf("MC PTR %x\n", this->angle_target.get());
+  //  printf("MC PTR %x\n", this->angle_target.get());
 
     while (true) {
       if (!angle_target) {
@@ -144,7 +144,7 @@ namespace pilons::tracking {
       //Use slew for y and a velocities + set motors
       double ySlew = slewY.slewSet(velRobot.y);
       double aSlew = slewA.slewSet(velAngle);
-      setDrive(velRobot.x, ySlew, aSlew);
+      setDrive(0, ySlew, aSlew);//setDrive(velRobot.x, ySlew, aSlew);
 
       printf("%f %f %f | dD:%f dA:%f | (%f %f %f) (%f: %f) (%f: %f)\n", pos.x, pos.y, RAD_TO_DEG(pos.a), this->dDistance(), this->dAngle(), dV.x, velXRaw, velRobot.x, velRobot.y, ySlew, velAngle, aSlew);
       controller.print(2, 0, "%.1f %.1f %.1f", pos.x, pos.y, RAD_TO_DEG(pos.a));
