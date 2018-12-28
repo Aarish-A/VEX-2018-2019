@@ -17,19 +17,19 @@
 
 using namespace pros;
 
-enum class PunState { Load, ShotStart, ShotWait };
+enum class PunState { Load, Hold, ShotStart, ShotWait };
 
-const int PUN_OFFSET = 45;
-const int PUN_HOLD = 160; // Relative to the slip point
-const int PUN_TPR = 360; // Relative to the slip point
-const int PUN_NO_RETURN = 50; // Back from the slip point
-const int PUN_BALL_CHK_START = PUN_TPR - (PUN_HOLD + 5); // Back from the slip point
+const double PUN_RATIO = (60.0 / 36.0);
+const double PUN_OFFSET = 45 * PUN_RATIO;
+const double PUN_HOLD = 180 * PUN_RATIO; // Relative to the slip point
+const double PUN_TPR = 360 * PUN_RATIO; // Relative to the slip point
+const double PUN_NO_RETURN = 50 * PUN_RATIO; // Back from the slip point
+const double PUN_BALL_CHK_START = PUN_TPR - (PUN_HOLD + 5); // Back from the slip point
 const uint32_t PUN_WAIT_TIME = 100;
 const int PUN_BALL_THRESH = 2200;
 const uint32_t PUN_BALL_OFF_TIME = 50;
 
-Motor punMtr1(10, E_MOTOR_GEARSET_18, true); // Left
-//Motor punMtr2(11, E_MOTOR_GEARSET_18, false); // Right
+Motor punMtr1(2, E_MOTOR_GEARSET_18);
 
 void setPuncher(int power) {
 	punMtr1.move(power);
@@ -126,18 +126,26 @@ void opcontrol() {
 
 		switch (punState) {
 			case PunState::Load:
+				if (fabs(punMtr1.get_position() - (PUN_OFFSET + (shots * PUN_TPR) + PUN_HOLD)) <= (4 * PUN_RATIO)) {
+					setPuncher(5);
+					punState = PunState::Hold;
+				}
 				if (ctrler.get_digital_new_press(E_CONTROLLER_DIGITAL_B)) {
 					movePuncher(PUN_OFFSET + (++shots * PUN_TPR));
 					printf("%d Shot start\n", millis());
 					punState = PunState::ShotStart;
 				}
+				break;
 
-				if (ctrler.get_digital_new_press(E_CONTROLLER_DIGITAL_DOWN)) {
-					movePuncher(PUN_OFFSET + (shots * PUN_TPR), 30);
-				}
-
-				if (ctrler.get_digital_new_press(E_CONTROLLER_DIGITAL_UP)) {
+			case PunState::Hold:
+				if (fabs(punMtr1.get_position() - (PUN_OFFSET + (shots * PUN_TPR) + PUN_HOLD)) > (6 * PUN_RATIO)) {
 					movePuncher(PUN_OFFSET + (shots * PUN_TPR) + PUN_HOLD);
+					punState = PunState::Load;
+				}
+				if (ctrler.get_digital_new_press(E_CONTROLLER_DIGITAL_B)) {
+					movePuncher(PUN_OFFSET + (++shots * PUN_TPR));
+					printf("%d Shot start\n", millis());
+					punState = PunState::ShotStart;
 				}
 				break;
 
