@@ -10,7 +10,9 @@ namespace pilons::util {
   }
 
   void BackgroundTask::stopTask() {
+    printf("  %d Enter Background Task Destructor \n", pros::millis());
     if (this->task) {
+      printf("  %d Destruct Background Task \n", pros::millis());
       this->task->remove();
       this->task = nullptr;
     }

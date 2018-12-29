@@ -40,7 +40,8 @@ void opcontrol() {
 		}
 
 		if (millis() > update) {
-			controller.print(2, 0, "%.2f %.2f %.2f    ", pos.x, pos.y, RAD_TO_DEG(pos.a));
+			controller.print(2, 0, "%.1f %.1f %.1f   ", pos.x, pos.y, RAD_TO_DEG(pos.a));
+			//controller.print(2, 0, "%.1f %.3f    ",RAD_TO_DEG(pos.a),  ((encL.get_value() * SPN_TO_IN_L) - (encR.get_value() * SPN_TO_IN_R)) / 3600_deg);
 			update = millis() + 100;
 		}
 		//printf("%.4f %.4f %.4f %d %d %d\n", pos.x, pos.y, RAD_TO_DEG(pos.a), encL.get_value(), encR.get_value(), encS.get_value());

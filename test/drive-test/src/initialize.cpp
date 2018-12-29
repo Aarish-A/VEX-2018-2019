@@ -10,6 +10,7 @@
 void initialize() {
 	controller.clear();
 	pos.startTask();
+	pros::delay(1000);
 }
 
 /**

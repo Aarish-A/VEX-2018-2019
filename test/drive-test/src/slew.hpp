@@ -9,6 +9,7 @@ public:
   Slew(double upLim, double downLim, double value);
 
   double slewSet(double newVal);
+  void setSlewVal(double value);
 };
 
 #endif

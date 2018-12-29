@@ -1,36 +1,10 @@
-#include "main.h"
+//#include "main.h"
 #include "tracking.hpp"
-#include "auto.hpp"
+#include "motion_controller.hpp"
 #include "config.hpp"
 #include "slew.hpp"
 #include <cmath>
-
 namespace pilons::tracking {
-  void setDrive(double x, double y, double a) {
-
-    double fL = (y + x + a);
-    double bL = (y - x + a);
-    double fR = (y - x - a);
-    double bR = (y + x - a);
-
-    double max = fmax(fmax(fabs(fL), fabs(fR)), fmax(fabs(bL), fabs(bR)));
-    if (max > 200)
-    {
-      double scale = fabs(200/max);
-
-      fL *= scale;
-      bL *= scale;
-      fR *= scale;
-      bR *= scale;
-    }
-
-    //printf("%f %f %f | %f %f %f %f\n", pos.x, pos.y, RAD_TO_DEG(pos.a), fL, bL, fR, bR);
-    driveFL.move_velocity(fL);
-    driveBL.move_velocity(bL);
-    driveFR.move_velocity(fR);
-    driveBR.move_velocity(bR);
-  }
-
   void moveToTargetAngle(Tracking &tracking, double x, double y, double a) {
     controller.clear();
     Slew slewX(10, 0, 0);
@@ -82,21 +56,9 @@ namespace pilons::tracking {
     uint32_t tElpsd = pros::c::millis() - tStart;
     printf("Done Move in %d %f %f %f \n", tElpsd, tracking.x, tracking.y, RAD_TO_DEG(tracking.a));
   }
-  FixedAngleTarget::FixedAngleTarget(double target) : target(target) {}
-
-  double FixedAngleTarget::getTarget() {
-    return target;
-  }
-
-  PointAngleTarget::PointAngleTarget(vector target) : target(target) {}
-
-  double PointAngleTarget::getTarget() {
-    return (target - pos.position()).phase();
-  }
-
   void MotionController::taskImpl() {
     Slew slewX(10, 10, 0);
-    Slew slewY(10, 10, 0);
+    Slew slewY(1, 2, 0);
     Slew slewA(10, 10, 0);
 
   //  printf("MC PTR %x\n", this->angle_target.get());
@@ -117,9 +79,9 @@ namespace pilons::tracking {
       vector lineVel = rotate(pos.velocity(), -lineAngle);
 
       // P loop constants
-      const double kPx = 15.0;
+      const double kPx = 0;//15.0;
       const double kDx = 0.0;
-      const double kPy = 10.0;
+      const double kPy = 5.0;
       const double kPa = 200 / 90_deg;
 
       // Calculate target velocities (velLine is still line coordinates)
@@ -142,13 +104,14 @@ namespace pilons::tracking {
       //if (fabs(velLine.x) > 5 && fabs(velLine.x) < 25 && fabs(velLine.y) > 180) velLine.x = 25 * SGN(velLine.x);
 
       //Use slew for y and a velocities + set motors
+      double xSlew = slewX.slewSet(velRobot.x);
       double ySlew = slewY.slewSet(velRobot.y);
       double aSlew = slewA.slewSet(velAngle);
       setDrive(0, ySlew, aSlew);//setDrive(velRobot.x, ySlew, aSlew);
 
-      printf("%f %f %f | dD:%f dA:%f | (%f %f %f) (%f: %f) (%f: %f)\n", pos.x, pos.y, RAD_TO_DEG(pos.a), this->dDistance(), this->dAngle(), dV.x, velXRaw, velRobot.x, velRobot.y, ySlew, velAngle, aSlew);
-      controller.print(2, 0, "%.1f %.1f %.1f", pos.x, pos.y, RAD_TO_DEG(pos.a));
-      pros::delay(10);
+      printf("%d %f %f %f | dD:%f dA:%f | (%f: %f) (%f: %f) (%f: %f)\n", pros::millis(), pos.x, pos.y, RAD_TO_DEG(pos.a), this->dDistance(), RAD_TO_DEG(this->dAngle()), velRobot.x, xSlew, velRobot.y, ySlew, velAngle, aSlew);
+      //controller.print(2, 0, "%.1f %.1f %.1f", pos.x, pos.y, RAD_TO_DEG(pos.a));
+      pros::delay(8);
     }
   }
 
@@ -166,6 +129,20 @@ namespace pilons::tracking {
 
   void MotionController::setEnd(vector end) {
     this->end = end;
+  }
+
+  void MotionController::setFull(vector start, vector end, AngleTarget* target)
+  {
+    setStart(start);
+    setEnd(end);
+
+    if (target != nullptr) setAngleTarget(target);
+    else setAngleTarget(new PointAngleTarget(end));
+  }
+
+  void MotionController::setEndAndAngle(vector end) {
+    setEnd(end);
+    setAngleTarget(new PointAngleTarget(end));
   }
 
   double MotionController::dDistance() {

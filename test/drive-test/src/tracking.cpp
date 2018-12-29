@@ -85,6 +85,7 @@ namespace pilons::tracking {
   }
 
   void Tracking::taskImpl() {
+    printf("%d Start Update Task", pros::millis());
     while (true) {
       update();
       pros::delay(1);
@@ -92,9 +93,10 @@ namespace pilons::tracking {
   }
 
   void Tracking::update() {
+
     int left = encL.get_value();
     int right = encR.get_value();
-    int strafe = encS.get_value();
+    int strafe = 0;//encS.get_value();
 
     double L = (left - encLLst) * SPN_TO_IN_L; // The amount the left side of the robot moved
     double R = (right - encRLst) * SPN_TO_IN_R; // The amount the right side of the robot moved
@@ -135,6 +137,7 @@ namespace pilons::tracking {
     this->y += h * cosP - h2 * sinP;
     this->a = a;
 
+    //Calculate velocity
     uint32_t curTime = pros::millis();
     if (curTime > velLstTime + VEL_TIME) {
       uint32_t dt = curTime - velLstTime;
@@ -143,6 +146,8 @@ namespace pilons::tracking {
       xVel = 1000 * (this->x - xLst) / dt;
       yVel = 1000 * (this->y - yLst) / dt;
       aVel = 1000 * (this->a - aLst) / dt;
+
+      velLocal = rotate({xVel, yVel}, -(this->a));
 
       xLst = this->x;
       yLst = this->y;
