@@ -21,27 +21,32 @@ using namespace pilons::tracking;
 enum eAuto
 {
 	autoFourFlags,
+
+	autoTest,
+	autoTurnSpeedTest,
 	autoAccelTest,
 	autoTrackingTest,
 	autoTrackingXTest
 };
 
-eAuto gAuto = autoFourFlags;
+eAuto gAuto = autoTest;//autoFourFlags;//autoAccelTest;;
 
 void accelTest()
 {
-	for (double y = 0; y < 150; y++)
+	for (double y = 0; y < 150; y+=1)
 	{
-		setDriveY(-y);
+		setDriveY(y);
+		printf("%d %lf: %lf, %lf, %lf, %lf  \n", millis(), y, driveFL.get_actual_velocity(), driveFR.get_actual_velocity(), driveBL.get_actual_velocity(), driveBR.get_actual_velocity());
 		pros::delay(8);
-		printf("%d (%lf, %lf, %lf) \n", millis(), pos.x, pos.y, RAD_TO_DEG(pos.a));
+		//printf("%d %lf: (%lf, %lf, %lf) \n", millis(), y, pos.x, pos.y, RAD_TO_DEG(pos.a));
 	}
 	std::cout<<"\n"<<millis()<<"Start Decel";
-	for (double y = 150; y > 0; y--)
+	for (double y = 150; y > 0; y-=1)
 	{
-		setDriveY(-y);
+		setDriveY(y);
+		printf("%d %lf: %lf, %lf, %lf, %lf  \n", millis(), y, driveFL.get_actual_velocity(), driveFR.get_actual_velocity(), driveBL.get_actual_velocity(), driveBR.get_actual_velocity());
 		pros::delay(8);
-		printf("%d (%lf, %lf, %lf) \n", millis(), pos.x, pos.y, RAD_TO_DEG(pos.a));
+	//	printf("%d %lf: (%lf, %lf, %lf) \n", millis(), y, pos.x, pos.y, RAD_TO_DEG(pos.a));
 	}
 	setDriveY(0);
 	std::cout<<"\n"<<millis()<<"Done Move";
@@ -75,27 +80,38 @@ void trackingXTest()
 }
 
 void autonomous() {
+
+	printf("%d Start Auto \n", millis());
 	switch(gAuto)
 	{
 		case autoFourFlags:
 		{
-			printf("%d Start Auto \n", millis());
-			pos.reset(60, 0, 0);
+			pos.reset(108, 0, 0);
+			//1 Pick up
+			printf("%d 1 PU\n", millis());
 			moveToTarget({pos.x, 1.75*24}, false);
-			turn(new PointAngleTarget({10, 65}));
-			/*MotionController mc;
-			//int startY = WHL_DIA_S + 4;
-		  pos.reset(60, 0, 0);
-			mc.setFull(pos.position(), {pos.x, 24});
-			mc.startTask();
-			while (mc.dDistance() > 1) delay(10);
-			setDrive(0, 0, 0);
-			printf("%d Done \n", millis());
-			while(true) delay(10);
-			break;
-			*/
-		//	turn(new FixedAngleTarget(90_deg));//PointAngleTarget({10, 10}));
-		//	moveToTarget({pos.x+5, 48}, true);
+
+			//2 Back up
+			printf("%d 2 BU\n", millis());
+			turn(new PointAngleTarget({5.3*24, 36}), -180_deg, true, false);
+			moveToTarget({5.3*24, 36}, false);
+
+			//3 Turn and shoot
+			printf("%d 3 Turn Shoot\n", millis());
+			turn(new PointAngleTarget({10, 65}), 0, false, true);
+			pros::delay(1200);
+
+			//4 pick up balls off of cap
+			printf("%d 4 Cap Balls\n", millis());
+			turn(new PointAngleTarget({5*24, 2.5*24}), 0, true, false);
+			moveToTarget({5*24, 2.5*24});
+
+			//5 Back up turn and shoot
+			printf("%d 5 Trn Shoot\n", millis());
+			moveToTarget({pos.x, pos.y-10});
+			turn(new PointAngleTarget({10, 65+49}), 0, false, true);
+			pros::delay(1200);
+
 
 		/*
 			setDrive(0, 0, 15);
@@ -107,9 +123,69 @@ void autonomous() {
 			*/
 			break;
 		}
+		case autoTest:
+		{
+			pos.reset(0, 0, -90_deg);
+			printf("%d Reset", millis());
+			pros::delay(50);
+			turn(new PointAngleTarget({pos.x, pos.y+15}), 0, true, false);
+			moveToTarget({pos.x, pos.y+15});
+/*
+			pos.reset(0, 0, 0);
+			turn(new FixedAngleTarget(-180_deg));//PointAngleTarget({127, 36}), -180_deg);
+			pros::delay(1000);
+			printf("%d Done turn Sleep %f %f %f %f\n", pros::millis(), pos.x, pos.y, RAD_TO_DEG(pos.a), pos.yVel);
+*/
+			/*
+			turn(new PointAngleTarget({5.3*24, 36}), -180_deg);
+			moveToTarget({5.3*24, 36}, false);
+			pros::delay(1000);
+			printf("After sleep out %d %lf %lf %lf \n", millis(), pos.x, pos.y, pos.a);
+			*/
 
+			/*
+			setDriveY(1200);
+			pros::delay(5000);
+			setDriveY(0);
+			printf("%d Done move %f %f %f \n", pros::millis(), pos.x, pos.y, RAD_TO_DEG(pos.a));
+			double yOld = pos.y;
+			pros::delay(1000);
+			printf("%d Done move Sleep %f %f %f %f : %f\n", pros::millis(), pos.x, pos.y, RAD_TO_DEG(pos.a), pos.aVel, pos.y-yOld);
+			*/
+
+
+/*
+			moveToTarget({pos.x, -20}, false);
+			pros::delay(1000);
+			printf("%d Done move Sleep %f %f %f %f\n", pros::millis(), pos.x, pos.y, RAD_TO_DEG(pos.a), pos.yVel);
+			moveToTarget({pos.x, 10}, false);
+			pros::delay(1000);
+			printf("%d Done move Sleep %f %f %f %f\n", pros::millis(), pos.x, pos.y, RAD_TO_DEG(pos.a), pos.yVel);
+*/
+			break;
+		}
+		case autoTurnSpeedTest:
+		{
+			pos.reset(0, 0, 0);
+
+			setDriveVoltage(0, 0, 30);
+			pros::delay(1000);
+			printf("%d Done Turn %f %f %f \n", pros::millis(), pos.x, pos.y, RAD_TO_DEG(pos.a));
+			double oldA = pos.a;
+			setDriveVoltage(0, 0, 0);
+			driveFL.set_brake_mode(E_MOTOR_BRAKE_BRAKE);
+			driveFR.set_brake_mode(E_MOTOR_BRAKE_BRAKE);
+			driveBL.set_brake_mode(E_MOTOR_BRAKE_BRAKE);
+			driveBR.set_brake_mode(E_MOTOR_BRAKE_BRAKE);
+			//setDrive(0, 0, 0);
+			pros::delay(1000);
+			printf("%d Done Turn Sleep %f %f %f | %f \n", pros::millis(), pos.x, pos.y, RAD_TO_DEG(pos.a), RAD_TO_DEG(pos.a-oldA));
+
+			break;
+		}
 		case autoAccelTest:
 		{
+			printf("%d Start \n", millis());
 			accelTest();
 			break;
 		}
@@ -126,42 +202,4 @@ void autonomous() {
 			break;
 		}
 	}
-	/*
-	MotionController mc;
-	int startY = WHL_DIA_S + 4;
-  pos.reset(60, 0, 0);
-	//mc.setStart({60, 0});
-	mc.setStartToCurrent();
-	mc.setEnd({pos.x, -48});
-	mc.setAngleTarget(new FixedAngleTarget(0_deg));
-	//(new FixedAngleTarget(-90_deg));
-	uint32_t tStart = millis();
-	printf("\n\n\t%d Start Move", millis());
-	mc.startTask();
-	while (mc.dDistance() > 1) pros::delay(10);
-	mc.stopTask();
-	setDrive(0, 0, 0);
-	*/
-
-
-	/*
-	while (true)
-	{
-		printf("%d pos:%d", millis(), encS.get_value());
-		pros::delay(10);
-	}
-	*/
-
-	/*
-	printf("\n\n\t%d Start Angle", millis());
-	// mc.setAngleTarget(new PointAngleTarget({-48, 66}));
-
-	while (fabs(mc.dAngle()) > 1_deg ) pros::delay(10);
-	printf("\n\n\t%d DONE MOVE + ANGLE in %d", millis(), (millis()-tStart));
-	mc.setStart({0, 120});
-	mc.setEnd({0, 0});
-	mc.setAngleTarget(new FixedAngleTarget(0_deg));
-
-	while (mc.dDistance() > 1.0) pros::delay(10);
-	*/
 }
