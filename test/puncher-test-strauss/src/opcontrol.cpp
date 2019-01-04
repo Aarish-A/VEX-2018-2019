@@ -44,7 +44,7 @@ void movePuncher(double position, int32_t velocity = 200) {
 void logPuncher(void *param) {
 	FILE* logFile = fopen("/usd/log.txt", "a");
 	if (logFile == NULL) {
-		printf("Could not open log file");
+		printf("Could not open log file\n");
 		return;
 	}
 	fputs("\r\n\r\n--------------------------------------------------\r\n\r\n", logFile);
