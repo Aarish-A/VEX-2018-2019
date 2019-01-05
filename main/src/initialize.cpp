@@ -1,8 +1,11 @@
 #include "main.h"
+#include "config.hpp"
 #include "puncher.hpp"
 #include "drive.hpp"
 
 using namespace pros;
+
+
 
 /**
  * Runs initialization code. This occurs as soon as the program is started.
@@ -12,7 +15,11 @@ using namespace pros;
  */
 void initialize() {
 	pun_init();
+	pun_cal();
+  pros::Task pun_task ((pros::task_fn_t)pun_handle, (void*)NULL, TASK_PRIORITY_DEFAULT, TASK_STACK_DEPTH_DEFAULT, "Pun_Task");
   drive_init();
+
+	//pros::Task tracking_task ((pros::task_fn_t)pos.task(), (void*)NULL, TASK_PRIORITY_DEFAULT, TASK_STACK_DEPTH_DEFAULT, "Track_Task");
 }
 
 /**

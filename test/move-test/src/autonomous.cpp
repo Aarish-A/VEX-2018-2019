@@ -1,6 +1,7 @@
 #include "main.h"
 #include "config.hpp"
 #include "auto.hpp"
+#include "puncher.hpp"
 
 /**
  * Runs the user autonomous code. This function will be started in its own task
@@ -33,8 +34,13 @@ void autonomous() {
   moveDrive(33.0_in, 200);
   delay(200);
   moveDrive(-37.0_in, 200);
-  turnDrive(-90.0_deg, 200);
+  turnDrive(-80.0_deg, 200);
   intake.move(0);
+
+  auto_set_shot = true;
+  do { pros::delay(10); } while (pun_state == PunState::ShotStart);
+  turnDrive(-90.0_deg, 200);
+
   moveDrive(45.0_in, 200);
   moveDrive(-41.0_in, 200);
   angler.move_absolute(35 * 7, 100);

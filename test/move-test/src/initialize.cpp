@@ -1,5 +1,6 @@
 #include "main.h"
 #include "config.hpp"
+#include "puncher.hpp"
 
 /**
  * Runs initialization code. This occurs as soon as the program is started.
@@ -9,6 +10,10 @@
  */
 void initialize() {
   angler.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
+
+  pun_init();
+	pun_cal();
+  pros::Task pun_task ((pros::task_fn_t)pun_handle, (void*)NULL, TASK_PRIORITY_DEFAULT, TASK_STACK_DEPTH_DEFAULT, "Pun_Task");
 }
 
 /**

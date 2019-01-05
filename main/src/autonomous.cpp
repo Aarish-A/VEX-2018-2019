@@ -14,6 +14,7 @@
  * from where it left off.
  */
 
-using namespace pros;
+void autonomous() {
+  auto_set_shot = true;
 
-void autonomous() {}
+}

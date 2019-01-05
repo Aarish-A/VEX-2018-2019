@@ -9,5 +9,8 @@ pros::Motor angler(9, pros::E_MOTOR_GEARSET_18, false, pros::E_MOTOR_ENCODER_DEG
 pros::Motor intake(2, pros::E_MOTOR_GEARSET_18, false, pros::E_MOTOR_ENCODER_DEGREES);
 pros::Motor puncher(3, pros::E_MOTOR_GEARSET_18, false, pros::E_MOTOR_ENCODER_DEGREES);
 pros::ADIEncoder enc_l(1, 2, true);
-pros::ADIEncoder enc_r(3, 4, false);
+pros::ADIEncoder enc_r(3, 4, true);
+pros::ADIEncoder enc_s(5, 6, true);
 pros::ADILineSensor ball_sensor(5);
+
+Tracking pos(enc_l, enc_r, enc_s);

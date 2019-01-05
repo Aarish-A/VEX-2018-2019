@@ -1,5 +1,6 @@
 #ifndef PUNCHER_H
 #define PUNCHER_H
+#include "config.hpp"
 #include "main.h"
 
 enum class PunState { Load, Hold, ShotStart, ShotWait, FatalError };

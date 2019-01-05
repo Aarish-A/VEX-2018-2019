@@ -78,6 +78,8 @@ void opcontrol() {
 		int y = ctrler.get_analog(E_CONTROLLER_ANALOG_LEFT_Y);
 		int x = ctrler.get_analog(E_CONTROLLER_ANALOG_LEFT_X);
 		int a = ctrler.get_analog(E_CONTROLLER_ANALOG_RIGHT_X);
+
+		printf("%d %d %d \n", pros::millis(), encL.get_value(), encR.get_value());
 		setDrive(x, y, a);
 
 		delay(10);
