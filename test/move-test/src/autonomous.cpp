@@ -29,16 +29,17 @@ void autonomous() {
 	angler.move_absolute(17 * 7, 100);
   delay(100);
 
-  moveDrive(20.0_in, 200);
-  return;
-
-  moveDrive(36.0_in, 200);
-  delay(1000);
-  moveDrive(-40.0_in, 200);
+  intake.move(127);
+  moveDrive(33.0_in, 200);
+  delay(200);
+  moveDrive(-37.0_in, 200);
   turnDrive(-90.0_deg, 200);
+  intake.move(0);
   moveDrive(45.0_in, 200);
-  moveDrive(-45.0_in, 200);
+  moveDrive(-41.0_in, 200);
+  angler.move_absolute(35 * 7, 100);
   turnDrive(-45.0_deg, 200);
+  intake.move(127);
   moveDrive(22.0_in, 200);
 
   printf("Auto time: %d\n", millis() - autoStartTime);

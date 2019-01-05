@@ -5,7 +5,7 @@ using namespace pros;
 
 double getGlobalAngle() {
 	//return (DRIVE_DIA * M_PI * (driveFL.get_position() - driveBR.get_position() + driveBL.get_position() - driveFR.get_position())) / (2 * DRIVE_TPR * (DRIVE_LENGTH + DRIVE_WIDTH));
-	return (encL.get_value() * SPN_TO_IN_L + encR.get_value() * SPN_TO_IN_R) / (WHL_DIS_L + WHL_DIS_R);
+	return (encL.get_value() * SPN_TO_IN_L - encR.get_value() * SPN_TO_IN_R) / (WHL_DIS_L + WHL_DIS_R);
 }
 
 void resetGlobalAngle() {
@@ -51,13 +51,13 @@ void moveDrive(double dis, int vel, bool stop) {
   while (true) {
     uint32_t curTime = millis();
 		pos = ((encL.get_value() - encLStart) * SPN_TO_IN_L + (encR.get_value() - encRStart) * SPN_TO_IN_R) / 2.0;
-		printf("%d %f %f\n", curTime, pos, dis);
+		//printf("%d %f %f %d %d\n", curTime, pos, dis, encL.get_value(), encR.get_value());
 		if ((dis - pos) * sgn(dis) <= 0.5_in) break;
 		double actVel = ((driveFL.get_actual_velocity() + driveBL.get_actual_velocity() + driveFR.get_actual_velocity() + driveBR.get_actual_velocity()) / 4.0) / 60.0 * 360.0;
     double tkToDecel = (actVel * actVel) / (2 * ((1000.0 / MOVE_DECEL_RATE) / 60.0) * 360.0);
 		double inToDecel = tkToDecel * DRIVE_DIA * M_PI / DRIVE_TPR;
-    //printf("%d %f %f %f\n", i, actVel, targetFL - driveFL.get_position(), tkToDecel);
-    if (inToDecel < pos * sgn(dis) - 0.5_in) {
+    printf("%d %d %f %f\n", curTime, i, inToDecel, dis - pos);
+    if (inToDecel < (dis - pos) * sgn(dis) - 0.5_in) {
       if (curTime - lastAccel > MOVE_ACCEL_RATE && i < vel) {
         i += 1;
         lastAccel = curTime;
@@ -94,7 +94,7 @@ void moveDrive(double dis, int vel, bool stop) {
 void turnDrive(double targ, int vel) {
   printf("%d Turning to %f\n", millis(), RAD_TO_DEG(targ));
 	while (fabs(getGlobalAngle() - targ) > 0.8_deg) {
-		setDriveVel(0, 0, (targ - getGlobalAngle()) * 100);
+		setDriveVel(0, 0, (targ - getGlobalAngle()) * 120);
 		delay(1);
 	}
   printf("%d Turned to FL: %f, BL: %f, FR: %f, BR %f\n", millis(), driveFL.get_position(), driveBL.get_position(), driveFR.get_position(), driveBR.get_position());
