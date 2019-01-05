@@ -1,7 +1,7 @@
 #include "lcd.hpp"
 #include <cstring>
 
-namespace pi::gui {
+namespace piln::gui {
   pros::Task *DisplayHandler::lcdTask;
   int DisplayHandler::curPage = 0;
   const char *DisplayHandler::map[];
@@ -130,6 +130,14 @@ namespace pi::gui {
       switch (curPage) {
         case 0:
 
+          break;
+
+        case 1:
+
+          break;
+
+        case 2:
+          
           break;
       }
 

@@ -8,11 +8,11 @@
 namespace pilons::tracking {
   const double WHL_DIA_L = 2.783;
   const double WHL_DIA_R = 2.783;
-  const double WHL_DIA_S = 0;//4;
+  const double WHL_DIA_S = 0; //4;
 
-  const double WHL_DIS_L = 7.454625;//7.207894;
-  const double WHL_DIS_R = 7.454625;//7.207894;
-  const double WHL_DIS_S = 0;//4.75;
+  const double WHL_DIS_L = 7.454625; //7.207894;
+  const double WHL_DIS_R = 7.454625; //7.207894;
+  const double WHL_DIS_S = 0; //4.75;
 
   const double WHL_TPR_L = 360;
   const double WHL_TPR_R = 360;

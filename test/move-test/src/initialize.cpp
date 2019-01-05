@@ -1,4 +1,5 @@
 #include "main.h"
+#include "config.hpp"
 
 /**
  * Runs initialization code. This occurs as soon as the program is started.
@@ -6,7 +7,9 @@
  * All other competition modes are blocked by initialize; it is recommended
  * to keep execution time for this mode under a few seconds.
  */
-void initialize() {}
+void initialize() {
+  angler.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
+}
 
 /**
  * Runs while the robot is in the disabled state of Field Management System or

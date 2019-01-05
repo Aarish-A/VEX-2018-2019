@@ -98,11 +98,11 @@
             "-fdiagnostics-color",
             "--std=gnu++17",
             "-o",
-            "bin/initialize.cpp.o",
-            "src\\initialize.cpp"
+            "bin/lcd.cpp.o",
+            "src\\lcd.cpp"
         ],
         "directory": "C:\\Users\\Andrew\\Documents\\VEX\\VEX-Cortex\\Competition\\5225A-2018-2019\\test\\puncher-test-strauss",
-        "file": "src\\initialize.cpp"
+        "file": "src\\lcd.cpp"
     },
     {
         "arguments": [
@@ -133,10 +133,10 @@
             "-fdiagnostics-color",
             "--std=gnu++17",
             "-o",
-            "bin/lcd.cpp.o",
-            "src\\lcd.cpp"
+            "bin/initialize.cpp.o",
+            "src\\initialize.cpp"
         ],
         "directory": "C:\\Users\\Andrew\\Documents\\VEX\\VEX-Cortex\\Competition\\5225A-2018-2019\\test\\puncher-test-strauss",
-        "file": "src\\lcd.cpp"
+        "file": "src\\initialize.cpp"
     }
 ]

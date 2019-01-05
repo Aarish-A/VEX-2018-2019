@@ -4,7 +4,17 @@
 using namespace pros;
 
 double getGlobalAngle() {
-	return (DRIVE_DIA * M_PI * (driveFL.get_position() - driveBR.get_position() + driveBL.get_position() - driveFR.get_position())) / (2 * DRIVE_TPR * (DRIVE_LENGTH + DRIVE_WIDTH));
+	//return (DRIVE_DIA * M_PI * (driveFL.get_position() - driveBR.get_position() + driveBL.get_position() - driveFR.get_position())) / (2 * DRIVE_TPR * (DRIVE_LENGTH + DRIVE_WIDTH));
+	return (encL.get_value() * SPN_TO_IN_L + encR.get_value() * SPN_TO_IN_R) / (WHL_DIS_L + WHL_DIS_R);
+}
+
+void resetGlobalAngle() {
+	/*driveFL.tare_position();
+  driveBL.tare_position();
+  driveFR.tare_position();
+  driveBR.tare_position();*/
+	encL.reset();
+	encR.reset();
 }
 
 void setDrive(int x, int y, int a) {
@@ -30,24 +40,24 @@ void setDriveVel(int vel) {
 }
 
 void moveDrive(double dis, int vel, bool stop) {
-  double targetFL = driveFL.get_position() + dis;
-  double targetBL = driveBL.get_position() + dis;
-  double targetFR = driveFR.get_position() + dis;
-  double targetBR = driveBR.get_position() + dis;
-
   int encLStart = encL.get_value();
   int encRStart = encR.get_value();
 
-  printf("%d Moving to FL: %f, BL: %f, FR: %f, BR %f\n", millis(), targetFL, targetBL, targetFR, targetBR);
+  printf("%d Moving to %f\n", millis(), dis);
 
+	double pos;
   uint32_t lastAccel = 0, lastDecel = 0;
   int i = 10;
-  while ((targetFL - driveFL.get_position()) * sgn(dis) > 0.5_in || (targetBL - driveBL.get_position()) * sgn(dis) > 0.5_in || (targetFR - driveFR.get_position()) * sgn(dis) > 0.5_in || (targetBR - driveBR.get_position()) * sgn(dis) > 0.5_in) {
+  while (true) {
     uint32_t curTime = millis();
-    double actVel = ((driveFL.get_actual_velocity() + driveBL.get_actual_velocity() + driveFR.get_actual_velocity() + driveBR.get_actual_velocity()) / 4.0) / 60.0 * 360.0;
+		pos = ((encL.get_value() - encLStart) * SPN_TO_IN_L + (encR.get_value() - encRStart) * SPN_TO_IN_R) / 2.0;
+		printf("%d %f %f\n", curTime, pos, dis);
+		if ((dis - pos) * sgn(dis) <= 0.5_in) break;
+		double actVel = ((driveFL.get_actual_velocity() + driveBL.get_actual_velocity() + driveFR.get_actual_velocity() + driveBR.get_actual_velocity()) / 4.0) / 60.0 * 360.0;
     double tkToDecel = (actVel * actVel) / (2 * ((1000.0 / MOVE_DECEL_RATE) / 60.0) * 360.0);
+		double inToDecel = tkToDecel * DRIVE_DIA * M_PI / DRIVE_TPR;
     //printf("%d %f %f %f\n", i, actVel, targetFL - driveFL.get_position(), tkToDecel);
-    if (tkToDecel < (targetFL - driveFL.get_position()) * sgn(dis) - 0.5_in) {
+    if (inToDecel < pos * sgn(dis) - 0.5_in) {
       if (curTime - lastAccel > MOVE_ACCEL_RATE && i < vel) {
         i += 1;
         lastAccel = curTime;
@@ -63,6 +73,11 @@ void moveDrive(double dis, int vel, bool stop) {
     delay(1);
   }
 	if (stop) {
+	  double targetFL = driveFL.get_position() + dis - pos;
+	  double targetBL = driveBL.get_position() + dis - pos;
+	  double targetFR = driveFR.get_position() + dis - pos;
+	  double targetBR = driveBR.get_position() + dis - pos;
+
 	  driveFL.move_absolute(targetFL, 25);
 	  driveBL.move_absolute(targetBL, 25);
 	  driveFR.move_absolute(targetFR, 25);
@@ -76,55 +91,17 @@ void moveDrive(double dis, int vel, bool stop) {
   setDrive(0);
 }
 
-void turnDrive(double dis, int vel) {
-	double q = (dis * DRIVE_TPR * (DRIVE_LENGTH + DRIVE_WIDTH)) / (2 * M_PI * DRIVE_DIA);
-	//printf("%f\n", q);
-
-	double targetFL = driveFL.get_position() + q;
-  double targetBL = driveBL.get_position() + q;
-  double targetFR = driveFR.get_position() - q;
-  double targetBR = driveBR.get_position() - q;
-
-  int encLStart = encL.get_value();
-  int encRStart = encR.get_value();
-
-  printf("%d Turning to FL: %f, BL: %f, FR: %f, BR %f\n", millis(), targetFL, targetBL, targetFR, targetBR);
-
-  uint32_t lastAccel = 0, lastDecel = 0;
-  int i = 10;
-  while ((targetFL - driveFL.get_position()) * sgn(dis) > 20 || (targetBL - driveBL.get_position()) * sgn(dis) > 20 || (driveFR.get_position() - targetFR) * sgn(dis) > 20 || (driveBR.get_position() - targetBR) * sgn(dis) > 20) {
-    uint32_t curTime = millis();
-    double actVel = ((driveFL.get_actual_velocity() + driveBL.get_actual_velocity() - driveFR.get_actual_velocity() - driveBR.get_actual_velocity()) / 4.0) / 60.0 * 360.0;
-    double tkToDecel = (actVel * actVel) / (2 * ((1000.0 / TURN_DECEL_RATE) / 60.0) * 360.0);
-    //printf("%d %f %f %f\n", i, actVel, targetFL - driveFL.get_position(), tkToDecel);
-    if (tkToDecel < (targetFL - driveFL.get_position()) * sgn(dis) - 10) {
-      if (curTime - lastAccel > TURN_ACCEL_RATE && i < vel) {
-        i += 1;
-        lastAccel = curTime;
-      }
-    }
-    else {
-      if (curTime - lastDecel > TURN_DECEL_RATE && i > 20) {
-        i -= 1;
-        lastDecel = curTime;
-      }
-    }
-    setDriveVel(0, 0, i * sgn(dis));
-    delay(1);
-  }
-  driveFL.move_absolute(targetFL, 25);
-  driveBL.move_absolute(targetBL, 25);
-  driveFR.move_absolute(targetFR, 25);
-  driveBR.move_absolute(targetBR, 25);
-  printf("%d Stopping from FL: %f, BL: %f, FR: %f, BR %f\n", millis(), driveFL.get_position(), driveBL.get_position(), driveFR.get_position(), driveBR.get_position());
-  while (fabs(driveFL.get_position() - targetFL) > 3 || fabs(driveBL.get_position() - targetBL) > 3 || fabs(driveFR.get_position() - targetFR) > 3 || fabs(driveBR.get_position() - targetBR) > 3) delay(1);
-  delay(100);
+void turnDrive(double targ, int vel) {
+  printf("%d Turning to %f\n", millis(), RAD_TO_DEG(targ));
+	while (fabs(getGlobalAngle() - targ) > 0.8_deg) {
+		setDriveVel(0, 0, (targ - getGlobalAngle()) * 100);
+		delay(1);
+	}
   printf("%d Turned to FL: %f, BL: %f, FR: %f, BR %f\n", millis(), driveFL.get_position(), driveBL.get_position(), driveFR.get_position(), driveBR.get_position());
-  //printf("%f %f\n", (encL.get_value() - encLStart) / 360.0 * 2.75 * M_PI, (encR.get_value() - encRStart) / 360.0 * 2.75 * M_PI);
   setDrive(0);
 }
 
 double operator "" _tk(long double val) { return val; }
-double operator "" _in(long double val) { return IN_TO_TK(val); }
-double operator "" _cm(long double val) { return IN_TO_TK(CM_TO_IN(val)); }
+double operator "" _in(long double val) { return val; }
+double operator "" _cm(long double val) { return CM_TO_IN(val); }
 double operator "" _deg(long double val) { return DEG_TO_RAD(val); }

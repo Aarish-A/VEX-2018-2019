@@ -1,7 +1,7 @@
 #include "main.h"
 #include <functional>
 
-namespace pi::gui {
+namespace piln::gui {
   class DisplayHandler {
   public:
     struct DisplayPage {

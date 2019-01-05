@@ -20,6 +20,15 @@ using namespace pros;
 
 void opcontrol() {
 	uint32_t nextLog = 0;
+
+	angler.move(-30);
+	delay(100);
+	while (angler.get_actual_velocity() < -10) delay(10);
+	angler.tare_position();
+	angler.move_absolute(17 * 7, 100); // 35 for caps
+
+	int intakePower = 0;
+
 	while (true) {
 		if (millis() > nextLog) {
 			nextLog = millis() + 100;
@@ -27,16 +36,35 @@ void opcontrol() {
 		}
 
 		if (ctrler.get_digital_new_press(E_CONTROLLER_DIGITAL_Y)) {
-			driveFL.tare_position();
-			driveBL.tare_position();
-			driveFR.tare_position();
-			driveBR.tare_position();
+			resetGlobalAngle();
 		}
 
 		if (ctrler.get_digital_new_press(E_CONTROLLER_DIGITAL_B)) {
 			setDriveVel(0);
 			delay(10);
-			turnDrive(-getGlobalAngle(), 100);
+			turnDrive(0, 200);
+		}
+
+		if (ctrler.get_digital_new_press(E_CONTROLLER_DIGITAL_R1)) {
+			if (intakePower > 0) {
+				intakePower = 0;
+				intake.move(0);
+			}
+			else {
+				intakePower = 127;
+				intake.move(127);
+			}
+		}
+
+		if (ctrler.get_digital_new_press(E_CONTROLLER_DIGITAL_R2)) {
+			if (intakePower < 0) {
+				intakePower = 0;
+				intake.move(0);
+			}
+			else {
+				intakePower = -127;
+				intake.move(-127);
+			}
 		}
 
 		int y = ctrler.get_analog(E_CONTROLLER_ANALOG_LEFT_Y);

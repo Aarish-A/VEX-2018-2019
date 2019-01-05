@@ -18,12 +18,19 @@ using namespace pros;
 
 void autonomous() {
   uint32_t autoStartTime = millis();
-  driveFL.tare_position();
-  driveBL.tare_position();
-  driveFR.tare_position();
-  driveBR.tare_position();
+  resetGlobalAngle();
   setDriveVel(0);
   delay(10);
+
+	angler.move(-30);
+	delay(100);
+	while (angler.get_actual_velocity() < -10) delay(10);
+	angler.tare_position();
+	angler.move_absolute(17 * 7, 100);
+  delay(100);
+
+  moveDrive(20.0_in, 200);
+  return;
 
   moveDrive(36.0_in, 200);
   delay(1000);
@@ -31,7 +38,7 @@ void autonomous() {
   turnDrive(-90.0_deg, 200);
   moveDrive(45.0_in, 200);
   moveDrive(-45.0_in, 200);
-  turnDrive(-45.0_deg - getGlobalAngle(), 200);
+  turnDrive(-45.0_deg, 200);
   moveDrive(22.0_in, 200);
 
   printf("Auto time: %d\n", millis() - autoStartTime);
