@@ -1,5 +1,5 @@
 #include "main.h"
-#include "lcd.hpp"
+#include "gui.hpp"
 
 /**
  * Runs initialization code. This occurs as soon as the program is started.
