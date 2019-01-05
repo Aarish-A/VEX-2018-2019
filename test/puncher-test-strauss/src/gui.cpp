@@ -20,6 +20,8 @@ namespace piln::gui {
 
   void DisplayPage::closed() {}
 
+  DisplayPage::~DisplayPage() = default;
+
   void DisplayHandler::init(initializer_list<DisplayPage *> page_list) {
     // Set up styles
     static lv_style_t style_label;

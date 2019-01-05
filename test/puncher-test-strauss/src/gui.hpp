@@ -15,6 +15,7 @@ namespace piln::gui {
     virtual void cycle();
     virtual void opened();
     virtual void closed();
+    virtual ~DisplayPage();
 
     constexpr const std::string &get_name() const {
       return name;
