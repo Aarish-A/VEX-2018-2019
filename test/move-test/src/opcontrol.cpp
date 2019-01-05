@@ -25,7 +25,7 @@ void opcontrol() {
 	delay(100);
 	while (angler.get_actual_velocity() < -10) delay(10);
 	angler.tare_position();
-	angler.move_absolute(17 * 7, 100); // 35 for caps
+	angler.move_absolute(17 * 7, 100); // 35 for caps, 17 for ground
 
 	int intakePower = 0;
 
@@ -65,6 +65,14 @@ void opcontrol() {
 				intakePower = -127;
 				intake.move(-127);
 			}
+		}
+
+		if (ctrler.get_digital_new_press(E_CONTROLLER_DIGITAL_UP))	 {
+			angler.move_absolute(35 * 7, 100);
+		}
+
+		if (ctrler.get_digital_new_press(E_CONTROLLER_DIGITAL_DOWN)) {
+			angler.move_absolute(17 * 7, 100);
 		}
 
 		int y = ctrler.get_analog(E_CONTROLLER_ANALOG_LEFT_Y);
