@@ -1,5 +1,6 @@
 #include "main.h"
-#include "puncher.hpp" 
+#include "puncher.hpp"
+#include "drive.hpp"
 
 using namespace pros;
 
@@ -11,6 +12,7 @@ using namespace pros;
  */
 void initialize() {
 	pun_init();
+  drive_init();
 }
 
 /**

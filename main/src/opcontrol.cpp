@@ -1,5 +1,6 @@
 #include "main.h"
 #include "puncher.hpp"
+#include "drive.hpp"
 
 /**
  * Runs the operator control code. This function will be started in its own task
@@ -22,6 +23,7 @@ void opcontrol() {
 
 	while (true) {
 		pun_handle();
+		drive_handle();
 
 		delay(10);
 	}
