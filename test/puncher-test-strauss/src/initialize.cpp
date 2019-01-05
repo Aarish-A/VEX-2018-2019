@@ -8,7 +8,7 @@
  * to keep execution time for this mode under a few seconds.
  */
 void initialize() {
-  piln::gui::DisplayHandler::init();
+  piln::gui::DisplayHandler::init({});
 }
 
 /**

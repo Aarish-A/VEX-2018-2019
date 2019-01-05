@@ -1,30 +1,35 @@
 #include "main.h"
 #include <functional>
+#include <map>
+#include <vector>
+#include <string>
+#include <initializer_list>
 
 namespace piln::gui {
-  class DisplayHandler {
+  class DisplayPage {
+    const std::string name;
+
   public:
-    struct DisplayPage {
-      const char *name;
-      std::function<void (lv_obj_t *path)> initPage;
-      lv_obj_t *page;
-    };
+    DisplayPage(const std::string &name);
+    virtual void init(lv_obj_t *path) = 0;
+    virtual void cycle();
+    virtual void opened();
+    virtual void closed();
 
+    constexpr const std::string &get_name() const {
+      return name;
+    }
+  };
+
+  class DisplayHandler final {
   private:
+    static std::vector<std::pair<DisplayPage *, lv_obj_t *>> pages;
+    static std::map<std::string, size_t> page_map;
+    static size_t cur_page;
+    static pros::Task *task;
+
+  public:
     DisplayHandler() = delete;
-
-    static DisplayPage pages[3];
-    static constexpr int PAGE_COUNT = sizeof(pages) / sizeof(DisplayPage);
-    static const char *map[PAGE_COUNT * 2];
-    static int curPage;
-
-    static lv_res_t handleBtn(lv_obj_t *btnm, const char *txt);
-    static void handleLCD(void *param);
-    static pros::Task *lcdTask;
-
-    static lv_style_t style_label;
-
-    public:
-      static void init();
+    static void init(std::initializer_list<DisplayPage *> page_list);
   };
 }
