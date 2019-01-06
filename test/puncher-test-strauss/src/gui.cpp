@@ -66,8 +66,10 @@ namespace piln::gui {
       lv_obj_set_size(obj, LV_HOR_RES - (LV_DPI / 2), LV_VER_RES);
       lv_obj_align(obj, NULL, LV_ALIGN_IN_TOP_RIGHT, 0, 0);
       lv_obj_set_hidden(obj, true);
+      p->init(obj);
+      ++i;
     }
-    matrix[n * 2 - 1] = "";
+    matrix[n * 2] = "";
     if (n != 0) {
       lv_obj_set_hidden(pages[cur_page].second, false);
     }
@@ -108,6 +110,7 @@ namespace piln::gui {
     lv_btnm_set_action(btnMap, [](lv_obj_t *btnm, const char *txt) {
       size_t new_page = page_map[txt];
       if (new_page != cur_page) {
+        printf("%d -> %d\n", cur_page, new_page);
         lv_obj_set_hidden(pages[cur_page].second, true);
         pages[cur_page].first->closed();
         cur_page = new_page;
