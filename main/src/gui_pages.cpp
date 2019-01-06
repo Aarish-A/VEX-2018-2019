@@ -3,6 +3,7 @@
 #include "config.hpp"
 
 using namespace std;
+using namespace pros;
 
 bool disable_controls = false;
 
@@ -24,7 +25,7 @@ void init_gui() {
       lv_page_glue_obj(btn_map, true);
       lv_btnm_set_map(btn_map, matrix);
       lv_btnm_set_action(btn_map, [](lv_obj_t *btnm, const char *txt) {
-        lv_obj_set_hidden(done_btn, false);
+        lv_obj_set_hidden(_this->done_btn, false);
         _this->selected = atoi(txt);
         disable_controls = true;
         return LV_RES_OK;
@@ -36,7 +37,7 @@ void init_gui() {
       lv_obj_t *label = lv_label_create(done_btn, NULL);
       lv_label_set_static_text(label, "Done");
       lv_btn_set_action(done_btn, LV_BTN_ACTION_CLICK, [](lv_obj_t *btn) {
-        lv_obj_set_hidden(done_btn, true);
+        lv_obj_set_hidden(_this->done_btn, true);
         _this->selected = NUM_SHOT_POS;
         disable_controls = false;
         return LV_RES_OK;
