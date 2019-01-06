@@ -21,10 +21,10 @@ void angler_cal() {
 	delay(100);
 	while (angler.get_actual_velocity() < -10) delay(10);
 	angler.tare_position();
-	angler.move_absolute(17 * 7, 100);
+	angler.move_absolute(ANGLER_BALL * 7, 100);
   delay(100);
 }
 
 void angler_handle() {
-	
+
 }

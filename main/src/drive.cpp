@@ -28,7 +28,7 @@ void drive_init() { }
 
 void drive_handle() {
   int y = ctrler.get_analog(E_CONTROLLER_ANALOG_LEFT_Y);
-	int x = ctrler.get_analog(E_CONTROLLER_ANALOG_LEFT_X);
-	int a = ctrler.get_analog(E_CONTROLLER_ANALOG_RIGHT_X);
+	int x = ctrler.get_analog(E_CONTROLLER_ANALOG_RIGHT_X);
+	int a = ctrler.get_analog(E_CONTROLLER_ANALOG_LEFT_X);
 	drive_set(x, y, a);
 }
