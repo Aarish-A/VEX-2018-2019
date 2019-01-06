@@ -16,7 +16,7 @@ void intake_handle() {
   }
 
   else*/
-   if (ctrler.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_R1)) {
+   if (ctrler.get_digital_new_press(BTN_INTAKE_UP)) {
     if (intake_state != IntakeState::Off) {
       intake_set(0);
       intake_state = IntakeState::Off;
@@ -27,7 +27,7 @@ void intake_handle() {
     }
   }
 
-  else if (ctrler.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_R2)) {
+  else if (ctrler.get_digital_new_press(BTN_INTAKE_DOWN)) {
     if (intake_state != IntakeState::Off) {
       intake_set(0);
       intake_state = IntakeState::Off;

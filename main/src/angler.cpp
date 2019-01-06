@@ -38,12 +38,12 @@ void angler_cal() {
 int anglerPow = 0;
 int anglerPowLst = 0;
 void angler_handle() {
-	anglerPow = set_dz(ctrler.get_analog(E_CONTROLLER_ANALOG_RIGHT_Y), ANGLER_DZ);
+	anglerPow = set_dz(ctrler.get_analog(BTN_ANGLER_CAP_PU), ANGLER_DZ);
 
 	if (angler.get_position() < 0 && anglerPow < 0) anglerPow = 0;
 	else if (angler.get_position() > 320 && anglerPow > 0) anglerPow = 0;
 
-	if (ctrler.get_digital_new_press(E_CONTROLLER_DIGITAL_A)) {
+	if (ctrler.get_digital_new_press(BTN_ANGLER_PU)) {
 	 	angler_move(ANGLER_PU_POS, 100);
 	 	printf("%d Angler PU. Pos:%f TPos:%f\n", pros::millis(), angler.get_position(), angler.get_target_position());
  	}
