@@ -50,8 +50,8 @@ void moveDrive(double dis, int vel, bool stop) {
   int i = 10;
   while (true) {
     uint32_t curTime = millis();
-		posCur = pos.y;// ((enc_l.get_value() - enc_LStart) * SPN_TO_IN_L + (enc_r.get_value() - enc_RStart) * SPN_TO_IN_R) / 2.0;
-		//pos = pos.y
+		posCur = IN_TO_TK(pos.y);// ((enc_l.get_value() - enc_LStart) * SPN_TO_IN_L + (enc_r.get_value() - enc_RStart) * SPN_TO_IN_R) / 2.0;
+
 		//printf("%d %f %f %d %d\n", curTime, pos, dis, enc_L.get_value(), enc_R.get_value());
 		if ((dis - posCur) * sgn(dis) <= 0.5_in) break;
 		double actVel = ((drive_fl.get_actual_velocity() + drive_bl.get_actual_velocity() + drive_fr.get_actual_velocity() + drive_br.get_actual_velocity()) / 4.0) / 60.0 * 360.0;
