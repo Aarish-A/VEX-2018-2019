@@ -10,8 +10,8 @@ constexpr double ANGLER_PU_POS = 85;//ANGLER_BALL * 7;
 
 constexpr double ANGLER_CAP_PU_POS = 215;
 
-double angler_f_t_pos = 90;
-double angler_f_m_pos = 70;
+extern double angler_f_t_pos;
+extern double angler_f_m_pos;
 
 void angler_init();
 void angler_set(int power);

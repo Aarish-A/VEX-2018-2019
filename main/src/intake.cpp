@@ -11,12 +11,10 @@ void intake_set(int power) {
 }
 
 void intake_handle() {
-/*  if (angler.get_actual_velocity() < 1 && intake_state == IntakeState::Forw) {
-      intake_set(-127);
-  }
+  static uint32_t intake_jam_time;
+  static uint32_t intake_on_time;
 
-  else*/
-   if (ctrler.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_R1)) {
+  if (ctrler.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_R1)) {
     if (intake_state != IntakeState::Off) {
       intake_set(0);
       intake_state = IntakeState::Off;
@@ -24,6 +22,7 @@ void intake_handle() {
     else {
       intake_set(127);
       intake_state = IntakeState::Forw;
+      intake_on_time = millis();
     }
   }
 
@@ -36,5 +35,25 @@ void intake_handle() {
       intake_set(-80);
       intake_state = IntakeState::Back;
     }
+  }
+
+  switch (intake_state) {
+    case IntakeState::Forw:
+      if (intake.get_actual_velocity() < 10 && millis() >= intake_on_time + 250) {
+        intake_set(-80);
+        intake_jam_time = millis();
+        intake_state = IntakeState::Jam;
+      }
+      break;
+
+    case IntakeState::Jam:
+      if (millis() >= intake_jam_time + 250) {
+        intake_set(127);
+        intake_state = IntakeState::Forw;
+        intake_on_time = millis();
+      }
+      break;
+
+    default: break;
   }
 }
