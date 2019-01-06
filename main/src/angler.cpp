@@ -26,7 +26,5 @@ void angler_cal() {
 }
 
 void angler_handle() {
-  angler_init();
-  angler_cal();
-
+	
 }

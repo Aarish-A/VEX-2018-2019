@@ -3,7 +3,7 @@
 
 enum class PunState { Load, Hold, ShotStart, ShotWait, FatalError };
 
-constexpr double PUN_RATIO = (60.0 / 36.0);
+constexpr double PUN_RATIO = 1.0;
 constexpr double PUN_OFFSET = 45 * PUN_RATIO;
 constexpr double PUN_HOLD = 180 * PUN_RATIO; // Relative to the slip point
 constexpr double PUN_TPR = 360 * PUN_RATIO; // Relative to the slip point

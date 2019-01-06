@@ -19,6 +19,10 @@
 using namespace pros;
 
 void opcontrol() {
-	//pun_handle();
+	while (true) {
+		pun_handle();
+		drive_handle();
 
+		delay(10);
+	}
 }
