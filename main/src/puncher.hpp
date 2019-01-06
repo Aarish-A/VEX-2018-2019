@@ -1,5 +1,6 @@
 #pragma once
 #include "main.h"
+#include "config.hpp"
 
 enum class PunState { Load, Hold, ShotStart, ShotWait, FatalError };
 
