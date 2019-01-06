@@ -1,5 +1,4 @@
-#ifndef PUNCHER_H
-#define PUNCHER_H
+#pragma once
 #include "main.h"
 
 enum class PunState { Load, Hold, ShotStart, ShotWait, FatalError };
@@ -26,4 +25,3 @@ void pun_move(double position, int32_t velocity = 200);
 void pun_cal();
 void pun_handle();
 void pun_fatal_disable();
-#endif
