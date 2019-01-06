@@ -48,6 +48,7 @@ void pun_cal() {
     pun_fatal_disable();
     return;
   }
+  delay(100);
   puncherLeft.tare_position();
   puncherRight.tare_position();
 
@@ -71,7 +72,7 @@ void pun_handle() {
 		switch (pun_state) {
 			case PunState::Load:
 				if (fabs(puncherLeft.get_position() - (PUN_OFFSET + (pun_shots * PUN_TPR) + PUN_HOLD)) <= (4 * PUN_RATIO)) {
-					pun_set(5);
+					pun_set(PUN_HOLD_PWR);
 					pun_state = PunState::Hold;
 				}
 				if (ctrler.get_digital_new_press(E_CONTROLLER_DIGITAL_B) || auto_set_shot) {
