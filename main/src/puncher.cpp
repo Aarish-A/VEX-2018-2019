@@ -83,7 +83,7 @@ void pun_handle() {
 				break;
 
 			case PunState::Hold:
-				if (fabs(puncherLeft.get_position() - (PUN_OFFSET + (pun_shots * PUN_TPR) + PUN_HOLD)) > (6 * PUN_RATIO)) {
+				if (fabs(puncherLeft.get_position() - (PUN_OFFSET + (pun_shots * PUN_TPR) + PUN_HOLD)) > (10 * PUN_RATIO)) {
 					pun_move(PUN_OFFSET + (pun_shots * PUN_TPR) + PUN_HOLD);
 					pun_state = PunState::Load;
 				}
