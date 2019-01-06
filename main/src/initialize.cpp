@@ -4,6 +4,7 @@
 #include "drive.hpp"
 #include "angler.hpp"
 #include "intake.hpp"
+#include "settings.hpp"
 
 using namespace pros;
 
@@ -16,6 +17,8 @@ using namespace pros;
  * to keep execution time for this mode under a few seconds.
  */
 void initialize() {
+	piln::settings::init();
+
 	pun_init();
 	pun_cal();
   drive_init();
