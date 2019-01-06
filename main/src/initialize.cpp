@@ -3,6 +3,7 @@
 #include "puncher.hpp"
 #include "drive.hpp"
 #include "angler.hpp"
+#include "intake.hpp"
 
 using namespace pros;
 
@@ -20,6 +21,7 @@ void initialize() {
   drive_init();
   angler_init();
   angler_cal();
+  intake_init();
 
   ///pros::Task pun_task ((pros::task_fn_t)pun_handle, (void*)NULL, TASK_PRIORITY_DEFAULT, TASK_STACK_DEPTH_DEFAULT, "Pun_Task");
 	//pros::Task tracking_task ((pros::task_fn_t)pos.task(), (void*)NULL, TASK_PRIORITY_DEFAULT, TASK_STACK_DEPTH_DEFAULT, "Track_Task");
