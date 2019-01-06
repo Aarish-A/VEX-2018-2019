@@ -26,7 +26,7 @@ void pun_cal() {
   pun_set(-20);
   while (fabs(puncher.get_actual_velocity()) < 15 && (success = (millis() < timeout_time)))
 	{
-		printf("%d A: %f \n", pros::millis, puncher.get_actual_velocity());
+		printf("%d A: %f \n", pros::millis(), puncher.get_actual_velocity());
 		delay(10);
 	}
   if (!success) {
@@ -37,7 +37,7 @@ void pun_cal() {
   timeout_time = millis() + 2500; // + 1300;
   while (fabs(puncher.get_actual_velocity()) > 10 && (success = (millis() < timeout_time)))
 	{
-		printf("%d B: %f \n", pros::millis, puncher.get_actual_velocity());
+		printf("%d B: %f \n", pros::millis(), puncher.get_actual_velocity());
 		delay(10);
 	}
   if (!success) {
