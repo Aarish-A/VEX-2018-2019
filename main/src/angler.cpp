@@ -4,6 +4,9 @@ using namespace pros;
 
 //anglerState angler_state;
 
+double angler_f_t_pos = 90;
+double angler_f_m_pos = 70;
+
 void angler_init() {
 	angler.set_brake_mode(E_MOTOR_BRAKE_HOLD);
 }
