@@ -1,5 +1,8 @@
 #include "main.h"
-#include "lcd.hpp"
+#include "gui.hpp"
+
+using namespace std;
+using namespace piln::gui;
 
 /**
  * Runs initialization code. This occurs as soon as the program is started.
@@ -8,7 +11,26 @@
  * to keep execution time for this mode under a few seconds.
  */
 void initialize() {
-  piln::gui::DisplayHandler::init();
+  class SimplePage : public DisplayPage {
+  public:
+    SimplePage(const string &name) : DisplayPage(name) {}
+
+    void init(lv_obj_t *path) override {
+      printf("Init %x\n", path);
+      lv_obj_t *content = lv_label_create(path, NULL);
+      lv_label_set_text(content, get_name().c_str());
+      lv_obj_align(content, NULL, LV_ALIGN_IN_TOP_LEFT, 0, 0);
+      static lv_style_t style;
+      lv_style_copy(&style, &lv_style_transp);
+      style.text.color = LV_COLOR_WHITE;
+      lv_obj_set_style(content, &style);
+      // lv_obj_set_hidden(content, false);
+      // lv_obj_set_style(content, &lv_style_plain);
+    }
+  };
+  DisplayHandler::init({
+    new SimplePage("Page 1")
+  });
 }
 
 /**
