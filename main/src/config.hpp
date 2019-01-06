@@ -1,6 +1,7 @@
 #pragma once
 #include "main.h"
 #include "tracking.hpp"
+#include "config.hpp"
 
 extern pros::Controller ctrler;
 extern pros::Motor drive_fl;

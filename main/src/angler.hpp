@@ -1,6 +1,7 @@
 #ifndef ANGLER_H
 #define ANGLER_H
 #include "main.h"
+#include "config.hpp"
 
 void angler_init();
 void angler_set(int power);
