@@ -5,10 +5,9 @@
 #include "angler.hpp"
 #include "intake.hpp"
 #include "settings.hpp"
+#include "gui_pages.hpp"
 
 using namespace pros;
-
-
 
 /**
  * Runs initialization code. This occurs as soon as the program is started.
@@ -18,6 +17,8 @@ using namespace pros;
  */
 void initialize() {
 	piln::settings::init();
+
+	init_gui();
 
 	pun_init();
 	pun_cal();
