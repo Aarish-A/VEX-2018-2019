@@ -1,5 +1,4 @@
-#ifndef PILONS_TRACKING_H
-#define PILONS_TRACKING_H
+#pragma once
 #include "main.h"
 #include <cmath>
 #include <memory>
@@ -77,5 +76,3 @@
     vector velocity();
   };
 //}
-
-#endif
