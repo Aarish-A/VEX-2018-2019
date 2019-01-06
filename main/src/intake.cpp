@@ -39,7 +39,7 @@ void intake_handle() {
 
   switch (intake_state) {
     case IntakeState::Forw:
-      if (intake.get_actual_velocity() < 10 && millis() >= intake_on_time + 250) {
+      if (intake.get_actual_velocity() < 5 && millis() >= intake_on_time + 250) {
         intake_set(-80);
         intake_jam_time = millis();
         intake_state = IntakeState::Jam;
