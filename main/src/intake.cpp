@@ -11,25 +11,30 @@ void intake_set(int power) {
 }
 
 void intake_handle() {
-  if (ctrler.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_R1)) {
-    if (intake_state != IntakeState::Forw) {
+/*  if (angler.get_actual_velocity() < 1 && intake_state == IntakeState::Forw) {
+      intake_set(-127);
+  }
+
+  else*/
+   if (ctrler.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_R1)) {
+    if (intake_state != IntakeState::Off) {
+      intake_set(0);
+      intake_state = IntakeState::Off;
+    }
+    else {
       intake_set(127);
       intake_state = IntakeState::Forw;
     }
-    else {
-      intake_set(0);
-      intake_state = IntakeState::Off;
-    }
   }
 
-  if (ctrler.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_R2)) {
-    if (intake_state != IntakeState::Back) {
-      intake_set(-127);
-      intake_state = IntakeState::Back;
-    }
-    else {
+  else if (ctrler.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_R2)) {
+    if (intake_state != IntakeState::Off) {
       intake_set(0);
       intake_state = IntakeState::Off;
+    }
+    else {
+      intake_set(-80);
+      intake_state = IntakeState::Back;
     }
   }
 }

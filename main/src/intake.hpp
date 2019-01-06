@@ -2,7 +2,7 @@
 #include "main.h"
 #include "config.hpp"
 
-enum class IntakeState { Forw, Back, Off };
+enum class IntakeState { Forw, Back, Off, SpitOut};
 
 extern IntakeState intake_state;
 
