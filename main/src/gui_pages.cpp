@@ -1,6 +1,8 @@
 #include "gui_pages.hpp"
 #include "settings.hpp"
 #include "config.hpp"
+#include <sstream>
+#include <iomanip>
 
 using namespace std;
 using namespace pros;
@@ -60,8 +62,10 @@ void init_gui() {
         double value = piln::settings::get_double("shot-" + to_string(i));
         buffer[i] = value;
         delete[] matrix[i * 2];
-        auto str = to_string(i) + ": " + to_string(value);
-        if (selected == i) str += "*";
+        ostringstream oss;
+        oss << i << ": " << std::setprecision(1) << std::fixed << value;
+        if (selected == i) oss << "*";
+        string str = oss.str();
         char *s = new char[str.length() + 1];
         strcpy(s, str.c_str());
         matrix[i * 2] = s;
