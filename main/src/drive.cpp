@@ -27,8 +27,8 @@ void drive_set_vel(int vel) {
 void drive_init() { }
 
 void drive_handle() {
-  int y = set_dz(ctrler.get_analog(E_CONTROLLER_ANALOG_LEFT_Y), DRIVE_DZ);
-	int x = set_dz(ctrler.get_analog(E_CONTROLLER_ANALOG_RIGHT_X), DRIVE_DZ);
-	int a = set_dz(ctrler.get_analog(E_CONTROLLER_ANALOG_LEFT_X), DRIVE_DZ);
+  int y = set_dz(ctrler.get_analog(JOY_DRIVE_FW), DRIVE_DZ);
+	int x = set_dz(ctrler.get_analog(JOY_DRIVE_TURN), DRIVE_DZ);
+	int a = set_dz(ctrler.get_analog(JOY_DRIVE_STRAFE), DRIVE_DZ);
 	drive_set(x, y, a);
 }

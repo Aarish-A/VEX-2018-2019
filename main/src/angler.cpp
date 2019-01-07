@@ -4,9 +4,6 @@ using namespace pros;
 
 //anglerState angler_state;
 
-double angler_f_t_pos = 90;
-double angler_f_m_pos = 70;
-
 void angler_init() {
 	angler.set_brake_mode(E_MOTOR_BRAKE_HOLD);
 }
@@ -41,28 +38,32 @@ void angler_cal() {
 int anglerPow = 0;
 int anglerPowLst = 0;
 void angler_handle() {
-	anglerPow = set_dz(ctrler.get_analog(BTN_ANGLER_CAP_PU), ANGLER_DZ);
+	anglerPow = set_dz(ctrler.get_analog(JOY_ANGLER), ANGLER_DZ);
 
 	if (angler.get_position() < 0 && anglerPow < 0) anglerPow = 0;
 	else if (angler.get_position() > 320 && anglerPow > 0) anglerPow = 0;
 
-	if (ctrler.get_digital_new_press(BTN_ANGLER_PU)) {
-	 	angler_move(ANGLER_PU_POS, 100);
-	 	printf("%d Angler PU. Pos:%f TPos:%f\n", pros::millis(), angler.get_position(), angler.get_target_position());
- 	}
-	else if (ctrler.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_X)) {
-	 	angler_move(ANGLER_CAP_PU_POS, 100);
-	 	printf("%d Angler Cap PU. Pos:%f TPos:%f\n", pros::millis(), angler.get_position(), angler.get_target_position());
- 	}
-	else if (anglerPow) {
-		angler_set(anglerPow);
-		printf("%d Angler Set %d. Pos:%f\n", pros::millis(), anglerPow, angler.get_position());
+	/*if (shot_num > 0) {
+		angler.move_absolute(shot_req[shot_num-1].angle_targ, 200);
 	}
-	else if (!anglerPow && anglerPowLst) {
-		angler_set(0);
-		angler.move_relative(0, 100);
-		printf("%d Angler Set 0. Pos:%f\n", pros::millis(), angler.get_position());
-	}
-
+	else { */
+		if (ctrler.get_digital_new_press(BTN_ANGLER_PU)) {
+		 	angler_move(ANGLER_PU_POS, 100);
+		 	printf("%d Angler PU. Pos:%f TPos:%f\n", pros::millis(), angler.get_position(), angler.get_target_position());
+	 	}
+		else if (ctrler.get_digital_new_press(BTN_ANGLER_CAP_PU)) {
+		 	angler_move(ANGLER_CAP_PU_POS, 100);
+		 	printf("%d Angler Cap PU. Pos:%f TPos:%f\n", pros::millis(), angler.get_position(), angler.get_target_position());
+	 	}
+		else if (anglerPow) {
+			angler_set(anglerPow);
+			printf("%d Angler Set %d. Pos:%f\n", pros::millis(), anglerPow, angler.get_position());
+		}
+		else if (!anglerPow && anglerPowLst) {
+			angler_set(0);
+			angler.move_relative(0, 100);
+			printf("%d Angler Set 0. Pos:%f\n", pros::millis(), angler.get_position());
+		}
+	//}
 	anglerPowLst = anglerPow;
 }

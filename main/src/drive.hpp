@@ -2,6 +2,7 @@
 #include "main.h"
 #include "config.hpp"
 #include "util.hpp"
+#include "shot_select.hpp"
 
 constexpr int DRIVE_DZ = 10;
 

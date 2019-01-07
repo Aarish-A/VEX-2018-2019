@@ -8,6 +8,8 @@ bool pun_ball = false;
 
 bool auto_set_shot = false;
 
+int shot_num = 0;
+
 void pun_init() {
 	puncherLeft.set_brake_mode(E_MOTOR_BRAKE_HOLD);
 	puncherRight.set_brake_mode(E_MOTOR_BRAKE_HOLD);
@@ -75,10 +77,15 @@ void pun_handle() {
 					pun_set(PUN_HOLD_PWR);
 					pun_state = PunState::Hold;
 				}
-				if (ctrler.get_digital_new_press(BTN_SHOOT) || auto_set_shot) {
+				if (shot_num < shot_req_num || auto_set_shot) {
 					pun_move(PUN_OFFSET + (++pun_shots * PUN_TPR));
 					printf("%d Shot start\n", millis());
+					shot_num++;
 					pun_state = PunState::ShotStart;
+				}
+				else if (shot_num >= shot_req_num ) {
+					shot_req_num = 0;
+					shot_num = 0;
 				}
 				break;
 
@@ -87,10 +94,15 @@ void pun_handle() {
 					pun_move(PUN_OFFSET + (pun_shots * PUN_TPR) + PUN_HOLD);
 					pun_state = PunState::Load;
 				}
-				if (ctrler.get_digital_new_press(BTN_SHOOT) || auto_set_shot ) {
+				if (shot_num < shot_req_num || auto_set_shot) {
 					pun_move(PUN_OFFSET + (++pun_shots * PUN_TPR));
 					printf("%d Shot start\n", millis());
+					shot_num++;
 					pun_state = PunState::ShotStart;
+				}
+				else if (shot_num >= shot_req_num ) {
+					shot_req_num = 0;
+					shot_num = 0;
 				}
 				break;
 
