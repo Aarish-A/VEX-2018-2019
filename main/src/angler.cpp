@@ -35,9 +35,10 @@ void angler_cal() {
 	*/
 }
 
-int anglerPow = 0;
-int anglerPowLst = 0;
 void angler_handle() {
+	static int anglerPow = 0;
+	static int anglerPowLst = 0;
+
 	anglerPow = set_dz(ctrler.get_analog(JOY_ANGLER), ANGLER_DZ);
 
 	if (angler.get_position() < 0 && anglerPow < 0) anglerPow = 0;
