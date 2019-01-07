@@ -119,6 +119,10 @@ void pun_handle() {
 				else if (ctrler.get_digital_new_press(BTN_SHOOT_CANCEL) && puncherLeft.get_position() < PUN_OFFSET + (pun_shots * PUN_TPR) - PUN_NO_RETURN) {
 					pun_move(PUN_OFFSET + (--pun_shots * PUN_TPR) + PUN_HOLD);
 					printf("%d Shot failure, canceled\n", millis());
+
+					shot_req_num = 0;
+					shot_num = 0;
+					
 					pun_state = PunState::Load;
 				}
 				else if (PUN_OFFSET + (pun_shots * PUN_TPR) - puncherLeft.get_position() < 1) {

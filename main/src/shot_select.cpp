@@ -2,7 +2,7 @@
 
 ShotPos front_SP (FieldPos_Front, 90, 70);
 ShotPos pf_SP (FieldPos_PF, 90, 70);
-ShotPos pf_back_SP (FieldPos_PF, 90, 70);
+ShotPos pf_back_SP (FieldPos_PF_Back, 90, 70);
 ShotPos back_SP (FieldPos_Back, 90, 70);
 
 ShotSelect shot_req[2];
