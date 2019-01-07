@@ -1,5 +1,6 @@
 #include "config.hpp"
 #include "tracking.hpp"
+#include "util.hpp"
 #include <math.h>
 
 constexpr double DRIVE_DIA = 3.95;
@@ -17,7 +18,6 @@ constexpr double CM_TO_IN(long double val) { return val  * 2.54; }
 constexpr double DEG_TO_RAD(long double val) { return val * M_PI / 180.0; }
 constexpr double RAD_TO_DEG(long double val) { return val * 180.0 / M_PI; }
 
-template <typename T> int sgn(T val) { return (T(0) < val) - (val < T(0)); }
 
 double getGlobalAngle();
 void resetGlobalAngle();

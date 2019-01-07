@@ -82,4 +82,9 @@ void shot_req_handle() {
     set_turn_dir(Dir_Right);
   }
 
+	if (ctrler.get_digital_new_press(BTN_SHOT_L_T) || ctrler.get_digital_new_press(BTN_SHOT_L_M)
+			|| ctrler.get_digital_new_press(BTN_SHOT_R_T) || ctrler.get_digital_new_press(BTN_SHOT_R_M)) {
+				printf("%d Shot Set | RNum:%d | FPos:%d | 1angle:%d, 1trn:%d | 2angle:%d, 2turn:%d\n", pros::millis(), shot_req_num, shot_req[0].field_pos, shot_req[0].angle_targ, shot_req[0].turn_dir, shot_req[1].angle_targ, shot_req[1].turn_dir);
+			}
+
 }

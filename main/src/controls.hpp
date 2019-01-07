@@ -14,7 +14,7 @@ constexpr pros::controller_analog_e_t JOY_DRIVE_TURN = pros::E_CONTROLLER_ANALOG
 constexpr pros::controller_analog_e_t JOY_DRIVE_STRAFE = pros::E_CONTROLLER_ANALOG_RIGHT_X;
 
 /* Shooter */
-constexpr pros::controller_digital_e_t BTN_SHOOT = pros::E_CONTROLLER_DIGITAL_B; //DELETE!
+//constexpr pros::controller_digital_e_t BTN_SHOOT = pros::E_CONTROLLER_DIGITAL_B; //DELETE!
 constexpr pros::controller_digital_e_t BTN_SHOOT_CANCEL = pros::E_CONTROLLER_DIGITAL_A;
 
 /* Shooter Pos */

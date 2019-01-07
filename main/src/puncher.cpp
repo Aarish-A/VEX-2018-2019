@@ -80,6 +80,7 @@ void pun_handle() {
 				if (shot_num < shot_req_num || auto_set_shot) {
 					pun_move(PUN_OFFSET + (++pun_shots * PUN_TPR));
 					printf("%d Shot start\n", millis());
+					printf("%d ReqNum:%d ShtNum:%d | FPos:%d | 1angle:%d, 1trn:%d | 2angle:%d, 2turn:%d\n", pros::millis(), shot_req_num, shot_num, shot_req[0].field_pos, shot_req[0].angle_targ, shot_req[0].turn_dir, shot_req[1].angle_targ, shot_req[1].turn_dir);
 					shot_num++;
 					pun_state = PunState::ShotStart;
 				}
@@ -97,6 +98,7 @@ void pun_handle() {
 				if (shot_num < shot_req_num || auto_set_shot) {
 					pun_move(PUN_OFFSET + (++pun_shots * PUN_TPR));
 					printf("%d Shot start\n", millis());
+					printf("%d ReqNum:%d ShtNum:%d | FPos:%d | 1angle:%d, 1trn:%d | 2angle:%d, 2turn:%d\n", pros::millis(), shot_req_num, shot_num, shot_req[0].field_pos, shot_req[0].angle_targ, shot_req[0].turn_dir, shot_req[1].angle_targ, shot_req[1].turn_dir);
 					shot_num++;
 					pun_state = PunState::ShotStart;
 				}
