@@ -52,6 +52,8 @@ void init_gui() {
         double value = buffer[selected];
         if (ctrler.get_digital_new_press(E_CONTROLLER_DIGITAL_UP)) selected += 0.1;
         if (ctrler.get_digital_new_press(E_CONTROLLER_DIGITAL_DOWN)) selected -= 0.1;
+        if (ctrler.get_digital_new_press(E_CONTROLLER_DIGITAL_RIGHT)) selected += 1.0;
+        if (ctrler.get_digital_new_press(E_CONTROLLER_DIGITAL_LEFT)) selected -= 1.0;
         piln::settings::set_double("shot-" + to_string(selected), value);
       }
       for (size_t i = 0; i < NUM_SHOT_POS; ++i) {
