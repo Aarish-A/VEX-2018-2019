@@ -16,7 +16,7 @@
  * from where it left off.
  */
 
-void autonomousTask() {
+void auto_update() {
   while (true) {
     pos.update();
     pros::delay(2);
@@ -24,6 +24,11 @@ void autonomousTask() {
 }
 
 void autonomous() {
+  pros::Task auto_update_task ((pros::task_fn_t)auto_update, (void*)NULL, TASK_PRIORITY_DEFAULT, TASK_STACK_DEPTH_DEFAULT, "Auto_Update_Task");
+  while (true) {
+    printf("%d %f %f %f\n", pros::millis(), pos.x, pos.y, pos.a);;
+    pros::delay(10);
+  }
   //pos.reset();
   //auto_set_shot = true;
 
