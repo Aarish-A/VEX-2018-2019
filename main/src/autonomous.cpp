@@ -1,6 +1,8 @@
 #include "main.h"
 #include "puncher.hpp"
 #include "drive.hpp"
+#include "tracking.hpp"
+#include "config.hpp"
 
 /**
  * Runs the user autonomous code. This function will be started in its own task
@@ -14,7 +16,15 @@
  * from where it left off.
  */
 
+void autonomousTask() {
+  while (true) {
+    pos.update();
+    pros::delay(2);
+  }
+}
+
 void autonomous() {
-  auto_set_shot = true;
+  //pos.reset();
+  //auto_set_shot = true;
 
 }

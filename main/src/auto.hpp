@@ -1,3 +1,5 @@
+#include "config.hpp"
+#include "tracking.hpp"
 #include <math.h>
 
 constexpr double DRIVE_DIA = 3.95;
