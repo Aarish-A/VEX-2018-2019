@@ -26,6 +26,7 @@ struct Shot_Pos {
 
 extern Shot_Pos front_SP;
 extern Shot_Pos pf_SP;
+extern Shot_Pos pf_back_SP;
 extern Shot_Pos back_SP;
 
 struct Shot_Select {
