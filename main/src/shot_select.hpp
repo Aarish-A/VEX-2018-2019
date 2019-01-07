@@ -9,39 +9,39 @@ enum Dir {
   Dir_Right
 };
 
-enum Field_Pos {
-  Field_Pos_Front,
-  Field_Pos_Back,
-  Field_Pos_PF,
-  Field_Pos_PF_Back
+enum FieldPos {
+  FieldPos_Front,
+  FieldPos_Back,
+  FieldPos_PF,
+  FieldPos_PF_Back
 };
 
-struct Shot_Pos {
-  Field_Pos field_pos;
+struct ShotPos {
+  FieldPos field_pos;
   int top;
   int mid;
 
-  Shot_Pos(Field_Pos field_pos, int top, int mid) : field_pos(field_pos), top(top), mid(mid) {}
+  ShotPos(FieldPos field_pos, int top, int mid) : field_pos(field_pos), top(top), mid(mid) {}
 };
 
-extern Shot_Pos front_SP;
-extern Shot_Pos pf_SP;
-extern Shot_Pos pf_back_SP;
-extern Shot_Pos back_SP;
+extern ShotPos front_SP;
+extern ShotPos pf_SP;
+extern ShotPos pf_back_SP;
+extern ShotPos back_SP;
 
-struct Shot_Select {
+struct ShotSelect {
   int angle_targ;
   Dir turn_dir;
-  Field_Pos field_pos;
+  FieldPos field_pos;
 };
 
-void set_field_pos(Field_Pos field_pos);
+void set_field_pos(FieldPos field_pos);
 void set_angle_targ(bool top);
 void set_turn_dir(Dir turn_dir);
 void shot_req_handle();
 
 /* Shot Num */
-extern Shot_Select shot_req[2];
+extern ShotSelect shot_req[2];
 
 extern int shot_req_num;
 void inc_shot_req_num();
