@@ -1,4 +1,5 @@
 #include "drive.hpp"
+#include "gui_pages.hpp"
 
 using namespace pros;
 
@@ -27,8 +28,13 @@ void drive_set_vel(int vel) {
 void drive_init() { }
 
 void drive_handle() {
-  int y = set_dz(ctrler.get_analog(JOY_DRIVE_FW), DRIVE_DZ);
-	int x = set_dz(ctrler.get_analog(JOY_DRIVE_TURN), DRIVE_DZ);
-	int a = set_dz(ctrler.get_analog(JOY_DRIVE_STRAFE), DRIVE_DZ);
+	int y, x, a;
+	if (disable_controls.load()) {
+		y = x = a = 0;
+	} else {
+	  y = set_dz(ctrler.get_analog(JOY_DRIVE_FW), DRIVE_DZ);
+		x = set_dz(ctrler.get_analog(JOY_DRIVE_TURN), DRIVE_DZ);
+		a = set_dz(ctrler.get_analog(JOY_DRIVE_STRAFE), DRIVE_DZ);
+	}
 	drive_set(x, y, a);
 }

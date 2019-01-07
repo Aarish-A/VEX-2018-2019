@@ -1,4 +1,5 @@
 #include "puncher.hpp"
+#include "gui_pages.hpp"
 
 using namespace pros;
 
@@ -114,7 +115,7 @@ void pun_handle() {
 					ctrler.rumble(" .");
 					pun_state = PunState::Load;
 				}
-				else if (ctrler.get_digital_new_press(BTN_SHOOT_CANCEL) && puncherLeft.get_position() < PUN_OFFSET + (pun_shots * PUN_TPR) - PUN_NO_RETURN) {
+				else if (!disable_controls.load() && ctrler.get_digital_new_press(BTN_SHOOT_CANCEL) && puncherLeft.get_position() < PUN_OFFSET + (pun_shots * PUN_TPR) - PUN_NO_RETURN) {
 					pun_move(PUN_OFFSET + (--pun_shots * PUN_TPR) + PUN_HOLD);
 					printf("%d Shot failure, canceled\n", millis());
 					pun_state = PunState::Load;

@@ -7,7 +7,7 @@
 using namespace std;
 using namespace pros;
 
-bool disable_controls = false;
+atomic<bool> disable_controls = false;
 
 void init_gui() {
   class ShotPositionsPage final : public piln::gui::DisplayPage {
@@ -39,9 +39,7 @@ void init_gui() {
       lv_obj_t *label = lv_label_create(done_btn, NULL);
       lv_label_set_static_text(label, "Done");
       lv_btn_set_action(done_btn, LV_BTN_ACTION_CLICK, [](lv_obj_t *btn) {
-        lv_obj_set_hidden(_this->done_btn, true);
-        _this->selected = NUM_SHOT_POS;
-        disable_controls = false;
+        _this->closed();
         return LV_RES_OK;
       });
       for (size_t i = 0; i < NUM_SHOT_POS; ++i) {

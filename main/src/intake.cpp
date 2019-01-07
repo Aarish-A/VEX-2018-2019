@@ -1,4 +1,5 @@
 #include "intake.hpp"
+#include "gui_pages.hpp"
 
 using namespace pros;
 
@@ -14,26 +15,28 @@ void intake_handle() {
   static uint32_t intake_jam_time;
   static uint32_t intake_on_time;
 
-  if (ctrler.get_digital_new_press(BTN_INTAKE_UP)) {
-    if (intake_state != IntakeState::Off) {
-      intake_set(0);
-      intake_state = IntakeState::Off;
+  if (!disable_controls.load()) {
+    if (ctrler.get_digital_new_press(BTN_INTAKE_UP)) {
+      if (intake_state != IntakeState::Off) {
+        intake_set(0);
+        intake_state = IntakeState::Off;
+      }
+      else {
+        intake_set(127);
+        intake_state = IntakeState::Forw;
+        intake_on_time = millis();
+      }
     }
-    else {
-      intake_set(127);
-      intake_state = IntakeState::Forw;
-      intake_on_time = millis();
-    }
-  }
 
-  else if (ctrler.get_digital_new_press(BTN_INTAKE_DOWN)) {
-    if (intake_state != IntakeState::Off) {
-      intake_set(0);
-      intake_state = IntakeState::Off;
-    }
-    else {
-      intake_set(-80);
-      intake_state = IntakeState::Back;
+    else if (ctrler.get_digital_new_press(BTN_INTAKE_DOWN)) {
+      if (intake_state != IntakeState::Off) {
+        intake_set(0);
+        intake_state = IntakeState::Off;
+      }
+      else {
+        intake_set(-80);
+        intake_state = IntakeState::Back;
+      }
     }
   }
 

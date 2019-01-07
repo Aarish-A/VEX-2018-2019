@@ -1,4 +1,5 @@
 #include "angler.hpp"
+#include "gui_pages.hpp"
 
 using namespace pros;
 
@@ -47,11 +48,11 @@ void angler_handle() {
 		angler.move_absolute(shot_req[shot_num-1].angle_targ, 200);
 	}
 	else { */
-		if (ctrler.get_digital_new_press(BTN_ANGLER_PU)) {
+		if (!disable_controls.load() && ctrler.get_digital_new_press(BTN_ANGLER_PU)) {
 		 	angler_move(ANGLER_PU_POS, 100);
 		 	printf("%d Angler PU. Pos:%f TPos:%f\n", pros::millis(), angler.get_position(), angler.get_target_position());
 	 	}
-		else if (ctrler.get_digital_new_press(BTN_ANGLER_CAP_PU)) {
+		else if (!disable_controls.load() && ctrler.get_digital_new_press(BTN_ANGLER_CAP_PU)) {
 		 	angler_move(ANGLER_CAP_PU_POS, 100);
 		 	printf("%d Angler Cap PU. Pos:%f TPos:%f\n", pros::millis(), angler.get_position(), angler.get_target_position());
 	 	}
