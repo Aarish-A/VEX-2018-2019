@@ -1,9 +1,9 @@
 #include "shot_select.hpp"
 
-Shot_Pos front_SP (FPos_Front, 90, 70);
-Shot_Pos pf_SP (FPos_PF, 90, 70);
-Shot_Pos pf_back_SP (FPos_PF, 90, 70);
-Shot_Pos back_SP (FPos_Back, 90, 70);
+Shot_Pos front_SP (Field_Pos_Front, 90, 70);
+Shot_Pos pf_SP (Field_Pos_PF, 90, 70);
+Shot_Pos pf_back_SP (Field_Pos_PF, 90, 70);
+Shot_Pos back_SP (Field_Pos_Back, 90, 70);
 
 Shot_Select shot_req[2];
 int shot_req_num = 0;
@@ -25,19 +25,19 @@ void set_field_pos(Field_Pos field_pos) {
 
 void set_angle_targ(bool top) {
   switch (shot_req[shot_req_num-1].field_pos) {
-    case FPos_Front:
+    case Field_Pos_Front:
       shot_req[shot_req_num-1].angle_targ = top? front_SP.top : front_SP.mid;
       break;
 
-    case FPos_Back:
+    case Field_Pos_Back:
       shot_req[shot_req_num-1].angle_targ = top? back_SP.top : back_SP.mid;
       break;
 
-    case FPos_PF:
+    case Field_Pos_PF:
       shot_req[shot_req_num-1].angle_targ = top? pf_SP.top : pf_SP.mid;
       break;
 
-    case FPos_PF_Back:
+    case Field_Pos_PF_Back:
       shot_req[shot_req_num-1].angle_targ = top? pf_back_SP.top : pf_back_SP.mid;
       break;
   }
@@ -47,13 +47,13 @@ void set_turn_dir(Dir turn_dir) {
   shot_req[shot_req_num-1].turn_dir = turn_dir;
 }
 
-void select_shot() {
+void shot_req_handle() {
   //Set Field Pos
   if (shot_req_num == 0)
   {
-    if (ctrler.get_digital_new_press(BTN_FIELD_FRONT)) set_field_pos(FPos_Front);
-    else if (ctrler.get_digital_new_press(BTN_FIELD_PF)) set_field_pos(FPos_PF);
-    else if (ctrler.get_digital_new_press(BTN_FIELD_BACK)) set_field_pos(FPos_Back);
+    if (ctrler.get_digital_new_press(BTN_FIELD_FRONT)) set_field_pos(Field_Pos_Front);
+    else if (ctrler.get_digital_new_press(BTN_FIELD_PF)) set_field_pos(Field_Pos_PF);
+    else if (ctrler.get_digital_new_press(BTN_FIELD_BACK)) set_field_pos(Field_Pos_Back);
   }
 
   //Set other shot constants

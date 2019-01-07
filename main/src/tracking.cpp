@@ -17,7 +17,6 @@
     return val * 2.54;
   }
 
-
   double operator "" _rad(long double val) {
     return val;
   }

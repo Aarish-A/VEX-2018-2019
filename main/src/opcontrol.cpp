@@ -3,6 +3,8 @@
 #include "drive.hpp"
 #include "intake.hpp"
 #include "angler.hpp"
+#include "tracking.hpp"
+#include "shot_select.hpp"
 
 /**
  * Runs the operator control code. This function will be started in its own task
@@ -25,14 +27,20 @@ void opcontrol() {
 	printf("%d Start Opcontrol \n", pros::millis());
 
 	while (true) {
+		shot_req_handle();
+
 		pun_handle();
 		drive_handle();
 		intake_handle();
 		angler_handle();
 
+		pos.update();
+
 		if (millis() - lstTime > 100) {
 			lstTime = millis();
-			ctrler.print(2, 0, "%d%d%d%d%d%def  ", (int)puncherLeft.get_temperature(), (int)puncherRight.get_temperature(), (int)drive_fl.get_temperature(), (int)drive_fr.get_temperature(), (int)drive_bl.get_temperature(), (int)drive_br.get_temperature());
+			ctrler.print(2, 0, "%f.1 %f.1 %f.1", pos.x, pos.y, pos.a);
+			//ctrler.print(2, 0, "%d%d%d%d%d%def  ", (int)puncherLeft.get_temperature(), (int)puncherRight.get_temperature(), (int)drive_fl.get_temperature(), (int)drive_fr.get_temperature(), (int)drive_bl.get_temperature(), (int)drive_br.get_temperature());
+
 			//printf("%d %.3f %.3f\n", millis(), puncherLeft.get_power(), puncherRight.get_power());
 			//printf("%d | P:%f TP:%f V:%f TV:%f P:%f \n", millis(), angler.get_position(), angler.get_target_position(), angler.get_actual_velocity(), angler.get_target_velocity(), angler.get_power());
 		}

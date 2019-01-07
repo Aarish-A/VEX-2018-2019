@@ -10,10 +10,10 @@ enum Dir {
 };
 
 enum Field_Pos {
-  FPos_Front,
-  FPos_Back,
-  FPos_PF,
-  FPos_PF_Back
+  Field_Pos_Front,
+  Field_Pos_Back,
+  Field_Pos_PF,
+  Field_Pos_PF_Back
 };
 
 struct Shot_Pos {
@@ -37,7 +37,7 @@ struct Shot_Select {
 void set_field_pos(Field_Pos field_pos);
 void set_angle_targ(bool top);
 void set_turn_dir(Dir turn_dir);
-void select_shot();
+void shot_req_handle();
 
 /* Shot Num */
 extern Shot_Select shot_req[2];
