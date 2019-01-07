@@ -10,6 +10,7 @@ constexpr double MOVE_DECEL_RATE = 16;
 constexpr double TURN_ACCEL_RATE = 3;
 constexpr double TURN_DECEL_RATE = 10;
 constexpr double IN_TO_TK(long double val) { return (val * DRIVE_TPR) / (DRIVE_DIA * M_PI); }
+constexpr double TK_TO_IN(long double val) { return (val * (DRIVE_DIA * M_PI)) / DRIVE_TPR; }
 constexpr double CM_TO_IN(long double val) { return val  * 2.54; }
 constexpr double DEG_TO_RAD(long double val) { return val * M_PI / 180.0; }
 constexpr double RAD_TO_DEG(long double val) { return val * 180.0 / M_PI; }
@@ -26,6 +27,3 @@ void moveDrive(double dis, int vel, bool stop = true);
 void turnDrive(double targ, int vel);
 
 double operator "" _tk(long double val);
-double operator "" _in(long double val);
-double operator "" _cm(long double val);
-double operator "" _deg(long double val);

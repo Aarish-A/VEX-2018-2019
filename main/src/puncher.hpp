@@ -1,6 +1,7 @@
 #pragma once
 #include "main.h"
 #include "config.hpp"
+#include "shot_select.hpp"
 
 enum class PunState { Load, Hold, ShotStart, ShotWait, FatalError };
 
@@ -27,3 +28,5 @@ void pun_move(double position, int32_t velocity = 200);
 void pun_cal();
 void pun_handle();
 void pun_fatal_disable();
+
+extern int shot_num; //Either 0, 1 or 2; Used to keep track of completed shot requests

@@ -8,6 +8,8 @@ bool pun_ball = false;
 
 bool auto_set_shot = false;
 
+int shot_num = 0;
+
 void pun_init() {
 	puncherLeft.set_brake_mode(E_MOTOR_BRAKE_HOLD);
 	puncherRight.set_brake_mode(E_MOTOR_BRAKE_HOLD);
@@ -75,22 +77,32 @@ void pun_handle() {
 					pun_set(PUN_HOLD_PWR);
 					pun_state = PunState::Hold;
 				}
-				if (ctrler.get_digital_new_press(E_CONTROLLER_DIGITAL_B) || auto_set_shot) {
+				if (shot_num < shot_req_num || auto_set_shot) {
 					pun_move(PUN_OFFSET + (++pun_shots * PUN_TPR));
 					printf("%d Shot start\n", millis());
+					shot_num++;
 					pun_state = PunState::ShotStart;
+				}
+				else if (shot_num >= shot_req_num ) {
+					shot_req_num = 0;
+					shot_num = 0;
 				}
 				break;
 
 			case PunState::Hold:
-				if (fabs(puncherLeft.get_position() - (PUN_OFFSET + (pun_shots * PUN_TPR) + PUN_HOLD)) > (6 * PUN_RATIO)) {
+				if (fabs(puncherLeft.get_position() - (PUN_OFFSET + (pun_shots * PUN_TPR) + PUN_HOLD)) > (10 * PUN_RATIO)) {
 					pun_move(PUN_OFFSET + (pun_shots * PUN_TPR) + PUN_HOLD);
 					pun_state = PunState::Load;
 				}
-				if (ctrler.get_digital_new_press(E_CONTROLLER_DIGITAL_B) || auto_set_shot) {
+				if (shot_num < shot_req_num || auto_set_shot) {
 					pun_move(PUN_OFFSET + (++pun_shots * PUN_TPR));
 					printf("%d Shot start\n", millis());
+					shot_num++;
 					pun_state = PunState::ShotStart;
+				}
+				else if (shot_num >= shot_req_num ) {
+					shot_req_num = 0;
+					shot_num = 0;
 				}
 				break;
 
@@ -102,7 +114,7 @@ void pun_handle() {
 					ctrler.rumble(" .");
 					pun_state = PunState::Load;
 				}
-				else if (ctrler.get_digital_new_press(E_CONTROLLER_DIGITAL_A) && puncherLeft.get_position() < PUN_OFFSET + (pun_shots * PUN_TPR) - PUN_NO_RETURN) {
+				else if (ctrler.get_digital_new_press(BTN_SHOOT_CANCEL) && puncherLeft.get_position() < PUN_OFFSET + (pun_shots * PUN_TPR) - PUN_NO_RETURN) {
 					pun_move(PUN_OFFSET + (--pun_shots * PUN_TPR) + PUN_HOLD);
 					printf("%d Shot failure, canceled\n", millis());
 					pun_state = PunState::Load;
@@ -126,7 +138,7 @@ void pun_handle() {
         break;
 		}
 		pros::delay(10);
-	}
+}
 
 void pun_fatal_disable() {
   pun_state = PunState::FatalError;

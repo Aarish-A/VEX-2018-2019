@@ -1,6 +1,10 @@
 #pragma once
 #include "main.h"
 #include "config.hpp"
+#include "util.hpp"
+#include "shot_select.hpp"
+
+constexpr int DRIVE_DZ = 10;
 
 void drive_set(int x, int y, int a);
 void drive_set(int pow);
