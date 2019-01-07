@@ -1,8 +1,29 @@
-controller_digital_e_t BTN_INTAKE_UP = pros::E_CONTROLLER_DIGITAL_UP;
-controller_digital_e_t BTN_INTAKE_DOWN = pros::E_CONTROLLER_DIGITAL_DOWN;
+#pragma once
+/* Intake */
+constexpr pros::controller_digital_e_t BTN_INTAKE_UP = pros::E_CONTROLLER_DIGITAL_UP;
+constexpr pros::controller_digital_e_t BTN_INTAKE_DOWN = pros::E_CONTROLLER_DIGITAL_DOWN;
 
-controller_digital_e_t BTN_SHOOT = pros::E_CONTROLLER_DIGITAL_B;
-controller_digital_e_t BTN_SHOOT_RESET = pros::E_CONTROLLER_DIGITAL_Y;
+/* Angler */
+constexpr pros::controller_analog_e_t JOY_ANGLER = pros::E_CONTROLLER_ANALOG_RIGHT_Y;
+constexpr pros::controller_digital_e_t BTN_ANGLER_PU = pros::E_CONTROLLER_DIGITAL_LEFT;
+constexpr pros::controller_digital_e_t BTN_ANGLER_CAP_PU = pros::E_CONTROLLER_DIGITAL_RIGHT;
 
-controller_digital_e_t BTN_ANGLER_PU = pros::E_CONTROLLER_DIGITAL_A;
-controller_digital_e_t BTN_ANGLER_PU = pros::E_CONTROLLER_DIGITAL_X;
+/* Drive */
+constexpr pros::controller_analog_e_t JOY_DRIVE_FW = pros::E_CONTROLLER_ANALOG_LEFT_Y;
+constexpr pros::controller_analog_e_t JOY_DRIVE_TURN = pros::E_CONTROLLER_ANALOG_LEFT_X;
+constexpr pros::controller_analog_e_t JOY_DRIVE_STRAFE = pros::E_CONTROLLER_ANALOG_RIGHT_X;
+
+/* Shooter */
+constexpr pros::controller_digital_e_t BTN_SHOOT = pros::E_CONTROLLER_DIGITAL_B; //DELETE!
+constexpr pros::controller_digital_e_t BTN_SHOOT_CANCEL = pros::E_CONTROLLER_DIGITAL_A;
+
+/* Shooter Pos */
+constexpr pros::controller_digital_e_t BTN_FIELD_FRONT = pros::E_CONTROLLER_DIGITAL_X;
+constexpr pros::controller_digital_e_t BTN_FIELD_PF = pros::E_CONTROLLER_DIGITAL_Y;
+constexpr pros::controller_digital_e_t BTN_FIELD_BACK = pros::E_CONTROLLER_DIGITAL_B;
+
+/* Shooter Queue */
+constexpr pros::controller_digital_e_t BTN_SHOT_L_T = pros::E_CONTROLLER_DIGITAL_L1;
+constexpr pros::controller_digital_e_t BTN_SHOT_L_M = pros::E_CONTROLLER_DIGITAL_L2;
+constexpr pros::controller_digital_e_t BTN_SHOT_R_T = pros::E_CONTROLLER_DIGITAL_R1;
+constexpr pros::controller_digital_e_t BTN_SHOT_R_M = pros::E_CONTROLLER_DIGITAL_R2;
