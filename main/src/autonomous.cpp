@@ -2,6 +2,7 @@
 #include "puncher.hpp"
 #include "drive.hpp"
 #include "tracking.hpp"
+#include "auto.hpp"
 #include "config.hpp"
 
 /**
@@ -25,11 +26,16 @@ void auto_update() {
 
 void autonomous() {
   pros::Task auto_update_task ((pros::task_fn_t)auto_update, (void*)NULL, TASK_PRIORITY_DEFAULT, TASK_STACK_DEPTH_DEFAULT, "Auto_Update_Task");
-  while (true) {
-    printf("%d %f %f %f\n", pros::millis(), pos.x, pos.y, pos.a);;
-    pros::delay(10);
-  }
-  //pos.reset();
-  //auto_set_shot = true;
+  pos.reset(0, 0, 0);
+  /*
+  drive_set(127);
+  while (pos.y<1.5) pros::delay(10);
+  */
+
+  /*
+  move_drive(pos.y+3, 200, false);
+  turn_vel(new PointAngleTarget({48, 120}));
+  */
+  turn_vel_side(new PointAngleTarget({-48, 120}), (200/50_deg));
 
 }

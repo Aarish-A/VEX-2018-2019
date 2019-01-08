@@ -1,6 +1,6 @@
 #include "drive.hpp"
 
-using namespace pros;
+//using namespace pros;
 
 void drive_set(int x, int y, int a) {
 	drive_fl.move(y + x + a);
@@ -24,7 +24,12 @@ void drive_set_vel(int vel) {
   drive_set(vel, vel, vel);
 }
 
-void drive_init() { }
+void drive_init() {
+	drive_fl.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
+	drive_fr.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
+	drive_bl.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
+	drive_br.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
+}
 
 void drive_handle() {
   int y = set_dz(ctrler.get_analog(JOY_DRIVE_FW), DRIVE_DZ);

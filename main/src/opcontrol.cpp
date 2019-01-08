@@ -38,7 +38,7 @@ void opcontrol() {
 
 		if (millis() - lstTime > 100) {
 			lstTime = millis();
-			ctrler.print(2, 0, "%f.1 %f.1 %f.1", pos.x, pos.y, pos.a);
+			ctrler.print(2, 0, "%.1f %.1f %.1f", pos.x, pos.y, RAD_TO_DEG(pos.a));
 			//ctrler.print(2, 0, "%d%d%d%d%d%def  ", (int)puncherLeft.get_temperature(), (int)puncherRight.get_temperature(), (int)drive_fl.get_temperature(), (int)drive_fr.get_temperature(), (int)drive_bl.get_temperature(), (int)drive_br.get_temperature());
 
 			//printf("%d %.3f %.3f\n", millis(), puncherLeft.get_power(), puncherRight.get_power());

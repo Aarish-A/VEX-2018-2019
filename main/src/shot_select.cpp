@@ -11,6 +11,7 @@ int shot_req_num = 0;
 void inc_shot_req_num() {
 	if (shot_req_num < 2) shot_req_num++;
   else shot_req_num = 2;
+	printf("%d Shot Field Pos Set | RNum:%d | FPos:%d | 1angle:%d, 1trn:%d | 2angle:%d, 2turn:%d\n", pros::millis(), shot_req_num, shot_req[0].field_pos, shot_req[0].angle_targ, shot_req[0].turn_dir, shot_req[1].angle_targ, shot_req[1].turn_dir);
 }
 
 void dec_shot_req_num() {
@@ -21,6 +22,7 @@ void dec_shot_req_num() {
 void set_field_pos(FieldPos field_pos) {
   shot_req[0].field_pos = field_pos;
   shot_req[1].field_pos = field_pos;
+	printf("%d Shot Field Pos Set | RNum:%d | FPos:%d | 1angle:%d, 1trn:%d | 2angle:%d, 2turn:%d\n", pros::millis(), shot_req_num, shot_req[0].field_pos, shot_req[0].angle_targ, shot_req[0].turn_dir, shot_req[1].angle_targ, shot_req[1].turn_dir);
 }
 
 void set_angle_targ(bool top) {
@@ -82,6 +84,7 @@ void shot_req_handle() {
     set_turn_dir(Dir_Right);
   }
 
+/*
 	if (	ctrler.get_digital_new_press(BTN_FIELD_FRONT) || ctrler.get_digital_new_press(BTN_FIELD_PF)
 			|| ctrler.get_digital_new_press(BTN_FIELD_BACK) ) {
 				printf("%d Shot Field Pos Set | RNum:%d | FPos:%d | 1angle:%d, 1trn:%d | 2angle:%d, 2turn:%d\n", pros::millis(), shot_req_num, shot_req[0].field_pos, shot_req[0].angle_targ, shot_req[0].turn_dir, shot_req[1].angle_targ, shot_req[1].turn_dir);
@@ -90,5 +93,5 @@ void shot_req_handle() {
 			|| ctrler.get_digital_new_press(BTN_SHOT_R_T) || ctrler.get_digital_new_press(BTN_SHOT_R_M)) {
 				printf("%d Shot Set | RNum:%d | FPos:%d | 1angle:%d, 1trn:%d | 2angle:%d, 2turn:%d\n", pros::millis(), shot_req_num, shot_req[0].field_pos, shot_req[0].angle_targ, shot_req[0].turn_dir, shot_req[1].angle_targ, shot_req[1].turn_dir);
 			}
-
+*/
 }

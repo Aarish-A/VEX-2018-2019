@@ -39,7 +39,7 @@ void setDriveVel(int vel) {
   setDriveVel(vel, vel, vel);
 }
 
-void moveDrive(double dis, int vel, bool stop) {
+void move_drive(double dis, int vel, bool stop) {
   int enc_LStart = enc_l.get_value();
   int enc_RStart = enc_r.get_value();
 
@@ -92,13 +92,41 @@ void moveDrive(double dis, int vel, bool stop) {
   setDrive(0);
 }
 
-void turnDrive(double targ, int vel) {
-  printf("%d Turning to %f\n", millis(), RAD_TO_DEG(targ));
-	while (fabs(getGlobalAngle() - targ) > 0.8_deg) {
-		setDriveVel(0, 0, (targ - getGlobalAngle()) * 120);
-		delay(1);
+void turn_vel(AngleTarget *target, double offset)
+{
+	double dA = target->getTarget() - pos.a + offset;
+  printf("%d Turning to %f | DeltaA: %f \n", millis(), RAD_TO_DEG(target->getTarget()), RAD_TO_DEG(dA) );
+	while (fabs(dA) > 0.8_deg) {
+		dA = target->getTarget() - pos.a + offset;
+		setDriveVel(0, 0, (dA * 120));
+		delay(2);
 	}
-  printf("%d Turned to FL: %f, BL: %f, FR: %f, BR %f\n", millis(), drive_fl.get_position(), drive_bl.get_position(), drive_fr.get_position(), drive_br.get_position());
+  printf("%d Turned to %f | FL: %f, BL: %f, FR: %f, BR %f\n", millis(), RAD_TO_DEG(pos.a), drive_fl.get_position(), drive_bl.get_position(), drive_fr.get_position(), drive_br.get_position());
+  setDrive(0);
+}
+
+void turn_vel_side(AngleTarget *target, double kP, double offset)
+{
+	int t_start = pros::millis();
+	double dA = target->getTarget() - pos.a + offset;
+  printf("%d Turning to %f | DeltaA: %f \n", millis(), RAD_TO_DEG(target->getTarget()), RAD_TO_DEG(dA) );
+	while (fabs(dA) > 0.8_deg) {
+		dA = target->getTarget() - pos.a + offset;
+		//printf("%d Pos:%f DeltaA:%f Pow:%f \n", pros::millis(), RAD_TO_DEG(pos.a), RAD_TO_DEG(dA), kP*fabs(dA));
+		if (dA > 0) {
+			drive_bl.move_velocity(kP*fabs(dA));
+			drive_fl.move_velocity(kP*fabs(dA));
+			drive_br.move_velocity(0);
+			drive_fr.move_velocity(0);
+		} else {
+			drive_br.move_velocity(kP*fabs(dA));
+			drive_fr.move_velocity(kP*fabs(dA));
+			drive_bl.move_velocity(0);
+			drive_fl.move_velocity(0);
+		}
+		delay(2);
+	}
+  printf("%d Turned to %f in %d Vel:%f | FL: %f, BL: %f, FR: %f, BR %f\n", millis(), RAD_TO_DEG(pos.a), millis()-t_start, pos.aVel, drive_fl.get_position(), drive_bl.get_position(), drive_fr.get_position(), drive_br.get_position());
   setDrive(0);
 }
 
