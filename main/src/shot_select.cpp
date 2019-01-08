@@ -7,9 +7,13 @@ ShotPos pf_back_SP (FieldPos_PF_Back, 90, 70);
 ShotPos back_SP (FieldPos_Back, 90, 70);
 
 ShotSelect shot_req[2];
-int shot_req_drive_handled;
+
 int shot_req_num = 0;
 int shot_req_handled_num = 0;
+
+bool shot_cancel_pressed = false;
+
+pros::Task shot_req_handle_task ((pros::task_fn_t)shot_req_handle, (void*)NULL, TASK_PRIORITY_DEFAULT, TASK_STACK_DEPTH_DEFAULT, "Shot_Req_Handle_Task");
 
 /* Shot Select Code */
 void inc_shot_req_num() {
@@ -75,6 +79,8 @@ void shot_req_make() {
   }
 
   //Set other shot constants
+		//Every button press after the second will overwrite the second.
+		//So not all requests have been made, or the second request hasn't been executed yet -> Prevents from overwriting second request during execution
 	if (shot_req_num < 2 || shot_req_handled_num < 1)
 	{
 	  if (ctrler.get_digital_new_press(BTN_SHOT_L_T))
@@ -109,6 +115,15 @@ void shot_req_make() {
 			set_handled_vars();
 			printf("%d Shot Req | RNum:%d | FPos:%d | 1angle:%d, 1trn:%d (%f, %f) | 2angle:%d, 2turn:%d (%f, %f)\n", pros::millis(), shot_req_num, shot_req[0].field_pos, shot_req[0].angle_targ, shot_req[0].turn_dir, shot_req[0].flag_pos.x, shot_req[0].flag_pos.y, shot_req[1].angle_targ, shot_req[1].turn_dir, shot_req[1].flag_pos.x, shot_req[1].flag_pos.y);
 	  }
+		else if (ctrler.get_digital_new_press(BTN_SHOOT_CANCEL)) {
+			shot_cancel_pressed = true;
+			shot_req_handle_task.suspend();
+			setDrive(0);
+
+			shot_req_num = 0;
+			shot_req_handled_num = 0;
+			set_handled_vars();
+		}
 	}
 
 /*
@@ -124,6 +139,7 @@ void shot_req_make() {
 }
 
 void shot_req_handle() {
+	printf("%d Start Shot Req Handle Task \n",  pros::millis());
 	while (true) {
 		if (shot_req_num > 0) {
 			set_handled_vars(); //Make sure all handled vars are reset to false

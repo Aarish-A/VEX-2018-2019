@@ -26,8 +26,6 @@ void opcontrol() {
 	uint32_t lstTime = 0;
 	printf("%d Start Opcontrol \n", pros::millis());
 
-	pros::Task shot_req_handle_task ((pros::task_fn_t)shot_req_handle, (void*)NULL, TASK_PRIORITY_DEFAULT, TASK_STACK_DEPTH_DEFAULT, "Shot_Req_Handle_Task");
-
 	while (true) {
 		shot_req_make();
 

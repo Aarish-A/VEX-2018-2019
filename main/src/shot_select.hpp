@@ -56,7 +56,9 @@ extern ShotSelect shot_req[2];
 extern int shot_req_num;
 extern int shot_req_handled_num;
 
+extern bool shot_cancel_pressed;
 
-extern int shot_req_drive_handled;
+extern pros::Task shot_req_handle_task;
+
 void inc_shot_req_num();
 void dec_shot_req_num();
