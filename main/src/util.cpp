@@ -14,3 +14,35 @@ int set_scaled_dz(int val, int dz) {
 
   return val;
 }
+
+/* Vectors */
+
+vector vector::operator+(vector other) {
+  return {x + other.x, y + other.y};
+}
+
+vector vector::operator-(vector other) {
+  return *this + -other;
+}
+
+vector vector::operator+() {
+  return *this;
+}
+
+vector vector::operator-() {
+  return {-x, -y};
+}
+
+double vector::phase() {
+  return atan2(x, y);
+}
+
+double vector::magnitude() {
+  return sqrt(x * x + y * y);
+}
+
+vector rotate(vector v, double offset) {
+  double m = v.magnitude();
+  double a = v.phase() + offset;
+  return {m * sin(a), m * cos(a)};
+}

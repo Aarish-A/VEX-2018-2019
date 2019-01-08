@@ -1,5 +1,6 @@
 #pragma once
 #include "main.h"
+#include "util.hpp"
 #include <cmath>
 #include <memory>
 
@@ -34,20 +35,6 @@
   double operator "" _deg(long double val);
   double operator "" _rad(unsigned long long val);
   double operator "" _deg(unsigned long long val);
-
-  struct vector {
-    double x, y;
-
-    vector operator+(vector other);
-    vector operator-(vector other);
-    vector operator+();
-    vector operator-();
-
-    double phase();
-    double magnitude();
-  };
-
-  vector rotate(vector v, double offset);
 
   class Tracking {
   private:

@@ -2,6 +2,7 @@
 
 #include "main.h"
 #include "config.hpp"
+#include "util.hpp"
 
 enum Dir {
   Dir_Centre,
@@ -33,6 +34,7 @@ struct ShotSelect {
   int angle_targ;
   Dir turn_dir;
   FieldPos field_pos;
+  vector flag_pos;
 };
 
 void set_field_pos(FieldPos field_pos);
@@ -44,5 +46,6 @@ void shot_req_handle();
 extern ShotSelect shot_req[2];
 
 extern int shot_req_num;
+extern int shot_req_drive_handled;
 void inc_shot_req_num();
 void dec_shot_req_num();

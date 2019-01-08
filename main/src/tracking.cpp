@@ -33,36 +33,6 @@
     return  DEG_TO_RAD(val);
   }
 
-  vector vector::operator+(vector other) {
-    return {x + other.x, y + other.y};
-  }
-
-  vector vector::operator-(vector other) {
-    return *this + -other;
-  }
-
-  vector vector::operator+() {
-    return *this;
-  }
-
-  vector vector::operator-() {
-    return {-x, -y};
-  }
-
-  double vector::phase() {
-    return atan2(x, y);
-  }
-
-  double vector::magnitude() {
-    return sqrt(x * x + y * y);
-  }
-
-  vector rotate(vector v, double offset) {
-    double m = v.magnitude();
-    double a = v.phase() + offset;
-    return {m * sin(a), m * cos(a)};
-  }
-
   Tracking::Tracking(pros::ADIEncoder &encL, pros::ADIEncoder &encR, pros::ADIEncoder &encS, double x, double y, double a) : encL(encL), encR(encR), encS(encS) {
     this->x = this->xLst = x;
     this->y = this->yLst = y;
@@ -155,6 +125,7 @@
   }
 
   void Tracking::reset(double x, double y, double a) {
+    printf("\n%d Resetting Pos (%f, %f, %f) from (%f, %f, %f)\n", pros::millis(), x, y, RAD_TO_DEG(a), this->x, this->y, RAD_TO_DEG(this->a));
     this->encL.reset();
     this->encR.reset();
     this->encS.reset();

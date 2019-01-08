@@ -13,3 +13,7 @@ void drive_set_vel(int x, int y, int a);
 void sdrive_set_vel(int vel);
 void drive_init();
 void drive_handle();
+
+void drive_shot_turn();
+
+static bool handling_shot_req = false;
