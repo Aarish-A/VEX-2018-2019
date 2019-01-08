@@ -1,3 +1,4 @@
+#pragma once
 #include "config.hpp"
 #include "tracking.hpp"
 #include "angle_target.hpp"

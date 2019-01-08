@@ -8,8 +8,6 @@ bool pun_ball = false;
 
 bool auto_set_shot = false;
 
-int shot_num = 0;
-
 void pun_init() {
 	puncherLeft.set_brake_mode(E_MOTOR_BRAKE_HOLD);
 	puncherRight.set_brake_mode(E_MOTOR_BRAKE_HOLD);
@@ -79,17 +77,11 @@ void pun_handle() {
 					pun_set(PUN_HOLD_PWR);
 					pun_state = PunState::Hold;
 				}
-				if ((shot_req_drive_handled == shot_num + 1) || auto_set_shot) {
+				if (shot_req[shot_req_handled_num].drive_turn_handled || auto_set_shot) {
 					pun_move(PUN_OFFSET + (++pun_shots * PUN_TPR));
 					printf("%d Shot start\n", millis());
-					shot_num++;
-					printf("%d ReqNum:%d ShtNum:%d | FPos:%d | 1angle:%d, 1trn:%d (%f,%f) | 2angle:%d, 2turn:%d (%f,%f)\n", pros::millis(), shot_req_num, shot_num, shot_req[0].field_pos, shot_req[0].angle_targ, shot_req[0].turn_dir, shot_req[0].flag_pos.x, shot_req[0].flag_pos.y, shot_req[1].angle_targ, shot_req[1].turn_dir, shot_req[1].flag_pos.x, shot_req[1].flag_pos.y);
+					printf("%d ShotLoad | ReqNum:%d ShtNum:%d | FPos:%d | 1angle:%d, 1trn:%d (%f,%f) | 2angle:%d, 2turn:%d (%f,%f)\n", pros::millis(), shot_req_num, shot_req_handled_num, shot_req[0].field_pos, shot_req[0].angle_targ, shot_req[0].turn_dir, shot_req[0].flag_pos.x, shot_req[0].flag_pos.y, shot_req[1].angle_targ, shot_req[1].turn_dir, shot_req[1].flag_pos.x, shot_req[1].flag_pos.y);
 					pun_state = PunState::ShotStart;
-				}
-				else if (shot_num >= shot_req_num ) {
-					shot_req_num = 0;
-					shot_num = 0;
-					shot_req_drive_handled = 0;
 				}
 				break;
 
@@ -98,25 +90,19 @@ void pun_handle() {
 					pun_move(PUN_OFFSET + (pun_shots * PUN_TPR) + PUN_HOLD);
 					pun_state = PunState::Load;
 				}
-				if ((shot_req_drive_handled == shot_req_num && shot_num < shot_req_num) || auto_set_shot) {
+				if (shot_req[shot_req_handled_num].drive_turn_handled || auto_set_shot) {
 					pun_move(PUN_OFFSET + (++pun_shots * PUN_TPR));
 					printf("%d Shot start\n", millis());
-					shot_num++;
-					printf("%d ReqNum:%d ShtNum:%d | FPos:%d | 1angle:%d, 1trn:%d | 2angle:%d, 2turn:%d\n", pros::millis(), shot_req_num, shot_num, shot_req[0].field_pos, shot_req[0].angle_targ, shot_req[0].turn_dir, shot_req[1].angle_targ, shot_req[1].turn_dir);
+					printf("%d ShotHold | ReqNum:%d ShtNum:%d | FPos:%d | 1angle:%d, 1trn:%d (%f,%f) | 2angle:%d, 2turn:%d (%f,%f)\n", pros::millis(), shot_req_num, shot_req_handled_num, shot_req[0].field_pos, shot_req[0].angle_targ, shot_req[0].turn_dir, shot_req[0].flag_pos.x, shot_req[0].flag_pos.y, shot_req[1].angle_targ, shot_req[1].turn_dir, shot_req[1].flag_pos.x, shot_req[1].flag_pos.y);
 					pun_state = PunState::ShotStart;
-				}
-				else if (shot_num >= shot_req_num ) {
-					shot_req_num = 0;
-					shot_num = 0;
-					shot_req_drive_handled = 0;
 				}
 				break;
 
 			case PunState::ShotStart:
 				auto_set_shot = false;
 				if (puncherLeft.get_position() < (PUN_OFFSET + (pun_shots * PUN_TPR) - PUN_NO_RETURN) && !pun_ball
-				 	&& puncherLeft.get_position() > (PUN_OFFSET + (pun_shots * PUN_TPR) - PUN_BALL_CHK_START[shot_num-1]) ) {
-					printf("%d Shot failure, no ball pos:%f (b/w:%f & %f). BallSen:%d\n", millis(), puncherLeft.get_position(), (PUN_OFFSET + (pun_shots * PUN_TPR) - PUN_BALL_CHK_START[shot_num-1]), (PUN_OFFSET + (pun_shots * PUN_TPR) - PUN_NO_RETURN), ball_sensor.get_value());
+				 	&& puncherLeft.get_position() > (PUN_OFFSET + (pun_shots * PUN_TPR) - PUN_BALL_CHK_START[shot_req_handled_num]) ) {
+					printf("%d Shot failure, no ball pos:%f (b/w:%f & %f). BallSen:%d\n", millis(), puncherLeft.get_position(), (PUN_OFFSET + (pun_shots * PUN_TPR) - PUN_BALL_CHK_START[shot_req_handled_num]), (PUN_OFFSET + (pun_shots * PUN_TPR) - PUN_NO_RETURN), ball_sensor.get_value());
 					pun_move(PUN_OFFSET + (--pun_shots * PUN_TPR) + PUN_HOLD);
 					ctrler.rumble(" .");
 					pun_state = PunState::Load;
@@ -126,13 +112,16 @@ void pun_handle() {
 					printf("%d Shot failure, canceled\n", millis());
 
 					shot_req_num = 0;
-					shot_num = 0;
+					shot_req_handled_num = 0;
 
 					pun_state = PunState::Load;
 				}
 				else if (PUN_OFFSET + (pun_shots * PUN_TPR) - puncherLeft.get_position() < 1) {
 					wait_slip_end = millis() + PUN_WAIT_TIME;
 					printf("%d Shot end\n", millis());
+
+					shot_req[shot_req_handled_num].shot_handled = true;
+
 					pun_state = PunState::ShotWait;
 				}
 				break;

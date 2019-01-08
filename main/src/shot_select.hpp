@@ -3,6 +3,8 @@
 #include "main.h"
 #include "config.hpp"
 #include "util.hpp"
+#include "auto.hpp"
+#include "angle_target.hpp"
 
 enum Dir {
   Dir_Centre,
@@ -35,17 +37,26 @@ struct ShotSelect {
   Dir turn_dir;
   FieldPos field_pos;
   vector flag_pos;
+
+  bool drive_turn_handled;
+  bool shot_handled;
 };
 
 void set_field_pos(FieldPos field_pos);
 void set_angle_targ(bool top);
 void set_turn_dir(Dir turn_dir);
+void set_handled_vars();
+
+void shot_req_make();
 void shot_req_handle();
 
 /* Shot Num */
 extern ShotSelect shot_req[2];
 
 extern int shot_req_num;
+extern int shot_req_handled_num;
+
+
 extern int shot_req_drive_handled;
 void inc_shot_req_num();
 void dec_shot_req_num();

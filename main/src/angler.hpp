@@ -2,7 +2,6 @@
 #include "main.h"
 #include "util.hpp"
 #include "config.hpp"
-#include "puncher.hpp"
 #include "shot_select.hpp"
 
 constexpr double ANGLER_BALL = 13;

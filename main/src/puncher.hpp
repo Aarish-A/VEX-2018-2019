@@ -29,4 +29,4 @@ void pun_cal();
 void pun_handle();
 void pun_fatal_disable();
 
-extern int shot_num; //Either 0, 1 or 2; Used to keep track of completed shot requests
+//extern int shot_num; //Either 0, 1 or 2; Used to keep track of completed shot requests
