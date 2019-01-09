@@ -47,6 +47,8 @@ void set_angle_targ(bool top);
 void set_turn_dir(Dir turn_dir);
 void set_handled_vars();
 
+void set_shot_req(bool top, Dir turn_dir) ;
+
 void shot_req_make();
 void shot_req_handle();
 
@@ -62,3 +64,22 @@ extern pros::Task shot_req_handle_task;
 
 void inc_shot_req_num();
 void dec_shot_req_num();
+
+/* Btn Pressed Timer */
+namespace shot_queue_btn{
+  enum shot_queue_btn{
+    l_t, l_m, r_t, r_m
+  };
+  struct btn_info {
+    pros::controller_digital_e_t btn_name;
+    bool pressed;
+    void set_pressed() {
+      pressed = ctrler.get_digital_new_press(btn_name);
+    }
+  };
+
+  extern btn_info shot_queue_btn[4];
+  extern int btn_queue_timer;
+  extern pros::controller_digital_e_t btn_queue_pressed;
+  constexpr int BTN_PRESS_TIME = 50;
+}
