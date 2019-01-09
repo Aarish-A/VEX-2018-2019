@@ -39,6 +39,14 @@ void setDriveVel(int vel) {
   setDriveVel(vel, vel, vel);
 }
 
+void drive_brake() {
+	setDrive(0);
+	drive_fl.move_relative(0, 100);
+	drive_bl.move_relative(0, 100);
+	drive_fr.move_relative(0, 100);
+	drive_br.move_relative(0, 100);
+}
+
 void move_drive(double dis, int vel, bool stop) {
   int enc_LStart = enc_l.get_value();
   int enc_RStart = enc_r.get_value();
@@ -103,6 +111,7 @@ void turn_vel(AngleTarget *target, double offset)
 	}
   printf("%d Turned to %f | FL: %f, BL: %f, FR: %f, BR %f\n", millis(), RAD_TO_DEG(pos.a), drive_fl.get_position(), drive_bl.get_position(), drive_fr.get_position(), drive_br.get_position());
   setDrive(0);
+	drive_brake();
 }
 
 void turn_vel_side(AngleTarget *target, double kP, double offset)
@@ -128,6 +137,19 @@ void turn_vel_side(AngleTarget *target, double kP, double offset)
 	}
   printf("%d Turned to %f in %d Vel:%f | FL: %f, BL: %f, FR: %f, BR %f\n", millis(), RAD_TO_DEG(pos.a), millis()-t_start, pos.aVel, drive_fl.get_position(), drive_bl.get_position(), drive_fr.get_position(), drive_br.get_position());
   setDrive(0);
+	drive_brake();
+}
+
+void flatten_against_wall() {
+	//pos.reset(0,0,0);
+	setDrive(0,-60, 0);
+	pros::delay(200);
+	do {
+		//printf("%d Reset Back Up(%f, %f, %f) Vel(%f, %f, %f) VeelLoc(%f, %f)\n", pros::millis(), pos.x, pos.y, RAD_TO_DEG(pos.a), pos.xVel, pos.yVel, pos.aVel, pos.velLocal.x, pos.velLocal.y);
+		pros::delay(10);
+	} while (pos.velLocal.y < -1); //aVel < -0.1);
+	setDrive(0, 0, 0);
+	//setDrive(0, -20, 0);
 }
 
 double operator "" _tk(long double val) { return val; }

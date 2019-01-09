@@ -35,6 +35,7 @@ void drive_init() {
 void drive_handle() {
 	static int drive_pow = 0;
 	static int drive_pow_lst = 0;
+	static int drive_brake_timer = 0;
 
 	if (shot_req_num == 0 || shot_req[shot_req_handled_num].drive_turn_handled) {
 		//printf("%d Drive update\n", pros::millis());
@@ -43,10 +44,21 @@ void drive_handle() {
 		int a = set_scaled_dz(ctrler.get_analog(JOY_DRIVE_TURN), DRIVE_TURN_DZ);
 		drive_pow = x+y+a;
 
-		if (drive_pow) drive_set(x, y, a);
+		if (drive_pow) {
+			drive_set(x, y, a);
+			drive_brake_timer = 0;
+			//printf("%d Drive Set %d\n", pros::millis(), drive_pow);
+		}
 		else if (!drive_pow && drive_pow_lst) {
 			drive_set(0);
-			printf("%d Drive Set 0\n", pros::millis());
+			//printf("%d Drive Set 0\n", pros::millis());
+			drive_brake_timer = pros::millis() + DRIVE_BRAKE_TIME;
+		}
+
+		if (!drive_pow && drive_brake_timer && pros::millis() > drive_brake_timer) {
+			//printf("%d Drive Brake \n", pros::millis());
+			drive_brake();
+			drive_brake_timer = 0;
 		}
 
 		drive_pow_lst = drive_pow;

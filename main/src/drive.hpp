@@ -2,6 +2,7 @@
 #include "main.h"
 #include "config.hpp"
 #include "util.hpp"
+#include "auto.hpp"
 #include "shot_select.hpp"
 
 constexpr int DRIVE_TURN_DZ = 30;
@@ -17,3 +18,5 @@ void drive_handle();
 void drive_shot_turn();
 
 static bool handling_shot_req = false;
+
+constexpr int DRIVE_BRAKE_TIME = 300;

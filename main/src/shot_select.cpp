@@ -54,7 +54,7 @@ void set_angle_targ(bool top) {
 
 void set_turn_dir(Dir turn_dir) {
   shot_req[shot_req_num-1].turn_dir = turn_dir;
-	shot_req[shot_req_num-1].flag_pos.y = 120;
+	shot_req[shot_req_num-1].flag_pos.y = 130;
 	if (turn_dir == Dir_Left) {
 		shot_req[shot_req_num-1].flag_pos.x = -48;
 	}
@@ -117,12 +117,16 @@ void shot_req_make() {
 	  }
 		else if (ctrler.get_digital_new_press(BTN_SHOOT_CANCEL)) {
 			shot_cancel_pressed = true;
+			printf("  - %d Cancel Shot Req Handle Task - Before Suspend| State %d | shot_req_num = %d, shot_req_handled_num = %d \n", pros::millis(), shot_req_handle_task.get_state(), shot_req_num, shot_req_handled_num);
 			shot_req_handle_task.suspend();
+			printf("  - %d Cancel Shot Req Handle Task - Suspend| State %d | shot_req_num = %d, shot_req_handled_num = %d \n", pros::millis(), shot_req_handle_task.get_state(), shot_req_num, shot_req_handled_num);
 			setDrive(0);
 
 			shot_req_num = 0;
 			shot_req_handled_num = 0;
 			set_handled_vars();
+			shot_req_handle_task.resume();
+			printf("  - %d Shot Req Handle Task  - Resume | State %d | shot_req_num = %d, shot_req_handled_num = %d \n", pros::millis(), shot_req_handle_task.get_state(), shot_req_num, shot_req_handled_num);
 		}
 	}
 
@@ -142,16 +146,14 @@ void shot_req_handle() {
 	printf("%d Start Shot Req Handle Task \n",  pros::millis());
 	while (true) {
 		if (shot_req_num > 0) {
+			printf("%d Start handling first shot request \n", pros::millis());
 			set_handled_vars(); //Make sure all handled vars are reset to false
 			shot_req_handled_num = 0; //Make sure we start handling shot requests from index 0
 
 			if (shot_req[shot_req_handled_num].field_pos == FieldPos_Back) {
-				setDrive(-50);
-				pros::delay(100);
-				while (pos.velLocal.y < -1) {
-					printf("%d Shot Back Up(%f, %f, %f) Vel(%f, %f) VeelLoc(%f, %f)\n", pros::millis(), pos.x, pos.y, RAD_TO_DEG(pos.a), pos.xVel, pos.yVel, pos.velLocal.x, pos.velLocal.y);
-					pros::delay(10);
-				}
+				pos.reset(0,0,0);
+				flatten_against_wall();
+				setDrive(0, -20, 0);
 			}
 
 			pos.reset(0, 0, 0);

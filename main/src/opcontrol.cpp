@@ -25,6 +25,7 @@ using namespace pros;
 void opcontrol() {
 	uint32_t lstTime = 0;
 	printf("%d Start Opcontrol \n", pros::millis());
+	drive_set(0);
 
 	while (true) {
 		shot_req_make();
