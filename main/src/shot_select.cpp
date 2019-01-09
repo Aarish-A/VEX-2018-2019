@@ -54,7 +54,7 @@ void set_angle_targ(bool top) {
 
 void set_turn_dir(Dir turn_dir) {
   shot_req[shot_req_num-1].turn_dir = turn_dir;
-	shot_req[shot_req_num-1].flag_pos.y = 130;
+	shot_req[shot_req_num-1].flag_pos.y = 127;
 	if (turn_dir == Dir_Left) {
 		shot_req[shot_req_num-1].flag_pos.x = -48;
 	}
@@ -83,7 +83,27 @@ void shot_req_make() {
 		//So not all requests have been made, or the second request hasn't been executed yet -> Prevents from overwriting second request during execution
 	if (shot_req_num < 2 || shot_req_handled_num < 1)
 	{
-	  if (ctrler.get_digital_new_press(BTN_SHOT_L_T))
+		bool btn_l_t = ctrler.get_digital_new_press(BTN_SHOT_L_T);
+		bool btn_r_t = ctrler.get_digital_new_press(BTN_SHOT_R_T);
+		bool btn_l_m = ctrler.get_digital_new_press(BTN_SHOT_L_M);
+		bool btn_r_m = ctrler.get_digital_new_press(BTN_SHOT_R_M);
+		if (btn_l_t && btn_l_m)
+	  {
+	    inc_shot_req_num();
+	    set_angle_targ(true);
+	    set_turn_dir(Dir_Centre);
+			set_handled_vars();
+			printf("%d Shot Req | RNum:%d | FPos:%d | 1angle:%d, 1trn:%d (%f, %f) | 2angle:%d, 2turn:%d (%f, %f)\n", pros::millis(), shot_req_num, shot_req[0].field_pos, shot_req[0].angle_targ, shot_req[0].turn_dir, shot_req[0].flag_pos.x, shot_req[0].flag_pos.y, shot_req[1].angle_targ, shot_req[1].turn_dir, shot_req[1].flag_pos.x, shot_req[1].flag_pos.y);
+	  }
+		else if (btn_l_m && btn_r_m)
+	  {
+	    inc_shot_req_num();
+	    set_angle_targ(false);
+	    set_turn_dir(Dir_Centre);
+			set_handled_vars();
+			printf("%d Shot Req | RNum:%d | FPos:%d | 1angle:%d, 1trn:%d (%f, %f) | 2angle:%d, 2turn:%d (%f, %f)\n", pros::millis(), shot_req_num, shot_req[0].field_pos, shot_req[0].angle_targ, shot_req[0].turn_dir, shot_req[0].flag_pos.x, shot_req[0].flag_pos.y, shot_req[1].angle_targ, shot_req[1].turn_dir, shot_req[1].flag_pos.x, shot_req[1].flag_pos.y);
+	  }
+	  else if (btn_l_t)
 	  {
 	    inc_shot_req_num();
 	    set_angle_targ(true);
@@ -91,7 +111,7 @@ void shot_req_make() {
 			set_handled_vars();
 			printf("%d Shot Req | RNum:%d | FPos:%d | 1angle:%d, 1trn:%d (%f, %f) | 2angle:%d, 2turn:%d (%f, %f)\n", pros::millis(), shot_req_num, shot_req[0].field_pos, shot_req[0].angle_targ, shot_req[0].turn_dir, shot_req[0].flag_pos.x, shot_req[0].flag_pos.y, shot_req[1].angle_targ, shot_req[1].turn_dir, shot_req[1].flag_pos.x, shot_req[1].flag_pos.y);
 	  }
-	  else if (ctrler.get_digital_new_press(BTN_SHOT_L_M))
+	  else if (btn_l_m)
 	  {
 	    inc_shot_req_num();
 	    set_angle_targ(false);
@@ -99,7 +119,7 @@ void shot_req_make() {
 			set_handled_vars();
 			printf("%d Shot Req | RNum:%d | FPos:%d | 1angle:%d, 1trn:%d (%f, %f) | 2angle:%d, 2turn:%d (%f, %f)\n", pros::millis(), shot_req_num, shot_req[0].field_pos, shot_req[0].angle_targ, shot_req[0].turn_dir, shot_req[0].flag_pos.x, shot_req[0].flag_pos.y, shot_req[1].angle_targ, shot_req[1].turn_dir, shot_req[1].flag_pos.x, shot_req[1].flag_pos.y);
 	  }
-	  else if (ctrler.get_digital_new_press(BTN_SHOT_R_T))
+	  else if (btn_r_t)
 	  {
 	    inc_shot_req_num();
 	    set_angle_targ(true);
@@ -107,7 +127,7 @@ void shot_req_make() {
 			set_handled_vars();
 			printf("%d Shot Req | RNum:%d | FPos:%d | 1angle:%d, 1trn:%d (%f, %f) | 2angle:%d, 2turn:%d (%f, %f)\n", pros::millis(), shot_req_num, shot_req[0].field_pos, shot_req[0].angle_targ, shot_req[0].turn_dir, shot_req[0].flag_pos.x, shot_req[0].flag_pos.y, shot_req[1].angle_targ, shot_req[1].turn_dir, shot_req[1].flag_pos.x, shot_req[1].flag_pos.y);
 	  }
-	  else if (ctrler.get_digital_new_press(BTN_SHOT_R_M))
+	  else if (btn_r_m)
 	  {
 	    inc_shot_req_num();
 	    set_angle_targ(false);
@@ -115,7 +135,8 @@ void shot_req_make() {
 			set_handled_vars();
 			printf("%d Shot Req | RNum:%d | FPos:%d | 1angle:%d, 1trn:%d (%f, %f) | 2angle:%d, 2turn:%d (%f, %f)\n", pros::millis(), shot_req_num, shot_req[0].field_pos, shot_req[0].angle_targ, shot_req[0].turn_dir, shot_req[0].flag_pos.x, shot_req[0].flag_pos.y, shot_req[1].angle_targ, shot_req[1].turn_dir, shot_req[1].flag_pos.x, shot_req[1].flag_pos.y);
 	  }
-		else if (ctrler.get_digital_new_press(BTN_SHOOT_CANCEL)) {
+
+		if (ctrler.get_digital_new_press(BTN_SHOOT_CANCEL)) {
 			shot_cancel_pressed = true;
 			printf("  - %d Cancel Shot Req Handle Task - Before Suspend| State %d | shot_req_num = %d, shot_req_handled_num = %d \n", pros::millis(), shot_req_handle_task.get_state(), shot_req_num, shot_req_handled_num);
 			shot_req_handle_task.suspend();
@@ -153,7 +174,7 @@ void shot_req_handle() {
 			if (shot_req[shot_req_handled_num].field_pos == FieldPos_Back) {
 				pos.reset(0,0,0);
 				flatten_against_wall();
-				setDrive(0, -20, 0);
+				setDrive(0, -15, 0);
 			}
 
 			pos.reset(0, 0, 0);

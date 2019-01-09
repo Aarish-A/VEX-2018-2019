@@ -16,7 +16,12 @@ constexpr int PUN_BALL_THRESH = 2700;
 constexpr uint32_t PUN_BALL_OFF_TIME = 50;
 constexpr int PUN_HOLD_PWR = 12;
 
+constexpr int PUN_LOAD_WAIT_TIME = 150;
+
 extern PunState pun_state;
+extern PunState pun_state_last;
+extern int pun_state_change_time;
+
 extern int pun_shots;
 extern bool pun_ball;
 
@@ -28,5 +33,7 @@ void pun_move(double position, int32_t velocity = 200);
 void pun_cal();
 void pun_handle();
 void pun_fatal_disable();
+
+void pun_state_change(PunState state);
 
 //extern int shot_num; //Either 0, 1 or 2; Used to keep track of completed shot requests

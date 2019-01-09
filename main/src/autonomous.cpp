@@ -26,23 +26,27 @@ void auto_update() {
 
 void autonomous() {
   pros::Task auto_update_task ((pros::task_fn_t)auto_update, (void*)NULL, TASK_PRIORITY_DEFAULT, TASK_STACK_DEPTH_DEFAULT, "Auto_Update_Task");
-  set_handled_vars(); //Make sure all handled vars are reset to false
-  shot_req_handled_num = 0; //Make sure we start handling shot requests from index 0
 
-
-    //setDrive(0, -60, 0);
-    pos.reset(0,0,0);
-    setDrive(0,-60, 0);
-    pros::delay(200);
-    do {
-      printf("%d Reset Back Up(%f, %f, %f) Vel(%f, %f, %f) VeelLoc(%f, %f)\n", pros::millis(), pos.x, pos.y, RAD_TO_DEG(pos.a), pos.xVel, pos.yVel, pos.aVel, pos.velLocal.x, pos.velLocal.y);
-      pros::delay(10);
-    } while (pos.velLocal.y < -1); //aVel < -0.1);
-    setDrive(0, -20, 0);
-
+  pos.reset(0,0,0);
+  flatten_against_wall();
+  setDrive(0, -15, 0);
 
   pos.reset(0, 0, 0);
+
+  //Drive Handle 1
+  printf("%d S1 Turn to face %d, %d \n", pros::millis(), 48, 128);
+  turn_vel_side(new PointAngleTarget({48, 127}), (200/50_deg));
+
+  pros::delay(1000);
+  printf( " >> %d (%f, %f, %f) \n", pros::millis(), pos.x, pos.y, RAD_TO_DEG(pos.a) );
+
+  printf("%d S1 Turn to face %d, %d \n", pros::millis(), -48, 127);
+  turn_vel_side(new PointAngleTarget({-48, 127}), (200/50_deg));
+
+  pros::delay(1000);
+  printf( " >> %d (%f, %f, %f) \n", pros::millis(), pos.x, pos.y, RAD_TO_DEG(pos.a) );
   /*
+
   drive_set(127);
   while (pos.y<1.5) pros::delay(10);
   */
