@@ -94,6 +94,20 @@ void shot_req_make() {
     else if (ctrler.get_digital_new_press(BTN_FIELD_PF)) set_field_pos(FieldPos_PF);
     else if (ctrler.get_digital_new_press(BTN_FIELD_BACK)) set_field_pos(FieldPos_Back);
   }
+	else if (ctrler.get_digital_new_press(BTN_SHOOT_CANCEL)) {
+		shot_cancel_pressed = true;
+		shot_queue_btn::btn_queue_timer = 0;
+		printf("  >>> %d Cancel Shot Req Handle Task - Before Suspend| State %d | shot_req_num = %d, shot_req_handled_num = %d \n", pros::millis(), shot_req_handle_task.get_state(), shot_req_num, shot_req_handled_num);
+		shot_req_handle_task.suspend();
+		printf("  >>> %d Cancel Shot Req Handle Task - Suspended| State %d | shot_req_num = %d, shot_req_handled_num = %d \n", pros::millis(), shot_req_handle_task.get_state(), shot_req_num, shot_req_handled_num);
+		setDrive(0);
+
+		shot_req_num = 0;
+		shot_req_handled_num = 0;
+		set_handled_vars();
+		shot_req_handle_task.resume();
+		printf("  >>> %d Shot Req Handle Task  - Resume | State %d | shot_req_num = %d, shot_req_handled_num = %d \n", pros::millis(), shot_req_handle_task.get_state(), shot_req_num, shot_req_handled_num);
+	}
 
   //Set other shot constants
 		//Every button press after the second will overwrite the second.
@@ -105,6 +119,7 @@ void shot_req_make() {
 			if (!shot_queue_btn::btn_queue_timer && shot_queue_btn::shot_queue_btn[i].pressed) {
 				shot_queue_btn::btn_queue_timer = pros::millis() + shot_queue_btn::BTN_PRESS_TIME;
 				shot_queue_btn::btn_queue_pressed = shot_queue_btn::shot_queue_btn[i].btn_name;
+				printf("%d New Btn Pressed. Timer: %d, Btn_Pressed: %d\n", pros::millis(), shot_queue_btn::btn_queue_timer, shot_queue_btn::btn_queue_pressed);
 			}
 		}
 		if (pros::millis() < shot_queue_btn::btn_queue_timer) {
@@ -131,20 +146,6 @@ void shot_req_make() {
 				set_shot_req(false, Dir_Right);
 			}
 		}
-	}
-	if (ctrler.get_digital_new_press(BTN_SHOOT_CANCEL)) {
-		shot_cancel_pressed = true;
-		shot_queue_btn::btn_queue_timer = 0;
-		printf("  >>> %d Cancel Shot Req Handle Task - Before Suspend| State %d | shot_req_num = %d, shot_req_handled_num = %d \n", pros::millis(), shot_req_handle_task.get_state(), shot_req_num, shot_req_handled_num);
-		shot_req_handle_task.suspend();
-		printf("  >>> %d Cancel Shot Req Handle Task - Suspended| State %d | shot_req_num = %d, shot_req_handled_num = %d \n", pros::millis(), shot_req_handle_task.get_state(), shot_req_num, shot_req_handled_num);
-		setDrive(0);
-
-		shot_req_num = 0;
-		shot_req_handled_num = 0;
-		set_handled_vars();
-		shot_req_handle_task.resume();
-		printf("  >>> %d Shot Req Handle Task  - Resume | State %d | shot_req_num = %d, shot_req_handled_num = %d \n", pros::millis(), shot_req_handle_task.get_state(), shot_req_num, shot_req_handled_num);
 	}
 }
 
@@ -186,6 +187,8 @@ void shot_req_handle() {
 				//Shooter Angle Handle 2
 				while (!shot_req[shot_req_handled_num].shot_handled) pros::delay(10);
 				shot_req_handled_num++;
+
+				shot_queue_btn::btn_queue_timer = 0; //Make sure that timer is reset after a double shot request is completed (the normal polling routine that handles this cannot run during this time)
 			}
 
 			shot_req_num = 0;
