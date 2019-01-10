@@ -6,6 +6,13 @@
 #include "auto.hpp"
 #include "angle_target.hpp"
 
+constexpr double ANGLER_BALL = 13;
+constexpr int ANGLER_DZ = 30;
+
+constexpr double ANGLER_PU_POS = 85;//ANGLER_BALL * 7;
+
+constexpr double ANGLER_CAP_PU_POS = 215;
+
 enum Dir {
   Dir_Centre,
   Dir_Left,
@@ -41,6 +48,8 @@ struct ShotSelect {
   bool drive_turn_handled;
   bool shot_handled;
 };
+
+extern bool angler_pu_flag;
 
 void set_field_pos(FieldPos field_pos);
 void set_angle_targ(bool top);

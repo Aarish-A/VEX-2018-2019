@@ -6,6 +6,11 @@ IntakeState intake_state = IntakeState::Off;
 
 void intake_init() { }
 
+void intake_state_set(int power, IntakeState state) {
+  intake_set(power);
+  intake_state = state;
+}
+
 void intake_set(int power) {
   intake.move(power);
 }

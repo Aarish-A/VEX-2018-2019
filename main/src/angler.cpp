@@ -43,20 +43,41 @@ void angler_handle() {
 
 	if (angler.get_position() < 0 && anglerPow < 0) anglerPow = 0;
 	else if (angler.get_position() > 320 && anglerPow > 0) anglerPow = 0;
-
+/*
 	if (shot_req_num > 0) { //(shot_req[shot_req_handled_num].drive_turn_handled) {
 		angler.move_absolute(shot_req[shot_req_handled_num].angle_targ, 200);
 	}
-	else {
-		if (ctrler.get_digital_new_press(BTN_ANGLER_PU)) {
-		 	angler_move(ANGLER_PU_POS, 100);
-		 	printf("%d Angler PU. Pos:%f TPos:%f\n", pros::millis(), angler.get_position(), angler.get_target_position());
-	 	}
-		else if (ctrler.get_digital_new_press(BTN_ANGLER_CAP_PU)) {
-		 	angler_move(ANGLER_CAP_PU_POS, 100);
-		 	printf("%d Angler Cap PU. Pos:%f TPos:%f\n", pros::millis(), angler.get_position(), angler.get_target_position());
-	 	}
-		else if (anglerPow) {
+	else
+	*/
+	if (shot_req_num == 0) {
+		if (shot_req[0].field_pos == FieldPos_Back)
+		{
+			if (ctrler.get_digital_new_press(BTN_ANGLER_PU)) {
+			 	angler_move(ANGLER_PU_POS, 100);
+				intake_state_set(127, IntakeState::Forw);
+			 	printf("%d Angler PU. Pos:%f TPos:%f\n", pros::millis(), angler.get_position(), angler.get_target_position());
+		 	}
+			else if (ctrler.get_digital_new_press(BTN_ANGLER_CAP_PU)) {
+			 	angler_move(ANGLER_CAP_PU_POS, 100);
+				intake_state_set(127, IntakeState::Forw);
+			 	printf("%d Angler Cap PU. Pos:%f TPos:%f\n", pros::millis(), angler.get_position(), angler.get_target_position());
+		 	}
+		}
+		else
+		{
+			if (ctrler.get_digital_new_press(BTN_SHOT_L_M)) {
+				angler_move(ANGLER_PU_POS, 100);
+				intake_state_set(127, IntakeState::Forw);
+				printf("%d Angler PU. Pos:%f TPos:%f\n", pros::millis(), angler.get_position(), angler.get_target_position());
+			}
+			else if (ctrler.get_digital_new_press(BTN_SHOT_L_T)) {
+				angler_move(ANGLER_CAP_PU_POS, 100);
+				intake_state_set(127, IntakeState::Forw);
+				printf("%d Angler Cap PU. Pos:%f TPos:%f\n", pros::millis(), angler.get_position(), angler.get_target_position());
+			}
+		}
+
+		if (anglerPow) {
 			angler_set(anglerPow);
 			printf("%d Angler Set %d. Pos:%f\n", pros::millis(), anglerPow, angler.get_position());
 		}
@@ -66,5 +87,6 @@ void angler_handle() {
 			printf("%d Angler Set 0. Pos:%f\n", pros::millis(), angler.get_position());
 		}
 	}
+
 	anglerPowLst = anglerPow;
 }

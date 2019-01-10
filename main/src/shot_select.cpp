@@ -1,12 +1,13 @@
 #include "shot_select.hpp"
 
 /* Shot Positions */
-ShotPos front_SP (FieldPos_Front, 90, 70);
+ShotPos front_SP (FieldPos_Front, 90, 10);
 ShotPos pf_SP (FieldPos_PF, 90, 70);
 ShotPos pf_back_SP (FieldPos_PF_Back, 90, 70);
-ShotPos back_SP (FieldPos_Back, 90, 70);
+ShotPos back_SP (FieldPos_Back, 90, 10);
 
 ShotSelect shot_req[2];
+bool angler_pu_flag = false;
 
 int shot_req_num = 0;
 int shot_req_handled_num = 0;
@@ -61,7 +62,7 @@ void set_angle_targ(bool top) {
 
 void set_turn_dir(Dir turn_dir) {
   shot_req[shot_req_num-1].turn_dir = turn_dir;
-	shot_req[shot_req_num-1].flag_pos.y = 127;
+	shot_req[shot_req_num-1].flag_pos.y = 125.5;
 	if (turn_dir == Dir_Left) {
 		shot_req[shot_req_num-1].flag_pos.x = -48;
 	}
@@ -92,6 +93,7 @@ void shot_req_make() {
   {
     if (ctrler.get_digital_new_press(BTN_FIELD_FRONT)) set_field_pos(FieldPos_Front);
     else if (ctrler.get_digital_new_press(BTN_FIELD_PF)) set_field_pos(FieldPos_PF);
+		else if (ctrler.get_digital_new_press(BTN_SHOOT_CANCEL)) set_field_pos(FieldPos_PF_Back);
     else if (ctrler.get_digital_new_press(BTN_FIELD_BACK)) set_field_pos(FieldPos_Back);
   }
 	else if (ctrler.get_digital_new_press(BTN_SHOOT_CANCEL)) {
@@ -114,7 +116,11 @@ void shot_req_make() {
 		//So not all requests have been made, or the second request hasn't been executed yet -> Prevents from overwriting second request during execution
 	if (shot_req_num < 2 || shot_req_handled_num < 1)
 	{
-		for (int i = 0; i < 4; i++) shot_queue_btn::shot_queue_btn[i].set_pressed();
+		for (int i = 0; i < 4; i++) {
+				if (shot_req[0].field_pos == FieldPos_Back || shot_queue_btn::shot_queue_btn[i].btn_name == BTN_SHOT_R_T || shot_queue_btn::shot_queue_btn[i].btn_name == BTN_SHOT_R_M)
+			 			shot_queue_btn::shot_queue_btn[i].set_pressed();
+		 }
+
 		for (int i = 0; i < 4; i++) {
 			if (!shot_queue_btn::btn_queue_timer && shot_queue_btn::shot_queue_btn[i].pressed) {
 				shot_queue_btn::btn_queue_timer = pros::millis() + shot_queue_btn::BTN_PRESS_TIME;
@@ -164,6 +170,8 @@ void shot_req_handle() {
 			}
 
 			pos.reset(0, 0, 0);
+			//Angle handle 1
+			angler.move_absolute(shot_req[shot_req_handled_num].angle_targ, 200);
 
 			//Drive Handle 1
 			if (shot_req[shot_req_handled_num].field_pos == FieldPos_Back) {
@@ -172,11 +180,14 @@ void shot_req_handle() {
 			}
 			shot_req[shot_req_handled_num].drive_turn_handled = true;
 
-			//Shooter Angle Handle 1
+			//Shooter Handle 1
 			while (!shot_req[shot_req_handled_num].shot_handled) pros::delay(10);
 			shot_req_handled_num++;
 
 			if (shot_req_num > 1) {
+				//Angle handle 1
+				angler.move_absolute(shot_req[shot_req_handled_num].angle_targ, 200);
+
 				//Drive Handle 2
 				if (shot_req[shot_req_handled_num].field_pos == FieldPos_Back) {
 					printf("%d S2 Turn to face %f, %f \n", pros::millis(), shot_req[shot_req_handled_num].flag_pos.x, shot_req[shot_req_handled_num].flag_pos.y);
@@ -184,11 +195,13 @@ void shot_req_handle() {
 				}
 				shot_req[shot_req_handled_num].drive_turn_handled = true;
 
-				//Shooter Angle Handle 2
+				//Shooter Handle 2
 				while (!shot_req[shot_req_handled_num].shot_handled) pros::delay(10);
 				shot_req_handled_num++;
 
 				shot_queue_btn::btn_queue_timer = 0; //Make sure that timer is reset after a double shot request is completed (the normal polling routine that handles this cannot run during this time)
+
+				angler.move_absolute(ANGLER_PU_POS, 200);
 			}
 
 			shot_req_num = 0;
