@@ -134,6 +134,7 @@ void shot_req_make() {
 	}
 	if (ctrler.get_digital_new_press(BTN_SHOOT_CANCEL)) {
 		shot_cancel_pressed = true;
+		shot_queue_btn::btn_queue_timer = 0;
 		printf("  >>> %d Cancel Shot Req Handle Task - Before Suspend| State %d | shot_req_num = %d, shot_req_handled_num = %d \n", pros::millis(), shot_req_handle_task.get_state(), shot_req_num, shot_req_handled_num);
 		shot_req_handle_task.suspend();
 		printf("  >>> %d Cancel Shot Req Handle Task - Suspended| State %d | shot_req_num = %d, shot_req_handled_num = %d \n", pros::millis(), shot_req_handle_task.get_state(), shot_req_num, shot_req_handled_num);
@@ -143,7 +144,7 @@ void shot_req_make() {
 		shot_req_handled_num = 0;
 		set_handled_vars();
 		shot_req_handle_task.resume();
-		printf("  - %d Shot Req Handle Task  - Resume | State %d | shot_req_num = %d, shot_req_handled_num = %d \n", pros::millis(), shot_req_handle_task.get_state(), shot_req_num, shot_req_handled_num);
+		printf("  >>> %d Shot Req Handle Task  - Resume | State %d | shot_req_num = %d, shot_req_handled_num = %d \n", pros::millis(), shot_req_handle_task.get_state(), shot_req_num, shot_req_handled_num);
 	}
 }
 
