@@ -84,12 +84,12 @@ void pun_handle() {
 				//printf(" >> %d PunLoad %f \n", millis(), puncherLeft.get_position());
 				if (fabs(puncherLeft.get_position() - (PUN_OFFSET + (pun_shots * PUN_TPR) + PUN_HOLD)) <= (4 * PUN_RATIO)) {
 					pun_set(PUN_HOLD_PWR);
+					printf("%d PunLoad -> PunHold. PunPos: %f \n", pros::millis(), puncherLeft.get_position());
 					pun_state_change(PunState::Hold);
 				}
 				if ( auto_set_shot ) {
 					pun_move(PUN_OFFSET + (++pun_shots * PUN_TPR));
-					printf("%d Shot start\n", millis());
-					printf("%d ShotLoad | Shtr Pos:%f t:%f | ReqNum:%d ShtNum:%d | FPos:%d | 1angle:%d, 1trn:%d (%f,%f) | 2angle:%d, 2turn:%d (%f,%f)\n", pros::millis(), puncherLeft.get_position(), puncherLeft.get_target_position(), shot_req_num, shot_req_handled_num, shot_req[0].field_pos, shot_req[0].angle_targ, shot_req[0].turn_dir, shot_req[0].flag_pos.x, shot_req[0].flag_pos.y, shot_req[1].angle_targ, shot_req[1].turn_dir, shot_req[1].flag_pos.x, shot_req[1].flag_pos.y);
+					printf("%d Shot start (from ShotLoad) | Shtr Pos:%f t:%f | ReqNum:%d ShtNum:%d | FPos:%d | 1angle:%d, 1trn:%d (%f,%f) | 2angle:%d, 2turn:%d (%f,%f)\n", pros::millis(), puncherLeft.get_position(), puncherLeft.get_target_position(), shot_req_num, shot_req_handled_num, shot_req[0].field_pos, shot_req[0].angle_targ, shot_req[0].turn_dir, shot_req[0].flag_pos.x, shot_req[0].flag_pos.y, shot_req[1].angle_targ, shot_req[1].turn_dir, shot_req[1].flag_pos.x, shot_req[1].flag_pos.y);
 					pun_state_change(PunState::ShotStart);
 				}
 				break;
@@ -98,12 +98,13 @@ void pun_handle() {
 				//printf(" >> %d PunHold %f \n", millis(), puncherLeft.get_position());
 				if (fabs(puncherLeft.get_position() - (PUN_OFFSET + (pun_shots * PUN_TPR) + PUN_HOLD)) > (6 * PUN_RATIO)) {
 					pun_move(PUN_OFFSET + (pun_shots * PUN_TPR) + PUN_HOLD);
+					printf("%d PunLoad -> PunHold. PunPos: %f \n", pros::millis(), puncherLeft.get_position());
 					pun_state_change(PunState::Load);
 				}
 				if (( shot_req_num > 0 && shot_req[shot_req_handled_num].drive_turn_handled )| auto_set_shot) {
 					pun_move(PUN_OFFSET + (++pun_shots * PUN_TPR));
-					printf("%d Shot start\n", millis());
-					printf("%d ShotHold | Shtr Pos:%f t:%f | ReqNum:%d ShtNum:%d | FPos:%d | 1angle:%d, 1trn:%d (%f,%f) | 2angle:%d, 2turn:%d (%f,%f)\n", pros::millis(), puncherLeft.get_position(), puncherLeft.get_target_position(), shot_req_num, shot_req_handled_num, shot_req[0].field_pos, shot_req[0].angle_targ, shot_req[0].turn_dir, shot_req[0].flag_pos.x, shot_req[0].flag_pos.y, shot_req[1].angle_targ, shot_req[1].turn_dir, shot_req[1].flag_pos.x, shot_req[1].flag_pos.y);
+					printf("%d Shot start (from ShotHold) | Shtr Pos:%f t:%f | ReqNum:%d ShtNum:%d | FPos:%d | 1angle:%d, 1trn:%d (%f,%f) | 2angle:%d, 2turn:%d (%f,%f)\n", pros::millis(), puncherLeft.get_position(), puncherLeft.get_target_position(), shot_req_num, shot_req_handled_num, shot_req[0].field_pos, shot_req[0].angle_targ, shot_req[0].turn_dir, shot_req[0].flag_pos.x, shot_req[0].flag_pos.y, shot_req[1].angle_targ, shot_req[1].turn_dir, shot_req[1].flag_pos.x, shot_req[1].flag_pos.y);
+
 					pun_state_change(PunState::ShotStart);
 				}
 				break;
@@ -123,7 +124,7 @@ void pun_handle() {
 				}
 				else if (shot_cancel_pressed && puncherLeft.get_position() < PUN_OFFSET + (pun_shots * PUN_TPR) - PUN_NO_RETURN) {
 					pun_move(PUN_OFFSET + (--pun_shots * PUN_TPR) + PUN_HOLD);
-					printf("%d Shot failure, canceled\n", millis());
+					printf("%d Shot failure, canceled. Enter PunLoad\n", millis());
 
 					shot_req[shot_req_handled_num].shot_handled = true;
 					shot_req_handled_num = 0;
