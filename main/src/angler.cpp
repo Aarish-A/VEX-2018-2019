@@ -35,6 +35,8 @@ void angler_cal() {
 	*/
 }
 
+btn_dp_detector angler_back_dp(pros::E_CONTROLLER_DIGITAL_L1, pros::E_CONTROLLER_DIGITAL_L2);
+
 void angler_handle() {
 	static int anglerPow = 0;
 	static int anglerPowLst = 0;
@@ -52,6 +54,7 @@ void angler_handle() {
 	if (shot_req_num == 0) {
 		if (shot_req[0].field_pos == FieldPos_Back)
 		{
+			angler_back_dp.reset_timer();
 			if (btn[BTN_ANGLER_PU-6].pressed) {
 			 	angler_move(ANGLER_PU_POS, 100);
 				intake_state_set(127, IntakeState::Forw);
@@ -65,15 +68,31 @@ void angler_handle() {
 		}
 		else
 		{
-			if (btn[BTN_SHOT_L_M-6].pressed) {
-				angler_move(ANGLER_PU_POS, 100);
-				intake_state_set(127, IntakeState::Forw);
-				printf("%d Angler PU. Pos:%f TPos:%f\n", pros::millis(), angler.get_position(), angler.get_target_position());
+			angler_back_dp.set_first_pressed();
+			if (pros::millis() < angler_back_dp.get_timer())
+			{
+				if ( (angler_back_dp.get_first_pressed() == BTN_SHOT_L_T && btn[BTN_SHOT_L_M-6].pressed) || (angler_back_dp.get_first_pressed() == BTN_SHOT_L_M && btn[BTN_SHOT_L_T-6].pressed) )
+				{
+					angler_move(ANGLER_CAP_PU_POS, 100);
+					intake_state_set(-80, IntakeState::Back);
+					printf("%d Angler Cap Flip. Pos:%f TPos:%f\n", pros::millis(), angler.get_position(), angler.get_target_position());
+					angler_back_dp.reset_timer();
+				}
 			}
-			else if (btn[BTN_SHOT_L_T-6].pressed) {
-				angler_move(ANGLER_CAP_PU_POS, 100);
-				intake_state_set(127, IntakeState::Forw);
-				printf("%d Angler Cap PU. Pos:%f TPos:%f\n", pros::millis(), angler.get_position(), angler.get_target_position());
+			else if (angler_back_dp.get_timer())
+			{
+				if (btn[BTN_SHOT_L_M-6].pressed) {
+					angler_move(ANGLER_PU_POS, 100);
+					intake_state_set(127, IntakeState::Forw);
+					printf("%d Angler PU. Pos:%f TPos:%f\n", pros::millis(), angler.get_position(), angler.get_target_position());
+					angler_back_dp.reset_timer();
+				}
+				else if (btn[BTN_SHOT_L_T-6].pressed) {
+					angler_move(ANGLER_CAP_PU_POS, 100);
+					intake_state_set(127, IntakeState::Forw);
+					printf("%d Angler Cap PU. Pos:%f TPos:%f\n", pros::millis(), angler.get_position(), angler.get_target_position());
+					angler_back_dp.reset_timer();
+				}
 			}
 		}
 

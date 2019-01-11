@@ -31,7 +31,7 @@ void opcontrol() {
 	while (true) {
 		for (int i = 0; i < 12; i++) {
 			btn[i].check_pressed();
-			if (btn[i].pressed)printf("Pressed: %d \n", btn[i].btn_name);
+			//if (btn[i].pressed)printf("Pressed: %d \n", btn[i].btn_name);
 		}
 
 

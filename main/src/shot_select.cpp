@@ -1,7 +1,7 @@
 #include "shot_select.hpp"
 
 /* Shot Positions */
-ShotPos front_SP (FieldPos_Front, 90, 10);
+ShotPos front_SP (FieldPos_Front, 90, 0);
 ShotPos pf_SP (FieldPos_PF, 90, 70);
 ShotPos pf_back_SP (FieldPos_PF_Back, 90, 70);
 ShotPos back_SP (FieldPos_Back, 90, 10);
@@ -111,13 +111,17 @@ void shot_req_make() {
 	if (shot_req_num < 2 || shot_req_handled_num < 1)
 	{
 		shot_queue_dp.set_first_pressed();
+		bool L_T = (shot_req[0].field_pos == FieldPos_Back)? btn[BTN_SHOT_L_T-6].pressed : 0;
+		bool L_M = (shot_req[0].field_pos == FieldPos_Back)? btn[BTN_SHOT_L_M-6].pressed : 0;
+		bool R_T = btn[BTN_SHOT_R_T-6].pressed;
+		bool R_M = btn[BTN_SHOT_R_M-6].pressed;
 		if (pros::millis() < shot_queue_dp.get_timer()) {
-			if ( (shot_queue_dp.get_first_pressed() == BTN_SHOT_R_T && btn[BTN_SHOT_L_T-6].pressed) ||
-		       (shot_queue_dp.get_first_pressed() == BTN_SHOT_L_T && btn[BTN_SHOT_R_T-6].pressed) ) {
+			if ( (shot_queue_dp.get_first_pressed() == BTN_SHOT_R_T && L_T) ||
+		       (shot_queue_dp.get_first_pressed() == BTN_SHOT_L_T && R_T) ) {
 				set_shot_req(true, Dir_Centre);
 			}
-			else if ( (shot_queue_dp.get_first_pressed() == BTN_SHOT_R_M && btn[BTN_SHOT_L_M-6].pressed) ||
-		       (shot_queue_dp.get_first_pressed() == BTN_SHOT_L_M && btn[BTN_SHOT_R_M-6].pressed) ) {
+			else if ( (shot_queue_dp.get_first_pressed() == BTN_SHOT_R_M && L_M) ||
+		       (shot_queue_dp.get_first_pressed() == BTN_SHOT_L_M && R_M) ) {
 				set_shot_req(false, Dir_Centre);
 			}
 		}
@@ -186,6 +190,7 @@ void shot_req_handle() {
 
 				angler.move_absolute(ANGLER_PU_POS, 200);
 			}
+			if (angler.get_position() < 10) angler.move_absolute(ANGLER_PU_POS, 200);
 
 			shot_req_num = 0;
 			shot_req_handled_num = 0;

@@ -58,6 +58,7 @@ void drive_handle() {
 		if (!drive_pow && drive_brake_timer && pros::millis() > drive_brake_timer) {
 			//printf("%d Drive Brake \n", pros::millis());
 			drive_brake();
+			drive_set(0); //TODO: DELTE BEFORE COMP
 			drive_brake_timer = 0;
 		}
 

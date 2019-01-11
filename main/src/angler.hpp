@@ -10,3 +10,5 @@ void angler_set(int power);
 void angler_move(double position, int32_t velocity = 200);
 void angler_cal();
 void angler_handle();
+
+extern btn_dp_detector angler_back_dp; 
