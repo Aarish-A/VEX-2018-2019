@@ -85,12 +85,12 @@ void shot_req_make() {
   //Set Field Pos
   if (shot_req_num == 0)
   {
-    if (ctrler.get_digital_new_press(BTN_FIELD_FRONT)) set_field_pos(FieldPos_Front);
-    else if (ctrler.get_digital_new_press(BTN_FIELD_PF)) set_field_pos(FieldPos_PF);
-		else if (ctrler.get_digital_new_press(BTN_SHOOT_CANCEL)) set_field_pos(FieldPos_PF_Back);
-    else if (ctrler.get_digital_new_press(BTN_FIELD_BACK)) set_field_pos(FieldPos_Back);
+    if (btn[BTN_FIELD_FRONT-6].pressed) set_field_pos(FieldPos_Front);
+    else if (btn[BTN_FIELD_PF-6].pressed) set_field_pos(FieldPos_PF);
+		else if (btn[BTN_SHOOT_CANCEL-6].pressed) set_field_pos(FieldPos_PF_Back);
+    else if (btn[BTN_FIELD_BACK-6].pressed) set_field_pos(FieldPos_Back);
   }
-	else if (ctrler.get_digital_new_press(BTN_SHOOT_CANCEL)) {
+	else if (btn[BTN_SHOOT_CANCEL-6].pressed) {
 		shot_cancel_pressed = true;
 		shot_queue_dp.reset_timer();
 		printf("  >>> %d Cancel Shot Req Handle Task - Before Suspend| State %d | shot_req_num = %d, shot_req_handled_num = %d \n", pros::millis(), shot_req_handle_task.get_state(), shot_req_num, shot_req_handled_num);

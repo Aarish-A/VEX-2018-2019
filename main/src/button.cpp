@@ -16,7 +16,8 @@ btn_info btn[12] {
 };
 
 void btn_info::check_pressed() {
-  pressed = btn[btn_name-6].pressed;
+  //pressed = btn[btn_name-6].pressed;
+  pressed = ctrler.get_digital_new_press(btn_name);
 }
 
 btn_dp_detector::btn_dp_detector(pros::controller_digital_e_t btn_start, pros::controller_digital_e_t btn_end) {
