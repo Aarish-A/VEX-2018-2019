@@ -56,14 +56,26 @@ void set_angle_targ(bool top) {
 
 void set_turn_dir(Dir turn_dir) {
   shot_req[shot_req_num-1].turn_dir = turn_dir;
-	shot_req[shot_req_num-1].flag_pos.y = 125.5;
-	if (turn_dir == Dir_Left) {
-		shot_req[shot_req_num-1].flag_pos.x = -48;
+	if (shot_req[shot_req_num-1].field_pos == FieldPos_PF_Back) { //Shooting from behind the platform
+		shot_req[shot_req_num-1].flag_pos.y = 100;
+		if (turn_dir == Dir_Left) {
+			shot_req[shot_req_num-1].flag_pos.x = -24;
+		}
+		else if (turn_dir == Dir_Right) {
+			shot_req[shot_req_num-1].flag_pos.x = 24;
+		}
+		else shot_req[shot_req_num-1].flag_pos.x = 0;
 	}
-	else if (turn_dir == Dir_Right) {
-		shot_req[shot_req_num-1].flag_pos.x = 48;
+	else { //Shooting from the back
+		shot_req[shot_req_num-1].flag_pos.y = 125;
+		if (turn_dir == Dir_Left) {
+			shot_req[shot_req_num-1].flag_pos.x = -48;
+		}
+		else if (turn_dir == Dir_Right) {
+			shot_req[shot_req_num-1].flag_pos.x = 48;
+		}
+		else shot_req[shot_req_num-1].flag_pos.x = 0;
 	}
-	else shot_req[shot_req_num-1].flag_pos.x = 0;
 }
 
 void set_handled_vars() {
@@ -110,11 +122,21 @@ void shot_req_make() {
 		//So not all requests have been made, or the second request hasn't been executed yet -> Prevents from overwriting second request during execution
 	if (shot_req_num < 2 || shot_req_handled_num < 1)
 	{
+		bool L_T, L_M, R_T, R_M;
+
 		shot_queue_dp.set_first_pressed();
-		bool L_T = (shot_req[0].field_pos == FieldPos_Back)? btn[BTN_SHOT_L_T-6].pressed : 0;
-		bool L_M = (shot_req[0].field_pos == FieldPos_Back)? btn[BTN_SHOT_L_M-6].pressed : 0;
-		bool R_T = btn[BTN_SHOT_R_T-6].pressed;
-		bool R_M = btn[BTN_SHOT_R_M-6].pressed;
+		if (shot_req[0].field_pos == FieldPos_Back) {
+			L_T = btn[BTN_SHOT_L_T-6].pressed;
+			L_M = btn[BTN_SHOT_L_M-6].pressed;
+		}
+		else {
+			L_T = 0;
+			L_M = 0;
+			shot_queue_dp.override_first_pressed(BTN_SHOT_L_T);
+			shot_queue_dp.override_first_pressed(BTN_SHOT_L_M);
+		}
+		R_T = btn[BTN_SHOT_R_T-6].pressed;
+		R_M = btn[BTN_SHOT_R_M-6].pressed;
 		if (pros::millis() < shot_queue_dp.get_timer()) {
 			if ( (shot_queue_dp.get_first_pressed() == BTN_SHOT_R_T && L_T) ||
 		       (shot_queue_dp.get_first_pressed() == BTN_SHOT_L_T && R_T) ) {

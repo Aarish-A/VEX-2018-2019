@@ -14,6 +14,8 @@ constexpr double ANGLER_PU_POS = 85;//ANGLER_BALL * 7;
 
 constexpr double ANGLER_CAP_PU_POS = 215;
 
+constexpr double ANGLER_CAP_FLIP_POS = 70;
+
 enum Dir {
   Dir_Centre,
   Dir_Left,

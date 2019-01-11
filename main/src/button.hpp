@@ -22,6 +22,8 @@ public:
   void reset_timer();
   int get_timer();
   pros::controller_digital_e_t  get_first_pressed();
+
+  void override_first_pressed(pros::controller_digital_e_t btn_override) ;
 };
 
 extern btn_info btn[12];

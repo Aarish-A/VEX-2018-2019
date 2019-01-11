@@ -35,6 +35,6 @@ void move_drive(double dis, int vel, bool stop = true);
 void turn_vel(AngleTarget *target, double offset = 0);
 void turn_vel_side(AngleTarget *target, double kP, double offset = 0);
 
-void flatten_against_wall();
+void flatten_against_wall(bool b_w = true);
 
 double operator "" _tk(long double val);

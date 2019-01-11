@@ -44,3 +44,7 @@ int btn_dp_detector::get_timer() {
 pros::controller_digital_e_t btn_dp_detector::get_first_pressed() {
   return btn_first_pressed;
 }
+
+void btn_dp_detector::override_first_pressed(pros::controller_digital_e_t btn_override) {
+  if (btn_first_pressed == btn_override) reset_timer();
+}

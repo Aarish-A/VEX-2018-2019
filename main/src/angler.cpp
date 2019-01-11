@@ -73,7 +73,7 @@ void angler_handle() {
 			{
 				if ( (angler_back_dp.get_first_pressed() == BTN_SHOT_L_T && btn[BTN_SHOT_L_M-6].pressed) || (angler_back_dp.get_first_pressed() == BTN_SHOT_L_M && btn[BTN_SHOT_L_T-6].pressed) )
 				{
-					angler_move(ANGLER_CAP_PU_POS, 100);
+					angler_move(ANGLER_CAP_FLIP_POS, 100);
 					intake_state_set(-80, IntakeState::Back);
 					printf("%d Angler Cap Flip. Pos:%f TPos:%f\n", pros::millis(), angler.get_position(), angler.get_target_position());
 					angler_back_dp.reset_timer();

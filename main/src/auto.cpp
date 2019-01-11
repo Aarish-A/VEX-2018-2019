@@ -140,14 +140,25 @@ void turn_vel_side(AngleTarget *target, double kP, double offset)
 	drive_brake();
 }
 
-void flatten_against_wall() {
+void flatten_against_wall(bool b_w) {
 	//pos.reset(0,0,0);
-	setDrive(0,-60, 0);
-	pros::delay(200);
-	do {
-		//printf("%d Reset Back Up(%f, %f, %f) Vel(%f, %f, %f) VeelLoc(%f, %f)\n", pros::millis(), pos.x, pos.y, RAD_TO_DEG(pos.a), pos.xVel, pos.yVel, pos.aVel, pos.velLocal.x, pos.velLocal.y);
-		pros::delay(10);
-	} while (pos.velLocal.y < -1); //aVel < -0.1);
+	if (b_w) {
+		setDrive(0,-60, 0);
+		pros::delay(200);
+		do {
+			//printf("%d Reset Back Up(%f, %f, %f) Vel(%f, %f, %f) VeelLoc(%f, %f)\n", pros::millis(), pos.x, pos.y, RAD_TO_DEG(pos.a), pos.xVel, pos.yVel, pos.aVel, pos.velLocal.x, pos.velLocal.y);
+			pros::delay(10);
+		} while (pos.velLocal.y < -1); //aVel < -0.1);
+	}
+	else {
+		setDrive(0,60, 0);
+		pros::delay(200);
+		do {
+			//printf("%d Reset Back Up(%f, %f, %f) Vel(%f, %f, %f) VeelLoc(%f, %f)\n", pros::millis(), pos.x, pos.y, RAD_TO_DEG(pos.a), pos.xVel, pos.yVel, pos.aVel, pos.velLocal.x, pos.velLocal.y);
+			pros::delay(10);
+		} while (pos.velLocal.y > 1); //aVel < -0.1);
+	}
+
 	setDrive(0, 0, 0);
 	//setDrive(0, -20, 0);
 }
