@@ -1,6 +1,7 @@
 #pragma once
 #include "main.h"
 #include "config.hpp"
+#include "button.hpp"
 
 enum class IntakeState { Forw, Back, Off, Jam };
 

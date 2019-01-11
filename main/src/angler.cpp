@@ -52,12 +52,12 @@ void angler_handle() {
 	if (shot_req_num == 0) {
 		if (shot_req[0].field_pos == FieldPos_Back)
 		{
-			if (ctrler.get_digital_new_press(BTN_ANGLER_PU)) {
+			if (btn[BTN_ANGLER_PU-6].pressed) {
 			 	angler_move(ANGLER_PU_POS, 100);
 				intake_state_set(127, IntakeState::Forw);
 			 	printf("%d Angler PU. Pos:%f TPos:%f\n", pros::millis(), angler.get_position(), angler.get_target_position());
 		 	}
-			else if (ctrler.get_digital_new_press(BTN_ANGLER_CAP_PU)) {
+			else if (btn[BTN_ANGLER_CAP_PU-6].pressed) {
 			 	angler_move(ANGLER_CAP_PU_POS, 100);
 				intake_state_set(127, IntakeState::Forw);
 			 	printf("%d Angler Cap PU. Pos:%f TPos:%f\n", pros::millis(), angler.get_position(), angler.get_target_position());
@@ -65,12 +65,12 @@ void angler_handle() {
 		}
 		else
 		{
-			if (ctrler.get_digital_new_press(BTN_SHOT_L_M)) {
+			if (btn[BTN_SHOT_L_M-6].pressed) {
 				angler_move(ANGLER_PU_POS, 100);
 				intake_state_set(127, IntakeState::Forw);
 				printf("%d Angler PU. Pos:%f TPos:%f\n", pros::millis(), angler.get_position(), angler.get_target_position());
 			}
-			else if (ctrler.get_digital_new_press(BTN_SHOT_L_T)) {
+			else if (btn[BTN_SHOT_L_T-6].pressed) {
 				angler_move(ANGLER_CAP_PU_POS, 100);
 				intake_state_set(127, IntakeState::Forw);
 				printf("%d Angler Cap PU. Pos:%f TPos:%f\n", pros::millis(), angler.get_position(), angler.get_target_position());

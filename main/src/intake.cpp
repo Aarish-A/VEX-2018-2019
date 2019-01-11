@@ -19,7 +19,7 @@ void intake_handle() {
   static uint32_t intake_jam_time;
   static uint32_t intake_on_time;
 
-  if (ctrler.get_digital_new_press(BTN_INTAKE_UP)) {
+  if (btn[BTN_INTAKE_UP-6].pressed) {
     if (intake_state != IntakeState::Off) {
       intake_set(0);
       intake_state = IntakeState::Off;
@@ -31,7 +31,7 @@ void intake_handle() {
     }
   }
 
-  else if (ctrler.get_digital_new_press(BTN_INTAKE_DOWN)) {
+  else if (btn[BTN_INTAKE_DOWN-6].pressed) {
     if (intake_state != IntakeState::Off) {
       intake_set(0);
       intake_state = IntakeState::Off;
