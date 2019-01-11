@@ -14,7 +14,7 @@ void intake_handle() {
   static uint32_t intake_jam_time;
   static uint32_t intake_on_time;
 
-  if (ctrler.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_R1)) {
+  if (ctrler.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_L1)) {
     if (intake_state != IntakeState::Off) {
       intake_set(0);
       intake_state = IntakeState::Off;
@@ -26,7 +26,7 @@ void intake_handle() {
     }
   }
 
-  else if (ctrler.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_R2)) {
+  else if (ctrler.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_L2)) {
     if (intake_state != IntakeState::Off) {
       intake_set(0);
       intake_state = IntakeState::Off;

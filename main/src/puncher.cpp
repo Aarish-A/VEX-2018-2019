@@ -75,7 +75,7 @@ void pun_handle() {
 					pun_set(PUN_HOLD_PWR);
 					pun_state = PunState::Hold;
 				}
-				if (ctrler.get_digital_new_press(E_CONTROLLER_DIGITAL_B) || auto_set_shot) {
+				if (ctrler.get_digital_new_press(E_CONTROLLER_DIGITAL_R1) || auto_set_shot) {
 					pun_move(PUN_OFFSET + (++pun_shots * PUN_TPR));
 					printf("%d Shot start\n", millis());
 					pun_state = PunState::ShotStart;
@@ -83,11 +83,11 @@ void pun_handle() {
 				break;
 
 			case PunState::Hold:
-				if (fabs(puncherLeft.get_position() - (PUN_OFFSET + (pun_shots * PUN_TPR) + PUN_HOLD)) > (10 * PUN_RATIO)) {
+				if (fabs(puncherLeft.get_position() - (PUN_OFFSET + (pun_shots * PUN_TPR) + PUN_HOLD)) > (6 * PUN_RATIO)) {
 					pun_move(PUN_OFFSET + (pun_shots * PUN_TPR) + PUN_HOLD);
 					pun_state = PunState::Load;
 				}
-				if (ctrler.get_digital_new_press(E_CONTROLLER_DIGITAL_B) || auto_set_shot) {
+				if (ctrler.get_digital_new_press(E_CONTROLLER_DIGITAL_R1) || auto_set_shot) {
 					pun_move(PUN_OFFSET + (++pun_shots * PUN_TPR));
 					printf("%d Shot start\n", millis());
 					pun_state = PunState::ShotStart;
