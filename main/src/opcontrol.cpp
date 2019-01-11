@@ -5,6 +5,7 @@
 #include "angler.hpp"
 #include "tracking.hpp"
 #include "shot_select.hpp"
+#include "button.hpp"
 
 /**
  * Runs the operator control code. This function will be started in its own task
@@ -28,6 +29,8 @@ void opcontrol() {
 	drive_set(0);
 
 	while (true) {
+		for (int i = 0; i < 12; i++) btn[i].check_pressed();
+
 		shot_req_make();
 
 		pun_handle();

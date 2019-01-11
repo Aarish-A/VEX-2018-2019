@@ -5,6 +5,7 @@
 #include "util.hpp"
 #include "auto.hpp"
 #include "angle_target.hpp"
+#include "button.hpp"
 
 constexpr double ANGLER_BALL = 13;
 constexpr int ANGLER_DZ = 30;
@@ -75,20 +76,3 @@ void inc_shot_req_num();
 void dec_shot_req_num();
 
 /* Btn Pressed Timer */
-namespace shot_queue_btn{
-  enum shot_queue_btn{
-    l_t, l_m, r_t, r_m
-  };
-  struct btn_info {
-    pros::controller_digital_e_t btn_name;
-    bool pressed;
-    void set_pressed() {
-      pressed = ctrler.get_digital_new_press(btn_name);
-    }
-  };
-
-  extern btn_info shot_queue_btn[4];
-  extern int btn_queue_timer;
-  extern pros::controller_digital_e_t btn_queue_pressed;
-  constexpr int BTN_PRESS_TIME = 50;
-}

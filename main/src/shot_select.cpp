@@ -16,13 +16,7 @@ bool shot_cancel_pressed = false;
 
 pros::Task shot_req_handle_task ((pros::task_fn_t)shot_req_handle, (void*)NULL, TASK_PRIORITY_DEFAULT, TASK_STACK_DEPTH_DEFAULT, "Shot_Req_Handle_Task");
 
-/* Set up 4 shot queue buttons */
-shot_queue_btn::btn_info shot_queue_btn::shot_queue_btn[4] {
-	{BTN_SHOT_L_T, false}, {BTN_SHOT_L_M, false}, {BTN_SHOT_R_T, false}, {BTN_SHOT_R_M, false}
-};
-int shot_queue_btn::btn_queue_timer = 0;
-pros::controller_digital_e_t shot_queue_btn::btn_queue_pressed;
-
+btn_dp_detector shot_queue_dp(pros::E_CONTROLLER_DIGITAL_L1, pros::E_CONTROLLER_DIGITAL_R2);
 /* Shot Select Code */
 void inc_shot_req_num() {
 	if (shot_req_num < 2) shot_req_num++;
@@ -84,7 +78,7 @@ void set_shot_req(bool top, Dir turn_dir) {
 	set_handled_vars();
 	printf("%d Shot Req | RNum:%d | FPos:%d | 1angle:%d, 1trn:%d (%f, %f) | 2angle:%d, 2turn:%d (%f, %f)\n", pros::millis(), shot_req_num, shot_req[0].field_pos, shot_req[0].angle_targ, shot_req[0].turn_dir, shot_req[0].flag_pos.x, shot_req[0].flag_pos.y, shot_req[1].angle_targ, shot_req[1].turn_dir, shot_req[1].flag_pos.x, shot_req[1].flag_pos.y);
 
-	shot_queue_btn::btn_queue_timer = 0;
+	shot_queue_dp.reset_timer();
 }
 
 void shot_req_make() {
@@ -98,7 +92,7 @@ void shot_req_make() {
   }
 	else if (ctrler.get_digital_new_press(BTN_SHOOT_CANCEL)) {
 		shot_cancel_pressed = true;
-		shot_queue_btn::btn_queue_timer = 0;
+		shot_queue_dp.reset_timer();
 		printf("  >>> %d Cancel Shot Req Handle Task - Before Suspend| State %d | shot_req_num = %d, shot_req_handled_num = %d \n", pros::millis(), shot_req_handle_task.get_state(), shot_req_num, shot_req_handled_num);
 		shot_req_handle_task.suspend();
 		printf("  >>> %d Cancel Shot Req Handle Task - Suspended| State %d | shot_req_num = %d, shot_req_handled_num = %d \n", pros::millis(), shot_req_handle_task.get_state(), shot_req_num, shot_req_handled_num);
@@ -116,39 +110,28 @@ void shot_req_make() {
 		//So not all requests have been made, or the second request hasn't been executed yet -> Prevents from overwriting second request during execution
 	if (shot_req_num < 2 || shot_req_handled_num < 1)
 	{
-		for (int i = 0; i < 4; i++) {
-				if (shot_req[0].field_pos == FieldPos_Back || shot_queue_btn::shot_queue_btn[i].btn_name == BTN_SHOT_R_T || shot_queue_btn::shot_queue_btn[i].btn_name == BTN_SHOT_R_M)
-			 			shot_queue_btn::shot_queue_btn[i].set_pressed();
-		 }
-
-		for (int i = 0; i < 4; i++) {
-			if (!shot_queue_btn::btn_queue_timer && shot_queue_btn::shot_queue_btn[i].pressed) {
-				shot_queue_btn::btn_queue_timer = pros::millis() + shot_queue_btn::BTN_PRESS_TIME;
-				shot_queue_btn::btn_queue_pressed = shot_queue_btn::shot_queue_btn[i].btn_name;
-				printf("%d New Btn Pressed. Timer: %d, Btn_Pressed: %d\n", pros::millis(), shot_queue_btn::btn_queue_timer, shot_queue_btn::btn_queue_pressed);
-			}
-		}
-		if (pros::millis() < shot_queue_btn::btn_queue_timer) {
-			if ( (shot_queue_btn::btn_queue_pressed == BTN_SHOT_R_T && shot_queue_btn::shot_queue_btn[shot_queue_btn::l_t].pressed) ||
-		       (shot_queue_btn::btn_queue_pressed == BTN_SHOT_L_T && shot_queue_btn::shot_queue_btn[shot_queue_btn::r_t].pressed) ) {
+		shot_queue_dp.set_first_pressed();
+		if (pros::millis() < shot_queue_dp.get_timer()) {
+			if ( (shot_queue_dp.get_first_pressed() == BTN_SHOT_R_T && btn[BTN_SHOT_L_T-6].pressed) ||
+		       (shot_queue_dp.get_first_pressed() == BTN_SHOT_L_T && btn[BTN_SHOT_R_T-6].pressed) ) {
 				set_shot_req(true, Dir_Centre);
 			}
-			else if ( (shot_queue_btn::btn_queue_pressed == BTN_SHOT_R_M && shot_queue_btn::shot_queue_btn[shot_queue_btn::l_m].pressed) ||
-		       (shot_queue_btn::btn_queue_pressed == BTN_SHOT_L_M && shot_queue_btn::shot_queue_btn[shot_queue_btn::r_m].pressed) ) {
+			else if ( (shot_queue_dp.get_first_pressed() == BTN_SHOT_R_M && btn[BTN_SHOT_L_M-6].pressed) ||
+		       (shot_queue_dp.get_first_pressed() == BTN_SHOT_L_M && btn[BTN_SHOT_R_M-6].pressed) ) {
 				set_shot_req(false, Dir_Centre);
 			}
 		}
-		else if (shot_queue_btn::btn_queue_timer) {
-			if (shot_queue_btn::btn_queue_pressed == BTN_SHOT_L_T) {
+		else if (shot_queue_dp.get_timer()) {
+			if (shot_queue_dp.get_first_pressed() == BTN_SHOT_L_T) {
 				set_shot_req(true, Dir_Left);
 			}
-			else if (shot_queue_btn::btn_queue_pressed == BTN_SHOT_L_M) {
+			else if (shot_queue_dp.get_first_pressed() == BTN_SHOT_L_M) {
 				set_shot_req(false, Dir_Left);
 			}
-			else if (shot_queue_btn::btn_queue_pressed == BTN_SHOT_R_T) {
+			else if (shot_queue_dp.get_first_pressed() == BTN_SHOT_R_T) {
 				set_shot_req(true, Dir_Right);
 			}
-			else if (shot_queue_btn::btn_queue_pressed == BTN_SHOT_R_M) {
+			else if (shot_queue_dp.get_first_pressed() == BTN_SHOT_R_M) {
 				set_shot_req(false, Dir_Right);
 			}
 		}
@@ -199,7 +182,7 @@ void shot_req_handle() {
 				while (!shot_req[shot_req_handled_num].shot_handled) pros::delay(10);
 				shot_req_handled_num++;
 
-				shot_queue_btn::btn_queue_timer = 0; //Make sure that timer is reset after a double shot request is completed (the normal polling routine that handles this cannot run during this time)
+				shot_queue_dp.reset_timer(); //Make sure that timer is reset after a double shot request is completed (the normal polling routine that handles this cannot run during this time)
 
 				angler.move_absolute(ANGLER_PU_POS, 200);
 			}
