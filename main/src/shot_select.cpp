@@ -1,7 +1,7 @@
 #include "shot_select.hpp"
 
 /* Shot Positions */
-ShotPos front_SP (FieldPos_Front, 90, 10);
+ShotPos front_SP (FieldPos_Front, 90, 0);
 ShotPos pf_SP (FieldPos_PF, 90, 70);
 ShotPos pf_back_SP (FieldPos_PF_Back, 90, 70);
 ShotPos back_SP (FieldPos_Back, 90, 10);
@@ -203,6 +203,7 @@ void shot_req_handle() {
 
 				angler.move_absolute(ANGLER_PU_POS, 200);
 			}
+			if (angler.get_position() < 10) angler.move_absolute(ANGLER_PU_POS, 200);	
 
 			shot_req_num = 0;
 			shot_req_handled_num = 0;
