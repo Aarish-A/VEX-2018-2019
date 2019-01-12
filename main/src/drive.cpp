@@ -26,14 +26,17 @@ void drive_set_vel(int vel) {
 }
 
 void drive_init() {
+	/*
 	drive_fl.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
 	drive_fr.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
 	drive_bl.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
 	drive_br.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
+	*/
 }
 
 void drive_handle() {
 	static int drive_pow = 0;
+	static int a_lst = 0;
 	static int drive_pow_lst = 0;
 	static int drive_brake_timer = 0;
 
@@ -47,22 +50,32 @@ void drive_handle() {
 		if (drive_pow) {
 			drive_set(x, y, a);
 			drive_brake_timer = 0;
-			//printf("%d Drive Set %d\n", pros::millis(), drive_pow);
+			printf("%d Drive Set %d %d %d\n", pros::millis(), drive_pow, a, a_lst);
 		}
-		else if (!drive_pow && drive_pow_lst) {
-			drive_set(0);
-			//printf("%d Drive Set 0\n", pros::millis());
+		else if (!a && a_lst) {
 			drive_brake_timer = pros::millis() + DRIVE_BRAKE_TIME;
+			if (a_lst < 0) drive_set(0, 0, 15);
+			else if (a_lst > 0) drive_set(0, 0, -15);
+			else drive_set(0);
+			printf("%d Start turn Brake 15\n", pros::millis());
+		}
+		else if (!drive_brake_timer && !drive_pow && drive_pow_lst) {
+			drive_set(0);
+			printf("%d Drive Set 0\n", pros::millis());
+			//drive_brake_timer = pros::millis() + DRIVE_BRAKE_TIME;
 		}
 
-		if (!drive_pow && drive_brake_timer && pros::millis() > drive_brake_timer) {
-			//printf("%d Drive Brake \n", pros::millis());
-			drive_brake();
+		if (drive_brake_timer && pros::millis() > drive_brake_timer) {
+			printf("%d Drive Brake End \n", pros::millis());
+
+			//drive_brake();
 			drive_set(0); //TODO: DELTE BEFORE COMP
+
 			drive_brake_timer = 0;
 		}
 
 		drive_pow_lst = drive_pow;
+		a_lst = a;
 	}
 
 }
