@@ -88,7 +88,7 @@ void set_shot_req(bool top, Dir turn_dir) {
 	set_angle_targ(top);
 	set_turn_dir(turn_dir);
 	set_handled_vars();
-	printf("%d Shot Req | RNum:%d | FPos:%d | 1angle:%d, 1trn:%d (%f, %f) | 2angle:%d, 2turn:%d (%f, %f)\n", pros::millis(), shot_req_num, shot_req[0].field_pos, shot_req[0].angle_targ, shot_req[0].turn_dir, shot_req[0].flag_pos.x, shot_req[0].flag_pos.y, shot_req[1].angle_targ, shot_req[1].turn_dir, shot_req[1].flag_pos.x, shot_req[1].flag_pos.y);
+	printf("%d Shot Req (Task State:%d)| RNum:%d | FPos:%d | 1angle:%d, 1trn:%d (%f, %f) | 2angle:%d, 2turn:%d (%f, %f)\n", pros::millis(), shot_req_handle_task.get_state(), shot_req_num, shot_req[0].field_pos, shot_req[0].angle_targ, shot_req[0].turn_dir, shot_req[0].flag_pos.x, shot_req[0].flag_pos.y, shot_req[1].angle_targ, shot_req[1].turn_dir, shot_req[1].flag_pos.x, shot_req[1].flag_pos.y);
 
 	shot_queue_dp.reset_timer();
 }
@@ -166,6 +166,7 @@ void shot_req_make() {
 
 void shot_req_handle() {
 	printf("%d Start Shot Req Handle Task \n",  pros::millis());
+	shot_req_num = 0;
 	while (true) {
 		if (shot_req_num > 0) {
 			printf("%d Start handling first shot request \n", pros::millis());

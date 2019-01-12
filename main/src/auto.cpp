@@ -137,7 +137,7 @@ void turn_vel_side(AngleTarget *target, double kP, double offset)
 	}
   printf("%d Turned to %f in %d Vel:%f | FL: %f, BL: %f, FR: %f, BR %f\n", millis(), RAD_TO_DEG(pos.a), millis()-t_start, pos.aVel, drive_fl.get_position(), drive_bl.get_position(), drive_fr.get_position(), drive_br.get_position());
   setDrive(0);
-	drive_brake();
+	//drive_brake();
 }
 
 void flatten_against_wall(bool b_w) {

@@ -81,13 +81,13 @@ void angler_handle() {
 			}
 			else if (angler_back_dp.get_timer())
 			{
-				if (btn[BTN_SHOT_L_M-6].pressed) {
+				if (angler_back_dp.get_first_pressed() == BTN_SHOT_L_M) {
 					angler_move(ANGLER_PU_POS, 100);
 					intake_state_set(127, IntakeState::Forw);
 					printf("%d Angler PU. Pos:%f TPos:%f\n", pros::millis(), angler.get_position(), angler.get_target_position());
 					angler_back_dp.reset_timer();
 				}
-				else if (btn[BTN_SHOT_L_T-6].pressed) {
+				else if (angler_back_dp.get_first_pressed() == BTN_SHOT_L_T) {
 					angler_move(ANGLER_CAP_PU_POS, 100);
 					intake_state_set(127, IntakeState::Forw);
 					printf("%d Angler Cap PU. Pos:%f TPos:%f\n", pros::millis(), angler.get_position(), angler.get_target_position());
@@ -105,6 +105,9 @@ void angler_handle() {
 			angler.move_relative(0, 100);
 			printf("%d Angler Set 0. Pos:%f\n", pros::millis(), angler.get_position());
 		}
+	}
+	else {
+		angler_back_dp.reset_timer();
 	}
 
 	anglerPowLst = anglerPow;
