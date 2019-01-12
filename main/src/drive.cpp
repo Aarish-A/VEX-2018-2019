@@ -50,7 +50,7 @@ void drive_handle() {
 		if (drive_pow) {
 			drive_set(x, y, a);
 			drive_brake_timer = 0;
-			printf("%d Drive Set %d %d %d\n", pros::millis(), drive_pow, a, a_lst);
+			//printf("%d Drive Set %d %d %d\n", pros::millis(), drive_pow, a, a_lst);
 		}
 		else if (!a && a_lst) {
 			drive_brake_timer = pros::millis() + DRIVE_BRAKE_TIME;
