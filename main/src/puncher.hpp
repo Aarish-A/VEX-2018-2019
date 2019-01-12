@@ -13,7 +13,7 @@ constexpr double PUN_BALL_CHK_START = PUN_TPR - (PUN_HOLD + 5); // Back from the
 constexpr uint32_t PUN_WAIT_TIME = 100;
 constexpr int PUN_BALL_THRESH = 2200;
 constexpr uint32_t PUN_BALL_OFF_TIME = 50;
-constexpr int PUN_HOLD_PWR = 12;
+constexpr int PUN_HOLD_PWR = 11;
 
 extern PunState pun_state;
 extern int pun_shots;
