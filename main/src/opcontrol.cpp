@@ -22,6 +22,45 @@
  */
 
 using namespace pros;
+/*
+void logPuncher(void *param) {
+	FILE* logFile = fopen("/usd/log.txt", "a");
+	if (logFile == NULL) {
+		printf("Could not open log file\n");
+		return;
+	}
+	fputs("\r\n\r\n--------------------------------------------------\r\n\r\n", logFile);
+
+	int32_t voltageLst = 0;
+	int32_t currentLst = 0;
+	double positionLst = 0;
+
+	uint32_t nextFlush = 0;
+	bool written = false;
+
+	while (true) {
+
+
+		//if (round(voltage / 100.0) != round(voltageLst / 100.0) || abs(current - currentLst) > 1 || round(position * 10) != round(positionLst * 10)) {
+			fprintf(logFile, "%d Pos: %d State: %d %d\r\n", millis(), voltage / 1000.0, current, position);
+			printf("%d %.1f %d %.1f\n", millis(), voltage / 1000.0, current, position);
+			written = true;
+			voltageLst = voltage;
+			currentLst = current;
+			positionLst = position;
+		//}
+
+		if (written && millis() >= nextFlush) {
+			fclose(logFile);
+			while ((logFile = fopen("/usd/log.txt", "a")) == NULL) delay(5);
+			written = false;
+			nextFlush = millis() + 1000;
+		}
+
+		delay(20);
+	}
+}
+*/
 
 void opcontrol() {
 	uint32_t lstTime = 0;
