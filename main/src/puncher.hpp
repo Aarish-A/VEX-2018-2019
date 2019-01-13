@@ -2,6 +2,7 @@
 #include "main.h"
 #include "config.hpp"
 #include "shot_select.hpp"
+#include "util.hpp"
 
 enum class PunState { Load, Hold, ShotStart, ShotWait, FatalError };
 

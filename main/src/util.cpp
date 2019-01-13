@@ -60,3 +60,19 @@ void log_init() {
 	fputs("\r\n\r\n--------------------------------------------------\r\n\r\n", log_file);
   fprintf(log_file, " >>>> %d Start Logging for Program \n", pros::millis());
 }
+
+void log(const char * format, ...)
+{
+  va_list args;
+  va_start(args, format);
+
+  vfprintf(stdout, format, args); //Print to stdout
+  if (log_file == NULL) {
+		printf("  >>>> %d COULD NOT OPEN SD LOG FILE\n", pros::millis());
+		return;
+	}
+  vfprintf(log_file, format, args); //Print to log_file and flush log_file
+  fflush(log_file);
+
+  va_end (args);
+}

@@ -1,6 +1,7 @@
 #pragma once
 #include "main.h"
 #include <stdio.h>
+#include <stdarg.h>
 #include <iostream>
 
 template <typename T> int sgn(T val) { return (T(0) < val) - (val < T(0)); }
@@ -27,7 +28,9 @@ vector rotate(vector v, double offset);
 extern FILE* log_file;
 void log_init(); //Call in initialize before calling log();
 
-template<typename... Args> void log(const char * f, Args... args) {
+void log(const char * format, ...);
+
+/* template<typename... Args> void log(const char * f, Args... args) {
   printf(f, args...);
   if (log_file == NULL) {
 		printf("  >>>> %d COULD NOT OPEN SD LOG FILE\n", pros::millis());
@@ -35,4 +38,4 @@ template<typename... Args> void log(const char * f, Args... args) {
 	}
   fprintf(log_file, f, args...);
   fflush(log_file);
-}
+} */

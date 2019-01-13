@@ -2,6 +2,7 @@
 #include "main.h"
 #include "config.hpp"
 #include "button.hpp"
+#include "util.hpp"
 
 enum class IntakeState { Forw, Back, Off, Jam };
 
