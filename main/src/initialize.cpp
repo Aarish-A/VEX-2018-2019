@@ -1,4 +1,5 @@
 #include "main.h"
+#include "util.hpp"
 #include "config.hpp"
 #include "puncher.hpp"
 #include "drive.hpp"
@@ -6,8 +7,6 @@
 #include "intake.hpp"
 
 using namespace pros;
-
-
 
 /**
  * Runs initialization code. This occurs as soon as the program is started.
@@ -23,6 +22,10 @@ void initialize() {
   intake_init();
 
 	angler_cal();
+
+	log_init();
+	log("%d Finished Init \n", pros::millis());
+	//log("%d Init Done \n", pros::millis(), x);
 
   ///pros::Task pun_task ((pros::task_fn_t)pun_handle, (void*)NULL, TASK_PRIORITY_DEFAULT, TASK_STACK_DEPTH_DEFAULT, "Pun_Task");
 	//pros::Task tracking_task ((pros::task_fn_t)pos.task(), (void*)NULL, TASK_PRIORITY_DEFAULT, TASK_STACK_DEPTH_DEFAULT, "Track_Task");

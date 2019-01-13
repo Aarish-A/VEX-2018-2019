@@ -52,7 +52,7 @@ void autonomous() {
 
   pros::delay(1000);
   printf( " >> %d (%f, %f, %f) \n", pros::millis(), pos.x, pos.y, RAD_TO_DEG(pos.a) );
-  /*
+
 
   drive_set(127);
   while (pos.y<1.5) pros::delay(10);

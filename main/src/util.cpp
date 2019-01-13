@@ -51,9 +51,9 @@ vector rotate(vector v, double offset) {
 FILE* log_file = fopen("/usd/log.txt", "w+");
 void log_init() {
   log_file = fopen("/usd/log.txt", "w+");
-  fprintf(log_file, "%d Drive Brake End \n", pros::millis());
+  fprintf(log_file, ">>> %d Start Logging \n", pros::millis());
 	if (log_file == NULL) {
-		printf("Could not open log file\n");
+		printf("  >>>> %d COULD NOT OPEN SD LOG FILE\n", pros::millis());
 		return;
 	}
 	fputs("\r\n\r\n--------------------------------------------------\r\n\r\n", log_file);
