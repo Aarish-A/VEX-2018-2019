@@ -66,12 +66,12 @@ void log(const char * format, ...)
   va_list args;
   va_start(args, format);
 
-  vfprintf(stdout, format, args); //Print to stdout
+  //vfprintf(stdout, format, args); //Print to stdout
   if (log_file == NULL) {
 		printf("  >>>> %d COULD NOT OPEN SD LOG FILE\n", pros::millis());
 	}
   else {
-    fprintf(log_file, format, args); //Print to log_file and flush log_file
+    vfprintf(log_file, format, args); //Print to log_file and flush log_file
     fflush(log_file);
   }
 
