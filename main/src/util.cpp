@@ -48,14 +48,15 @@ vector rotate(vector v, double offset) {
 }
 
 /* Logging */
-FILE* log_file = fopen("/usd/log.txt", "w+");
+FILE* log_file = NULL; //fopen("/usd/log.txt", "w+");
 void log_init() {
-  log_file = fopen("/usd/log.txt", "w+");
-  fprintf(log_file, ">>> %d Start Logging \n", pros::millis());
+  log_file = fopen("/usd/log.txt", "w");
+  printf(" >>>> %d log_init(): Start Logging for Program \n", pros::millis());
 	if (log_file == NULL) {
 		printf("  >>>> %d COULD NOT OPEN SD LOG FILE\n", pros::millis());
 		return;
 	}
+  printf(" >>>> %d log_init(): Successfully opened SD log file \n", pros::millis());
 	fputs("\r\n\r\n--------------------------------------------------\r\n\r\n", log_file);
-  fclose(log_file);
+  fprintf(log_file, " >>>> %d Start Logging for Program \n", pros::millis());
 }

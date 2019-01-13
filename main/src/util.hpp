@@ -25,15 +25,14 @@ vector rotate(vector v, double offset);
 
 /* Logging */
 extern FILE* log_file;
-void log_init();
+void log_init(); //Call in initialize before calling log();
 
 template<typename... Args> void log(const char * f, Args... args) {
-  log_file = fopen("/usd/log.txt", "r+");
   printf(f, args...);
   if (log_file == NULL) {
 		printf("  >>>> %d COULD NOT OPEN SD LOG FILE\n", pros::millis());
 		return;
 	}
   fprintf(log_file, f, args...);
-  fclose(log_file);
+  fflush(log_file);
 }
