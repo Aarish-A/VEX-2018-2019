@@ -15,6 +15,9 @@ using namespace pros;
  * to keep execution time for this mode under a few seconds.
  */
 void initialize() {
+	log_init();
+	log("%d Finished Init \n", pros::millis());
+	
 	pun_init();
 	pun_cal();
   drive_init();
@@ -22,9 +25,6 @@ void initialize() {
   intake_init();
 
 	angler_cal();
-
-	log_init();
-	log("%d Finished Init \n", pros::millis());
 	//log("%d Init Done \n", pros::millis(), x);
 
   ///pros::Task pun_task ((pros::task_fn_t)pun_handle, (void*)NULL, TASK_PRIORITY_DEFAULT, TASK_STACK_DEPTH_DEFAULT, "Pun_Task");

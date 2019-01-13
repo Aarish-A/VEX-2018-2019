@@ -50,7 +50,7 @@ vector rotate(vector v, double offset) {
 /* Logging */
 FILE* log_file = NULL; //fopen("/usd/log.txt", "w+");
 void log_init() {
-  log_file = fopen("/usd/log.txt", "w");
+  log_file = fopen("/usd/log.txt", "a");
   printf(" >>>> %d log_init(): Start Logging for Program \n", pros::millis());
 	if (log_file == NULL) {
 		printf("  >>>> %d COULD NOT OPEN SD LOG FILE\n", pros::millis());
@@ -69,10 +69,11 @@ void log(const char * format, ...)
   vfprintf(stdout, format, args); //Print to stdout
   if (log_file == NULL) {
 		printf("  >>>> %d COULD NOT OPEN SD LOG FILE\n", pros::millis());
-		return;
 	}
-  vfprintf(log_file, format, args); //Print to log_file and flush log_file
-  fflush(log_file);
+  else {
+    fprintf(log_file, format, args); //Print to log_file and flush log_file
+    fflush(log_file);
+  }
 
   va_end (args);
 }
