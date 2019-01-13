@@ -57,4 +57,5 @@ void log_init() {
 		return;
 	}
 	fputs("\r\n\r\n--------------------------------------------------\r\n\r\n", log_file);
+  fclose(log_file);
 }
