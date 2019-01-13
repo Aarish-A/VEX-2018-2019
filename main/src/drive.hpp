@@ -17,6 +17,8 @@ void drive_handle();
 
 void drive_shot_turn();
 
+const int drive_brake_pow = 0;
+
 static bool handling_shot_req = false;
 
 constexpr int DRIVE_BRAKE_TIME = 300;

@@ -100,13 +100,15 @@ void move_drive(double dis, int vel, bool stop) {
   setDrive(0);
 }
 
-void turn_vel(AngleTarget *target, double offset)
+void turn_vel(AngleTarget *target, double kP, double offset)
 {
+	kP = fabs(kP);
 	double dA = target->getTarget() - pos.a + offset;
   printf("%d Turning to %f | DeltaA: %f \n", millis(), RAD_TO_DEG(target->getTarget()), RAD_TO_DEG(dA) );
 	while (fabs(dA) > 0.8_deg) {
+		printf(" > %d Turning %f dA: %f| FL: %f, BL: %f, FR: %f, BR %f\n", millis(), RAD_TO_DEG(pos.a), RAD_TO_DEG(dA), drive_fl.get_position(), drive_bl.get_position(), drive_fr.get_position(), drive_br.get_position());
 		dA = target->getTarget() - pos.a + offset;
-		setDriveVel(0, 0, (dA * 120));
+		setDriveVel(0, 0, (dA * kP));
 		delay(2);
 	}
   printf("%d Turned to %f | FL: %f, BL: %f, FR: %f, BR %f\n", millis(), RAD_TO_DEG(pos.a), drive_fl.get_position(), drive_bl.get_position(), drive_fr.get_position(), drive_br.get_position());

@@ -67,6 +67,9 @@
     int right = encR.get_value();
     int strafe = 0;//encS.get_value();
 
+    printf("%d pos(%f, %f, %f) (%d, %d)\n", pros::millis(), x, y, RAD_TO_DEG(a), left, right);
+
+
     double L = (left - encLLst) * SPN_TO_IN_L; // The amount the left side of the robot moved
     double R = (right - encRLst) * SPN_TO_IN_R; // The amount the right side of the robot moved
     double S = (strafe - encSLst) * SPN_TO_IN_S; // The amount the back side of the robot moved

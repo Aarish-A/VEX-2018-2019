@@ -1,5 +1,6 @@
 #pragma once
 #include "main.h"
+#include <iostream>
 
 template <typename T> int sgn(T val) { return (T(0) < val) - (val < T(0)); }
 
@@ -20,3 +21,13 @@ struct vector {
 };
 
 vector rotate(vector v, double offset);
+
+/* Logging */
+extern FILE* log_file;
+void log_init();
+
+#define LOG(input) \
+log_file = fopen("/usd/log.txt", "r+"); \
+fprintf(log_file, input); \
+printf(input); \
+fclose(log_file)

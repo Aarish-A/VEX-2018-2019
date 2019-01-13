@@ -54,10 +54,10 @@ void drive_handle() {
 		}
 		else if (!a && a_lst) {
 			drive_brake_timer = pros::millis() + DRIVE_BRAKE_TIME;
-			if (a_lst < 0) drive_set(0, 0, 15);
-			else if (a_lst > 0) drive_set(0, 0, -15);
+			if (a_lst < 0) drive_set(0, 0, drive_brake_pow);
+			else if (a_lst > 0) drive_set(0, 0, -drive_brake_pow);
 			else drive_set(0);
-			printf("%d Start turn Brake 15\n", pros::millis());
+			printf("%d Start turn Brake %d\n", pros::millis(), drive_brake_pow);
 		}
 		else if (!drive_brake_timer && !drive_pow && drive_pow_lst) {
 			drive_set(0);
@@ -67,6 +67,7 @@ void drive_handle() {
 
 		if (drive_brake_timer && pros::millis() > drive_brake_timer) {
 			printf("%d Drive Brake End \n", pros::millis());
+			//LOG(("%d Drive Brake End \n", pros::millis()));
 
 			//drive_brake();
 			drive_set(0); //TODO: DELTE BEFORE COMP

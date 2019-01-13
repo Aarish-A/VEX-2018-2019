@@ -18,8 +18,10 @@
  */
 
 void auto_update() {
+  pos.reset(0,0,0);
   while (true) {
     pos.update();
+    //printf("%d pos(%f, %f, %f) (%f, %f)\n", pros::millis(), pos.x, pos.y, RAD_TO_DEG(pos.a), enc_l.get_value(), enc_r.get_value());
     pros::delay(2);
   }
 }
@@ -28,12 +30,17 @@ void autonomous() {
   pros::Task auto_update_task ((pros::task_fn_t)auto_update, (void*)NULL, TASK_PRIORITY_DEFAULT, TASK_STACK_DEPTH_DEFAULT, "Auto_Update_Task");
 
   pos.reset(0,0,0);
-  flatten_against_wall();
-  setDrive(0, -15, 0);
-
+  //flatten_against_wall();
+  //setDrive(0, -15, 0);
+  /*
   pos.reset(0, 0, 0);
+  turn_vel(new PointAngleTarget({-10, 0}), (200/60_deg), 0);
+  pros::delay(1000);
+  */
 
-  //Drive Handle 1
+
+  //Drive Handle 1/
+  /*
   printf("%d S1 Turn to face %d, %d \n", pros::millis(), 48, 128);
   turn_vel_side(new PointAngleTarget({48, 127}), (200/50_deg));
 

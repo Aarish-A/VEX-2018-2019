@@ -41,14 +41,14 @@ void logPuncher(void *param) {
 	while (true) {
 
 
-		//if (round(voltage / 100.0) != round(voltageLst / 100.0) || abs(current - currentLst) > 1 || round(position * 10) != round(positionLst * 10)) {
+		if (round(voltage / 100.0) != round(voltageLst / 100.0) || abs(current - currentLst) > 1 || round(position * 10) != round(positionLst * 10)) {
 			fprintf(logFile, "%d Pos: %d State: %d %d\r\n", millis(), voltage / 1000.0, current, position);
 			printf("%d %.1f %d %.1f\n", millis(), voltage / 1000.0, current, position);
 			written = true;
 			voltageLst = voltage;
 			currentLst = current;
 			positionLst = position;
-		//}
+		}
 
 		if (written && millis() >= nextFlush) {
 			fclose(logFile);
