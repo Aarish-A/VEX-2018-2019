@@ -1,9 +1,9 @@
-// #pragma once
+#pragma once
 #include "main.h"
 
 // Main Screen
-lv_obj_t* screen;
-lv_obj_t* menu;
+extern lv_obj_t* screen;
+extern lv_obj_t* menu;
 
 // Tabs
 extern lv_obj_t* diagnostics_tab;
@@ -20,7 +20,7 @@ extern char battery_bar_string[4];
 extern lv_obj_t* shot_tuning_title;
 extern lv_obj_t* shot_slider[4];
 extern lv_obj_t* shot_slider_text[4];
-int shot_slider_value[] = { 0, 0, 0, 0 };
+extern int shot_slider_value[4];
 
 // Diagnostics Tab
 extern lv_obj_t* auto_select_tab_title;
