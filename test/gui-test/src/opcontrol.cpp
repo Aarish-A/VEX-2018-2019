@@ -19,10 +19,14 @@
 using namespace pros;
 
 void opcontrol() {
-
+	int last_time = millis();
 	gui_init();
 	while(true) {
-		// gui_handle();
+		if ((millis() - last_time) > 100) {
+			last_time = millis();
+			gui_handle();
+		}
+		
 		delay(5);
 	}
 }
