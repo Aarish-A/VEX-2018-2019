@@ -21,7 +21,7 @@ void auto_update() {
   pos.reset(0,0,0);
   while (true) {
     pos.update();
-    //printf("%d pos(%f, %f, %f) (%f, %f)\n", pros::millis(), pos.x, pos.y, RAD_TO_DEG(pos.a), enc_l.get_value(), enc_r.get_value());
+    //log("%d pos(%f, %f, %f) (%f, %f)\n", pros::millis(), pos.x, pos.y, RAD_TO_DEG(pos.a), enc_l.get_value(), enc_r.get_value());
     pros::delay(2);
   }
 }
@@ -41,17 +41,17 @@ void autonomous() {
 
   //Drive Handle 1/
   /*
-  printf("%d S1 Turn to face %d, %d \n", pros::millis(), 48, 128);
+  log("%d S1 Turn to face %d, %d \n", pros::millis(), 48, 128);
   turn_vel_side(new PointAngleTarget({48, 127}), (200/50_deg));
 
   pros::delay(1000);
-  printf( " >> %d (%f, %f, %f) \n", pros::millis(), pos.x, pos.y, RAD_TO_DEG(pos.a) );
+  log( " >> %d (%f, %f, %f) \n", pros::millis(), pos.x, pos.y, RAD_TO_DEG(pos.a) );
 
-  printf("%d S1 Turn to face %d, %d \n", pros::millis(), -48, 127);
+  log("%d S1 Turn to face %d, %d \n", pros::millis(), -48, 127);
   turn_vel_side(new PointAngleTarget({-48, 127}), (200/50_deg));
 
   pros::delay(1000);
-  printf( " >> %d (%f, %f, %f) \n", pros::millis(), pos.x, pos.y, RAD_TO_DEG(pos.a) );
+  log( " >> %d (%f, %f, %f) \n", pros::millis(), pos.x, pos.y, RAD_TO_DEG(pos.a) );
 
 
   drive_set(127);

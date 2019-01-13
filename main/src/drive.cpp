@@ -41,7 +41,7 @@ void drive_handle() {
 	static int drive_brake_timer = 0;
 
 	if (shot_req_num == 0 || shot_req[shot_req_handled_num].drive_turn_handled) {
-		//printf("%d Drive update\n", pros::millis());
+		//log("%d Drive update\n", pros::millis());
 	  int y = set_dz(ctrler.get_analog(JOY_DRIVE_FW), DRIVE_DZ);
 		int x = set_dz(ctrler.get_analog(JOY_DRIVE_STRAFE), DRIVE_DZ);
 		int a = set_scaled_dz(ctrler.get_analog(JOY_DRIVE_TURN), DRIVE_TURN_DZ);
@@ -50,23 +50,23 @@ void drive_handle() {
 		if (drive_pow) {
 			drive_set(x, y, a);
 			drive_brake_timer = 0;
-			//printf("%d Drive Set %d %d %d\n", pros::millis(), drive_pow, a, a_lst);
+			//log("%d Drive Set %d %d %d\n", pros::millis(), drive_pow, a, a_lst);
 		}
 		else if (!a && a_lst) {
 			drive_brake_timer = pros::millis() + DRIVE_BRAKE_TIME;
 			if (a_lst < 0) drive_set(0, 0, drive_brake_pow);
 			else if (a_lst > 0) drive_set(0, 0, -drive_brake_pow);
 			else drive_set(0);
-			printf("%d Start turn Brake %d\n", pros::millis(), drive_brake_pow);
+			log("%d Start turn Brake %d\n", pros::millis(), drive_brake_pow);
 		}
 		else if (!drive_brake_timer && !drive_pow && drive_pow_lst) {
 			drive_set(0);
-			printf("%d Drive Set 0\n", pros::millis());
+			log("%d Drive Set 0\n", pros::millis());
 			//drive_brake_timer = pros::millis() + DRIVE_BRAKE_TIME;
 		}
 
 		if (drive_brake_timer && pros::millis() > drive_brake_timer) {
-			printf("%d Drive Brake End \n", pros::millis());
+			log("%d Drive Brake End \n", pros::millis());
 			//LOG(("%d Drive Brake End \n", pros::millis()));
 
 			//drive_brake();

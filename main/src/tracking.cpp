@@ -54,7 +54,7 @@
   }
 
   void Tracking::task() {
-    printf("%d Start Update Task", pros::millis());
+    log("%d Start Update Task", pros::millis());
     while (true) {
       update();
       pros::delay(1);
@@ -67,7 +67,7 @@
     int right = encR.get_value();
     int strafe = 0;//encS.get_value();
 
-    printf("%d pos(%f, %f, %f) (%d, %d)\n", pros::millis(), x, y, RAD_TO_DEG(a), left, right);
+    log("%d pos(%f, %f, %f) (%d, %d)\n", pros::millis(), x, y, RAD_TO_DEG(a), left, right);
 
 
     double L = (left - encLLst) * SPN_TO_IN_L; // The amount the left side of the robot moved
@@ -128,7 +128,7 @@
   }
 
   void Tracking::reset(double x, double y, double a) {
-    printf("\n%d Resetting Pos (%f, %f, %f) from (%f, %f, %f)\n", pros::millis(), x, y, RAD_TO_DEG(a), this->x, this->y, RAD_TO_DEG(this->a));
+    log("\n%d Resetting Pos (%f, %f, %f) from (%f, %f, %f)\n", pros::millis(), x, y, RAD_TO_DEG(a), this->x, this->y, RAD_TO_DEG(this->a));
     this->encL.reset();
     this->encR.reset();
     this->encS.reset();
