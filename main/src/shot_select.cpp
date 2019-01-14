@@ -174,8 +174,7 @@ void shot_req_handle() {
 
 			if (shot_req[shot_req_handled_num].field_pos == FieldPos_Back) {
 				pos.reset(0,0,0);
-				flatten_against_wall();
-				setDrive(0, -15, 0);
+				flatten_against_wall(false, true);
 			}
 
 			pos.reset(0, 0, 0);
@@ -185,7 +184,7 @@ void shot_req_handle() {
 			//Drive Handle 1
 			if (shot_req[shot_req_handled_num].field_pos == FieldPos_Back) {
 				log("%d S1 Turn to face %f, %f \n", pros::millis(), shot_req[shot_req_handled_num].flag_pos.x, shot_req[shot_req_handled_num].flag_pos.y);
-				turn_vel_side(new PointAngleTarget({shot_req[shot_req_handled_num].flag_pos.x, shot_req[shot_req_handled_num].flag_pos.y}), (200/50_deg));
+				turn_vel_side(new PointAngleTarget({shot_req[shot_req_handled_num].flag_pos.x, shot_req[shot_req_handled_num].flag_pos.y}), (200/50_deg), true);
 			}
 			shot_req[shot_req_handled_num].drive_turn_handled = true;
 
@@ -200,7 +199,7 @@ void shot_req_handle() {
 				//Drive Handle 2
 				if (shot_req[shot_req_handled_num].field_pos == FieldPos_Back) {
 					log("%d S2 Turn to face %f, %f \n", pros::millis(), shot_req[shot_req_handled_num].flag_pos.x, shot_req[shot_req_handled_num].flag_pos.y);
-					turn_vel_side(new PointAngleTarget({shot_req[shot_req_handled_num].flag_pos.x, shot_req[shot_req_handled_num].flag_pos.y}), (200/50_deg));
+					turn_vel_side(new PointAngleTarget({shot_req[shot_req_handled_num].flag_pos.x, shot_req[shot_req_handled_num].flag_pos.y}), (200/50_deg), true);
 				}
 				shot_req[shot_req_handled_num].drive_turn_handled = true;
 

@@ -33,8 +33,8 @@ void drive_brake();
 void move_drive(double dis, int vel, bool stop = true);
 //void turnDrive(double targ, int vel);
 void turn_vel(AngleTarget *target, double kP, double offset = 0);
-void turn_vel_side(AngleTarget *target, double kP, double offset = 0);
+void turn_vel_side(AngleTarget *target, double kP, double offset, bool f_w);
 
-void flatten_against_wall(bool b_w = true);
+void flatten_against_wall(bool f_w, bool hold);
 
 double operator "" _tk(long double val);

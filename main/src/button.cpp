@@ -24,6 +24,7 @@ btn_dp_detector::btn_dp_detector(pros::controller_digital_e_t btn_start, pros::c
   this->btn_start = btn_start;
   this->btn_end = btn_end;
 }
+
 void btn_dp_detector::set_first_pressed() {
   for (int i = (btn_start-6); i <= (btn_end-6); i++) {
     if (!timer && btn[i].pressed) {

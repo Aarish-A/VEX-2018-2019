@@ -116,52 +116,76 @@ void turn_vel(AngleTarget *target, double kP, double offset)
 	drive_brake();
 }
 
-void turn_vel_side(AngleTarget *target, double kP, double offset)
+void turn_vel_side(AngleTarget *target, double kP, double offset, bool f_w)
 {
 	int t_start = pros::millis();
 	double dA = target->getTarget() - pos.a + offset;
   log("%d Turning to %f | DeltaA: %f \n", millis(), RAD_TO_DEG(target->getTarget()), RAD_TO_DEG(dA) );
-	while (fabs(dA) > 0.8_deg) {
-		dA = target->getTarget() - pos.a + offset;
-		//log("%d Pos:%f DeltaA:%f Pow:%f \n", pros::millis(), RAD_TO_DEG(pos.a), RAD_TO_DEG(dA), kP*fabs(dA));
-		if (dA > 0) {
-			drive_bl.move_velocity(kP*fabs(dA));
-			drive_fl.move_velocity(kP*fabs(dA));
-			drive_br.move_velocity(0);
-			drive_fr.move_velocity(0);
-		} else {
-			drive_br.move_velocity(kP*fabs(dA));
-			drive_fr.move_velocity(kP*fabs(dA));
-			drive_bl.move_velocity(0);
-			drive_fl.move_velocity(0);
+
+	if (f_w) {
+		while (fabs(dA) > 0.8_deg) {
+			dA = target->getTarget() - pos.a + offset;
+			//log("%d Pos:%f DeltaA:%f Pow:%f \n", pros::millis(), RAD_TO_DEG(pos.a), RAD_TO_DEG(dA), kP*fabs(dA));
+			if (dA > 0) {
+				drive_bl.move_velocity(kP*fabs(dA));
+				drive_fl.move_velocity(kP*fabs(dA));
+				drive_br.move_velocity(0);
+				drive_fr.move_velocity(0);
+			} else {
+				drive_br.move_velocity(kP*fabs(dA));
+				drive_fr.move_velocity(kP*fabs(dA));
+				drive_bl.move_velocity(0);
+				drive_fl.move_velocity(0);
+			}
+			delay(5);
 		}
-		delay(2);
+	}
+	else {
+		while (fabs(dA) > 0.8_deg) {
+			dA = target->getTarget() - pos.a + offset;
+			//log("%d Pos:%f DeltaA:%f Pow:%f \n", pros::millis(), RAD_TO_DEG(pos.a), RAD_TO_DEG(dA), kP*fabs(dA));
+			if (dA > 0) {
+				drive_br.move_velocity(-kP*fabs(dA));
+				drive_fr.move_velocity(-kP*fabs(dA));
+				drive_bl.move_velocity(0);
+				drive_fl.move_velocity(0);
+			} else {
+				drive_bl.move_velocity(-kP*fabs(dA));
+				drive_fl.move_velocity(-kP*fabs(dA));
+				drive_br.move_velocity(0);
+				drive_fr.move_velocity(0);
+			}
+			delay(5);
+		}
 	}
   log("%d Turned to %f in %d Vel:%f | FL: %f, BL: %f, FR: %f, BR %f\n", millis(), RAD_TO_DEG(pos.a), millis()-t_start, pos.aVel, drive_fl.get_position(), drive_bl.get_position(), drive_fr.get_position(), drive_br.get_position());
   setDrive(0);
 	//drive_brake();
 }
 
-void flatten_against_wall(bool b_w) {
+void flatten_against_wall(bool f_w, bool hold) {
 	//pos.reset(0,0,0);
-	if (b_w) {
-		setDrive(0,-60, 0);
-		pros::delay(200);
-		do {
-			//log("%d Reset Back Up(%f, %f, %f) Vel(%f, %f, %f) VeelLoc(%f, %f)\n", pros::millis(), pos.x, pos.y, RAD_TO_DEG(pos.a), pos.xVel, pos.yVel, pos.aVel, pos.velLocal.x, pos.velLocal.y);
-			pros::delay(10);
-		} while (pos.velLocal.y < -1); //aVel < -0.1);
-	}
-	else {
+	int hold_pow = 10;
+	if (f_w) {
 		setDrive(0,60, 0);
 		pros::delay(200);
 		do {
 			//log("%d Reset Back Up(%f, %f, %f) Vel(%f, %f, %f) VeelLoc(%f, %f)\n", pros::millis(), pos.x, pos.y, RAD_TO_DEG(pos.a), pos.xVel, pos.yVel, pos.aVel, pos.velLocal.x, pos.velLocal.y);
 			pros::delay(10);
 		} while (pos.velLocal.y > 1); //aVel < -0.1);
+		if (hold) setDrive(0, hold_pow, 0);
+		else setDrive(0);
 	}
-
-	setDrive(0, 0, 0);
+	else {
+		setDrive(0,-60, 0);
+		pros::delay(200);
+		do {
+			//log("%d Reset Back Up(%f, %f, %f) Vel(%f, %f, %f) VeelLoc(%f, %f)\n", pros::millis(), pos.x, pos.y, RAD_TO_DEG(pos.a), pos.xVel, pos.yVel, pos.aVel, pos.velLocal.x, pos.velLocal.y);
+			pros::delay(10);
+		} while (pos.velLocal.y < -1); //aVel < -0.1);
+		if (hold) setDrive(0, -hold_pow, 0);
+		else setDrive(0);
+	}
 	//setDrive(0, -20, 0);
 }
 

@@ -22,7 +22,7 @@ void auto_update() {
   while (true) {
     pos.update();
     //log("%d pos(%f, %f, %f) (%f, %f)\n", pros::millis(), pos.x, pos.y, RAD_TO_DEG(pos.a), enc_l.get_value(), enc_r.get_value());
-    pros::delay(2);
+    pros::delay(1);
   }
 }
 
