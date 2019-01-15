@@ -52,21 +52,7 @@ void angler_handle() {
 	else
 	*/
 	if (shot_req_num == 0) {
-		if (shot_req[0].field_pos == FieldPos_Back)
-		{
-			angler_back_dp.reset_timer();
-			if (btn[BTN_ANGLER_PU-6].pressed) {
-			 	angler_move(ANGLER_PU_POS, 100);
-				intake_state_set(127, IntakeState::Forw);
-			 	log_ln("%d Angler PU. Pos:%f TPos:%f", pros::millis(), angler.get_position(), angler.get_target_position());
-		 	}
-			else if (btn[BTN_ANGLER_CAP_PU-6].pressed) {
-			 	angler_move(ANGLER_CAP_PU_POS, 100);
-				intake_state_set(127, IntakeState::Forw);
-			 	log_ln("%d Angler Cap PU. Pos:%f TPos:%f", pros::millis(), angler.get_position(), angler.get_target_position());
-		 	}
-		}
-		else
+		if (shot_req[0].field_pos != FieldPos_Back && shot_req[0].field_pos != FieldPos_PF_Back)
 		{
 			angler_back_dp.set_first_pressed();
 			if (pros::millis() < angler_back_dp.get_timer())

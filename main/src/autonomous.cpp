@@ -36,7 +36,6 @@ void autonomous() {
   pos.reset(0, 0, 0);
   log_ln("%d Start Back", pros::millis());
   setDrive(0, -60, 0);
-  int back_up_t = pros::millis() + 200;
   while (pos.y > -2_in) pros::delay(10);
   log_ln("%d Done Back %f", pros::millis(), pos.y);
   turn_vel(new PointAngleTarget({-29_in, 89_in}), (200/70_deg), 0);

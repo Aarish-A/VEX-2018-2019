@@ -19,7 +19,7 @@ constexpr pros::controller_digital_e_t BTN_SHOOT_CANCEL = pros::E_CONTROLLER_DIG
 
 /* Shooter Pos */
 constexpr pros::controller_digital_e_t BTN_FIELD_FRONT = pros::E_CONTROLLER_DIGITAL_X;
-constexpr pros::controller_digital_e_t BTN_FIELD_PF = pros::E_CONTROLLER_DIGITAL_Y;
+constexpr pros::controller_digital_e_t BTN_FIELD_PF_Back = pros::E_CONTROLLER_DIGITAL_Y;
 constexpr pros::controller_digital_e_t BTN_FIELD_BACK = pros::E_CONTROLLER_DIGITAL_B;
 
 /* Shooter Queue */
