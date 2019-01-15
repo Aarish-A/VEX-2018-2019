@@ -87,11 +87,6 @@ void pun_handle() {
 					log_ln("%d PunLoad -> PunHold. PunPos: %f ", pros::millis(), puncherLeft.get_position());
 					pun_state_change(PunState::Hold);
 				}
-				if ( auto_set_shot ) {
-					pun_move(PUN_OFFSET + (++pun_shots * PUN_TPR));
-					log_ln("%d Shot start (from ShotLoad) | Shtr Pos:%f t:%f | ReqNum:%d ShtNum:%d | FPos:%d | 1angle:%d, 1trn:%d (%f,%f) | 2angle:%d, 2turn:%d (%f,%f)", pros::millis(), puncherLeft.get_position(), puncherLeft.get_target_position(), shot_req_num, shot_req_handled_num, shot_req[0].field_pos, shot_req[0].angle_targ, shot_req[0].turn_dir, shot_req[0].flag_pos.x, shot_req[0].flag_pos.y, shot_req[1].angle_targ, shot_req[1].turn_dir, shot_req[1].flag_pos.x, shot_req[1].flag_pos.y);
-					pun_state_change(PunState::ShotStart);
-				}
 				break;
 
 			case PunState::Hold:
@@ -101,7 +96,7 @@ void pun_handle() {
 					log_ln("%d PunLoad -> PunHold. PunPos: %f ", pros::millis(), puncherLeft.get_position());
 					pun_state_change(PunState::Load);
 				}
-				if (( shot_req_num > 0 && shot_req[shot_req_handled_num].drive_turn_handled && fabs(angler.get_position()-shot_req[shot_req_handled_num].angle_targ) < 5) ||auto_set_shot) {
+				if (( shot_req_num > 0 && shot_req[shot_req_handled_num].drive_turn_handled && fabs(angler.get_position()-shot_req[shot_req_handled_num].angle_targ) < 10) ||auto_set_shot) {
 					pun_move(PUN_OFFSET + (++pun_shots * PUN_TPR));
 					log_ln("%d Shot start (from ShotHold) | Shtr Pos:%f t:%f | ReqNum:%d ShtNum:%d | FPos:%d | 1angle:%d, 1trn:%d (%f,%f) | 2angle:%d, 2turn:%d (%f,%f)", pros::millis(), puncherLeft.get_position(), puncherLeft.get_target_position(), shot_req_num, shot_req_handled_num, shot_req[0].field_pos, shot_req[0].angle_targ, shot_req[0].turn_dir, shot_req[0].flag_pos.x, shot_req[0].flag_pos.y, shot_req[1].angle_targ, shot_req[1].turn_dir, shot_req[1].flag_pos.x, shot_req[1].flag_pos.y);
 
@@ -110,7 +105,6 @@ void pun_handle() {
 				break;
 
 			case PunState::ShotStart:
-				auto_set_shot = false;
 				if (puncherLeft.get_position() < (PUN_OFFSET + (pun_shots * PUN_TPR) - PUN_NO_RETURN) && !pun_ball
 				 	&& puncherLeft.get_position() > (PUN_OFFSET + (pun_shots * PUN_TPR) - PUN_BALL_CHK_START[shot_req_handled_num]) ) {
 					log_ln("%d Shot failure, no ball pos:%f (b/w:%f & %f). BallSen:%d", millis(), puncherLeft.get_position(), (PUN_OFFSET + (pun_shots * PUN_TPR) - PUN_BALL_CHK_START[shot_req_handled_num]), (PUN_OFFSET + (pun_shots * PUN_TPR) - PUN_NO_RETURN), ball_sensor.get_value());
@@ -143,6 +137,7 @@ void pun_handle() {
 
 			case PunState::ShotWait:
 				if (millis() >= wait_slip_end) {
+					auto_set_shot = false;
 					pun_move(PUN_OFFSET + (pun_shots * PUN_TPR) + PUN_HOLD);
 					log_ln("%d Done shot wait move to %f T:%f ", millis(), (PUN_OFFSET + (pun_shots * PUN_TPR) + PUN_HOLD), puncherLeft.get_target_position());
 					shot_req[shot_req_handled_num].shot_handled = true;
