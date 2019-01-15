@@ -29,6 +29,12 @@ extern FILE* log_file;
 void log_init(); //Call in initialize before calling log();
 
 void log(const char * format, ...);
+void log_ln(const char * format, ...);
+
+extern int log_close_timer;
+const int LOG_CLOSE_TIME = 1000;
+const char* const log_file_name = "/usd/log.txt";
+const char* const log_mode = "a";
 
 /* template<typename... Args> void log(const char * f, Args... args) {
   printf(f, args...);
