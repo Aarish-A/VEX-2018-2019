@@ -98,13 +98,13 @@ void log_ln(const char * format, ...) {
   va_start(args, format);
 
   vprintf(format, args); //Print to stdout
-  printf("\n"); //Print to stdout
+  printf("\n"); //New line for stdout
   if (log_file == NULL) {
 		//printf("  >>>> %d COULD NOT OPEN SD LOG FILE\n", pros::millis());
 	}
   else {
     vfprintf(log_file, format, args); //Print to log_file and flush log_file
-    fprintf(log_file, "\r\n");
+    fprintf(log_file, "\r\n"); //Return and new line
     //fflush(log_file);
 
     if (pros::millis() > log_close_timer) {
