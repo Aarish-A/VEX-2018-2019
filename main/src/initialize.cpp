@@ -16,8 +16,8 @@ using namespace pros;
  */
 void initialize() {
 	log_init();
-	log("%d Finished Init \n", pros::millis());
-	
+	log_ln("%d Finished Init ", pros::millis());
+
 	pun_init();
 	pun_cal();
   drive_init();
@@ -25,7 +25,7 @@ void initialize() {
   intake_init();
 
 	angler_cal();
-	//log("%d Init Done \n", pros::millis(), x);
+	//log_ln("%d Init Done ", pros::millis(), x);
 
   ///pros::Task pun_task ((pros::task_fn_t)pun_handle, (void*)NULL, TASK_PRIORITY_DEFAULT, TASK_STACK_DEPTH_DEFAULT, "Pun_Task");
 	//pros::Task tracking_task ((pros::task_fn_t)pos.task(), (void*)NULL, TASK_PRIORITY_DEFAULT, TASK_STACK_DEPTH_DEFAULT, "Track_Task");
