@@ -106,7 +106,7 @@ void turn_vel(AngleTarget *target, double kP, double offset)
 	double dA = target->getTarget() - pos.a + offset;
   log_ln("%d Turning to %f | DeltaA: %f ", millis(), RAD_TO_DEG(target->getTarget()), RAD_TO_DEG(dA) );
 	while (fabs(dA) > 0.8_deg) {
-		log_ln(" > %d Turning %f dA: %f| FL: %f, BL: %f, FR: %f, BR %f", millis(), RAD_TO_DEG(pos.a), RAD_TO_DEG(dA), drive_fl.get_position(), drive_bl.get_position(), drive_fr.get_position(), drive_br.get_position());
+		//log_ln(" > %d Turning %f dA: %f| FL: %f, BL: %f, FR: %f, BR %f", millis(), RAD_TO_DEG(pos.a), RAD_TO_DEG(dA), drive_fl.get_position(), drive_bl.get_position(), drive_fr.get_position(), drive_br.get_position());
 		dA = target->getTarget() - pos.a + offset;
 		setDriveVel(0, 0, (dA * kP));
 		delay(2);
@@ -160,13 +160,15 @@ void turn_vel_side(AngleTarget *target, double kP, double offset, bool f_w)
 	}
   log_ln("%d Turned to %f in %d Vel:%f | FL: %f, BL: %f, FR: %f, BR %f", millis(), RAD_TO_DEG(pos.a), millis()-t_start, pos.aVel, drive_fl.get_position(), drive_bl.get_position(), drive_fr.get_position(), drive_br.get_position());
   setDrive(0);
-	//drive_brake();
+	drive_brake();
 }
 
 void flatten_against_wall(bool f_w, bool hold) {
 	//pos.reset(0,0,0);
-	int hold_pow = 10;
+	//int pow = 40;
+	int hold_pow = 15;
 	if (f_w) {
+		//log_ln("%d FW Start", pros::millis());
 		setDrive(0,60, 0);
 		pros::delay(200);
 		do {
@@ -177,6 +179,7 @@ void flatten_against_wall(bool f_w, bool hold) {
 		else setDrive(0);
 	}
 	else {
+		//log_ln("%d FW Start", pros::millis());
 		setDrive(0,-60, 0);
 		pros::delay(200);
 		do {
@@ -186,6 +189,7 @@ void flatten_against_wall(bool f_w, bool hold) {
 		if (hold) setDrive(0, -hold_pow, 0);
 		else setDrive(0);
 	}
+	log_ln("%d Done flatten_against_wall", pros::millis());
 	//setDrive(0, -20, 0);
 }
 

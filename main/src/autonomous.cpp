@@ -21,13 +21,9 @@ void auto_update() {
   pos.reset(0,0,0);
   while (true) {
     pos.update();
-<<<<<<< HEAD
+    pun_handle();
     //log("%d pos(%f, %f, %f) (%f, %f)\n", pros::millis(), pos.x, pos.y, RAD_TO_DEG(pos.a), enc_l.get_value(), enc_r.get_value());
     pros::delay(1);
-=======
-    //log_ln("%d pos(%f, %f, %f) (%f, %f)", pros::millis(), pos.x, pos.y, RAD_TO_DEG(pos.a), enc_l.get_value(), enc_r.get_value());
-    pros::delay(2);
->>>>>>> master
   }
 }
 
@@ -35,7 +31,22 @@ void autonomous() {
   pros::Task auto_update_task ((pros::task_fn_t)auto_update, (void*)NULL, TASK_PRIORITY_DEFAULT, TASK_STACK_DEPTH_DEFAULT, "Auto_Update_Task");
 
   pos.reset(0,0,0);
-  //flatten_against_wall();
+  flatten_against_wall(true, true);
+  pros::delay(250);
+  pos.reset(0, 0, 0);
+  log_ln("%d Start Back", pros::millis());
+  setDrive(0, -60, 0);
+  int back_up_t = pros::millis() + 200;
+  while (pos.y > -2_in) pros::delay(10);
+  log_ln("%d Done Back %f", pros::millis(), pos.y);
+  turn_vel(new PointAngleTarget({-29_in, 89_in}), (200/70_deg), 0);
+  auto_set_shot = true;
+  while (auto_set_shot) pros::delay(10);
+  log_ln("%d After wait a:%f", pros::millis(), RAD_TO_DEG(pos.a));
+  turn_vel(new PointAngleTarget({19_in, 89_in}), (200/70_deg), 0);
+  auto_set_shot = true;
+  while (auto_set_shot) pros::delay(10);
+  log_ln("%d After wait a:%f", pros::millis(), RAD_TO_DEG(pos.a));
   //setDrive(0, -15, 0);
   /*
   pos.reset(0, 0, 0);
