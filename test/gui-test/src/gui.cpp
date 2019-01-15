@@ -20,10 +20,14 @@ char battery_bar_string[4];
 lv_obj_t* shot_tuning_title;
 lv_obj_t* shot_slider[4];
 lv_obj_t* shot_slider_text[4];
+lv_obj_t* shot_slider_label[4];
 int shot_slider_value[] = { 0, 0, 0, 0 };
+lv_obj_t* shot_tuning_save_button;
+lv_obj_t* shot_tuning_save_button_label;
 
 // Diagnostics Tab
 lv_obj_t* auto_select_tab_title;
+
 
 void gui_init() {
   // Main Screen
@@ -60,9 +64,9 @@ void gui_init() {
     shot_slider[i] = lv_slider_create(shot_tuning_tab, NULL);
     lv_obj_set_size(shot_slider[i], 300, 30);
     lv_slider_set_range(shot_slider[i], 50, 100);
-    // lv_slider_set_action(shot_slider[i], shot_tuning_slider_action);
-    if (i == 0) lv_obj_align(shot_slider[i], shot_tuning_title, LV_ALIGN_OUT_BOTTOM_MID, -120, 10);
-    else lv_obj_align(shot_slider[i], shot_slider[i - 1], LV_ALIGN_OUT_BOTTOM_RIGHT, -120, 10);
+    lv_slider_set_action(shot_slider[i], shot_tuning_slider_action);
+    if (i == 0) lv_obj_align(shot_slider[i], shot_tuning_title, LV_ALIGN_OUT_BOTTOM_MID, 5, 10);
+    else lv_obj_align(shot_slider[i], shot_slider[i - 1], LV_ALIGN_OUT_BOTTOM_RIGHT, 0, 10);
 
     shot_slider_text[i] = lv_label_create(shot_tuning_tab, NULL);
     lv_obj_align(shot_slider_text[i], shot_slider[i], LV_ALIGN_OUT_RIGHT_MID, 5, 0);
@@ -70,7 +74,23 @@ void gui_init() {
     char shot_slider_string[4];
     sprintf(shot_slider_string, "%d", shot_slider_value[i]);
   	lv_label_set_text(shot_slider_text[i], shot_slider_string);
+
+    shot_slider_label[i] = lv_label_create(shot_tuning_tab, NULL);
+    lv_obj_align(shot_slider_label[i], shot_slider[i], LV_ALIGN_OUT_LEFT_MID, -35, 0);
+
+    if (i == 0) lv_label_set_text(shot_slider_label[i], "Back");
+    else if (i == 1) lv_label_set_text(shot_slider_label[i], "Back PF");
+    else if (i == 2) lv_label_set_text(shot_slider_label[i], "Mid PF");
+    else if (i == 3) lv_label_set_text(shot_slider_label[i], "Front PF");
   }
+
+  shot_tuning_save_button = lv_btn_create(shot_tuning_tab, NULL);
+  lv_obj_set_free_num(shot_tuning_save_button, 1);
+  lv_btn_set_action(shot_tuning_save_button, LV_BTN_ACTION_LONG_PR, shot_tuning_save_button_action);
+  lv_obj_align(shot_tuning_save_button, shot_slider[3], LV_ALIGN_OUT_BOTTOM_MID, 0, 30);
+  lv_obj_set_width(shot_tuning_save_button, 250);
+  shot_tuning_save_button_label = lv_label_create(shot_tuning_save_button, NULL);
+  lv_label_set_text(shot_tuning_save_button_label, "Save?");
 
   // Auto Tab
   auto_select_tab_title = lv_label_create(auto_select_tab, NULL);
@@ -79,20 +99,34 @@ void gui_init() {
 }
 
 void gui_handle() {
-  for(int i = 0; i < 4; i++) {
-    char shot_slider_string[4];
-    sprintf(shot_slider_string, "%d", lv_slider_get_value(shot_slider[i]));
-    lv_label_set_text(shot_slider_text[i], shot_slider_string);
-    shot_slider_value[i] = lv_slider_get_value(shot_slider[i]);
-  }
 }
 
 lv_res_t shot_tuning_slider_action(lv_obj_t* slider) {
-  char shot_slider_string[4];
   for (int i = 0; i < 4; i++) {
-    sprintf(shot_slider_string, "%d", lv_slider_get_value(slider));
+    char shot_slider_string[4];
+    sprintf(shot_slider_string, "%d", lv_slider_get_value(shot_slider[i]));
     lv_label_set_text(shot_slider_text[i], shot_slider_string);
     shot_slider_value[i] = lv_slider_get_value(slider);
   }
   return LV_RES_OK;
+}
+
+lv_res_t shot_tuning_save_button_action(lv_obj_t* button) {
+  for(int i = 0; i < 4; i++) {
+    FILE* log = NULL;
+    if (i == 0) log = fopen("/usd/back_shot_position.txt", "w");
+    else if (i == 1) log = fopen("/usd/backPF_shot_position.txt", "w");
+    else if (i == 2) log = fopen("/usd/midPF_shot_position.txt", "w");
+    else if (i == 3) log = fopen("/usd/frontPF_shot_position.txt", "w");
+
+    if (log == NULL) {
+      printf("Failed to create shot positions file %d\n", i);
+    } else {
+      printf("Created shot positions file! %d", i);
+    }
+    fprintf(log, "%d", shot_slider_value[i]);
+    printf("%d\n", shot_slider_value[i]);
+    fclose(log);
+  }
+  return LV_RES_OK; /*Return OK if the message box is not deleted*/
 }

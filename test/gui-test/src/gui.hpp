@@ -21,6 +21,9 @@ extern lv_obj_t* shot_tuning_title;
 extern lv_obj_t* shot_slider[4];
 extern lv_obj_t* shot_slider_text[4];
 extern int shot_slider_value[4];
+extern lv_obj_t* shot_slider_label[4];
+extern lv_obj_t* shot_tuning_save_button;
+extern lv_obj_t* shot_tuning_save_button_label;
 
 // Diagnostics Tab
 extern lv_obj_t* auto_select_tab_title;
@@ -28,3 +31,4 @@ extern lv_obj_t* auto_select_tab_title;
 void gui_init();
 void gui_handle();
 lv_res_t shot_tuning_slider_action(lv_obj_t * slider);
+lv_res_t shot_tuning_save_button_action(lv_obj_t* button);
