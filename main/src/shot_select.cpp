@@ -3,7 +3,7 @@
 /* Shot Positions */
 ShotPos front_SP (FieldPos_Front, 90, 0);
 ShotPos pf_SP (FieldPos_PF, 90, 70);
-ShotPos pf_back_SP (FieldPos_PF_Back, 90, 0);
+ShotPos pf_back_SP (FieldPos_PF_Back, 88, 0);
 ShotPos back_SP (FieldPos_Back, 90, 10);
 
 ShotSelect shot_req[2];
@@ -58,11 +58,26 @@ void set_turn_dir(Dir turn_dir) {
   shot_req[shot_req_num-1].turn_dir = turn_dir;
 	if (shot_req[shot_req_num-1].field_pos == FieldPos_PF_Back) { //Shooting from behind the platform
 		shot_req[shot_req_num-1].flag_pos.y = 89;
+
+		pros::vision_object_s_t object_array[1];
+		vision_sensor.read_by_size(0, 1, object_array);
+		log_ln("%d Read from vision sensor", pros::millis());
+
 		if (turn_dir == Dir_Left) {
-			shot_req[shot_req_num-1].flag_pos.x = -29;
+			if (object_array[0].signature == 1) {
+				log_ln("%d Detected signature %d from vision sensor, was supposed to detect 1", pros::millis(), object_array[0].signature);
+				shot_req[shot_req_num-1].flag_pos.x = -30;
+			} else if (object_array[0].signature == 2) {
+				log_ln("%d Detected signature %d from vision sensor, was supposed to detect 2", pros::millis(), object_array[0].signature);
+				shot_req[shot_req_num-1].flag_pos.x = -25;
+			} else {
+				log_ln("%d Did not detect signature 1 or 2 from vision sensor", pros::millis());
+				shot_req[shot_req_num-1].flag_pos.x = 0;
+			}
+			// shot_req[shot_req_num-1].flag_pos.x = -30;
 		}
 		else if (turn_dir == Dir_Right) {
-			shot_req[shot_req_num-1].flag_pos.x = 19;
+			// shot_req[shot_req_num-1].flag_pos.x = 18;
 		}
 		else shot_req[shot_req_num-1].flag_pos.x = 0;
 	}

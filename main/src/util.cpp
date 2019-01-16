@@ -1,4 +1,5 @@
 #include "util.hpp"
+#include "config.hpp"
 
 int set_dz(int val, int dz) {
   dz = abs(dz);
@@ -56,6 +57,8 @@ void log_init() {
   printf(">>>> %d log_init(): Start Logging for Program \n", pros::millis());
 	if (log_file == NULL) {
 		printf("  >>>> %d COULD NOT OPEN SD LOG FILE\n", pros::millis());
+    ctrler.rumble("--------");
+    pros::delay(3000);
 		return;
 	}
   printf(">>>> %d log_init(): Successfully opened SD log file \n", pros::millis());

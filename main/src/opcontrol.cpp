@@ -93,7 +93,14 @@ void opcontrol() {
 			else if (field_pos== FieldPos_PF) field_pos_s = "PF";
 			else if (field_pos== FieldPos_PF_Back) field_pos_s = "PfB";
 
-			ctrler.print(2, 0, "%.1f,%.1f,%.1f p:%d", pos.x, pos.y, RAD_TO_DEG(pos.a));
+			// ctrler.print(2, 0, "%.1f,%.1f,%.1f p:%d", pos.x, pos.y, RAD_TO_DEG(pos.a));
+
+			if (ctrler.get_digital_new_press(E_CONTROLLER_DIGITAL_LEFT)) {
+				vision_object_s_t object_arr[1];
+				vision_sensor.read_by_size(0, 1, object_arr);
+				printf("PRINTED SIGNATURE");
+				ctrler.print(2, 1, "%d", object_arr[0].signature);
+			}
 			//ctrler.print(2, 0, "%s %d %d %d", field_pos_s, (int)intake.get_temperature(), (int)puncherLeft.get_temperature(), (int)puncherRight.get_temperature());
 			//ctrler.print(2, 0, "%d%d%d%d%d%def  ", (int)puncherLeft.get_temperature(), (int)puncherRight.get_temperature(), (int)drive_fl.get_temperature(), (int)drive_fr.get_temperature(), (int)drive_bl.get_temperature(), (int)drive_br.get_temperature());
 			//ctrler.print(2, 0, "%.3f", ((enc_l.get_value() * SPN_TO_IN_L) - (enc_r.get_value() * SPN_TO_IN_R)) / 3600_deg);
