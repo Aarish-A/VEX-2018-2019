@@ -70,7 +70,6 @@ void opcontrol() {
 	while (true) {
 		for (int i = 0; i < 12; i++) {
 			btn[i].check_pressed();
-			//if (btn[i].pressed)log_ln("Pressed: %d ", btn[i].btn_name);
 		}
 
 
@@ -95,7 +94,7 @@ void opcontrol() {
 
 			// ctrler.print(2, 0, "%.1f,%.1f,%.1f p:%d", pos.x, pos.y, RAD_TO_DEG(pos.a));
 
-			if (ctrler.get_digital_new_press(E_CONTROLLER_DIGITAL_LEFT)) {
+			if (btn[E_CONTROLLER_DIGITAL_LEFT-6].pressed) {
 				vision_object_s_t object_arr[1];
 				vision_sensor.read_by_size(0, 1, object_arr);
 				printf("PRINTED SIGNATURE");
