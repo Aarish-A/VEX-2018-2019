@@ -15,13 +15,15 @@
  */
 
 pros::Controller master(pros::E_CONTROLLER_MASTER);
-pros::Motor motor_a(3, pros::E_MOTOR_GEARSET_18, true, pros::E_MOTOR_ENCODER_DEGREES);
+pros::Motor motor_a(6, pros::E_MOTOR_GEARSET_18, false, pros::E_MOTOR_ENCODER_DEGREES);
 pros::Motor motor_b(5, pros::E_MOTOR_GEARSET_18, false, pros::E_MOTOR_ENCODER_DEGREES);
 void opcontrol() {
-	motor_a.move(-127);
-	motor_b.move(127);
+	motor_a.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
+	motor_a.move(-50);
+	//motor_a.move_relative(0, 100);
+	//motor_b.move(127);
 	while (true) {
-		printf("%d A: Pos:%f, Vel:%f |  B: Pos:%f, Vel:%f \n", motor_a.get_position(), motor_a.get_actual_velocity(), motor_b.get_position(), motor_b.get_actual_velocity());
+		printf("%d A: Pos:%f, Vel:%f, Volt:%f, Temp:%f, Current:%f|  B: Pos:%f, Vel:%f \n", motor_a.get_position(), motor_a.get_actual_velocity(), motor_a.get_voltage(), motor_a.get_temperature(), motor_a.get_current_draw(), motor_b.get_position(), motor_b.get_actual_velocity());
 		pros::delay(100);
 	}
 }
