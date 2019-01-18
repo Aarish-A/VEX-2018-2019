@@ -57,8 +57,11 @@ void pun_cal() {
     return;
   }
   delay(100);
+
+	log_ln("%d Pun Cal Before Tare. LeftPos:%f, RightPos:%f", pros::millis(), puncherLeft.get_position(), puncherRight.get_position());
   puncherLeft.tare_position();
   puncherRight.tare_position();
+	log_ln("%d Pun Cal Done Tare. LeftPos:%f, RightPos:%f", pros::millis(), puncherLeft.get_position(), puncherRight.get_position());
 
   pun_move(PUN_OFFSET + PUN_HOLD);
   PunState pun_state_change(PunState::Load);

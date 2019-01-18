@@ -1,6 +1,8 @@
 #include "util.hpp"
 #include "config.hpp"
 
+pros::Mutex mutex;
+
 int set_dz(int val, int dz) {
   dz = abs(dz);
   return (abs(val) < dz ? 0 : val);
@@ -97,6 +99,8 @@ void log(const char * format, ...) {
 }
 
 void log_ln(const char * format, ...) {
+  mutex.take(LOG_MUTEX_TO);
+
   va_list args;
   va_start(args, format);
 
@@ -124,4 +128,6 @@ void log_ln(const char * format, ...) {
   }
 
   va_end (args);
+
+  mutex.give();
 }

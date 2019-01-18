@@ -36,6 +36,9 @@ const int LOG_CLOSE_TIME = 1000;
 const char* const log_file_name = "/usd/log.txt";
 const char* const log_mode = "a";
 
+extern pros::Mutex mutex;
+const int LOG_MUTEX_TO = 50;
+
 /* template<typename... Args> void log(const char * f, Args... args) {
   printf(f, args...);
   if (log_file == NULL) {
