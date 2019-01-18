@@ -69,10 +69,10 @@ void set_turn_dir(Dir turn_dir) {
 				shot_req[shot_req_num-1].flag_pos.x = -30;
 			} else if (object_array[0].signature == 2) {
 				log_ln("%d Detected signature %d from vision sensor, was supposed to detect 2", pros::millis(), object_array[0].signature);
-				shot_req[shot_req_num-1].flag_pos.x = -25;
-			} else {
-				log_ln("%d Did not detect signature 1 or 2 from vision sensor", pros::millis());
 				shot_req[shot_req_num-1].flag_pos.x = 0;
+			} else {
+				log_ln("%d Did not detect signature 1 or 2 from vision sensor, was not supposed to detect either signature", pros::millis());
+				shot_req[shot_req_num-1].flag_pos.x = 30;
 			}
 			// shot_req[shot_req_num-1].flag_pos.x = -30;
 		}
@@ -112,7 +112,10 @@ void shot_req_make() {
   if (shot_req_num == 0)
   {
     if (btn[BTN_FIELD_FRONT-6].pressed) set_field_pos(FieldPos_Front);
-    else if (btn[BTN_FIELD_PF_Back-6].pressed) set_field_pos(FieldPos_PF_Back);
+    else if (btn[BTN_FIELD_PF_Back-6].pressed) {
+			set_field_pos(FieldPos_PF_Back);
+			angler_move(330, 100);
+		}
 		//else if (btn[BTN_SHOOT_CANCEL-6].pressed) set_field_pos(FieldPos_PF_Back);
     else if (btn[BTN_FIELD_BACK-6].pressed) set_field_pos(FieldPos_Back);
   }
