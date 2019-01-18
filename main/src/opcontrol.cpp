@@ -97,15 +97,6 @@ void opcontrol() {
 			ctrler.print(2, 0, "LC: %d, Width: %d", object_arr[0].left_coord, object_arr[0].width);
 			// ctrler.print(2, 0, "%.1f,%.1f,%.1f p:%d", pos.x, pos.y, RAD_TO_DEG(pos.a));
 
-<<<<<<< HEAD
-=======
-			if (btn[E_CONTROLLER_DIGITAL_LEFT-6].pressed) {
-				vision_object_s_t object_arr[1];
-				vision_sensor.read_by_size(0, 1, object_arr);
-				printf("PRINTED SIGNATURE");
-				ctrler.print(2, 1, "%d", object_arr[0].signature);
-			}
->>>>>>> 3d28d4d50a022630bdd561043e2c17080c342d3c
 			//ctrler.print(2, 0, "%s %d %d %d", field_pos_s, (int)intake.get_temperature(), (int)puncherLeft.get_temperature(), (int)puncherRight.get_temperature());
 			//ctrler.print(2, 0, "%d%d%d%d%d%def  ", (int)puncherLeft.get_temperature(), (int)puncherRight.get_temperature(), (int)drive_fl.get_temperature(), (int)drive_fr.get_temperature(), (int)drive_bl.get_temperature(), (int)drive_br.get_temperature());
 			//ctrler.print(2, 0, "%.3f", ((enc_l.get_value() * SPN_TO_IN_L) - (enc_r.get_value() * SPN_TO_IN_R)) / 3600_deg);
