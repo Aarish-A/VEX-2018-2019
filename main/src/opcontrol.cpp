@@ -29,9 +29,9 @@ void opcontrol() {
 	drive_set(0);
 
 	while (true) {
-		// for (int i = 0; i < 12; i++) {
-		// 	btn[i].check_pressed();
-		// }
+		for (int i = 0; i < 12; i++) {
+			btn[i].check_pressed();
+		}
 
 
 		// shot_req_make();
@@ -45,8 +45,14 @@ void opcontrol() {
 		vision_object_s_t object_array[3];
 		vision_sensor.read_by_size(0, 3, object_array);
 
-		vision_object_s_t yellow_object;
-		vision_object_s_t red_object;
+		vision_object_s_t yellow_object = vision_sensor.get_by_sig(0, 3);;
+		vision_object_s_t red_object = vision_sensor.get_by_sig(0, 1);
+
+		if ((yellow_object.signature == 3) && (yellow_object.left_coord <= 100)) {
+			ctrler.print(2, 0, "Y %d-%d   ", yellow_object.left_coord, yellow_object.left_coord + yellow_object.width);
+		} else {
+			ctrler.print(2, 0, "NO        ");
+		}
 
 		// if (vision_sensor)
 		// ctrler.print(2, 0, "%d: %d-%d    ", object_array[0].signature, object_array[0].left_coord, object_array[0].left_coord + object_array[0].width);
