@@ -30,3 +30,5 @@ public:
 
 extern btn_info btn[12]; //Btn array to store all the buttons.
                         //To access elements of this array, call btn[BTN_ENUM_VAL - 6] b/c the pros enumeration values begin at 6, whereas the indices of the array begin at 0
+
+const bool ENABLE_BTN_PRESS_LOGS = true;
