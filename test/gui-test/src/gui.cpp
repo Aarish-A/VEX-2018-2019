@@ -63,7 +63,7 @@ void gui_init() {
   for(int i = 0; i < 4; i++) {
     shot_slider[i] = lv_slider_create(shot_tuning_tab, NULL);
     lv_obj_set_size(shot_slider[i], 300, 30);
-    lv_slider_set_range(shot_slider[i], 50, 100);
+    lv_slider_set_range(shot_slider[i], 0, 100);
     lv_slider_set_action(shot_slider[i], shot_tuning_slider_action);
     if (i == 0) lv_obj_align(shot_slider[i], shot_tuning_title, LV_ALIGN_OUT_BOTTOM_MID, 5, 10);
     else lv_obj_align(shot_slider[i], shot_slider[i - 1], LV_ALIGN_OUT_BOTTOM_RIGHT, 0, 10);
@@ -78,10 +78,10 @@ void gui_init() {
     shot_slider_label[i] = lv_label_create(shot_tuning_tab, NULL);
     lv_obj_align(shot_slider_label[i], shot_slider[i], LV_ALIGN_OUT_LEFT_MID, -35, 0);
 
-    if (i == 0) lv_label_set_text(shot_slider_label[i], "Back");
-    else if (i == 1) lv_label_set_text(shot_slider_label[i], "Back PF");
-    else if (i == 2) lv_label_set_text(shot_slider_label[i], "Mid PF");
-    else if (i == 3) lv_label_set_text(shot_slider_label[i], "Front PF");
+    if (i == 0) lv_label_set_text(shot_slider_label[i], "Back Mid");
+    else if (i == 1) lv_label_set_text(shot_slider_label[i], "Back Top");
+    else if (i == 2) lv_label_set_text(shot_slider_label[i], "Front Mid");
+    else if (i == 3) lv_label_set_text(shot_slider_label[i], "Front Top");
   }
 
   shot_tuning_save_button = lv_btn_create(shot_tuning_tab, NULL);
@@ -114,10 +114,10 @@ lv_res_t shot_tuning_slider_action(lv_obj_t* slider) {
 lv_res_t shot_tuning_save_button_action(lv_obj_t* button) {
   for(int i = 0; i < 4; i++) {
     FILE* log = NULL;
-    if (i == 0) log = fopen("/usd/back_shot_position.txt", "w");
-    else if (i == 1) log = fopen("/usd/backPF_shot_position.txt", "w");
-    else if (i == 2) log = fopen("/usd/midPF_shot_position.txt", "w");
-    else if (i == 3) log = fopen("/usd/frontPF_shot_position.txt", "w");
+    if (i == 0) log = fopen("/usd/back_mid_shot_position.txt", "w");
+    else if (i == 1) log = fopen("/usd/back_top_shot_position", "w");
+    else if (i == 2) log = fopen("/usd/front_mid_shot_position", "w");
+    else if (i == 3) log = fopen("/usd/front_top_shot_position", "w");
 
     if (log == NULL) {
       printf("Failed to create shot positions file %d\n", i);
