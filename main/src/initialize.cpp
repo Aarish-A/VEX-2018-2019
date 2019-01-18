@@ -18,8 +18,8 @@ void initialize() {
 	log_init();
 	log_ln("%d Finished Init ", pros::millis());
 
-	pun_init();
-	pun_cal();
+	// pun_init();
+	// pun_cal();
   drive_init();
   angler_init();
   intake_init();
