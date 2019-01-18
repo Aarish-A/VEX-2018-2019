@@ -51,9 +51,38 @@ vector rotate(vector v, double offset) {
 }
 
 /* Logging */
+const char* log_file_name = "/usd/log.txt";
 FILE* log_file = NULL; //fopen("/usd/log.txt", "w+");
 int log_close_timer = 0;
 void log_init() {
+  time_t current_time;
+    char* c_time_string;
+
+    /* Obtain current time. */
+    current_time = time(NULL);
+
+    if (current_time == ((time_t)-1))
+    {
+        printf("Failure to obtain the current time.\n");
+    }
+
+    /* Convert to local time format. */
+    c_time_string = ctime(&current_time);
+
+    if (c_time_string == NULL)
+    {
+        printf("Failure to convert the current time.\n");
+    }
+    else
+     {
+      printf("%d Date: %s \n", pros::millis(), c_time_string);
+
+      /*
+      log_file_name = "/usd/";
+      strcat(log_file_name, c_time_string);
+      */
+    }
+
   log_file = fopen(log_file_name, log_mode);
   log_close_timer = 0;
   printf(">>>> %d log_init(): Start Logging for Program \n", pros::millis());
