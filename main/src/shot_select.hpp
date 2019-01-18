@@ -49,6 +49,7 @@ struct ShotSelect {
   vector flag_pos;
 
   bool drive_turn_handled;
+  int angler_to;
   bool shot_handled;
 };
 
@@ -77,4 +78,4 @@ extern pros::Task shot_req_handle_task;
 void inc_shot_req_num();
 void dec_shot_req_num();
 
-/* Btn Pressed Timer */
+const int ANGLER_REACH_T0 = 600;

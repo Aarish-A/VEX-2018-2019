@@ -96,6 +96,8 @@ void set_turn_dir(Dir turn_dir) {
 void set_handled_vars() {
 	shot_req[shot_req_num-1].drive_turn_handled = false;
 	shot_req[shot_req_num-1].shot_handled = false;
+
+	shot_req[shot_req_num-1].angler_to = 0;
 }
 
 void set_shot_req(bool top, Dir turn_dir) {
@@ -207,6 +209,7 @@ void shot_req_handle() {
 				log_ln("%d S1 Turn to face %f, %f ", pros::millis(), shot_req[shot_req_handled_num].flag_pos.x, shot_req[shot_req_handled_num].flag_pos.y);
 				turn_vel_side(new PointAngleTarget({shot_req[shot_req_handled_num].flag_pos.x, shot_req[shot_req_handled_num].flag_pos.y}), (200/50_deg), 0, true);
 			}
+			shot_req[shot_req_handled_num].angler_to = pros::millis() + ANGLER_REACH_T0;
 			shot_req[shot_req_handled_num].drive_turn_handled = true;
 
 			//Shooter Handle 1
@@ -227,6 +230,7 @@ void shot_req_handle() {
 					log_ln("%d S2 Turn to face %f, %f ", pros::millis(), shot_req[shot_req_handled_num].flag_pos.x, shot_req[shot_req_handled_num].flag_pos.y);
 					turn_vel_side(new PointAngleTarget({shot_req[shot_req_handled_num].flag_pos.x, shot_req[shot_req_handled_num].flag_pos.y}), (200/50_deg), 0, true);
 				}
+				shot_req[shot_req_handled_num].angler_to = pros::millis() + ANGLER_REACH_T0;
 				shot_req[shot_req_handled_num].drive_turn_handled = true;
 
 				//Shooter Handle 2

@@ -15,6 +15,7 @@ using namespace pros;
  * to keep execution time for this mode under a few seconds.
  */
 void initialize() {
+	printf("%d Start initialize \n", pros::millis());
 	log_init();
 	log_ln("%d Finished Init ", pros::millis());
 
