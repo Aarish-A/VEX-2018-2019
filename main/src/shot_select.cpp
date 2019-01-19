@@ -103,7 +103,6 @@ void set_shot_req(bool top, Dir turn_dir) {
 	set_turn_dir(turn_dir);
 	set_handled_vars();
 	log_ln(LOG_SHOTS, "%d Shot Req (Task State:%d)| Anglr:%f | RNum:%d | HandledNum:%d | FPos:%d | 1angle:%d, 1trn:%d (%f, %f), Hndled1 drive:%d shot:%d| 2angle:%d, 2turn:%d (%f, %f), Hndled1 drive:%d shot:%d ", pros::millis(), shot_req_handle_task.get_state(), angler.get_position(), shot_req_num, shot_req_handled_num, shot_req[0].field_pos, shot_req[0].angle_targ, shot_req[0].turn_dir, shot_req[0].flag_pos.x, shot_req[0].flag_pos.y, shot_req[0].drive_turn_handled, shot_req[0].shot_handled, shot_req[1].angle_targ, shot_req[1].turn_dir, shot_req[1].flag_pos.x, shot_req[1].flag_pos.y, shot_req[1].drive_turn_handled, shot_req[1].shot_handled);
-	shot_queue_dp.reset_timer();
 }
 
 void shot_req_make() {
@@ -120,7 +119,6 @@ void shot_req_make() {
   }
 	else if (check_single_press(BTN_SHOOT_CANCEL)) {
 		shot_cancel_pressed = true;
-		shot_queue_dp.reset_timer();
 		log_ln(LOG_SHOTS, "  >>> %d Cancel Shot Req Handle Task - Before Suspend| State %d | shot_req_num = %d, shot_req_handled_num = %d ", pros::millis(), shot_req_handle_task.get_state(), shot_req_num, shot_req_handled_num);
 		shot_req_handle_task.suspend();
 		log_ln(LOG_SHOTS, "  >>> %d Cancel Shot Req Handle Task - Suspended| State %d | shot_req_num = %d, shot_req_handled_num = %d ", pros::millis(), shot_req_handle_task.get_state(), shot_req_num, shot_req_handled_num);
@@ -138,45 +136,32 @@ void shot_req_make() {
 		//So not all requests have been made, or the second request hasn't been executed yet -> Prevents from overwriting second request during execution
 	if (shot_req_num < 2 || shot_req_handled_num < 1)
 	{
-		bool L_T, L_M, R_T, R_M;
 
-		shot_queue_dp.set_first_pressed();
-		if (shot_req[0].field_pos == FieldPos_Back || shot_req[0].field_pos == FieldPos_PF_Back) {
+		bool L_T, L_M, R_T, R_M;
+		bool T_DOUBLE, M_DOUBLE;
+
+		if (shot_req[0].field_pos == FieldPos_Back || shot_req[0].field_pos == FieldPos_PF_Back) { //Only register left buttons if shooting from front
+			T_DOUBLE = check_double_press(BTN_SHOT_L_T, BTN_SHOT_R_T);
+			M_DOUBLE = check_double_press(BTN_SHOT_L_M, BTN_SHOT_R_M);
 			L_T = check_single_press(BTN_SHOT_L_T);
 			L_M = check_single_press(BTN_SHOT_L_M);
 		}
 		else {
-			L_T = 0;
-			L_M = 0;
-			shot_queue_dp.override_first_pressed(BTN_SHOT_L_T);
-			shot_queue_dp.override_first_pressed(BTN_SHOT_L_M);
+			T_DOUBLE = false;
+			M_DOUBLE = false;
+			L_T = false;
+			L_M = false;
 		}
 		R_T = check_single_press(BTN_SHOT_R_T);
 		R_M = check_single_press(BTN_SHOT_R_M);
-		if (pros::millis() < shot_queue_dp.get_timer()) { //Check for Double Press
-			if ( (shot_queue_dp.get_first_pressed() == BTN_SHOT_R_T && L_T) ||
-		       (shot_queue_dp.get_first_pressed() == BTN_SHOT_L_T && R_T) ) {
-				set_shot_req(true, Dir_Centre);
-			}
-			else if ( (shot_queue_dp.get_first_pressed() == BTN_SHOT_R_M && L_M) ||
-		       (shot_queue_dp.get_first_pressed() == BTN_SHOT_L_M && R_M) ) {
-				set_shot_req(false, Dir_Centre);
-			}
-		}
-		else if (shot_queue_dp.get_timer()) { //Check for Single Press
-			if (shot_queue_dp.get_first_pressed() == BTN_SHOT_L_T) {
-				set_shot_req(true, Dir_Left);
-			}
-			else if (shot_queue_dp.get_first_pressed() == BTN_SHOT_L_M) {
-				set_shot_req(false, Dir_Left);
-			}
-			else if (shot_queue_dp.get_first_pressed() == BTN_SHOT_R_T) {
-				set_shot_req(true, Dir_Right);
-			}
-			else if (shot_queue_dp.get_first_pressed() == BTN_SHOT_R_M) {
-				set_shot_req(false, Dir_Right);
-			}
-		}
+
+		//Make shot requests depending on which button sequence was pressed
+		if (T_DOUBLE) set_shot_req(true, Dir_Centre);
+		else if (M_DOUBLE) set_shot_req(false, Dir_Centre);
+		else if (L_T) set_shot_req(true, Dir_Left);
+		else if (L_M) set_shot_req(false, Dir_Left);
+		else if (R_T) set_shot_req(true, Dir_Right);
+		else if (R_M) set_shot_req(false, Dir_Right);
 	}
 }
 
