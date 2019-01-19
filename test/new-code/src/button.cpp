@@ -27,6 +27,7 @@ bool check_single_press(pros::controller_digital_e_t button) {
     buttons[button].last_pressed = 0;
     return true;
   }
+  else return false;
 }
 
 bool check_double_press(pros::controller_digital_e_t button1, pros::controller_digital_e_t button2) {

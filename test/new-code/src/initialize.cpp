@@ -9,6 +9,7 @@
  * to keep execution time for this mode under a few seconds.
  */
 void initialize() {
+  printf("%d Start initialize\n", pros::millis());
   buttons[DP_R1].button_press_time = BTN_PRESS_TIME;
 	buttons[DP_L1].button_press_time = BTN_PRESS_TIME;
 }
