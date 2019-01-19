@@ -10,11 +10,11 @@ struct button {
   bool last_pressed;
   uint32_t last_pressed_time;
   uint32_t button_press_time = 0;
-  bool button_recognized = false;
 };
 
 button buttons[12];
 
+void init_buttons();
 void update_buttons();
 bool check_rising(pros::controller_digital_e_t button);
 bool check_falling(pros::controller_digital_e_t button);

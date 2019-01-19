@@ -1,5 +1,9 @@
 #include "button.hpp"
 
+void init_buttons() {
+
+}
+
 void update_buttons() {
   for(int i = 0; i < 12; i++) {
     buttons[i].last_pressed = buttons[i].pressed;

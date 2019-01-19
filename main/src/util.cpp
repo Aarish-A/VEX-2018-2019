@@ -99,7 +99,7 @@ void log_init() {
   log_close_timer = pros::millis() + LOG_CLOSE_TIME;
 }
 
-void log(log_system system, const char * format, ...) {
+void log(bool system, const char * format, ...) {
   if (system) {
     mutex.take(LOG_MUTEX_TO);
     va_list args;
@@ -131,7 +131,7 @@ void log(log_system system, const char * format, ...) {
   }
 }
 
-void log_ln(log_system system, const char * format, ...) {
+void log_ln(bool system, const char * format, ...) {
   if (system) {
     mutex.take(LOG_MUTEX_TO);
 

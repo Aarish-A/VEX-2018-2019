@@ -48,6 +48,9 @@ void opcontrol() {
 		constexpr pros::controller_digital_e_t FE_X = pros::E_CONTROLLER_DIGITAL_X;
 
 		if (check_double_press(DP_R1, DP_L1)) ctrler.print(2, 0, "DOUBLE PRESS   ");
+		else if (check_single_press(SP_A)) ctrler.print(2, 0, "SINGLE PRESS   ");
+		else if (check_falling(FE_X)) ctrler.print(2, 0, "FALLING EDGE    ");
+
 		//
 		// if (millis() - lstTime > 100) {
 		// 	lstTime = millis();

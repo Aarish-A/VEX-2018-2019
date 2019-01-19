@@ -11,19 +11,18 @@ int set_dz(int val, int dz);
 int set_scaled_dz(int val, int dz);
 
 /* Logging */
-enum log_system {
-  drive = 1,
-  puncher = 1,
-  angler = 1,
-  decapper = 1,
-  joystick = 1,
-};
+constexpr bool LOG_DRIVE = 1;
+constexpr bool LOG_PUNCHER = 1;
+constexpr bool LOG_ANGLER = 1;
+constexpr bool LOG_DECAPPER = 1;
+constexpr bool LOG_JOYSTICK = 1;
+constexpr bool LOG_ERROR = 1;
 
 extern FILE* log_file;
 void log_init(); //Call in initialize before calling log();
 
-void log(const char * format, ...);
-void log_ln(const char * format, ...);
+void log(bool system, const char * format, ...);
+void log_ln(bool system, const char * format, ...);
 
 extern int log_close_timer;
 const int LOG_CLOSE_TIME = 1000;

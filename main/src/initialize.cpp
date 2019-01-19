@@ -8,15 +8,12 @@
 
 using namespace pros;
 
-/**
- * Runs initialization code. This occurs as soon as the program is started.
- *
- * All other competition modes are blocked by initialize; it is recommended
- * to keep execution time for this mode under a few seconds.
- */
 void initialize() {
 	log_init();
 	log_ln("%d Finished Init ", pros::millis());
+
+	buttons[DP_R1].button_press_time = BTN_PRESS_TIME;
+	buttons[DP_L1].button_press_time = BTN_PRESS_TIME;
 
 	// pun_init();
 	// pun_cal();
