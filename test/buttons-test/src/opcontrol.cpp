@@ -2,25 +2,18 @@
 #include "button.hpp"
 #include "controls.hpp"
 
-/**
- * Runs the operator control code. This function will be started in its own task
- * with the default priority and stack size whenever the robot is enabled via
- * the Field Management System or the VEX Competition Switch in the operator
- * control mode.
- *
- * If no competition control is connected, this function will run immediately
- * following initialize().
- *
- * If the robot is disabled or communications is lost, the
- * operator control task will be stopped. Re-enabling the robot will restart the
- * task, not resume it from where it left off.
- */
-
 using namespace pros;
 
 void opcontrol() {
 
-		if ()
+	while (true) {
+		update_buttons();
+
+
+		if (check_double_press(DP_R1, DP_L1)) ctrler.print(2, 0, "DOUBLE PRESS   ");
+		else if (check_single_press(SP_A)) ctrler.print(2, 0, "SINGLE PRESS   ");
+		else if (check_falling(FE_X)) ctrler.print(2, 0, "FALLING EDGE    ");
+
 
 		delay(10);
 	}

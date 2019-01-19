@@ -1,5 +1,6 @@
 #include "main.h"
 #include "button.hpp"
+#include "controls.hpp"
 
 /**
  * Runs initialization code. This occurs as soon as the program is started.
@@ -7,7 +8,10 @@
  * All other competition modes are blocked by initialize; it is recommended
  * to keep execution time for this mode under a few seconds.
  */
-void initialize() {}
+void initialize() {
+  buttons[DP_R1].button_press_time = BTN_PRESS_TIME;
+	buttons[DP_L1].button_press_time = BTN_PRESS_TIME;
+}
 
 /**
  * Runs while the robot is in the disabled state of Field Management System or
