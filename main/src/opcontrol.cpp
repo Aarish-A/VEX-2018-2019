@@ -28,10 +28,12 @@ void opcontrol() {
 	log_ln("%d Start Opcontrol ", pros::millis());
 	drive_set(0);
 
+	int power = 5;
+
 	while (true) {
-		for (int i = 0; i < 12; i++) {
-			btn[i].check_pressed();
-		}
+		// for (int i = 0; i < 12; i++) {
+		// 	btn[i].check_pressed();
+		// }
 
 
 		// shot_req_make();
@@ -42,6 +44,19 @@ void opcontrol() {
 		angler_handle();
 
 		// pos.update();
+		if (ctrler.get_digital_new_press(E_CONTROLLER_DIGITAL_RIGHT) && power <= 15) {
+			power++;
+		} else if (ctrler.get_digital_new_press(E_CONTROLLER_DIGITAL_LEFT) && power >= 0) {
+			power--;
+		}
+
+		// if (ctrler.get_digital(E_CONTROLLER_DIGITAL_R1)) {
+			decapper.move(-power);
+		// } else {
+			// decapper.move(0);
+		// }
+		ctrler.print(2, 0, "P:%d,A:%d     ", power, decapper.get_current_draw());
+
 		vision_object_s_t object_array[3];
 		vision_sensor.read_by_size(0, 3, object_array);
 
@@ -49,9 +64,9 @@ void opcontrol() {
 		vision_object_s_t red_object = vision_sensor.get_by_sig(0, 1);
 
 		if ((yellow_object.signature == 3) && (yellow_object.left_coord <= 100)) {
-			ctrler.print(2, 0, "Y %d-%d   ", yellow_object.left_coord, yellow_object.left_coord + yellow_object.width);
+			// ctrler.print(2, 0, "Y %d-%d   ", yellow_object.left_coord, yellow_object.left_coord + yellow_object.width);
 		} else {
-			ctrler.print(2, 0, "NO        ");
+			// ctrler.print(2, 0, "NO        ");
 		}
 
 		// if (vision_sensor)
