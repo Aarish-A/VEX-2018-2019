@@ -16,7 +16,6 @@ bool shot_cancel_pressed = false;
 
 pros::Task shot_req_handle_task ((pros::task_fn_t)shot_req_handle, (void*)NULL, TASK_PRIORITY_DEFAULT, TASK_STACK_DEPTH_DEFAULT, "Shot_Req_Handle_Task");
 
-btn_dp_detector shot_queue_dp(pros::E_CONTROLLER_DIGITAL_L1, pros::E_CONTROLLER_DIGITAL_R2);
 /* Shot Select Code */
 void inc_shot_req_num() {
 	if (shot_req_num < 2) shot_req_num++;
@@ -111,15 +110,15 @@ void shot_req_make() {
   //Set Field Pos
   if (shot_req_num == 0)
   {
-    if (btn[BTN_FIELD_FRONT-6].pressed) set_field_pos(FieldPos_Front);
-    else if (btn[BTN_FIELD_PF_Back-6].pressed) {
+    if (check_single_press(BTN_FIELD_FRONT)) set_field_pos(FieldPos_Front);
+    else if (check_single_press(BTN_FIELD_PF_Back)) {
 			set_field_pos(FieldPos_PF_Back);
 			angler_move(330, 100);
 		}
 		//else if (btn[BTN_SHOOT_CANCEL-6].pressed) set_field_pos(FieldPos_PF_Back);
-    else if (btn[BTN_FIELD_BACK-6].pressed) set_field_pos(FieldPos_Back);
+    else if (check_single_press(BTN_FIELD_BACK)) set_field_pos(FieldPos_Back);
   }
-	else if (btn[BTN_SHOOT_CANCEL-6].pressed) {
+	else if (check_single_press(BTN_SHOOT_CANCEL)) {
 		shot_cancel_pressed = true;
 		shot_queue_dp.reset_timer();
 		log_ln(LOG_SHOTS, "  >>> %d Cancel Shot Req Handle Task - Before Suspend| State %d | shot_req_num = %d, shot_req_handled_num = %d ", pros::millis(), shot_req_handle_task.get_state(), shot_req_num, shot_req_handled_num);
@@ -143,8 +142,8 @@ void shot_req_make() {
 
 		shot_queue_dp.set_first_pressed();
 		if (shot_req[0].field_pos == FieldPos_Back || shot_req[0].field_pos == FieldPos_PF_Back) {
-			L_T = btn[BTN_SHOT_L_T-6].pressed;
-			L_M = btn[BTN_SHOT_L_M-6].pressed;
+			L_T = check_single_press(BTN_SHOT_L_T);
+			L_M = check_single_press(BTN_SHOT_L_M);
 		}
 		else {
 			L_T = 0;
@@ -152,8 +151,8 @@ void shot_req_make() {
 			shot_queue_dp.override_first_pressed(BTN_SHOT_L_T);
 			shot_queue_dp.override_first_pressed(BTN_SHOT_L_M);
 		}
-		R_T = btn[BTN_SHOT_R_T-6].pressed;
-		R_M = btn[BTN_SHOT_R_M-6].pressed;
+		R_T = check_single_press(BTN_SHOT_R_T);
+		R_M = check_single_press(BTN_SHOT_R_M);
 		if (pros::millis() < shot_queue_dp.get_timer()) { //Check for Double Press
 			if ( (shot_queue_dp.get_first_pressed() == BTN_SHOT_R_T && L_T) ||
 		       (shot_queue_dp.get_first_pressed() == BTN_SHOT_L_T && R_T) ) {

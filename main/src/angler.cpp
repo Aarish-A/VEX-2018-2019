@@ -35,8 +35,6 @@ void angler_cal() {
 	*/
 }
 
-btn_dp_detector angler_back_dp(pros::E_CONTROLLER_DIGITAL_L1, pros::E_CONTROLLER_DIGITAL_L2);
-
 void angler_handle() {
 	static int anglerPow = 0;
 	static int anglerPowLst = 0;
