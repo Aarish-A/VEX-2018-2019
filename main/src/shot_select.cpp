@@ -31,7 +31,7 @@ void dec_shot_req_num() {
 void set_field_pos(FieldPos field_pos) {
   shot_req[0].field_pos = field_pos;
   shot_req[1].field_pos = field_pos;
-	log_ln("%d Shot Field Pos Set (Task State:%d)| Anglr:%f | RNum:%d | HandledNum:%d | FPos:%d | 1angle:%d, 1trn:%d (%f, %f), Hndled1 drive:%d shot:%d| 2angle:%d, 2turn:%d (%f, %f), Hndled1 drive:%d shot:%d ", pros::millis(), shot_req_handle_task.get_state(), angler.get_position(), shot_req_num, shot_req_handled_num, shot_req[0].field_pos, shot_req[0].angle_targ, shot_req[0].turn_dir, shot_req[0].flag_pos.x, shot_req[0].flag_pos.y, shot_req[0].drive_turn_handled, shot_req[0].shot_handled, shot_req[1].angle_targ, shot_req[1].turn_dir, shot_req[1].flag_pos.x, shot_req[1].flag_pos.y, shot_req[1].drive_turn_handled, shot_req[1].shot_handled);
+	log_ln(LOG_SHOTS, "%d Shot Field Pos Set (Task State:%d)| Anglr:%f | RNum:%d | HandledNum:%d | FPos:%d | 1angle:%d, 1trn:%d (%f, %f), Hndled1 drive:%d shot:%d| 2angle:%d, 2turn:%d (%f, %f), Hndled1 drive:%d shot:%d ", pros::millis(), shot_req_handle_task.get_state(), angler.get_position(), shot_req_num, shot_req_handled_num, shot_req[0].field_pos, shot_req[0].angle_targ, shot_req[0].turn_dir, shot_req[0].flag_pos.x, shot_req[0].flag_pos.y, shot_req[0].drive_turn_handled, shot_req[0].shot_handled, shot_req[1].angle_targ, shot_req[1].turn_dir, shot_req[1].flag_pos.x, shot_req[1].flag_pos.y, shot_req[1].drive_turn_handled, shot_req[1].shot_handled);
 }
 
 void set_angle_targ(bool top) {
@@ -61,17 +61,17 @@ void set_turn_dir(Dir turn_dir) {
 
 		pros::vision_object_s_t object_array[1];
 		vision_sensor.read_by_size(0, 1, object_array);
-		log_ln("%d Read from vision sensor", pros::millis());
+		log_ln(LOG_SHOTS, "%d Read from vision sensor", pros::millis());
 
 		if (turn_dir == Dir_Left) {
 			if (object_array[0].signature == 1) {
-				log_ln("%d Detected signature %d from vision sensor, was supposed to detect 1", pros::millis(), object_array[0].signature);
+				log_ln(LOG_SHOTS, "%d Detected signature %d from vision sensor, was supposed to detect 1", pros::millis(), object_array[0].signature);
 				shot_req[shot_req_num-1].flag_pos.x = -30;
 			} else if (object_array[0].signature == 2) {
-				log_ln("%d Detected signature %d from vision sensor, was supposed to detect 2", pros::millis(), object_array[0].signature);
+				log_ln(LOG_SHOTS, "%d Detected signature %d from vision sensor, was supposed to detect 2", pros::millis(), object_array[0].signature);
 				shot_req[shot_req_num-1].flag_pos.x = 0;
 			} else {
-				log_ln("%d Did not detect signature 1 or 2 from vision sensor, was not supposed to detect either signature", pros::millis());
+				log_ln(LOG_SHOTS, "%d Did not detect signature 1 or 2 from vision sensor, was not supposed to detect either signature", pros::millis());
 				shot_req[shot_req_num-1].flag_pos.x = 30;
 			}
 			// shot_req[shot_req_num-1].flag_pos.x = -30;
@@ -103,7 +103,7 @@ void set_shot_req(bool top, Dir turn_dir) {
 	set_angle_targ(top);
 	set_turn_dir(turn_dir);
 	set_handled_vars();
-	log_ln("%d Shot Req (Task State:%d)| Anglr:%f | RNum:%d | HandledNum:%d | FPos:%d | 1angle:%d, 1trn:%d (%f, %f), Hndled1 drive:%d shot:%d| 2angle:%d, 2turn:%d (%f, %f), Hndled1 drive:%d shot:%d ", pros::millis(), shot_req_handle_task.get_state(), angler.get_position(), shot_req_num, shot_req_handled_num, shot_req[0].field_pos, shot_req[0].angle_targ, shot_req[0].turn_dir, shot_req[0].flag_pos.x, shot_req[0].flag_pos.y, shot_req[0].drive_turn_handled, shot_req[0].shot_handled, shot_req[1].angle_targ, shot_req[1].turn_dir, shot_req[1].flag_pos.x, shot_req[1].flag_pos.y, shot_req[1].drive_turn_handled, shot_req[1].shot_handled);
+	log_ln(LOG_SHOTS, "%d Shot Req (Task State:%d)| Anglr:%f | RNum:%d | HandledNum:%d | FPos:%d | 1angle:%d, 1trn:%d (%f, %f), Hndled1 drive:%d shot:%d| 2angle:%d, 2turn:%d (%f, %f), Hndled1 drive:%d shot:%d ", pros::millis(), shot_req_handle_task.get_state(), angler.get_position(), shot_req_num, shot_req_handled_num, shot_req[0].field_pos, shot_req[0].angle_targ, shot_req[0].turn_dir, shot_req[0].flag_pos.x, shot_req[0].flag_pos.y, shot_req[0].drive_turn_handled, shot_req[0].shot_handled, shot_req[1].angle_targ, shot_req[1].turn_dir, shot_req[1].flag_pos.x, shot_req[1].flag_pos.y, shot_req[1].drive_turn_handled, shot_req[1].shot_handled);
 	shot_queue_dp.reset_timer();
 }
 
@@ -122,16 +122,16 @@ void shot_req_make() {
 	else if (btn[BTN_SHOOT_CANCEL-6].pressed) {
 		shot_cancel_pressed = true;
 		shot_queue_dp.reset_timer();
-		log_ln("  >>> %d Cancel Shot Req Handle Task - Before Suspend| State %d | shot_req_num = %d, shot_req_handled_num = %d ", pros::millis(), shot_req_handle_task.get_state(), shot_req_num, shot_req_handled_num);
+		log_ln(LOG_SHOTS, "  >>> %d Cancel Shot Req Handle Task - Before Suspend| State %d | shot_req_num = %d, shot_req_handled_num = %d ", pros::millis(), shot_req_handle_task.get_state(), shot_req_num, shot_req_handled_num);
 		shot_req_handle_task.suspend();
-		log_ln("  >>> %d Cancel Shot Req Handle Task - Suspended| State %d | shot_req_num = %d, shot_req_handled_num = %d ", pros::millis(), shot_req_handle_task.get_state(), shot_req_num, shot_req_handled_num);
+		log_ln(LOG_SHOTS, "  >>> %d Cancel Shot Req Handle Task - Suspended| State %d | shot_req_num = %d, shot_req_handled_num = %d ", pros::millis(), shot_req_handle_task.get_state(), shot_req_num, shot_req_handled_num);
 		setDrive(0);
 
 		shot_req_num = 0;
 		shot_req_handled_num = 0;
 		set_handled_vars();
 		shot_req_handle_task.resume();
-		log_ln("  >>> %d Shot Req Handle Task  - Resume | State %d | shot_req_num = %d, shot_req_handled_num = %d ", pros::millis(), shot_req_handle_task.get_state(), shot_req_num, shot_req_handled_num);
+		log_ln(LOG_SHOTS, "  >>> %d Shot Req Handle Task  - Resume | State %d | shot_req_num = %d, shot_req_handled_num = %d ", pros::millis(), shot_req_handle_task.get_state(), shot_req_num, shot_req_handled_num);
 	}
 
   //Set other shot constants
@@ -182,11 +182,11 @@ void shot_req_make() {
 }
 
 void shot_req_handle() {
-	log_ln("%d Start Shot Req Handle Task ",  pros::millis());
+	log_ln(LOG_SHOTS, "%d Start Shot Req Handle Task ",  pros::millis());
 	shot_req_num = 0;
 	while (true) {
 		if (shot_req_num > 0) {
-			log_ln("%d Start handling first shot request ", pros::millis());
+			log_ln(LOG_SHOTS, "%d Start handling first shot request ", pros::millis());
 			set_handled_vars(); //Make sure all handled vars are reset to false
 			shot_req_handled_num = 0; //Make sure we start handling shot requests from index 0
 
@@ -200,14 +200,14 @@ void shot_req_handle() {
 
 			//Drive Handle 1
 			if (shot_req[shot_req_handled_num].field_pos == FieldPos_PF_Back) {
-				log_ln("%d S1 Turn to face %f, %f ", pros::millis(), shot_req[shot_req_handled_num].flag_pos.x, shot_req[shot_req_handled_num].flag_pos.y);
+				log_ln(LOG_SHOTS, "%d S1 Turn to face %f, %f ", pros::millis(), shot_req[shot_req_handled_num].flag_pos.x, shot_req[shot_req_handled_num].flag_pos.y);
 				setDrive(0, -60, 0);
 			  while (pos.y > -2_in) pros::delay(10);
-			  log_ln("%d Done Back up PF (%f, %f, %f)", pros::millis(), pos.x, pos.y, RAD_TO_DEG(pos.a));
+			  log_ln(LOG_SHOTS, "%d Done Back up PF (%f, %f, %f)", pros::millis(), pos.x, pos.y, RAD_TO_DEG(pos.a));
 			  turn_vel(new PointAngleTarget({shot_req[shot_req_handled_num].flag_pos.x, shot_req[shot_req_handled_num].flag_pos.y}), (200/70_deg), 0);
 			}
 			else if (shot_req[shot_req_handled_num].field_pos == FieldPos_Back) {
-				log_ln("%d S1 Turn to face %f, %f ", pros::millis(), shot_req[shot_req_handled_num].flag_pos.x, shot_req[shot_req_handled_num].flag_pos.y);
+				log_ln(LOG_SHOTS, "%d S1 Turn to face %f, %f ", pros::millis(), shot_req[shot_req_handled_num].flag_pos.x, shot_req[shot_req_handled_num].flag_pos.y);
 				turn_vel_side(new PointAngleTarget({shot_req[shot_req_handled_num].flag_pos.x, shot_req[shot_req_handled_num].flag_pos.y}), (200/50_deg), 0, true);
 			}
 			shot_req[shot_req_handled_num].drive_turn_handled = true;
@@ -223,11 +223,11 @@ void shot_req_handle() {
 
 				//Drive Handle 2
 				if (shot_req[shot_req_handled_num].field_pos == FieldPos_PF_Back) {
-					log_ln("%d S2 Turn to face %f, %f ", pros::millis(), shot_req[shot_req_handled_num].flag_pos.x, shot_req[shot_req_handled_num].flag_pos.y);
+					log_ln(LOG_SHOTS, "%d S2 Turn to face %f, %f ", pros::millis(), shot_req[shot_req_handled_num].flag_pos.x, shot_req[shot_req_handled_num].flag_pos.y);
 				  turn_vel(new PointAngleTarget({shot_req[shot_req_handled_num].flag_pos.x, shot_req[shot_req_handled_num].flag_pos.y}), (200/70_deg), 0);
 				}
 				else if (shot_req[shot_req_handled_num].field_pos == FieldPos_Back) {
-					log_ln("%d S2 Turn to face %f, %f ", pros::millis(), shot_req[shot_req_handled_num].flag_pos.x, shot_req[shot_req_handled_num].flag_pos.y);
+					log_ln(LOG_SHOTS, "%d S2 Turn to face %f, %f ", pros::millis(), shot_req[shot_req_handled_num].flag_pos.x, shot_req[shot_req_handled_num].flag_pos.y);
 					turn_vel_side(new PointAngleTarget({shot_req[shot_req_handled_num].flag_pos.x, shot_req[shot_req_handled_num].flag_pos.y}), (200/50_deg), 0, true);
 				}
 				shot_req[shot_req_handled_num].drive_turn_handled = true;

@@ -57,16 +57,16 @@ void drive_handle() {
 			if (a_lst < 0) drive_set(0, 0, drive_brake_pow);
 			else if (a_lst > 0) drive_set(0, 0, -drive_brake_pow);
 			else drive_set(0);
-			log_ln("%d Start turn Brake %d", pros::millis(), drive_brake_pow);
+			log_ln(LOG_DRIVE, "%d Start turn Brake %d", pros::millis(), drive_brake_pow);
 		}
 		else if (!drive_brake_timer && !drive_pow && drive_pow_lst) {
 			drive_set(0);
-			log_ln("%d Drive Set 0", pros::millis());
+			log_ln(LOG_DRIVE, "%d Drive Set 0", pros::millis());
 			//drive_brake_timer = pros::millis() + DRIVE_BRAKE_TIME;
 		}
 
 		if (drive_brake_timer && pros::millis() > drive_brake_timer) {
-			log_ln("%d Drive Brake End ", pros::millis());
+			log_ln(LOG_DRIVE, "%d Drive Brake End ", pros::millis());
 			//LOG(("%d Drive Brake End \n", pros::millis()));
 
 			//drive_brake();

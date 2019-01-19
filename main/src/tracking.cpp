@@ -54,7 +54,7 @@
   }
 
   void Tracking::task() {
-    log_ln("%d Start Update Task", pros::millis());
+    log_ln(LOG_AUTO, "%d Start Update Task", pros::millis());
     while (true) {
       update();
       pros::delay(1);
@@ -128,7 +128,7 @@
   }
 
   void Tracking::reset(double x, double y, double a) {
-    log_ln("\n%d Resetting Pos (%f, %f, %f) from (%f, %f, %f)", pros::millis(), x, y, RAD_TO_DEG(a), this->x, this->y, RAD_TO_DEG(this->a));
+    log_ln(LOG_AUTO, "\n%d Resetting Pos (%f, %f, %f) from (%f, %f, %f)", pros::millis(), x, y, RAD_TO_DEG(a), this->x, this->y, RAD_TO_DEG(this->a));
     this->encL.reset();
     this->encR.reset();
     this->encS.reset();
