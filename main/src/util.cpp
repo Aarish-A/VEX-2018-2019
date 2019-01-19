@@ -99,64 +99,70 @@ void log_init() {
   log_close_timer = pros::millis() + LOG_CLOSE_TIME;
 }
 
-void log(const char * format, ...) {
-  va_list args;
-  va_start(args, format);
+void log(log_system system, const char * format, ...) {
+  if (system) {
+    mutex.take(LOG_MUTEX_TO);
+    va_list args;
+    va_start(args, format);
 
-  vprintf(format, args); //Print to stdout
-  if (log_file == NULL) {
-		//printf("  >>>> %d COULD NOT OPEN SD LOG FILE\n", pros::millis());
-	}
-  else {
-    vfprintf(log_file, format, args); //Print to log_file and flush log_file
-    //fflush(log_file);
+    vprintf(format, args); //Print to stdout
+    if (log_file == NULL) {
+  		//printf("  >>>> %d COULD NOT OPEN SD LOG FILE\n", pros::millis());
+  	}
+    else {
+      vfprintf(log_file, format, args); //Print to log_file and flush log_file
+      //fflush(log_file);
 
-    if (pros::millis() > log_close_timer) {
-      log_close_timer = pros::millis() + LOG_CLOSE_TIME;
+      if (pros::millis() > log_close_timer) {
+        log_close_timer = pros::millis() + LOG_CLOSE_TIME;
 
-      fclose(log_file);
-      while ((log_file = fopen(log_file_name, log_mode)) == NULL) pros::delay(3);
+        fclose(log_file);
+        while ((log_file = fopen(log_file_name, log_mode)) == NULL) pros::delay(3);
 
-      /*
-      printf(">>> %d Close File\n", pros::millis());
-      fprintf(log_file, ">>> %d Close File\r\n", pros::millis());
-      */
+        /*
+        printf(">>> %d Close File\n", pros::millis());
+        fprintf(log_file, ">>> %d Close File\r\n", pros::millis());
+        */
+      }
     }
-  }
 
-  va_end (args);
+    va_end (args);
+    mutex.give();
+  }
 }
 
-void log_ln(const char * format, ...) {
-  mutex.take(LOG_MUTEX_TO);
+void log_ln(log_system system, const char * format, ...) {
+  if (system) {
+    mutex.take(LOG_MUTEX_TO);
 
-  va_list args;
-  va_start(args, format);
+    va_list args;
+    va_start(args, format);
 
-  vprintf(format, args); //Print to stdout
-  printf("\n"); //New line for stdout
-  if (log_file == NULL) {
-		//printf("  >>>> %d COULD NOT OPEN SD LOG FILE\n", pros::millis());
-	}
-  else {
-    vfprintf(log_file, format, args); //Print to log_file and flush log_file
-    fprintf(log_file, "\r\n"); //Return and new line
-    //fflush(log_file);
+    vprintf(format, args); //Print to stdout
+    printf("\n"); //New line for stdout
+    if (log_file == NULL) {
+  		//printf("  >>>> %d COULD NOT OPEN SD LOG FILE\n", pros::millis());
+  	}
+    else {
+      vfprintf(log_file, format, args); //Print to log_file and flush log_file
+      fprintf(log_file, "\r\n"); //Return and new line
+      //fflush(log_file);
 
-    if (pros::millis() > log_close_timer) {
-      log_close_timer = pros::millis() + LOG_CLOSE_TIME;
+      if (pros::millis() > log_close_timer) {
+        log_close_timer = pros::millis() + LOG_CLOSE_TIME;
 
-      fclose(log_file);
-      while ((log_file = fopen(log_file_name, log_mode)) == NULL) pros::delay(3);
+        fclose(log_file);
+        while ((log_file = fopen(log_file_name, log_mode)) == NULL) pros::delay(3);
 
-      /*
-      printf(">>> %d Close File\n", pros::millis());
-      fprintf(log_file, ">>> %d Close File\r\n", pros::millis());
-      */
+        /*
+        printf(">>> %d Close File\n", pros::millis());
+        fprintf(log_file, ">>> %d Close File\r\n", pros::millis());
+        */
+      }
     }
+
+    va_end (args);
+
+    mutex.give();
   }
-
-  va_end (args);
-
-  mutex.give();
 }
