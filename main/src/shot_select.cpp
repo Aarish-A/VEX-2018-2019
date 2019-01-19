@@ -221,8 +221,6 @@ void shot_req_handle() {
 				while (!shot_req[shot_req_handled_num].shot_handled) pros::delay(10);
 				shot_req_handled_num++;
 
-				shot_queue_dp.reset_timer(); //Make sure that timer is reset after a double shot request is completed (the normal polling routine that handles this cannot run during this time)
-
 				angler.move_absolute(ANGLER_PU_POS, 200);
 			}
 			if (angler.get_position() < 10) angler.move_absolute(ANGLER_PU_POS, 200);
