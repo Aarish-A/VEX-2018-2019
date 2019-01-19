@@ -3,6 +3,7 @@
 #include "tracking.hpp"
 #include "angle_target.hpp"
 #include "util.hpp"
+#include "logs.hpp"
 #include <math.h>
 
 constexpr double DRIVE_DIA = 3.95;

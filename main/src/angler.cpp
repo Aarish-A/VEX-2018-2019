@@ -23,7 +23,7 @@ void angler_cal() {
 	angler.tare_position();
 	angler.move_absolute(ANGLER_PU_POS, 100);
 	delay(1000);
-	log_ln("%d Done Angler Cal ", pros::millis());
+	log_ln(LOG_ANGLER, "%d Done Angler Cal ", pros::millis());
 
 	/*
   delay(2000);
@@ -34,8 +34,6 @@ void angler_cal() {
 	log_ln("%d Angler 0 pow wait done %f ", pros::millis(), angler.get_position());
 	*/
 }
-
-btn_dp_detector angler_back_dp(pros::E_CONTROLLER_DIGITAL_L1, pros::E_CONTROLLER_DIGITAL_L2);
 
 void angler_handle() {
 	static int anglerPow = 0;
@@ -61,7 +59,7 @@ void angler_handle() {
 				{
 					angler_move(ANGLER_CAP_FLIP_POS, 100);
 					intake_state_set(-80, IntakeState::Back);
-					log_ln("%d Angler Cap Flip. Pos:%f TPos:%f", pros::millis(), angler.get_position(), angler.get_target_position());
+					log_ln(LOG_ANGLER, "%d Angler Cap Flip. Pos:%f TPos:%f", pros::millis(), angler.get_position(), angler.get_target_position());
 					angler_back_dp.reset_timer();
 				}
 			}
@@ -70,13 +68,13 @@ void angler_handle() {
 				if (angler_back_dp.get_first_pressed() == BTN_SHOT_L_M) {
 					angler_move(ANGLER_PU_POS, 100);
 					intake_state_set(127, IntakeState::Forw);
-					log_ln("%d Angler PU. Pos:%f TPos:%f", pros::millis(), angler.get_position(), angler.get_target_position());
+					log_ln(LOG_ANGLER, "%d Angler PU. Pos:%f TPos:%f", pros::millis(), angler.get_position(), angler.get_target_position());
 					angler_back_dp.reset_timer();
 				}
 				else if (angler_back_dp.get_first_pressed() == BTN_SHOT_L_T) {
 					angler_move(ANGLER_CAP_PU_POS, 100);
 					intake_state_set(127, IntakeState::Forw);
-					log_ln("%d Angler Cap PU. Pos:%f TPos:%f", pros::millis(), angler.get_position(), angler.get_target_position());
+					log_ln(LOG_ANGLER, "%d Angler Cap PU. Pos:%f TPos:%f", pros::millis(), angler.get_position(), angler.get_target_position());
 					angler_back_dp.reset_timer();
 				}
 			}
@@ -84,12 +82,12 @@ void angler_handle() {
 
 		if (anglerPow) {
 			angler_set(anglerPow);
-			log_ln("%d Angler Set %d. Pos:%f", pros::millis(), anglerPow, angler.get_position());
+			log_ln(LOG_ANGLER, "%d Angler Set %d. Pos:%f", pros::millis(), anglerPow, angler.get_position());
 		}
 		else if (!anglerPow && anglerPowLst) {
 			angler_set(0);
 			angler.move_relative(0, 100);
-			log_ln("%d Angler Set 0. Pos:%f", pros::millis(), angler.get_position());
+			log_ln(LOG_ANGLER, "%d Angler Set 0. Pos:%f", pros::millis(), angler.get_position());
 		}
 	}
 	else {

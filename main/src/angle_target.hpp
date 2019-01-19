@@ -3,6 +3,7 @@
 #include <memory>
 #include "tracking.hpp"
 #include "util.hpp"
+#include "logs.hpp"
 
   class AngleTarget {
   public:

@@ -1,31 +1,17 @@
 #include "main.h"
-#include "util.hpp"
-#include "config.hpp"
-#include "puncher.hpp"
-#include "drive.hpp"
-#include "angler.hpp"
-#include "intake.hpp"
+#include "button.hpp"
+#include "controls.hpp"
 
-using namespace pros;
-
+/**
+ * Runs initialization code. This occurs as soon as the program is started.
+ *
+ * All other competition modes are blocked by initialize; it is recommended
+ * to keep execution time for this mode under a few seconds.
+ */
 void initialize() {
-	log_init();
-	log_ln("%d Finished Init ", pros::millis());
-
-	buttons[DP_R1].button_press_time = BTN_PRESS_TIME;
-	buttons[DP_L1].button_press_time = BTN_PRESS_TIME;
-
-	// pun_init();
-	// pun_cal();
-  // drive_init();
-  // angler_init();
-  // intake_init();
-	//
-	// angler_cal();
-	//log_ln("%d Init Done ", pros::millis(), x);
-
-  ///pros::Task pun_task ((pros::task_fn_t)pun_handle, (void*)NULL, TASK_PRIORITY_DEFAULT, TASK_STACK_DEPTH_DEFAULT, "Pun_Task");
-	//pros::Task tracking_task ((pros::task_fn_t)pos.task(), (void*)NULL, TASK_PRIORITY_DEFAULT, TASK_STACK_DEPTH_DEFAULT, "Track_Task");
+  printf("%d Start initialize\n", pros::millis());
+  // buttons[DP_R1].button_press_time = BTN_PRESS_TIME;
+	// buttons[DP_L1].button_press_time = BTN_PRESS_TIME;
 }
 
 /**
