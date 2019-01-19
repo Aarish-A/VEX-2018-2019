@@ -3,11 +3,18 @@
 #include "config.hpp"
 #include "shot_select.hpp"
 #include "util.hpp"
+#include "logs.hpp"
 
-enum class PunState { Loading, Loaded, Pull_Back, Bolt_Wait, Shot_Cancel, FatalError };
+enum class PunState {
+  Loaded,
+  Loading,
+  Pull_Back,
+  Bolt_Wait,
+  FatalError
+};
 
-constexpr double PUN_RATIO = 1.0;
-constexpr double PUN_OFFSET = 55 * PUN_RATIO;
+constexpr double PUN_RATIO = 5.0/3.0;
+constexpr double PUN_OFFSET = 46 * PUN_RATIO;
 constexpr double PUN_HOLD = 180 * PUN_RATIO; // Relative to the slip point
 constexpr double PUN_TPR = 360 * PUN_RATIO; // Relative to the slip point
 constexpr double PUN_NO_RETURN = 50 * PUN_RATIO; // Back from the slip point
@@ -15,7 +22,7 @@ constexpr double PUN_BALL_CHK_START[2] = {PUN_TPR - (PUN_HOLD + 5), PUN_TPR - (P
 constexpr uint32_t PUN_WAIT_TIME = 100;
 constexpr int PUN_BALL_THRESH = 2700;
 constexpr uint32_t PUN_BALL_OFF_TIME = 50;
-constexpr int PUN_HOLD_PWR = 11;
+constexpr int PUN_HOLD_PWR = 5;
 
 constexpr int PUN_LOAD_WAIT_TIME = 150;
 
