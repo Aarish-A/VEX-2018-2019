@@ -1,7 +1,7 @@
 #include "shot_select.hpp"
 
 /* Shot Positions */
-ShotPos front_SP (FieldPos_Front, 90, 0);
+ShotPos front_SP (FieldPos_Front, 87, 0);
 ShotPos pf_SP (FieldPos_PF, 90, 70);
 ShotPos pf_back_SP (FieldPos_PF_Back, 88, 0);
 ShotPos back_SP (FieldPos_Back, 90, 10);

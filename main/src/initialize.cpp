@@ -5,6 +5,7 @@
 #include "drive.hpp"
 #include "angler.hpp"
 #include "intake.hpp"
+#include "gui.hpp"
 
 using namespace pros;
 
@@ -19,6 +20,7 @@ void initialize() {
 	log_init();
 	log_ln("%d Finished Init ", pros::millis());
 
+	gui_init();
 	pun_init();
 	pun_cal();
   drive_init();
