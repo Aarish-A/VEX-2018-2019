@@ -4,7 +4,7 @@
 #include "shot_select.hpp"
 #include "util.hpp"
 
-enum class PunState { Load, Hold, ShotStart, ShotWait, FatalError };
+enum class PunState { Loading, Loaded, Pull_Back, Bolt_Wait, Shot_Cancel, FatalError };
 
 constexpr double PUN_RATIO = 1.0;
 constexpr double PUN_OFFSET = 55 * PUN_RATIO;
