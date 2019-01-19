@@ -18,17 +18,17 @@ void pun_state_change(PunState state) {
 
 void pun_init() {
 	puncherLeft.set_brake_mode(E_MOTOR_BRAKE_HOLD);
-	puncherRight.set_brake_mode(E_MOTOR_BRAKE_HOLD);
+	// puncherRight.set_brake_mode(E_MOTOR_BRAKE_HOLD);
 }
 
 void pun_set(int power) {
   puncherLeft.move(power);
-  puncherRight.move(power);
+  // puncherRight.move(power);
 }
 
 void pun_move(double position, int32_t velocity) {
   puncherLeft.move_absolute(position, velocity);
-  puncherRight.move_absolute(position, velocity);
+  // puncherRight.move_absolute(position, velocity);
 }
 
 void pun_cal() {
@@ -158,8 +158,8 @@ void pun_handle() {
 void pun_fatal_disable() {
   pun_state_change(PunState::FatalError);
   puncherLeft.move_relative(0, 0);
-  puncherRight.move_relative(0, 0);
+  // puncherRight.move_relative(0, 0);
   puncherLeft.move(0);
-  puncherRight.move(0);
+  // puncherRight.move(0);
   log_ln("%d FATAL Puncher fatal error", millis());
 }
