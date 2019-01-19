@@ -99,8 +99,9 @@ void log_init() {
   log_close_timer = pros::millis() + LOG_CLOSE_TIME;
 }
 
-void log(bool system, const char * format, ...) {
-  if (system) {
+// void log(bool system, const char * format, ...) {
+void log(const char * format, ...) {
+  // if (system) {
     mutex.take(LOG_MUTEX_TO);
     va_list args;
     va_start(args, format);
@@ -128,11 +129,12 @@ void log(bool system, const char * format, ...) {
 
     va_end (args);
     mutex.give();
-  }
+  // }
 }
 
-void log_ln(bool system, const char * format, ...) {
-  if (system) {
+// void log_ln(bool system, const char * format, ...) {
+void log_ln(const char * format, ...) {
+  // if (system) {
     mutex.take(LOG_MUTEX_TO);
 
     va_list args;
@@ -164,5 +166,5 @@ void log_ln(bool system, const char * format, ...) {
     va_end (args);
 
     mutex.give();
-  }
+  // }
 }

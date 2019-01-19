@@ -21,8 +21,10 @@ constexpr bool LOG_ERROR = 1;
 extern FILE* log_file;
 void log_init(); //Call in initialize before calling log();
 
-void log(bool system, const char * format, ...);
-void log_ln(bool system, const char * format, ...);
+// void log(bool system, const char * format, ...);
+// void log_ln(bool system, const char * format, ...);
+void log(const char * format, ...);
+void log_ln(const char * format, ...);
 
 extern int log_close_timer;
 const int LOG_CLOSE_TIME = 1000;
