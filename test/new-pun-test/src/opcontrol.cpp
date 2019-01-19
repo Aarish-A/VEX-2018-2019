@@ -1,4 +1,5 @@
 #include "main.h"
+#include "config.hpp"
 #include "puncher.hpp"
 
 /**
@@ -16,9 +17,14 @@
  */
 void opcontrol() {
 	pun_init();
+
+	printf("%d Start Cal \n", pros::millis());
 	pun_cal();
+	printf("%d End Cal \n", pros::millis());
 	while (true) {
 		pun_handle();
+		//ctrler.print(2, 0, "%d           ",(int)puncherLeft.get_temperature());
+
 		/*
 		pros::lcd::print(0, "%d %d %d", (pros::lcd::read_buttons() & LCD_BTN_LEFT) >> 2,
 		                 (pros::lcd::read_buttons() & LCD_BTN_CENTER) >> 1,
