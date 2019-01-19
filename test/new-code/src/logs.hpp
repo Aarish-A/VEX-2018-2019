@@ -5,13 +5,13 @@
 #include <time.h>
 #include <stdio.h>
 
-constexpr bool LOG_DRIVE = 1;
-constexpr bool LOG_PUNCHER = 1;
-constexpr bool LOG_ANGLER = 1;
-constexpr bool LOG_DECAPPER = 1;
-constexpr bool LOG_JOYSTICK = 1;
-constexpr bool LOG_ERROR = 1;
-constexpr bool LOG_AUTO = 1;
+extern constexpr bool LOG_DRIVE = 1;
+extern constexpr bool LOG_PUNCHER = 1;
+extern constexpr bool LOG_ANGLER = 1;
+extern constexpr bool LOG_DECAPPER = 1;
+extern constexpr bool LOG_JOYSTICK = 1;
+extern constexpr bool LOG_ERROR = 1;
+extern constexpr bool LOG_AUTO = 1;
 
 const int LOG_CLOSE_TIME = 1000;
 const int LOG_MUTEX_TO = 50;
