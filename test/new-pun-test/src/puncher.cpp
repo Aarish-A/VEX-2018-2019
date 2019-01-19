@@ -2,7 +2,9 @@
 
 using namespace pros;
 
-PunState pun_state = PunState::Load;
+int shot_req_handled_num = 0; //DELETE
+
+PunState pun_state = PunState::Loaded;
 PunState pun_state_lst  = pun_state;
 int pun_state_change_time = 0;
 int pun_shots = 0;
@@ -34,31 +36,31 @@ void pun_cal() {
   pun_set(-20);
   while (fabs(puncherLeft.get_actual_velocity()) < 12 && (success = (millis() < timeout_time)))
 	{
-		log_ln("%d A: %f ", pros::millis(), puncherLeft.get_actual_velocity());
+		//log_ln("%d A: %f ", pros::millis(), puncherLeft.get_actual_velocity());
 		delay(10);
 	}
   if (!success) {
-		log_ln("disableA");
+		//log_ln("disableA");
     pun_fatal_disable();
     return;
   }
   timeout_time = millis() + 2500; // + 1300;
   while (fabs(puncherLeft.get_actual_velocity()) > 10 && (success = (millis() < timeout_time)))
 	{
-		log_ln("%d B: %f ", pros::millis(), puncherLeft.get_actual_velocity());
+		//log_ln("%d B: %f ", pros::millis(), puncherLeft.get_actual_velocity());
 		delay(10);
 	}
   if (!success) {
-		log_ln("disableB");
+		//log_ln("disableB");
     pun_fatal_disable();
     return;
   }
   delay(100);
 
-	log_ln("%d Pun Cal Before Tare. LeftPos:%f, RightPos:%f", pros::millis(), puncherLeft.get_position(), puncherRight.get_position());
+	//log_ln("%d Pun Cal Before Tare. LeftPos:%f, RightPos:%f", pros::millis(), puncherLeft.get_position(), puncherRight.get_position());
   puncherLeft.tare_position();
   puncherRight.tare_position();
-	log_ln("%d Pun Cal Done Tare. LeftPos:%f, RightPos:%f", pros::millis(), puncherLeft.get_position(), puncherRight.get_position());
+	//log_ln("%d Pun Cal Done Tare. LeftPos:%f, RightPos:%f", pros::millis(), puncherLeft.get_position(), puncherRight.get_position());
 
   pun_move(PUN_OFFSET + PUN_HOLD);
   PunState pun_state_change(PunState::Loading);
@@ -70,52 +72,55 @@ void pun_handle() {
 
   if (ball_sensor.get_value() < PUN_BALL_THRESH) {
 			ball_on_time = millis();
-			if (!pun_ball) log_ln("	> %d Ball On. Pos:%f BallSen:%d | AnglrTarg:%f Anglr:%f | Pos (%f, %f, %f)", pros::millis(), puncherLeft.get_position(), ball_sensor.get_value(), angler.get_target_position(), angler.get_position(), pos.x, pos.y, RAD_TO_DEG(pos.a));
+			if (!pun_ball) //log_ln("	> %d Ball On. Pos:%f BallSen:%d | AnglrTarg:%f Anglr:%f | Pos (%f, %f, %f)", pros::millis(), puncherLeft.get_position(), ball_sensor.get_value(), angler.get_target_position(), angler.get_position(), pos.x, pos.y, RAD_TO_DEG(pos.a));
 			pun_ball = true;
 		}
 
 		if (millis() >= ball_on_time + PUN_BALL_OFF_TIME) {
-			if (pun_ball) log_ln("	> %d Ball Off.Pos:%f BallSen:%d | AnglrTarg:%f Anglr:%f | Pos (%f, %f, %f)", pros::millis(), puncherLeft.get_position(), ball_sensor.get_value(), angler.get_target_position(), angler.get_position(), pos.x, pos.y, RAD_TO_DEG(pos.a));
+			if (pun_ball) //log_ln("	> %d Ball Off.Pos:%f BallSen:%d | AnglrTarg:%f Anglr:%f | Pos (%f, %f, %f)", pros::millis(), puncherLeft.get_position(), ball_sensor.get_value(), angler.get_target_position(), angler.get_position(), pos.x, pos.y, RAD_TO_DEG(pos.a));
 			pun_ball = false;
 		}
 
 		switch (pun_state) {
 			case PunState::Loading:
-				//log_ln(" >> %d PunLoad %f ", millis(), puncherLeft.get_position());
+				////log_ln(" >> %d PunLoad %f ", millis(), puncherLeft.get_position());
 				if (fabs(puncherLeft.get_position() - (PUN_OFFSET + (pun_shots * PUN_TPR) + PUN_HOLD)) <= (4 * PUN_RATIO)) {
 					pun_set(PUN_HOLD_PWR);
-					log_ln("%d PunLoading. PunPos: %f ", pros::millis(), puncherLeft.get_position());
+					//log_ln("%d PunLoading. PunPos: %f ", pros::millis(), puncherLeft.get_position());
 					pun_state_change(PunState::Loaded);
 				}
 				break;
 
 			case PunState::Loaded:
-				//log_ln(" >> %d PunLoaded %f ", millis(), puncherLeft.get_position());
-				if (( shot_req_num > 0 && shot_req[shot_req_handled_num].drive_turn_handled && fabs(angler.get_position()-shot_req[shot_req_handled_num].angle_targ) < 5) ||auto_set_shot) {
+				////log_ln(" >> %d PunLoaded %f ", millis(), puncherLeft.get_position());
+				//if (( shot_req_num > 0 && shot_req[shot_req_handled_num].drive_turn_handled && fabs(angler.get_position()-shot_req[shot_req_handled_num].angle_targ) < 5) ||auto_set_shot) {
+				if (ctrler.get_digital_new_press(E_CONTROLLER_DIGITAL_A)) {
 					//pun_move(PUN_OFFSET + (++pun_shots * PUN_TPR));
 					++pun_shots;
 					pun_set(127);
-					log_ln("%d Shot start (from ShotLoaded) | Shtr Pos:%f t:%f | ReqNum:%d ShtNum:%d | FPos:%d | 1angle:%d, 1trn:%d (%f,%f) | 2angle:%d, 2turn:%d (%f,%f)", pros::millis(), puncherLeft.get_position(), puncherLeft.get_target_position(), shot_req_num, shot_req_handled_num, shot_req[0].field_pos, shot_req[0].angle_targ, shot_req[0].turn_dir, shot_req[0].flag_pos.x, shot_req[0].flag_pos.y, shot_req[1].angle_targ, shot_req[1].turn_dir, shot_req[1].flag_pos.x, shot_req[1].flag_pos.y);
+					//log_ln("%d Shot start (from ShotLoaded) | Shtr Pos:%f t:%f | ReqNum:%d ShtNum:%d | FPos:%d | 1angle:%d, 1trn:%d (%f,%f) | 2angle:%d, 2turn:%d (%f,%f)", pros::millis(), puncherLeft.get_position(), puncherLeft.get_target_position(), shot_req_num, shot_req_handled_num, shot_req[0].field_pos, shot_req[0].angle_targ, shot_req[0].turn_dir, shot_req[0].flag_pos.x, shot_req[0].flag_pos.y, shot_req[1].angle_targ, shot_req[1].turn_dir, shot_req[1].flag_pos.x, shot_req[1].flag_pos.y);
 
 					pun_state_change(PunState::Pull_Back);
 				}
 				break;
-L
+
 			case PunState::Pull_Back:
 				if (puncherLeft.get_position() < (PUN_OFFSET + (pun_shots * PUN_TPR) - PUN_NO_RETURN) && !pun_ball
 				 	&& puncherLeft.get_position() > (PUN_OFFSET + (pun_shots * PUN_TPR) - PUN_BALL_CHK_START[shot_req_handled_num]) ) {
-					log_ln("%d Shot failure, no ball pos:%f (b/w:%f & %f). BallSen:%d", millis(), puncherLeft.get_position(), (PUN_OFFSET + (pun_shots * PUN_TPR) - PUN_BALL_CHK_START[shot_req_handled_num]), (PUN_OFFSET + (pun_shots * PUN_TPR) - PUN_NO_RETURN), ball_sensor.get_value());
+					//log_ln("%d Shot failure, no ball pos:%f (b/w:%f & %f). BallSen:%d", millis(), puncherLeft.get_position(), (PUN_OFFSET + (pun_shots * PUN_TPR) - PUN_BALL_CHK_START[shot_req_handled_num]), (PUN_OFFSET + (pun_shots * PUN_TPR) - PUN_NO_RETURN), ball_sensor.get_value());
 					pun_move(PUN_OFFSET + (--pun_shots * PUN_TPR) + PUN_HOLD);
 					ctrler.rumble(" .");
+					/*
 
 					shot_req[shot_req_handled_num].shot_handled = true;
 					shot_req_handled_num = 0;
-
 					pun_state_change(PunState::Load);
+					*/
 				}
-				else if (shot_cancel_pressed && puncherLeft.get_position() < PUN_OFFSET + (pun_shots * PUN_TPR) - PUN_NO_RETURN) {
+				else if (/*shot_cancel_pressed*/ ctrler.get_digital_new_press(E_CONTROLLER_DIGITAL_B) && puncherLeft.get_position() < PUN_OFFSET + (pun_shots * PUN_TPR) - PUN_NO_RETURN) {
 					pun_move(PUN_OFFSET + (--pun_shots * PUN_TPR) + PUN_HOLD);
-					log_ln("%d Shot failure, canceled. Enter PunLoad", millis());
+					//log_ln("%d Shot failure, canceled. Enter PunLoad", millis());
+					/*
 
 					shot_req[shot_req_handled_num].shot_handled = true;
 					shot_req_handled_num = 0;
@@ -123,13 +128,14 @@ L
 					shot_cancel_pressed = false;
 
 					pun_state_change(PunState::Load);
+					*/
 				}
 				else if (PUN_OFFSET + (pun_shots * PUN_TPR) - puncherLeft.get_position() < 5) {
 					wait_slip_end = millis() + PUN_WAIT_TIME;
 					pun_set(0);
 					pun_move(PUN_OFFSET + (pun_shots * PUN_TPR));
 
-					log_ln("%d Shot end", millis());
+					//log_ln("%d Shot end", millis());
 
 					pun_state_change(PunState::Bolt_Wait);
 				}
@@ -140,9 +146,10 @@ L
 					auto_set_shot = false;
 					//pun_move(PUN_OFFSET + (pun_shots * PUN_TPR) + PUN_HOLD);
 					pun_set(127);
-					log_ln("%d Done shot wait move to %f T:%f ", millis(), (PUN_OFFSET + (pun_shots * PUN_TPR) + PUN_HOLD), puncherLeft.get_target_position());
+					//log_ln("%d Done shot wait move to %f T:%f ", millis(), (PUN_OFFSET + (pun_shots * PUN_TPR) + PUN_HOLD), puncherLeft.get_target_position());
+					/*
 					shot_req[shot_req_handled_num].shot_handled = true;
-
+					*/
 					pun_state_change(PunState::Loading);
 				}
 				break;
@@ -159,5 +166,5 @@ void pun_fatal_disable() {
   puncherRight.move_relative(0, 0);
   puncherLeft.move(0);
   puncherRight.move(0);
-  log_ln("%d FATAL Puncher fatal error", millis());
+  //log_ln("%d FATAL Puncher fatal error", millis());
 }

@@ -1,8 +1,8 @@
 #pragma once
 #include "main.h"
 #include "config.hpp"
-#include "shot_select.hpp"
-#include "util.hpp"
+//#include "shot_select.hpp"
+//#include "util.hpp"
 
 enum class PunState { Loaded, Loading, Pull_Back, Bolt_Wait, FatalError };
 
