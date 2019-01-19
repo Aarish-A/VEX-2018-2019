@@ -21,9 +21,15 @@ void opcontrol() {
 	printf("%d Start Cal \n", pros::millis());
 	pun_cal();
 	printf("%d End Cal \n", pros::millis());
+
+	int t_print = pros::millis();
 	while (true) {
 		pun_handle();
-		//ctrler.print(2, 0, "%d           ",(int)puncherLeft.get_temperature());
+
+		if (pros::millis() > t_print + 100) {
+			ctrler.print(2, 0, "%d           ",(int)puncherLeft.get_temperature());
+			t_print = pros::millis();
+		}
 
 		/*
 		pros::lcd::print(0, "%d %d %d", (pros::lcd::read_buttons() & LCD_BTN_LEFT) >> 2,

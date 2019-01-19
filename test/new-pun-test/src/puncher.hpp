@@ -15,7 +15,7 @@ constexpr double PUN_BALL_CHK_START[2] = {PUN_TPR - (PUN_HOLD + 5), PUN_TPR - (P
 constexpr uint32_t PUN_WAIT_TIME = 100;
 constexpr int PUN_BALL_THRESH = 2700;
 constexpr uint32_t PUN_BALL_OFF_TIME = 50;
-constexpr int PUN_HOLD_PWR = 5;
+constexpr int PUN_HOLD_PWR = 6;
 
 constexpr int PUN_LOAD_WAIT_TIME = 150;
 
