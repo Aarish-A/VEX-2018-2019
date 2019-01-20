@@ -1,7 +1,7 @@
 #include "decapper.hpp"
 
 using namespace pros;
-
+pros::Task *decapper_cap_task = nullptr;
 Decapper_States decapper_state = Decapper_States::Idle;
 Decapper_States decapper_state_last = decapper_state;
 int decapper_state_change_time = 0;
@@ -44,13 +44,42 @@ void decapper_cal()
   set_decapper_state(Decapper_States::Idle);
 }
 
+void decapper_stop_cap_task(bool stop_motor)
+{
+  if(decapper_cap_task != nullptr)
+  {
+    decapper_cap_task->remove();
+    delete decapper_cap_task;
+    decapper_cap_task = nullptr;
+  }
+  if(stop_motor) decapper_set(0);
+}
+
+void decapper_start_cap_task()
+{
+  decapper_stop_cap_task(false);
+  decapper_cap_task = new Task(decapper_cap);
+}
+
+void decapper_cap(void *param)
+{
+  setDriveVel(0);
+  delay(10);
+  move_drive_simple(-1.0_in, 40, true);
+  decapper_move(DECAPPER_CAPPING, 70);
+  while (decapper.get_position() < DECAPPER_CAPPING - 5) delay(10);
+
+  // decapper_set(-127);
+  // set_decapper_state(Decapper_States::Lowering);
+}
+
 void decapper_handle()
 {
   switch(decapper_state)
   {
     case Decapper_States::Lowering:
       if(decapper.get_position()<20) {
-        decapper_set(-5);
+        decapper.move_relative(0, 200);
         set_decapper_state(Decapper_States::Idle);
       }
     case Decapper_States::Idle:
@@ -69,8 +98,8 @@ void decapper_handle()
     case Decapper_States::Pickup:
       if(check_single_press(BTN_DECAPPER_DOWN))
       {
-        decapper_move(DECAPPER_CAPPING,90);
-        set_decapper_state(Decapper_States::Capping);
+        decapper_move(DECAPPER_CAPPING_HOLD,70);
+        set_decapper_state(Decapper_States::Capping_Hold);
       }
       else if(check_double_press(BTN_DECAPPER_DOWN, BTN_DECAPPER_UP))
       {
@@ -78,12 +107,29 @@ void decapper_handle()
         set_decapper_state(Decapper_States::Lowering);
       }
       break;
-
+    case Decapper_States::Capping_Hold:
+    if(check_single_press(BTN_DECAPPER_DOWN))
+    {
+      decapper_start_cap_task();
+      set_decapper_state(Decapper_States::Capping);
+    }
+    else if(check_double_press(BTN_DECAPPER_DOWN, BTN_DECAPPER_UP))
+    {
+      decapper_set(-127);
+      set_decapper_state(Decapper_States::Lowering);
+    }
+      break;
     case Decapper_States::Capping:
       if(check_double_press(BTN_DECAPPER_DOWN, BTN_DECAPPER_UP))
       {
+        decapper_stop_cap_task();
         decapper_set(-127);
         set_decapper_state(Decapper_States::Lowering);
+      }
+      else if(check_single_press(BTN_DECAPPER_DOWN))
+      {
+        decapper_stop_cap_task();
+        set_decapper_state(Decapper_States::Idle);
       }
       break;
 

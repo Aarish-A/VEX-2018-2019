@@ -23,9 +23,7 @@ void opcontrol() {
 		intake_handle();
 		angler_handle();
 		decapper_handle();
-		pos.update();
-
-		printf("%d\n", check_double_press(BTN_DECAPPER_UP, BTN_DECAPPER_DOWN));
+		printf("%d\n", (int)decapper.get_position());
 		delay(10);
 	}
 }

@@ -6,6 +6,7 @@
 #include "shot_select.hpp"
 #include "logs.hpp"
 #include "controls.hpp"
+#include "decapper.hpp"
 
 constexpr int DRIVE_TURN_DZ = 30;
 constexpr int DRIVE_DZ = 10;

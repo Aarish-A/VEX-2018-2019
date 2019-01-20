@@ -24,7 +24,7 @@ bool check_falling(int button) {
 }
 
 bool check_single_press(int button) {
-  if (buttons[button].last_pressed_time && (pros::millis() - buttons[button].last_pressed) > buttons[button].button_press_time) {
+  if (buttons[button].last_pressed_time && (pros::millis() - buttons[button].last_pressed_time) >= buttons[button].button_press_time) {
     buttons[button].last_pressed_time = 0;
     return true;
   }
