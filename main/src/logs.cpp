@@ -6,6 +6,7 @@ FILE* log_file = NULL;
 
 const char* log_file_name = "/usd/log.txt";
 int log_close_timer = 0;
+const char* const log_mode = "a";
 
 void log_init() {
   time_t current_time;
@@ -41,7 +42,7 @@ void log_init() {
   printf(">>>> %d log_init(): Start Logging for Program \n", pros::millis());
 	if (log_file == NULL) {
 		printf("  >>>> %d COULD NOT OPEN SD LOG FILE\n", pros::millis());
-    ctrler.rumble("--------");
+    // ctrler.rumble("--------");
     pros::delay(3000);
 		return;
 	}

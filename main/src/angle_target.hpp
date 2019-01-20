@@ -1,9 +1,11 @@
 #pragma once
-
+#include "main.h"
 #include <memory>
 #include "tracking.hpp"
 #include "util.hpp"
 #include "logs.hpp"
+#include "config.hpp"
+#include <cmath>
 
   class AngleTarget {
   public:

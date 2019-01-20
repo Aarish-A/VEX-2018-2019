@@ -5,6 +5,7 @@
 #include "shot_select.hpp"
 #include "intake.hpp"
 #include "logs.hpp"
+#include "controls.hpp"
 
 void angler_init();
 void angler_set(int power);

@@ -1,6 +1,13 @@
 #include "main.h"
 #include "button.hpp"
 #include "controls.hpp"
+#include "angler.hpp"
+#include "puncher.hpp"
+#include "intake.hpp"
+#include "drive.hpp"
+#include "logs.hpp"
+#include "gui.hpp"
+#include "decapper.hpp"
 
 void initialize() {
   printf("%d Start initialize\n", pros::millis());
@@ -8,6 +15,20 @@ void initialize() {
 	buttons[BTN_SHOT_L_M].button_press_time = BTN_PRESS_TIME;
   buttons[BTN_SHOT_R_T].button_press_time = BTN_PRESS_TIME;
   buttons[BTN_SHOT_R_M].button_press_time = BTN_PRESS_TIME;
+  buttons[BTN_DECAPPER_UP].button_press_time = BTN_PRESS_TIME;
+  buttons[BTN_DECAPPER_DOWN].button_press_time = BTN_PRESS_TIME;
+
+	log_init();
+
+	gui_init();
+	pun_init();
+	pun_cal();
+  drive_init();
+  angler_init();
+  intake_init();
+	angler_cal();
+  decapper_cal();
+  log_ln(LOG_DRIVE, "%d Finished Init ", pros::millis());
 }
 
 /**

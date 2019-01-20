@@ -1,7 +1,7 @@
 #pragma once
-
 #include "main.h"
 #include "config.hpp"
+#include "controls.hpp"
 
 constexpr uint32_t BTN_PRESS_TIME = 50;
 

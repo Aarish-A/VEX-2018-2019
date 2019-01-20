@@ -7,6 +7,7 @@
 #include "angle_target.hpp"
 #include "button.hpp"
 #include "angler.hpp"
+#include "controls.hpp"
 
 constexpr double ANGLER_BALL = 13;
 constexpr int ANGLER_DZ = 30;

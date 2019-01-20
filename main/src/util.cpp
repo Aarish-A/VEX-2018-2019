@@ -1,4 +1,3 @@
-#include "main.h"
 #include "util.hpp"
 
 int set_dz(int val, int dz) {

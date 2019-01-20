@@ -4,6 +4,7 @@
 #include "shot_select.hpp"
 #include "util.hpp"
 #include "logs.hpp"
+#include "controls.hpp"
 
 enum class PunState {
   Loaded,

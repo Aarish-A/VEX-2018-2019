@@ -1,12 +1,15 @@
 #pragma once
 #include "main.h"
-#include "button.hpp"
 
 constexpr int GET_BTN_INDEX(pros::controller_digital_e_t btn) { return (btn - pros::E_CONTROLLER_DIGITAL_L1); }
 
 /* Intake */
-constexpr int BTN_INTAKE_UP = GET_BTN_INDEX(pros::E_CONTROLLER_DIGITAL_UP);
+constexpr int BTN_INTAKE_UP = GET_BTN_INDEX(pros::E_CONTROLLER_DIGITAL_RIGHT);
 constexpr int BTN_INTAKE_DOWN = GET_BTN_INDEX(pros::E_CONTROLLER_DIGITAL_DOWN);
+
+/* Decapper */
+constexpr int BTN_DECAPPER_UP = GET_BTN_INDEX(pros::E_CONTROLLER_DIGITAL_UP);
+constexpr int BTN_DECAPPER_DOWN = GET_BTN_INDEX(pros::E_CONTROLLER_DIGITAL_LEFT);
 
 // /* Angler */
 constexpr int BTN_ANGLER_PU = GET_BTN_INDEX(pros::E_CONTROLLER_DIGITAL_LEFT);

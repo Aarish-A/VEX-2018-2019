@@ -2,8 +2,6 @@
 
 using namespace pros;
 
-int shot_req_handled_num = 0; //DELETE
-
 PunState pun_state = PunState::Loading;
 PunState pun_state_lst  = pun_state;
 int pun_state_change_time = 0;

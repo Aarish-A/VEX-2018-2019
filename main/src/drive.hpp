@@ -5,6 +5,7 @@
 #include "auto.hpp"
 #include "shot_select.hpp"
 #include "logs.hpp"
+#include "controls.hpp"
 
 constexpr int DRIVE_TURN_DZ = 30;
 constexpr int DRIVE_DZ = 10;

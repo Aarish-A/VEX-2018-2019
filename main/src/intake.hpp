@@ -4,6 +4,7 @@
 #include "button.hpp"
 #include "util.hpp"
 #include "logs.hpp"
+#include "controls.hpp"
 
 enum class IntakeState { Forw, Back, Off, Jam };
 
