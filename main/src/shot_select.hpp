@@ -64,7 +64,8 @@ void set_handled_vars();
 void set_shot_req(bool top, Dir turn_dir) ;
 
 void shot_req_make();
-void shot_req_handle();
+void shot_req_handle(void *param);
+
 
 /* Shot Num */
 extern ShotSelect shot_req[2];
@@ -74,7 +75,10 @@ extern int shot_req_handled_num;
 
 extern bool shot_cancel_pressed;
 
-extern pros::Task shot_req_handle_task;
+/* Task Handle */
+void shot_req_handle_stop_task();
+void shot_req_handle_start_task();
+extern pros::Task* shot_req_handle_task;
 
 void inc_shot_req_num();
 void dec_shot_req_num();

@@ -13,6 +13,7 @@ using namespace pros;
 
 void opcontrol() {
 	printf("%d Start opcontrol\n", pros::millis());
+	shot_req_handle_start_task();
 	// ctrler.print(2, 0, "RUNNING");
 
 	while (true) {

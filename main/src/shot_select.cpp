@@ -1,5 +1,7 @@
 #include "shot_select.hpp"
 
+pros::Task* shot_req_handle_task = nullptr;
+
 /* Shot Positions */
 ShotPos front_SP (FieldPos_Front, 90, 0);
 ShotPos pf_SP (FieldPos_PF, 90, 70);
@@ -13,8 +15,6 @@ int shot_req_num = 0;
 int shot_req_handled_num = 0;
 
 bool shot_cancel_pressed = false;
-
-pros::Task shot_req_handle_task ((pros::task_fn_t)shot_req_handle, (void*)NULL, TASK_PRIORITY_DEFAULT, TASK_STACK_DEPTH_DEFAULT, "Shot_Req_Handle_Task");
 
 /* Shot Select Code */
 void inc_shot_req_num() {
@@ -30,7 +30,7 @@ void dec_shot_req_num() {
 void set_field_pos(FieldPos field_pos) {
   shot_req[0].field_pos = field_pos;
   shot_req[1].field_pos = field_pos;
-	log_ln(LOG_SHOTS, "%d Shot Field Pos Set (Task State:%d)| Anglr:%f | RNum:%d | HandledNum:%d | FPos:%d | 1angle:%d, 1trn:%d (%f, %f), Hndled1 drive:%d shot:%d| 2angle:%d, 2turn:%d (%f, %f), Hndled1 drive:%d shot:%d ", pros::millis(), shot_req_handle_task.get_state(), angler.get_position(), shot_req_num, shot_req_handled_num, shot_req[0].field_pos, shot_req[0].angle_targ, shot_req[0].turn_dir, shot_req[0].flag_pos.x, shot_req[0].flag_pos.y, shot_req[0].drive_turn_handled, shot_req[0].shot_handled, shot_req[1].angle_targ, shot_req[1].turn_dir, shot_req[1].flag_pos.x, shot_req[1].flag_pos.y, shot_req[1].drive_turn_handled, shot_req[1].shot_handled);
+	log_ln(LOG_SHOTS, "%d Shot Field Pos Set (TaskPtr :%d)| Anglr:%f | RNum:%d | HandledNum:%d | FPos:%d | 1angle:%d, 1trn:%d (%f, %f), Hndled1 drive:%d shot:%d| 2angle:%d, 2turn:%d (%f, %f), Hndled1 drive:%d shot:%d ", pros::millis(), shot_req_handle_task, angler.get_position(), shot_req_num, shot_req_handled_num, shot_req[0].field_pos, shot_req[0].angle_targ, shot_req[0].turn_dir, shot_req[0].flag_pos.x, shot_req[0].flag_pos.y, shot_req[0].drive_turn_handled, shot_req[0].shot_handled, shot_req[1].angle_targ, shot_req[1].turn_dir, shot_req[1].flag_pos.x, shot_req[1].flag_pos.y, shot_req[1].drive_turn_handled, shot_req[1].shot_handled);
 }
 
 void set_angle_targ(bool top) {
@@ -102,7 +102,7 @@ void set_shot_req(bool top, Dir turn_dir) {
 	set_angle_targ(top);
 	set_turn_dir(turn_dir);
 	set_handled_vars();
-	log_ln(LOG_SHOTS, "%d Shot Req (Task State:%d)| Anglr:%f | RNum:%d | HandledNum:%d | FPos:%d | 1angle:%d, 1trn:%d (%f, %f), Hndled1 drive:%d shot:%d| 2angle:%d, 2turn:%d (%f, %f), Hndled1 drive:%d shot:%d ", pros::millis(), shot_req_handle_task.get_state(), angler.get_position(), shot_req_num, shot_req_handled_num, shot_req[0].field_pos, shot_req[0].angle_targ, shot_req[0].turn_dir, shot_req[0].flag_pos.x, shot_req[0].flag_pos.y, shot_req[0].drive_turn_handled, shot_req[0].shot_handled, shot_req[1].angle_targ, shot_req[1].turn_dir, shot_req[1].flag_pos.x, shot_req[1].flag_pos.y, shot_req[1].drive_turn_handled, shot_req[1].shot_handled);
+	log_ln(LOG_SHOTS, "%d Shot Req (Task PTR:%d)| Anglr:%f | RNum:%d | HandledNum:%d | FPos:%d | 1angle:%d, 1trn:%d (%f, %f), Hndled1 drive:%d shot:%d| 2angle:%d, 2turn:%d (%f, %f), Hndled1 drive:%d shot:%d ", pros::millis(), shot_req_handle_task, angler.get_position(), shot_req_num, shot_req_handled_num, shot_req[0].field_pos, shot_req[0].angle_targ, shot_req[0].turn_dir, shot_req[0].flag_pos.x, shot_req[0].flag_pos.y, shot_req[0].drive_turn_handled, shot_req[0].shot_handled, shot_req[1].angle_targ, shot_req[1].turn_dir, shot_req[1].flag_pos.x, shot_req[1].flag_pos.y, shot_req[1].drive_turn_handled, shot_req[1].shot_handled);
 }
 
 void shot_req_make() {
@@ -119,16 +119,16 @@ void shot_req_make() {
   }
 	else if (check_single_press(BTN_SHOOT_CANCEL)) {
 		shot_cancel_pressed = true;
-		log_ln(LOG_SHOTS, "  >>> %d Cancel Shot Req Handle Task - Before Suspend| State %d | shot_req_num = %d, shot_req_handled_num = %d ", pros::millis(), shot_req_handle_task.get_state(), shot_req_num, shot_req_handled_num);
-		shot_req_handle_task.suspend();
-		log_ln(LOG_SHOTS, "  >>> %d Cancel Shot Req Handle Task - Suspended| State %d | shot_req_num = %d, shot_req_handled_num = %d ", pros::millis(), shot_req_handle_task.get_state(), shot_req_num, shot_req_handled_num);
+		log_ln(LOG_SHOTS, "  >>> %d Cancel Shot Req Handle Task - Before Restart| TaskPtr %d | shot_req_num = %d, shot_req_handled_num = %d ", pros::millis(), shot_req_handle_task, shot_req_num, shot_req_handled_num);
+		shot_req_handle_stop_task();
+		log_ln(LOG_SHOTS, "  >>> %d Cancel Shot Req Handle Task - After Stop| TaskPtr %d | shot_req_num = %d, shot_req_handled_num = %d ", pros::millis(), shot_req_handle_task, shot_req_num, shot_req_handled_num);
 		setDrive(0);
 
 		shot_req_num = 0;
 		shot_req_handled_num = 0;
 		set_handled_vars();
-		shot_req_handle_task.resume();
-		log_ln(LOG_SHOTS, "  >>> %d Shot Req Handle Task  - Resume | State %d | shot_req_num = %d, shot_req_handled_num = %d ", pros::millis(), shot_req_handle_task.get_state(), shot_req_num, shot_req_handled_num);
+		shot_req_handle_start_task();
+		log_ln(LOG_SHOTS, "  >>> %d Shot Req Handle Task  - Resume | TaskPtr %d | shot_req_num = %d, shot_req_handled_num = %d ", pros::millis(), shot_req_handle_task, shot_req_num, shot_req_handled_num);
 	}
 
   //Set other shot constants
@@ -165,7 +165,24 @@ void shot_req_make() {
 	}
 }
 
-void shot_req_handle() {
+void shot_req_handle_stop_task() {
+	if(shot_req_handle_task != nullptr)
+	{
+		log_ln(LOG_SHOTS, "  >>> %d Stop Shot Req Handle Task", pros::millis());
+		shot_req_handle_task->remove();
+		delete shot_req_handle_task;
+		shot_req_handle_task = nullptr;
+	}
+}
+
+void shot_req_handle_start_task() {
+	shot_req_handle_stop_task();
+	log_ln(LOG_SHOTS, "  >>> %d Start Shot Req Handle Task", pros::millis());
+	shot_req_handle_task = new pros::Task((pros::task_fn_t)shot_req_handle);//, (void*)NULL, TASK_PRIORITY_DEFAULT, TASK_STACK_DEPTH_DEFAULT, "Shot_Req_Handle_Task");
+}
+
+
+void shot_req_handle(void *param) {
 	log_ln(LOG_SHOTS, "%d Start Shot Req Handle Task ",  pros::millis());
 	shot_req_num = 0;
 	while (true) {

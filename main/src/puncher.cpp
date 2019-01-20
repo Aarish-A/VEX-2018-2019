@@ -73,12 +73,12 @@ void pun_handle() {
 
   if (ball_sensor.get_value() < PUN_BALL_THRESH) {
 			ball_on_time = millis();
-			if (!pun_ball) log_ln(LOG_PUNCHER, "	> %d Ball On. Pos:%f BallSen:%d", pros::millis(), puncherLeft.get_position(), ball_sensor.get_value());//, angler.get_target_position(), angler.get_position(), pos.x, pos.y, RAD_TO_DEG(pos.a));
+			if (!pun_ball) log_ln(LOG_PUNCHER, "	> %d Ball On. Anglr:%f Pos:%f BallSen:%d", pros::millis(), angler.get_position(), puncherLeft.get_position(), ball_sensor.get_value());//, angler.get_target_position(), angler.get_position(), pos.x, pos.y, RAD_TO_DEG(pos.a));
 			pun_ball = true;
 		}
 
 		if (millis() >= ball_on_time + PUN_BALL_OFF_TIME) {
-			if (pun_ball) log_ln(LOG_PUNCHER, "	> %d Ball Off. Pos:%f BallSen:%d", pros::millis(), puncherLeft.get_position(), ball_sensor.get_value());//, angler.get_target_position(), angler.get_position(), pos.x, pos.y, RAD_TO_DEG(pos.a));
+			if (pun_ball) log_ln(LOG_PUNCHER, "	> %d Ball Off. Anglr:%f Pos:%f BallSen:%d", pros::millis(), angler.get_position(), puncherLeft.get_position(), ball_sensor.get_value());//, angler.get_target_position(), angler.get_position(), pos.x, pos.y, RAD_TO_DEG(pos.a));
 			//if (pun_ball) printf("	> %d Ball Off.Pos:%f BallSen:%d | AnglrTarg:%f Anglr:%f | Pos (%f, %f, %f) \n", pros::millis(), puncherLeft.get_position(), ball_sensor.get_value(), angler.get_target_position(), angler.get_position(), pos.x, pos.y, RAD_TO_DEG(pos.a));
 			pun_ball = false;
 		}
@@ -87,7 +87,7 @@ void pun_handle() {
 			case PunState::Loading:
 			{
 				float cur_err = (PUN_OFFSET + (pun_shots * PUN_TPR) + PUN_HOLD) - puncherLeft.get_position();
-				log_ln(LOG_PUNCHER, "%d PUNLOADING, CUR: %f, T: %f, E: %f, ETarg:%f", pros::millis(), puncherLeft.get_position(), (PUN_OFFSET + (pun_shots * PUN_TPR) + PUN_HOLD), cur_err, (4.0 * PUN_RATIO));
+				//log_ln(LOG_PUNCHER, "%d PUNLOADING, CUR: %f, T: %f, E: %f, ETarg:%f", pros::millis(), puncherLeft.get_position(), (PUN_OFFSET + (pun_shots * PUN_TPR) + PUN_HOLD), cur_err, (4.0 * PUN_RATIO));
 				if (cur_err <= (4.0 * PUN_RATIO)) {
 					pun_set(PUN_HOLD_PWR);
 					log_ln(LOG_PUNCHER, "%d PunLoading. PunPos: %f", pros::millis(), puncherLeft.get_position());
@@ -101,7 +101,7 @@ void pun_handle() {
 				//log_ln(LOG_PUNCHER, "%d LOADED, CUR: %f", pros::millis(), puncherLeft.get_position());
 				//printf(" >> %d PunLoaded %f ", millis(), puncherLeft.get_position());
 				//if (ctrler.get_digital_new_press(E_CONTROLLER_DIGITAL_A)) {
-				
+
 				if (( shot_req_num > 0 && shot_req[shot_req_handled_num].drive_turn_handled && fabs(angler.get_position()-shot_req[shot_req_handled_num].angle_targ) < 5) ||auto_set_shot) {
 					//pun_move(PUN_OFFSET + (++pun_shots * PUN_TPR));
 					++pun_shots;
