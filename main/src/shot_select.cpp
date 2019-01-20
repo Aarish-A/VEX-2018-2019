@@ -5,7 +5,7 @@ pros::Task* shot_req_handle_task = nullptr;
 /* Shot Positions */
 ShotPos front_SP (FieldPos_Front, 90, 0);
 ShotPos pf_SP (FieldPos_PF, 90, 70);
-ShotPos pf_back_SP (FieldPos_PF_Back, 88, 0);
+ShotPos pf_back_SP (FieldPos_PF_Back_Red, 88, 0);
 ShotPos back_SP (FieldPos_Back, 90, 10);
 
 ShotSelect shot_req[2];
@@ -47,15 +47,18 @@ void set_angle_targ(bool top) {
       shot_req[shot_req_num-1].angle_targ = top? pf_SP.top : pf_SP.mid;
       break;
 
-    case FieldPos_PF_Back:
+    case FieldPos_PF_Back_Red:
       shot_req[shot_req_num-1].angle_targ = top? pf_back_SP.top : pf_back_SP.mid;
       break;
+		case FieldPos_PF_Back_Blue:
+	      shot_req[shot_req_num-1].angle_targ = top? pf_back_SP.top : pf_back_SP.mid;
+	      break;
   }
 }
 
 void set_turn_dir(Dir turn_dir) {
   shot_req[shot_req_num-1].turn_dir = turn_dir;
-	if (shot_req[shot_req_num-1].field_pos == FieldPos_PF_Back_Red) { //Shooting from behind the platform
+	if (shot_req[shot_req_num-1].field_pos == FieldPos_PF_Back_Red) { //Shooting from behind the platform (red)
 		shot_req[shot_req_num-1].flag_pos.y = 89;
 		if (turn_dir == Dir_Left) {
 			shot_req[shot_req_num-1].flag_pos.x = -30;
@@ -65,7 +68,7 @@ void set_turn_dir(Dir turn_dir) {
 		}
 		else shot_req[shot_req_num-1].flag_pos.x = 0;
 	}
-	else if(shot_req[shot_req_num-1].field_pos == FieldPos_PF_Back_Blue) {
+	else if(shot_req[shot_req_num-1].field_pos == FieldPos_PF_Back_Blue) { //Shooting from behind the platform (blue)
 		shot_req[shot_req_num-1].flag_pos.y = 89;
 		if (turn_dir == Dir_Left) {
 			shot_req[shot_req_num-1].flag_pos.x = -18;
@@ -107,11 +110,9 @@ void shot_req_make() {
     if (check_single_press(BTN_FIELD_FRONT)) set_field_pos(FieldPos_Front);
     else if (check_single_press(BTN_FIELD_PF_BACK_RED)) {
 			set_field_pos(FieldPos_PF_Back_Red);
-			angler_move(330, 100);
 		}
 		else if (check_single_press(BTN_FIELD_PF_BACK_BLUE)) {
 			set_field_pos(FieldPos_PF_Back_Blue);
-			angler_move(330, 100);
 		}
 		//else if (btn[BTN_SHOOT_CANCEL-6].pressed) set_field_pos(FieldPos_PF_Back);
     else if (check_single_press(BTN_FIELD_BACK)) set_field_pos(FieldPos_Back);
@@ -139,7 +140,7 @@ void shot_req_make() {
 		bool L_T, L_M, R_T, R_M;
 		bool T_DOUBLE, M_DOUBLE;
 
-		if (shot_req[0].field_pos == FieldPos_Back || shot_req[0].field_pos == FieldPos_PF_Back) { //Only register left buttons if shooting from front
+		if (shot_req[0].field_pos == FieldPos_Back || shot_req[0].field_pos == FieldPos_PF_Back_Blue || shot_req[0].field_pos == FieldPos_PF_Back_Red) { //Only register left buttons if shooting from front
 			T_DOUBLE = check_double_press(BTN_SHOT_L_T, BTN_SHOT_R_T);
 			M_DOUBLE = check_double_press(BTN_SHOT_L_M, BTN_SHOT_R_M);
 			L_T = check_single_press(BTN_SHOT_L_T);
@@ -190,7 +191,7 @@ void shot_req_handle(void *param) {
 			set_handled_vars(); //Make sure all handled vars are reset to false
 			shot_req_handled_num = 0; //Make sure we start handling shot requests from index 0
 
-			if (shot_req[0].field_pos == FieldPos_Back || shot_req[0].field_pos == FieldPos_PF_Back)  {
+			if (shot_req[0].field_pos == FieldPos_Back || shot_req[0].field_pos == FieldPos_PF_Back_Red || shot_req[0].field_pos == FieldPos_PF_Back_Blue)  {
 				pos.reset(0,0,0);
 				flatten_against_wall(shot_req[0].field_pos == FieldPos_Back ? false : true, true);
 				pos.reset(0, 0, 0);
@@ -199,7 +200,7 @@ void shot_req_handle(void *param) {
 			angler.move_absolute(shot_req[shot_req_handled_num].angle_targ, 200);
 
 			//Drive Handle 1
-			if (shot_req[shot_req_handled_num].field_pos == FieldPos_PF_Back) {
+			if (shot_req[0].field_pos == FieldPos_PF_Back_Red || shot_req[0].field_pos == FieldPos_PF_Back_Blue) {
 				log_ln(LOG_SHOTS, "%d S1 Turn to face %f, %f ", pros::millis(), shot_req[shot_req_handled_num].flag_pos.x, shot_req[shot_req_handled_num].flag_pos.y);
 				setDrive(0, -60, 0);
 			  while (pos.y > -2_in) pros::delay(10);
@@ -222,7 +223,7 @@ void shot_req_handle(void *param) {
 				angler.move_absolute(shot_req[shot_req_handled_num].angle_targ, 200);
 
 				//Drive Handle 2
-				if (shot_req[shot_req_handled_num].field_pos == FieldPos_PF_Back) {
+				if (shot_req[0].field_pos == FieldPos_PF_Back_Red || shot_req[0].field_pos == FieldPos_PF_Back_Blue) {
 					log_ln(LOG_SHOTS, "%d S2 Turn to face %f, %f ", pros::millis(), shot_req[shot_req_handled_num].flag_pos.x, shot_req[shot_req_handled_num].flag_pos.y);
 				  turn_vel(new PointAngleTarget({shot_req[shot_req_handled_num].flag_pos.x, shot_req[shot_req_handled_num].flag_pos.y}), (200/70_deg), 0);
 				}
