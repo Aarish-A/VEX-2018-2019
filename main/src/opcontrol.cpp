@@ -16,6 +16,7 @@ void opcontrol() {
 	// ctrler.print(2, 0, "RUNNING");
 
 	while (true) {
+		pos.update();
 		update_buttons();
 		shot_req_make();
 		pun_handle();

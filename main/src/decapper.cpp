@@ -40,7 +40,7 @@ void decapper_cal()
 	}
   delay(100);
   decapper.tare_position();
-  decapper_set(-5);
+  decapper_set(-9);
   set_decapper_state(Decapper_States::Idle);
 }
 
@@ -63,28 +63,18 @@ void decapper_start_cap_task()
 
 void decapper_cap(void *param)
 {
-  setDrive(0, 40, 0);
-  int enc_last, enc_cur = enc_l.get_value();
-  do {
-    delay(200);
-    enc_last = enc_cur;
-    enc_cur = enc_l.get_value();
-  } while (abs(enc_cur - enc_last) > 2);
+  flatten_against_wall(true,true);
+  pos.reset();
+  move_drive_simple(-2.0_in, 40, true);
+  decapper_move(DECAPPER_CAPPING);
+  while (decapper.get_position() < DECAPPER_CAPPING - 5) delay(10);
   setDriveVel(0);
   delay(10);
-  move_drive_simple(-1.4_in, 35, true);
-  decapper_move(DECAPPER_CAPPING, 40);
-  while (decapper.get_position() < DECAPPER_CAPPING - 5) delay(10);
-  decapper.move(0);
-  delay(200);
-  setDriveVel(0, -40, 0);
-  delay(250);
-  setDrive(0, 0, 0);
-
-  set_decapper_state(Decapper_States::Idle);
-
-  // decapper_set(-127);
-  // set_decapper_state(Decapper_States::Lowering);
+  decapper_set(-10);
+  delay(100);
+  move_drive_simple(-1.0_in, 40, true);
+  decapper_set(-127);
+  set_decapper_state(Decapper_States::Lowering);
 }
 
 void decapper_handle()
@@ -93,7 +83,7 @@ void decapper_handle()
   {
     case Decapper_States::Lowering:
       if(decapper.get_position()<20) {
-        decapper.move_relative(0, 200);
+        decapper_set(-9);
         set_decapper_state(Decapper_States::Idle);
       }
     case Decapper_States::Idle:
@@ -107,17 +97,13 @@ void decapper_handle()
 				decapper_move(DECAPPER_DECAPLOW);
 				set_decapper_state(Decapper_States::Decap_Low);
 			}
-      else if(check_double_press(BTN_DECAPPER_DOWN, BTN_DECAPPER_UP))
-      {
-        decapper_set(-127);
-        set_decapper_state(Decapper_States::Lowering);
-      }
       break;
 
     case Decapper_States::Pickup:
       if(check_single_press(BTN_DECAPPER_DOWN))
       {
-        decapper_move(DECAPPER_CAPPING_HOLD,70);
+        //decapper.set_brake_mode(E_MOTOR_BRAKE_COAST);
+        decapper_move(DECAPPER_CAPPING_HOLD,120);
         set_decapper_state(Decapper_States::Capping_Hold);
       }
       else if(check_double_press(BTN_DECAPPER_DOWN, BTN_DECAPPER_UP))
@@ -127,6 +113,14 @@ void decapper_handle()
       }
       break;
     case Decapper_States::Capping_Hold:
+    if(decapper.get_position()>(DECAPPER_CAPPING_HOLD-400) && decapper.get_position()<(DECAPPER_CAPPING_HOLD-200))
+    {
+      decapper_set(60);
+    }
+    if(decapper.get_position()>(DECAPPER_CAPPING_HOLD-200))
+    {
+      decapper_move(DECAPPER_CAPPING_HOLD,70);
+    }
     if(check_single_press(BTN_DECAPPER_DOWN))
     {
       decapper_start_cap_task();
@@ -171,16 +165,6 @@ void decapper_handle()
       decapper_move(DECAPPER_DECAPLOW);
   		set_decapper_state(Decapper_States::Decap_Low);
     }
-			// if(ctrler.get_digital_new_press(E_CONTROLLER_DIGITAL_UP))
-			// {
-			// 	decapper_set(-127);
-			// 	set_decapper_state(Decapper_States::Lowering);
-			// }
-			// else if(ctrler.get_digital_new_press(E_CONTROLLER_DIGITAL_RIGHT))
-			// {
-			// 	decapper_move(DECAPPER_DECAPLOW);
-			// 	set_decapper_state(Decapper_States::Decap_Low);
-			// }
       break;
   }
 }
