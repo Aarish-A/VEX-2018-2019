@@ -55,28 +55,23 @@ void set_angle_targ(bool top) {
 
 void set_turn_dir(Dir turn_dir) {
   shot_req[shot_req_num-1].turn_dir = turn_dir;
-	if (shot_req[shot_req_num-1].field_pos == FieldPos_PF_Back) { //Shooting from behind the platform
+	if (shot_req[shot_req_num-1].field_pos == FieldPos_PF_Back_Red) { //Shooting from behind the platform
 		shot_req[shot_req_num-1].flag_pos.y = 89;
-
-		pros::vision_object_s_t object_array[1];
-		vision_sensor.read_by_size(0, 1, object_array);
-		log_ln(LOG_SHOTS, "%d Read from vision sensor", pros::millis());
-
 		if (turn_dir == Dir_Left) {
-			if (object_array[0].signature == 1) {
-				log_ln(LOG_SHOTS, "%d Detected signature %d from vision sensor, was supposed to detect 1", pros::millis(), object_array[0].signature);
-				shot_req[shot_req_num-1].flag_pos.x = -30;
-			} else if (object_array[0].signature == 2) {
-				log_ln(LOG_SHOTS, "%d Detected signature %d from vision sensor, was supposed to detect 2", pros::millis(), object_array[0].signature);
-				shot_req[shot_req_num-1].flag_pos.x = 0;
-			} else {
-				log_ln(LOG_SHOTS, "%d Did not detect signature 1 or 2 from vision sensor, was not supposed to detect either signature", pros::millis());
-				shot_req[shot_req_num-1].flag_pos.x = 30;
-			}
-			// shot_req[shot_req_num-1].flag_pos.x = -30;
+			shot_req[shot_req_num-1].flag_pos.x = -30;
 		}
 		else if (turn_dir == Dir_Right) {
-			// shot_req[shot_req_num-1].flag_pos.x = 18;
+			shot_req[shot_req_num-1].flag_pos.x = 18;
+		}
+		else shot_req[shot_req_num-1].flag_pos.x = 0;
+	}
+	else if(shot_req[shot_req_num-1].field_pos == FieldPos_PF_Back_Blue) {
+		shot_req[shot_req_num-1].flag_pos.y = 89;
+		if (turn_dir == Dir_Left) {
+			shot_req[shot_req_num-1].flag_pos.x = -18;
+		}
+		else if (turn_dir == Dir_Right) {
+			shot_req[shot_req_num-1].flag_pos.x = 30;
 		}
 		else shot_req[shot_req_num-1].flag_pos.x = 0;
 	}
@@ -110,8 +105,12 @@ void shot_req_make() {
   if (shot_req_num == 0)
   {
     if (check_single_press(BTN_FIELD_FRONT)) set_field_pos(FieldPos_Front);
-    else if (check_single_press(BTN_FIELD_PF_Back)) {
-			set_field_pos(FieldPos_PF_Back);
+    else if (check_single_press(BTN_FIELD_PF_BACK_RED)) {
+			set_field_pos(FieldPos_PF_Back_Red);
+			angler_move(330, 100);
+		}
+		else if (check_single_press(BTN_FIELD_PF_BACK_BLUE)) {
+			set_field_pos(FieldPos_PF_Back_Blue);
 			angler_move(330, 100);
 		}
 		//else if (btn[BTN_SHOOT_CANCEL-6].pressed) set_field_pos(FieldPos_PF_Back);

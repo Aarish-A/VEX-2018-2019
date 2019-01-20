@@ -28,7 +28,9 @@ enum FieldPos {
   FieldPos_Front,
   FieldPos_Back,
   FieldPos_PF,
-  FieldPos_PF_Back
+  FieldPos_PF_Back,
+  FieldPos_PF_Back_Red,
+  FieldPos_PF_Back_Blue 
 };
 
 struct ShotPos {
