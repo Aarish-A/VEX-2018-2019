@@ -98,9 +98,11 @@ void decapper_handle()
       break;
 
     case Decapper_States::Decapping:
-		delay(500);
-		decapper_move(DECAPPER_DECAPLOW);
-		set_decapper_state(Decapper_States::Decap_Low);
+		if(decapper.get_position()<DECAPPER_DECAPPING+10)
+		{
+			decapper_move(DECAPPER_DECAPLOW);
+			set_decapper_state(Decapper_States::Decap_Low);
+		}
 			// if(ctrler.get_digital_new_press(E_CONTROLLER_DIGITAL_UP))
 			// {
 			// 	decapper_set(-127);
