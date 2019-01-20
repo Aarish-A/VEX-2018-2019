@@ -8,15 +8,16 @@
 #include "button.hpp"
 #include "angler.hpp"
 #include "controls.hpp"
+#include "intake.hpp"
 
 constexpr double ANGLER_BALL = 13;
 constexpr int ANGLER_DZ = 30;
 
-constexpr double ANGLER_PU_POS = 60;//ANGLER_BALL * 7;
+constexpr double ANGLER_PU_POS = 85;//ANGLER_BALL * 7;
 
-constexpr double ANGLER_CAP_PU_POS = 190;
+constexpr double ANGLER_CAP_PU_POS = 215;
 
-constexpr double ANGLER_CAP_FLIP_POS = 25;
+constexpr double ANGLER_CAP_FLIP_POS = 50;
 
 enum Dir {
   Dir_Centre,

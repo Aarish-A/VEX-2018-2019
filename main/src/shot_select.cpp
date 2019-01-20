@@ -187,6 +187,11 @@ void shot_req_handle(void *param) {
 	shot_req_num = 0;
 	while (true) {
 		if (shot_req_num > 0) {
+			if (shot_req[0].field_pos == FieldPos_PF_Back_Red || shot_req[0].field_pos == FieldPos_PF_Back_Blue) {
+				intake_state_set(0, IntakeState::Off);
+				angler.move(0);
+			}
+
 			log_ln(LOG_SHOTS, "%d Start handling first shot request ", pros::millis());
 			set_handled_vars(); //Make sure all handled vars are reset to false
 			shot_req_handled_num = 0; //Make sure we start handling shot requests from index 0
@@ -197,13 +202,14 @@ void shot_req_handle(void *param) {
 				pos.reset(0, 0, 0);
 			}
 			//Angle handle 1
-			angler.move_absolute(shot_req[shot_req_handled_num].angle_targ, 200);
+			if (shot_req[shot_req_handled_num].angle_targ > ANGLER_PU_POS || (shot_req[0].field_pos != FieldPos_PF_Back_Red && shot_req[0].field_pos != FieldPos_PF_Back_Blue)) //Only move angler before drive if we are sure it won't hit PF
+				angler.move_absolute(shot_req[shot_req_handled_num].angle_targ, 200);
 
 			//Drive Handle 1
 			if (shot_req[0].field_pos == FieldPos_PF_Back_Red || shot_req[0].field_pos == FieldPos_PF_Back_Blue) {
 				log_ln(LOG_SHOTS, "%d S1 Turn to face %f, %f ", pros::millis(), shot_req[shot_req_handled_num].flag_pos.x, shot_req[shot_req_handled_num].flag_pos.y);
 				setDrive(0, -60, 0);
-			  while (pos.y > -2_in) pros::delay(10);
+			  while (pos.y > -4_in) pros::delay(10);
 			  log_ln(LOG_SHOTS, "%d Done Back up PF (%f, %f, %f)", pros::millis(), pos.x, pos.y, RAD_TO_DEG(pos.a));
 			  turn_vel(new PointAngleTarget({shot_req[shot_req_handled_num].flag_pos.x, shot_req[shot_req_handled_num].flag_pos.y}), (200/70_deg), 0);
 			}
@@ -240,6 +246,9 @@ void shot_req_handle(void *param) {
 
 				angler.move_absolute(ANGLER_PU_POS, 200);
 			}
+
+			intake_state_set(127, IntakeState::Forw);
+
 			if (angler.get_position() < 10) angler.move_absolute(ANGLER_PU_POS, 200);
 
 			shot_req_num = 0;

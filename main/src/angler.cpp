@@ -42,7 +42,7 @@ void angler_handle() {
 
 	anglerPow = set_dz(ctrler.get_analog(JOY_ANGLER), ANGLER_DZ);
 
-	if (angler.get_position() < 0 && anglerPow < 0) anglerPow = 0;
+	if (angler.get_position() < 40 && anglerPow < 0) anglerPow = 0;
 	else if (angler.get_position() > 320 && anglerPow > 0) anglerPow = 0;
 /*
 	if (shot_req_num > 0) { //(shot_req[shot_req_handled_num].drive_turn_handled) {
@@ -51,7 +51,7 @@ void angler_handle() {
 	else
 	*/
 	if (shot_req_num == 0) {
-		if (shot_req[0].field_pos != FieldPos_Back && shot_req[0].field_pos != FieldPos_PF_Back)
+		if (shot_req[0].field_pos != FieldPos_Back && shot_req[0].field_pos != FieldPos_PF_Back_Blue && shot_req[0].field_pos != FieldPos_PF_Back_Red)
 		{
 
 				if (check_double_press(BTN_SHOT_L_T, BTN_SHOT_L_M))

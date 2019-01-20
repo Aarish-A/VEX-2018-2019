@@ -3,7 +3,7 @@
 #include "config.hpp"
 #include "controls.hpp"
 
-constexpr uint32_t BTN_PRESS_TIME = 100;
+constexpr uint32_t BTN_PRESS_TIME = 50;
 
 struct button {
   bool pressed = 0;
