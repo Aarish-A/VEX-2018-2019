@@ -33,10 +33,14 @@ bool check_single_press(int button) {
 
 bool check_double_press(int button1, int button2) {
   if (((pros::millis() - buttons[button1].last_pressed_time) < buttons[button1].button_press_time) && check_rising(button2)) {
-         return true;
-     }
+    buttons[button1].last_pressed_time = 0;
+    buttons[button2].last_pressed_time = 0;
+    return true;
+  }
   if (((pros::millis() - buttons[button2].last_pressed_time) < buttons[button2].button_press_time) && check_rising(button1)) {
-         return true;
-     }
-     return false;
+    buttons[button1].last_pressed_time = 0;
+    buttons[button2].last_pressed_time = 0;
+    return true;
+  }
+  return false;
 }

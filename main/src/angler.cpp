@@ -22,7 +22,8 @@ void angler_cal() {
 	while (angler.get_actual_velocity() < -10) delay(10);
 	angler.tare_position();
 	angler.move_absolute(ANGLER_PU_POS, 100);
-	delay(1000);
+	uint32_t timeout = pros::millis() + 1000;
+	while(ANGLER_PU_POS - angler.get_position() < 5 && timeout >= pros::millis()) pros::delay(10);
 	log_ln(LOG_ANGLER, "%d Done Angler Cal ", pros::millis());
 
 	/*

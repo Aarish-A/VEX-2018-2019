@@ -7,9 +7,11 @@ Decapper_States decapper_state_last = decapper_state;
 int decapper_state_change_time = 0;
 
 void set_decapper_state(Decapper_States state) {
+  printf("Going from %d", decapper_state);
 	decapper_state_last = decapper_state;
 	decapper_state = state;
 	decapper_state_change_time = pros::millis();
+  printf(" to %d\n", decapper_state);
 }
 
 void decapper_set(int power)
@@ -24,14 +26,14 @@ void decapper_move(double pos, int32_t velocity)
 
 void decapper_cal()
 {
-  uint32_t timeout_time = millis() + 500;
+  uint32_t timeout_time = millis() + 100;
   bool success = true;
-  decapper_set(-20);
+  decapper_set(-50);
   while (fabs(decapper.get_actual_velocity()) < 12 && (success = (millis() < timeout_time)))
   {
     delay(10);
   }
-  timeout_time = millis() + 2500;
+  timeout_time = millis() + 3500;
   while (fabs(decapper.get_actual_velocity()) > 10 && (success = (millis() < timeout_time)))
 	{
 		delay(10);
@@ -99,9 +101,11 @@ void decapper_handle()
       break;
 
     case Decapper_States::Decapping:
-		delay(500);
-		decapper_move(DECAPPER_DECAPLOW);
-		set_decapper_state(Decapper_States::Decap_Low);
+		if(decapper.get_position()<DECAPPER_DECAPPING+10)
+    {
+      decapper_move(DECAPPER_DECAPLOW);
+  		set_decapper_state(Decapper_States::Decap_Low);
+    }
 			// if(ctrler.get_digital_new_press(E_CONTROLLER_DIGITAL_UP))
 			// {
 			// 	decapper_set(-127);
