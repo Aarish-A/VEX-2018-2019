@@ -31,7 +31,7 @@ extern PunState pun_state;
 extern PunState pun_state_last;
 extern int pun_state_change_time;
 
-extern int pun_shots;
+extern float pun_shots;
 extern bool pun_ball;
 
 extern bool auto_set_shot;

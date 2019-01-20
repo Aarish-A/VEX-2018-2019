@@ -7,11 +7,11 @@
 
 constexpr bool LOG_DRIVE = 1;
 constexpr bool LOG_PUNCHER = 1;
-constexpr bool LOG_ANGLER = 1;
-constexpr bool LOG_DECAPPER = 1;
+constexpr bool LOG_ANGLER = 0;
+constexpr bool LOG_DECAPPER = 0;
 constexpr bool LOG_JOYSTICK = 1;
-constexpr bool LOG_ERROR = 1;
-constexpr bool LOG_AUTO = 1;
+constexpr bool LOG_ERROR = 0;
+constexpr bool LOG_AUTO = 0;
 constexpr bool LOG_SHOTS = 1;
 
 constexpr int LOG_CLOSE_TIME = 1000;
