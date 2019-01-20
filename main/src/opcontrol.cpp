@@ -23,7 +23,7 @@ void opcontrol() {
 		intake_handle();
 		angler_handle();
 		decapper_handle();
-		printf("%d\n", (int)decapper.get_position());
+		//printf("%d\n", (int)decapper.get_position());
 		delay(10);
 	}
 }
