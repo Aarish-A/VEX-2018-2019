@@ -7,8 +7,8 @@
 #include "tracking.hpp"
 
 constexpr double DECAPPER_PICKUP = 90;
-constexpr double DECAPPER_CAPPING = 1025;
-constexpr double DECAPPER_CAPPING_HOLD = 1000;
+constexpr double DECAPPER_CAPPING = 1035;
+constexpr double DECAPPER_CAPPING_HOLD = 970;
 constexpr double DECAPPER_DECAPLOW = 1200;
 constexpr double DECAPPER_DECAPPING = (DECAPPER_DECAPLOW-120);
 enum class Decapper_States {
