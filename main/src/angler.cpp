@@ -42,8 +42,8 @@ void angler_handle() {
 
 	anglerPow = set_dz(ctrler.get_analog(JOY_ANGLER), ANGLER_DZ);
 
-	if (angler.get_position() < 40 && anglerPow < 0) anglerPow = 0;
-	else if (angler.get_position() > 320 && anglerPow > 0) anglerPow = 0;
+	if (angler.get_position() < ANGLER_BOT_LIM_POS && anglerPow < 0) anglerPow = 0;
+	else if (angler.get_position() > ANGLER_TOP_LIM_POS && anglerPow > 0) anglerPow = 0;
 /*
 	if (shot_req_num > 0) { //(shot_req[shot_req_handled_num].drive_turn_handled) {
 		angler.move_absolute(shot_req[shot_req_handled_num].angle_targ, 200);

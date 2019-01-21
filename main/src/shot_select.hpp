@@ -19,6 +19,9 @@ constexpr double ANGLER_CAP_PU_POS = 215;
 
 constexpr double ANGLER_CAP_FLIP_POS = 50;
 
+constexpr double ANGLER_BOT_LIM_POS = 40;
+constexpr double ANGLER_TOP_LIM_POS = 320;
+
 enum Dir {
   Dir_Centre,
   Dir_Left,

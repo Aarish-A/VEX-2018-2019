@@ -249,7 +249,7 @@ void shot_req_handle(void *param) {
 
 			intake_state_set(127, IntakeState::Forw);
 
-			if (angler.get_position() < 10) angler.move_absolute(ANGLER_PU_POS, 200);
+			if (angler.get_position() < ANGLER_BOT_LIM_POS) angler.move_absolute(ANGLER_PU_POS, 200);
 
 			shot_req_num = 0;
 			shot_req_handled_num = 0;
