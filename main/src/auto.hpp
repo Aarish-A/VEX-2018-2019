@@ -6,7 +6,7 @@
 #include "logs.hpp"
 #include <math.h>
 
-extern bool red_team;
+extern bool blue_team;
 
 constexpr double DRIVE_DIA = 3.95;
 constexpr double DRIVE_WIDTH = 13.0;

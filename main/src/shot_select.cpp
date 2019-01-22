@@ -89,7 +89,7 @@ void set_turn_dir(Dir turn_dir) {
 		else shot_req[shot_req_num-1].flag_pos.x = 0;
 	}
 
-	if (red_team) shot_req[shot_req_num-1].flag_pos.x += (5.5 + (FLAG_WIDTH/2));
+	if (blue_team) shot_req[shot_req_num-1].flag_pos.x += (5.5 + (FLAG_WIDTH/2));
 }
 
 void set_handled_vars() {

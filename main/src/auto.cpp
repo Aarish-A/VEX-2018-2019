@@ -2,7 +2,7 @@
 
 using namespace pros;
 
-bool red_team = true;
+bool blue_team = true;
 
 double getGlobalAngle() {
 	//return (DRIVE_DIA * M_PI * (driveFL.get_position() - driveBR.get_position() + driveBL.get_position() - driveFR.get_position())) / (2 * DRIVE_TPR * (DRIVE_LENGTH + DRIVE_WIDTH));
