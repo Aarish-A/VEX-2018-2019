@@ -89,7 +89,7 @@ void decapper_handle()
     case Decapper_States::Idle:
       if(check_single_press(BTN_DECAPPER_DOWN))
       {
-        decapper_move(DECAPPER_PICKUP,40);
+        decapper_move(DECAPPER_PICKUP,120);
         set_decapper_state(Decapper_States::Pickup);
       }
 			else if(check_single_press(BTN_DECAPPER_UP))
