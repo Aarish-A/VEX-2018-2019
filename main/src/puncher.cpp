@@ -176,7 +176,7 @@ void pun_handle() {
 void pun_fatal_disable() {
   pun_state_change(PunState::FatalError);
   puncherLeft.move_relative(0, 0);
-  puncherRight.move_relative(0, 0);
+  // puncherRight.move_relative(0, 0);
   puncherLeft.move(0);
   puncherRight.move(0);
   log_ln(LOG_PUNCHER, "%d FATAL Puncher fatal error", millis());
