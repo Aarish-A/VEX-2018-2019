@@ -3,7 +3,10 @@
 #include "tracking.hpp"
 #include "angle_target.hpp"
 #include "util.hpp"
+#include "logs.hpp"
 #include <math.h>
+
+extern bool blue_team;
 
 constexpr double DRIVE_DIA = 3.95;
 constexpr double DRIVE_WIDTH = 13.0;
@@ -25,16 +28,19 @@ double getGlobalAngle();
 void resetGlobalAngle();
 void setDrive(int x, int y, int a);
 void setDrive(int pow);
+void setDriveTurn(int left, int right);
 void setDriveVel(int x, int y, int a);
 void setDriveVel(int vel);
 
 void drive_brake();
 
-void move_drive(double dis, int vel, bool stop = true);
+void move_drive(double dis, int vel = 200, bool stop = true);
+void move_drive_simple(double dis, int vel, bool stop = true);
 //void turnDrive(double targ, int vel);
 void turn_vel(AngleTarget *target, double kP, double offset = 0);
 void turn_vel_side(AngleTarget *target, double kP, double offset, bool f_w);
 
 void flatten_against_wall(bool f_w, bool hold);
+void flatten_angle(bool left, bool right, bool hold);
 
 double operator "" _tk(long double val);

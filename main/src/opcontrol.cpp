@@ -1,72 +1,51 @@
 #include "main.h"
-#include "puncher.hpp"
-#include "drive.hpp"
-#include "intake.hpp"
-#include "angler.hpp"
-#include "tracking.hpp"
-#include "shot_select.hpp"
 #include "button.hpp"
+#include "controls.hpp"
+#include "angler.hpp"
+#include "puncher.hpp"
+#include "intake.hpp"
+#include "drive.hpp"
+#include "logs.hpp"
 #include "gui.hpp"
-
-/**
- * Runs the operator control code. This function will be started in its own task
- * with the default priority and stack size whenever the robot is enabled via
- * the Field Management System or the VEX Competition Switch in the operator
- * control mode.
- *
- * If no competition control is connected, this function will run immediately
- * following initialize().
- *
- * If the robot is disabled or communications is lost, the
- * operator control task will be stopped. Re-enabling the robot will restart the
- * task, not resume it from where it left off.
- */
+#include "decapper.hpp"
 
 using namespace pros;
 
 void opcontrol() {
-	uint32_t lstTime = 0;
-	log_ln("%d Start Opcontrol ", pros::millis());
-	drive_set(0);
+	int p_time = 0;
+	shot_req_handle_start_task(); //Start shot req handle task
+	printf("%d Start opcontrol\n", pros::millis());
+	// ctrler.print(2, 0, "RUNNING");
 
 	while (true) {
-		for (int i = 0; i < 12; i++) {
-			btn[i].check_pressed();
-		}
-
-
+		pos.update();
+		update_buttons();
 		shot_req_make();
-
 		pun_handle();
 		drive_handle();
 		intake_handle();
 		angler_handle();
+		decapper_handle();
+		//printf("%d\n", (int)decapper.get_position());
 
-		pos.update();
-
-		if (millis() - lstTime > 100) {
-			lstTime = millis();
+		if (millis() - p_time > 100) {
+			p_time = millis();
 			std::string field_pos_s = "def";
 			FieldPos field_pos= shot_req[0].field_pos;
 
-			if (field_pos== FieldPos_Front) field_pos_s = "Fr";
+			if (field_pos== FieldPos_Front) field_pos_s = "Fr ";
 			else if (field_pos== FieldPos_Back) field_pos_s = "Bck";
-			else if (field_pos== FieldPos_PF) field_pos_s = "PF";
-			else if (field_pos== FieldPos_PF_Back) field_pos_s = "PfB";
+			else if (field_pos== FieldPos_PF) field_pos_s = "PF ";
+			else if (field_pos== FieldPos_PF_Back_Red) field_pos_s = "PfR";
+			else if (field_pos== FieldPos_PF_Back_Blue) field_pos_s = "PfB";
 
-			// ctrler.print(2, 0, "%.1f,%.1f,%.1f p:%d", pos.x, pos.y, RAD_TO_DEG(pos.a));
+			std::string team_s = blue_team? "b" : "r";
 
-			if (btn[E_CONTROLLER_DIGITAL_LEFT-6].pressed) {
-				vision_object_s_t object_arr[1];
-				vision_sensor.read_by_size(0, 1, object_arr);
-				printf("PRINTED SIGNATURE");
-				ctrler.print(2, 1, "%d", object_arr[0].signature);
-			}
-			//ctrler.print(2, 0, "%s %d %d %d", field_pos_s, (int)intake.get_temperature(), (int)puncherLeft.get_temperature(), (int)puncherRight.get_temperature());
-			ctrler.print(2, 0, "%d%d%d%d%d%def  ", (int)puncherLeft.get_temperature(), (int)puncherRight.get_temperature(), (int)drive_fl.get_temperature(), (int)drive_fr.get_temperature(), (int)drive_bl.get_temperature(), (int)drive_br.get_temperature());
-			//ctrler.print(2, 0, "%.3f", ((enc_l.get_value() * SPN_TO_IN_L) - (enc_r.get_value() * SPN_TO_IN_R)) / 3600_deg);
-			//log_ln("%d %.3f %.3f", millis(), puncherLeft.get_power(), puncherRight.get_power());
-			//log_ln("%d | P:%f TP:%f V:%f TV:%f P:%f ", millis(), angler.get_position(), angler.get_target_position(), angler.get_actual_velocity(), angler.get_target_velocity(), angler.get_power());
+			ctrler.print(2, 0, "%s %s %d %d %d      ", field_pos_s, team_s, (int)intake.get_temperature(), (int)puncherLeft.get_temperature(), (int)puncherRight.get_temperature());
+			//ctrler.print(2, 0, "%.1f %.1f %.1f     ", pos.x, pos.y, RAD_TO_DEG(pos.a));
+			//ctrler.print(2, 0, "%d %d %.1f     ", enc_l.get_value(), enc_r.get_value(), RAD_TO_DEG(pos.a));
+			//ctrler.print(2, 0, "%f          ", ((enc_l.get_value() * SPN_TO_IN_L) - (enc_r.get_value() * SPN_TO_IN_R)) / 3600_deg);
+
 		}
 
 		delay(10);

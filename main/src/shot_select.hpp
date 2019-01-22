@@ -6,6 +6,16 @@
 #include "auto.hpp"
 #include "angle_target.hpp"
 #include "button.hpp"
+#include "angler.hpp"
+#include "controls.hpp"
+#include "intake.hpp"
+
+/* Flags */
+constexpr bool SHOT_DRIVE_BRAKE = false;
+
+
+/* Constants */
+constexpr double FLAG_WIDTH = 9.75;
 
 constexpr double ANGLER_BALL = 13;
 constexpr int ANGLER_DZ = 30;
@@ -15,6 +25,9 @@ constexpr double ANGLER_PU_POS = 85;//ANGLER_BALL * 7;
 constexpr double ANGLER_CAP_PU_POS = 215;
 
 constexpr double ANGLER_CAP_FLIP_POS = 50;
+
+constexpr double ANGLER_BOT_LIM_POS = 40;
+constexpr double ANGLER_TOP_LIM_POS = 320;
 
 enum Dir {
   Dir_Centre,
@@ -26,7 +39,8 @@ enum FieldPos {
   FieldPos_Front,
   FieldPos_Back,
   FieldPos_PF,
-  FieldPos_PF_Back
+  FieldPos_PF_Back_Red,
+  FieldPos_PF_Back_Blue
 };
 
 struct ShotPos {
@@ -63,7 +77,8 @@ void set_handled_vars();
 void set_shot_req(bool top, Dir turn_dir) ;
 
 void shot_req_make();
-void shot_req_handle();
+void shot_req_handle(void *param);
+
 
 /* Shot Num */
 extern ShotSelect shot_req[2];
@@ -73,7 +88,10 @@ extern int shot_req_handled_num;
 
 extern bool shot_cancel_pressed;
 
-extern pros::Task shot_req_handle_task;
+/* Task Handle */
+void shot_req_handle_stop_task();
+void shot_req_handle_start_task();
+extern pros::Task* shot_req_handle_task;
 
 void inc_shot_req_num();
 void dec_shot_req_num();

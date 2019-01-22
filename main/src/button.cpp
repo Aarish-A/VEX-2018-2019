@@ -1,52 +1,46 @@
 #include "button.hpp"
 
-btn_info btn[12] {
-  {pros::E_CONTROLLER_DIGITAL_L1, false },
-  {pros::E_CONTROLLER_DIGITAL_L2, false},
-  {pros::E_CONTROLLER_DIGITAL_R1, false},
-  {pros::E_CONTROLLER_DIGITAL_R2, false},
-  {pros::E_CONTROLLER_DIGITAL_UP, false},
-  {pros::E_CONTROLLER_DIGITAL_DOWN, false},
-  {pros::E_CONTROLLER_DIGITAL_LEFT, false},
-  {pros::E_CONTROLLER_DIGITAL_RIGHT, false},
-  {pros::E_CONTROLLER_DIGITAL_X, false},
-  {pros::E_CONTROLLER_DIGITAL_B, false},
-  {pros::E_CONTROLLER_DIGITAL_Y, false},
-  {pros::E_CONTROLLER_DIGITAL_A, false}
-};
+button buttons[12];
 
-void btn_info::check_pressed() {
-  //pressed = btn[btn_name-6].pressed;
-  pressed = ctrler.get_digital_new_press(btn_name);
-  if (ENABLE_BTN_PRESS_LOGS && pressed) log_ln("  >> %d Pressed %d", pros::millis(), btn_name);
+void init_buttons() {
+  // button_
 }
 
-btn_dp_detector::btn_dp_detector(pros::controller_digital_e_t btn_start, pros::controller_digital_e_t btn_end) {
-  this->btn_start = btn_start;
-  this->btn_end = btn_end;
-}
-
-void btn_dp_detector::set_first_pressed() {
-  for (int i = (btn_start-6); i <= (btn_end-6); i++) {
-    if (!timer && btn[i].pressed) {
-      timer = pros::millis() + BTN_PRESS_TIME;
-      btn_first_pressed = btn[i].btn_name;
-    }
+void update_buttons() {
+  for(int i = 0; i < 12; i++) {
+    buttons[i].last_pressed = buttons[i].pressed;
+    buttons[i].pressed = ctrler.get_digital((pros::controller_digital_e_t)(i + pros::E_CONTROLLER_DIGITAL_L1));
+    if (check_rising(i)) buttons[i].last_pressed_time = pros::millis();
+    else if (check_falling(i)) buttons[i].last_pressed_time = 0;
   }
 }
 
-void btn_dp_detector::reset_timer() {
-  timer = 0;
+bool check_rising(int button) {
+  return (buttons[button].pressed && !buttons[button].last_pressed);
 }
 
-int btn_dp_detector::get_timer() {
-  return timer;
+bool check_falling(int button) {
+  return (!buttons[button].pressed && buttons[button].last_pressed);
 }
 
-pros::controller_digital_e_t btn_dp_detector::get_first_pressed() {
-  return btn_first_pressed;
+bool check_single_press(int button) {
+  if (buttons[button].last_pressed_time && (pros::millis() - buttons[button].last_pressed_time) >= buttons[button].button_press_time) {
+    buttons[button].last_pressed_time = 0;
+    return true;
+  }
+  else return false;
 }
 
-void btn_dp_detector::override_first_pressed(pros::controller_digital_e_t btn_override) {
-  if (btn_first_pressed == btn_override) reset_timer();
+bool check_double_press(int button1, int button2) {
+  if (((pros::millis() - buttons[button1].last_pressed_time) < buttons[button1].button_press_time) && check_rising(button2)) {
+    buttons[button1].last_pressed_time = 0;
+    buttons[button2].last_pressed_time = 0;
+    return true;
+  }
+  if (((pros::millis() - buttons[button2].last_pressed_time) < buttons[button2].button_press_time) && check_rising(button1)) {
+    buttons[button1].last_pressed_time = 0;
+    buttons[button2].last_pressed_time = 0;
+    return true;
+  }
+  return false;
 }

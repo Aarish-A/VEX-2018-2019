@@ -1,24 +1,24 @@
 #include "main.h"
-#include "util.hpp"
-#include "config.hpp"
-#include "puncher.hpp"
-#include "drive.hpp"
+#include "button.hpp"
+#include "controls.hpp"
 #include "angler.hpp"
+#include "puncher.hpp"
 #include "intake.hpp"
+#include "drive.hpp"
+#include "logs.hpp"
 #include "gui.hpp"
+#include "decapper.hpp"
 
-using namespace pros;
-
-/**
- * Runs initialization code. This occurs as soon as the program is started.
- *
- * All other competition modes are blocked by initialize; it is recommended
- * to keep execution time for this mode under a few seconds.
- */
 void initialize() {
-	printf("%d Start initialize \n", pros::millis());
+  printf("%d Start initialize\n", pros::millis());
+  buttons[BTN_SHOT_L_T].button_press_time = BTN_PRESS_TIME;
+	buttons[BTN_SHOT_L_M].button_press_time = BTN_PRESS_TIME;
+  buttons[BTN_SHOT_R_T].button_press_time = BTN_PRESS_TIME;
+  buttons[BTN_SHOT_R_M].button_press_time = BTN_PRESS_TIME;
+  buttons[BTN_DECAPPER_UP].button_press_time = BTN_PRESS_TIME;
+  buttons[BTN_DECAPPER_DOWN].button_press_time = BTN_PRESS_TIME;
+
 	log_init();
-	log_ln("%d Finished Init ", pros::millis());
 
 	gui_init();
 	pun_init();
@@ -26,12 +26,9 @@ void initialize() {
   drive_init();
   angler_init();
   intake_init();
-
 	angler_cal();
-	//log_ln("%d Init Done ", pros::millis(), x);
-
-  ///pros::Task pun_task ((pros::task_fn_t)pun_handle, (void*)NULL, TASK_PRIORITY_DEFAULT, TASK_STACK_DEPTH_DEFAULT, "Pun_Task");
-	//pros::Task tracking_task ((pros::task_fn_t)pos.task(), (void*)NULL, TASK_PRIORITY_DEFAULT, TASK_STACK_DEPTH_DEFAULT, "Track_Task");
+  decapper_cal();
+  log_ln(LOG_DRIVE, "%d Finished Init ", pros::millis());
 }
 
 /**

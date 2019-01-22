@@ -1,5 +1,4 @@
 #include "drive.hpp"
-#include "shot_select.hpp"
 
 //using namespace pros;
 
@@ -40,7 +39,7 @@ void drive_handle() {
 	static int drive_pow_lst = 0;
 	static int drive_brake_timer = 0;
 
-	if (shot_req_num == 0 || shot_req[shot_req_handled_num].drive_turn_handled) {
+	if ((shot_req_num == 0 || shot_req[shot_req_handled_num].drive_turn_handled) && decapper_state != Decapper_States::Capping) {
 		//log_ln("%d Drive update", pros::millis());
 	  int y = set_dz(ctrler.get_analog(JOY_DRIVE_FW), DRIVE_DZ);
 		int x = set_dz(ctrler.get_analog(JOY_DRIVE_STRAFE), DRIVE_DZ);
@@ -57,16 +56,16 @@ void drive_handle() {
 			if (a_lst < 0) drive_set(0, 0, drive_brake_pow);
 			else if (a_lst > 0) drive_set(0, 0, -drive_brake_pow);
 			else drive_set(0);
-			log_ln("%d Start turn Brake %d", pros::millis(), drive_brake_pow);
+			log_ln(LOG_DRIVE, "%d Start turn Brake %d", pros::millis(), drive_brake_pow);
 		}
 		else if (!drive_brake_timer && !drive_pow && drive_pow_lst) {
 			drive_set(0);
-			log_ln("%d Drive Set 0", pros::millis());
+			log_ln(LOG_DRIVE, "%d Drive Set 0", pros::millis());
 			//drive_brake_timer = pros::millis() + DRIVE_BRAKE_TIME;
 		}
 
 		if (drive_brake_timer && pros::millis() > drive_brake_timer) {
-			log_ln("%d Drive Brake End ", pros::millis());
+			log_ln(LOG_DRIVE, "%d Drive Brake End ", pros::millis());
 			//LOG(("%d Drive Brake End \n", pros::millis()));
 
 			//drive_brake();

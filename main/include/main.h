@@ -35,7 +35,6 @@
 #define PROS_USE_LITERALS
 
 #include "api.h"
-#include "../src/controls.hpp"
 
 /**
  * You should add more #includes here

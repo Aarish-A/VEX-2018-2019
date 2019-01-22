@@ -1,4 +1,3 @@
-#include "main.h"
 #include "gui.hpp"
 
 // Main Screen
@@ -59,6 +58,7 @@ void gui_init() {
   screen = lv_obj_create(NULL, NULL);
   lv_scr_load(screen);
 	menu = lv_tabview_create(lv_scr_act(), NULL);
+  lv_tabview_set_sliding(menu, false);
 
   // Tabs
 	diagnostics_tab = lv_tabview_add_tab(menu, "Diagnostics");
