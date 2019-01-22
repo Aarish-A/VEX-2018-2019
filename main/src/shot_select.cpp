@@ -235,6 +235,10 @@ void shot_req_handle(void *param) {
 
 			//Shooter Handle 1
 			angler.move_absolute(shot_req[shot_req_handled_num].angle_targ, 200);
+			if (!SHOT_DRIVE_BRAKE) {
+				pros::delay(200);
+				setDrive(0);
+			}
 			while (!shot_req[shot_req_handled_num].shot_handled) pros::delay(10);
 			shot_req_handled_num++;
 
@@ -255,6 +259,10 @@ void shot_req_handle(void *param) {
 
 				//Shooter Handle 2
 				angler.move_absolute(shot_req[shot_req_handled_num].angle_targ, 200);
+				if (!SHOT_DRIVE_BRAKE) {
+					pros::delay(200);
+					setDrive(0);
+				}
 				while (!shot_req[shot_req_handled_num].shot_handled) pros::delay(10);
 				shot_req_handled_num++;
 
