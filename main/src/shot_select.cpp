@@ -215,16 +215,17 @@ void shot_req_handle(void *param) {
 			if (shot_req[0].field_pos == FieldPos_PF_Back_Red || shot_req[0].field_pos == FieldPos_PF_Back_Blue) {
 				log_ln(LOG_SHOTS, "%d S1 Turn to face %f, %f ", pros::millis(), shot_req[shot_req_handled_num].flag_pos.x, shot_req[shot_req_handled_num].flag_pos.y);
 				setDrive(0, -40, 0);
-			  while (pos.y > -2.5_in) pros::delay(10);
-				/*
-				setDrive(0, -20, 0);
-				pros::delay(350);
+			  while (pos.y > -3.5_in) pros::delay(10);
+
+				setDrive(0, 15, 0);
+				pros::delay(150);
 				setDrive(0);
-				*/
+
 				setDriveVel(0);
-				pros::delay(500);
+				pros::delay(20);
+				angler.move_absolute(shot_req[shot_req_handled_num].angle_targ, 200);
 			  log_ln(LOG_SHOTS, "%d Done Back up PF (%f, %f, %f) Vel(%f, %f, %f)", pros::millis(), pos.x, pos.y, RAD_TO_DEG(pos.a), pos.velLocal.x, pos.velLocal.y, RAD_TO_DEG(pos.aVel));
-			  turn_vel(new PointAngleTarget({shot_req[shot_req_handled_num].flag_pos.x, shot_req[shot_req_handled_num].flag_pos.y}), (200/90_deg), 0);
+			  turn_vel(new PointAngleTarget({shot_req[shot_req_handled_num].flag_pos.x, shot_req[shot_req_handled_num].flag_pos.y}), (200/80_deg), 0);
 			}
 			else if (shot_req[shot_req_handled_num].field_pos == FieldPos_Back) {
 				log_ln(LOG_SHOTS, "%d S1 Turn to face %f, %f ", pros::millis(), shot_req[shot_req_handled_num].flag_pos.x, shot_req[shot_req_handled_num].flag_pos.y);
@@ -244,7 +245,7 @@ void shot_req_handle(void *param) {
 				//Drive Handle 2
 				if (shot_req[0].field_pos == FieldPos_PF_Back_Red || shot_req[0].field_pos == FieldPos_PF_Back_Blue) {
 					log_ln(LOG_SHOTS, "%d S2 Turn to face %f, %f ", pros::millis(), shot_req[shot_req_handled_num].flag_pos.x, shot_req[shot_req_handled_num].flag_pos.y);
-				  turn_vel(new PointAngleTarget({shot_req[shot_req_handled_num].flag_pos.x, shot_req[shot_req_handled_num].flag_pos.y}), (200/90_deg), 0);
+				  turn_vel(new PointAngleTarget({shot_req[shot_req_handled_num].flag_pos.x, shot_req[shot_req_handled_num].flag_pos.y}), (200/80_deg), 0);
 				}
 				else if (shot_req[shot_req_handled_num].field_pos == FieldPos_Back) {
 					log_ln(LOG_SHOTS, "%d S2 Turn to face %f, %f ", pros::millis(), shot_req[shot_req_handled_num].flag_pos.x, shot_req[shot_req_handled_num].flag_pos.y);
