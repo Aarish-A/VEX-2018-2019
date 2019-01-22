@@ -99,15 +99,14 @@ void pun_handle() {
 			}
 			case PunState::Loaded:
 			{
-				//log_ln(LOG_PUNCHER, "%d LOADED, CUR: %f", pros::millis(), puncherLeft.get_position());
-				//printf(" >> %d PunLoaded %f ", millis(), puncherLeft.get_position());
-				//if (ctrler.get_digital_new_press(E_CONTROLLER_DIGITAL_A)) {
-
-				if (( shot_req_num > 0 && shot_req[shot_req_handled_num].drive_turn_handled && fabs(angler.get_position()-shot_req[shot_req_handled_num].angle_targ) < 5) ||auto_set_shot) {
+				if (( shot_req_num > 0 && shot_req[shot_req_handled_num].drive_turn_handled && //For Driver control - shot request must have been made, drive must have been handled & angler must have reached or timed out
+						(fabs(angler.get_position()-shot_req[shot_req_handled_num].angle_targ) < 5 || (shot_req[shot_req_handled_num].angler_to && pros::millis() > shot_req[shot_req_handled_num].angler_to) )
+						|| auto_set_shot) //For auto - auto_set_shot flag set to true
+				{
 					//pun_move(PUN_OFFSET + (++pun_shots * PUN_TPR));
 					++pun_shots;
 					pun_set(127);
-					log_ln(LOG_PUNCHER, "%d Shot start (from ShotLoaded)", pros::millis());//"| Shtr Pos:%f t:%f | ReqNum:%d ShtNum:%d | FPos:%d | 1angle:%d, 1trn:%d (%f,%f) | 2angle:%d, 2turn:%d (%f,%f) \n", pros::millis(), puncherLeft.get_position(), puncherLeft.get_target_position(), shot_req_num, shot_req_handled_num, shot_req[0].field_pos, shot_req[0].angle_targ, shot_req[0].turn_dir, shot_req[0].flag_pos.x, shot_req[0].flag_pos.y, shot_req[1].angle_targ, shot_req[1].turn_dir, shot_req[1].flag_pos.x, shot_req[1].flag_pos.y);
+					log_ln(LOG_PUNCHER, "%d Shot start (from ShotLoaded)", pros::millis());
 
 					pun_state_change(PunState::Pull_Back);
 				}
@@ -137,7 +136,7 @@ void pun_handle() {
 					pun_state_change(PunState::Loading);
 
 				}
-				else if ((PUN_OFFSET + (pun_shots * PUN_TPR)-(15*PUN_RATIO)) < puncherLeft.get_position()) { //15 ticks before slip position
+				else if ((PUN_OFFSET + (pun_shots * PUN_TPR)-(15*PUN_RATIO)) < puncherLeft.get_position()) { //15 deg before slip position
 					wait_slip_end = millis() + PUN_WAIT_TIME;
 					pun_set(0);
 					pun_move(PUN_OFFSET + (pun_shots * PUN_TPR));
