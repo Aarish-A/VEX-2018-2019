@@ -215,7 +215,7 @@ void shot_req_handle(void *param) {
 			if (shot_req[0].field_pos == FieldPos_PF_Back_Red || shot_req[0].field_pos == FieldPos_PF_Back_Blue) {
 				log_ln(LOG_SHOTS, "%d S1 Turn to face %f, %f ", pros::millis(), shot_req[shot_req_handled_num].flag_pos.x, shot_req[shot_req_handled_num].flag_pos.y);
 				setDrive(0, -40, 0);
-			  while (pos.y > -3.5_in) pros::delay(10);
+			  while (pos.y > -2.5_in) pros::delay(10);
 				/*
 				setDrive(0, -20, 0);
 				pros::delay(350);
