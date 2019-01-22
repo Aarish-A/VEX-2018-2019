@@ -6,7 +6,7 @@
 #include "auto.hpp"
 #include "tracking.hpp"
 
-constexpr double DECAPPER_PICKUP = 90;
+constexpr double DECAPPER_PICKUP = 200;
 constexpr double DECAPPER_CAPPING = 1150;
 constexpr double DECAPPER_CAPPING_HOLD = 1100;
 constexpr double DECAPPER_DECAPLOW = 1300;
