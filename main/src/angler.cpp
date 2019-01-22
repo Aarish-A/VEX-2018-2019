@@ -50,7 +50,7 @@ void angler_handle() {
 	}
 	else
 	*/
-	if (shot_req_num == 0) {
+	if (shot_req_num == 0 && shot_req[0].field_pos != FieldPos_PF_Back_Yellow) {
 		if (shot_req[0].field_pos != FieldPos_Back && shot_req[0].field_pos != FieldPos_PF_Back_Blue && shot_req[0].field_pos != FieldPos_PF_Back_Red)
 		{
 

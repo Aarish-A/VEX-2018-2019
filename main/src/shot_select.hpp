@@ -11,6 +11,7 @@
 #include "intake.hpp"
 
 constexpr double FLAG_WIDTH = 9.75;
+constexpr double HALF_FLAG_WIDTH = FLAG_WIDTH/2.0;
 
 constexpr double ANGLER_BALL = 13;
 constexpr int ANGLER_DZ = 30;
@@ -18,6 +19,8 @@ constexpr int ANGLER_DZ = 30;
 constexpr double ANGLER_PU_POS = 85;//ANGLER_BALL * 7;
 
 constexpr double ANGLER_CAP_PU_POS = 215;
+
+constexpr double ANGLER_PF_BACK_YELLOW_POS = 270;
 
 constexpr double ANGLER_CAP_FLIP_POS = 50;
 
@@ -35,8 +38,14 @@ enum FieldPos {
   FieldPos_Back,
   FieldPos_PF,
   FieldPos_PF_Back_Red,
-  FieldPos_PF_Back_Blue
+  FieldPos_PF_Back_Blue,
+  FieldPos_PF_Back_Yellow
 };
+
+constexpr bool is_PF_Back(FieldPos pos) {
+  if (pos == FieldPos_PF_Back_Red || pos == FieldPos_PF_Back_Blue || pos == FieldPos_PF_Back_Yellow) return true;
+  else return false;
+}
 
 struct ShotPos {
   FieldPos field_pos;

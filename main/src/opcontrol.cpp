@@ -38,6 +38,7 @@ void opcontrol() {
 			else if (field_pos== FieldPos_PF) field_pos_s = "PF ";
 			else if (field_pos== FieldPos_PF_Back_Red) field_pos_s = "PfR";
 			else if (field_pos== FieldPos_PF_Back_Blue) field_pos_s = "PfB";
+			else if (field_pos== FieldPos_PF_Back_Yellow) field_pos_s = "PfY";
 
 			std::string team_s = blue_team? "b" : "r";
 
