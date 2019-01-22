@@ -2,10 +2,12 @@
 
 using namespace pros;
 
+bool red_team = true;
+
 double getGlobalAngle() {
 	//return (DRIVE_DIA * M_PI * (driveFL.get_position() - driveBR.get_position() + driveBL.get_position() - driveFR.get_position())) / (2 * DRIVE_TPR * (DRIVE_LENGTH + DRIVE_WIDTH));
-	return (enc_l.get_value() * SPN_TO_IN_L - enc_r.get_value() * SPN_TO_IN_R) / (WHL_DIS_L + WHL_DIS_R);
-	//return pos.a;
+	//return (enc_l.get_value() * SPN_TO_IN_L - enc_r.get_value() * SPN_TO_IN_R) / (WHL_DIS_L + WHL_DIS_R);
+	return pos.a;
 }
 
 void resetGlobalAngle() {
@@ -22,6 +24,13 @@ void setDrive(int x, int y, int a) {
 	drive_bl.move(y - x + a);
 	drive_fr.move(y - x - a);
 	drive_br.move(y + x - a);
+}
+
+void setDriveTurn(int left, int right) {
+	drive_fl.move(left);
+	drive_bl.move(left);
+	drive_fr.move(right);
+	drive_br.move(right);
 }
 
 void setDrive(int pow) {
@@ -204,7 +213,7 @@ void flatten_against_wall(bool f_w, bool hold) {
 	int hold_pow = 15;
 	if (f_w) {
 		//log_ln("%d FW Start", pros::millis());
-		setDrive(0,60, 0);
+		setDrive(0,40, 0);
 		pros::delay(200);
 		do {
 			//log_ln("%d Reset Back Up(%f, %f, %f) Vel(%f, %f, %f) VeelLoc(%f, %f)", pros::millis(), pos.x, pos.y, RAD_TO_DEG(pos.a), pos.xVel, pos.yVel, pos.aVel, pos.velLocal.x, pos.velLocal.y);
@@ -227,5 +236,40 @@ void flatten_against_wall(bool f_w, bool hold) {
 	log_ln(LOG_AUTO, "%d Done flatten_against_wall", pros::millis());
 	//setDrive(0, -20, 0);
 }
+
+void flatten_angle(bool left, bool right, bool hold) {
+	int hold_pow = 10;
+	int pow = 60;
+	int accel_time = 150;
+
+	//right
+	if (right) {
+		setDriveTurn(hold_pow, pow);
+		int t_start = millis();
+		pros::delay(accel_time);
+			printf("	>>Start %d %f \n", millis(), RAD_TO_DEG(pos.aVel));
+		do {
+			printf("%d %f \n", millis(), RAD_TO_DEG(pos.aVel));
+			pros::delay(100);
+		} while (RAD_TO_DEG(pos.aVel) < -1);
+		printf("	>>End %d %f \n", millis(), RAD_TO_DEG(pos.aVel));
+	}
+
+	//Left
+	if (left) {
+		setDriveTurn(pow, hold_pow);
+		pros::delay(accel_time);
+			printf("	>>Start %d %f \n", millis(), RAD_TO_DEG(pos.aVel));
+		do {
+			printf("%d %f \n", millis(), RAD_TO_DEG(pos.aVel));
+			pros::delay(100);
+		} while (RAD_TO_DEG(pos.aVel) > 1);
+		printf("	>>End %d %f \n", millis(), RAD_TO_DEG(pos.aVel));
+
+		if (hold) setDrive(0, hold_pow, 0);
+		else setDrive(0);
+	}
+}
+
 
 double operator "" _tk(long double val) { return val; }

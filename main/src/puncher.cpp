@@ -5,7 +5,7 @@ using namespace pros;
 PunState pun_state = PunState::Loading;
 PunState pun_state_lst  = pun_state;
 int pun_state_change_time = 0;
-float pun_shots = 0;
+int pun_shots = 0;
 bool pun_ball = false;
 float last_number = PUN_OFFSET + (pun_shots * PUN_TPR) + PUN_HOLD;
 
@@ -57,7 +57,7 @@ void pun_cal() {
   }
   delay(100);
 
-	log_ln(LOG_PUNCHER, "%d Pun Cal Before Tare. LeftPos:%f, RightPos:%f", pros::millis(), puncherLeft.get_position(), puncherRight.get_position());
+	log_ln(LOG_PUNCHER, "%d Pun Cal Before Tare (*PUN_RATIO). LeftPos:%f, RightPos:%f", pros::millis(), puncherLeft.get_position()/PUN_RATIO, puncherRight.get_position()/PUN_RATIO);
   puncherLeft.tare_position();
   puncherRight.tare_position();
 	log_ln(LOG_PUNCHER, "%d Pun Cal Done Tare. LeftPos:%f, RightPos:%f", pros::millis(), puncherLeft.get_position(), puncherRight.get_position());
@@ -78,7 +78,8 @@ void pun_handle() {
 		}
 
 		if (millis() >= ball_on_time + PUN_BALL_OFF_TIME) {
-			if (pun_ball) log_ln(LOG_PUNCHER, "	> %d Ball Off. Anglr:%f Pos:%f BallSen:%d", pros::millis(), angler.get_position(), puncherLeft.get_position(), ball_sensor.get_value());//, angler.get_target_position(), angler.get_position(), pos.x, pos.y, RAD_TO_DEG(pos.a));
+			AngleTarget* a_targ = new PointAngleTarget({shot_req[shot_req_handled_num].flag_pos.x, shot_req[shot_req_handled_num].flag_pos.y});
+			if (pun_ball) log_ln(LOG_PUNCHER, "	> %d Ball Off. Anglr:%f Pos:%f BallSen:%d. A:%f, AOffset:%f", pros::millis(), angler.get_position(), puncherLeft.get_position(), ball_sensor.get_value(), RAD_TO_DEG(pos.a), RAD_TO_DEG(a_targ->getTarget()-pos.a));//, angler.get_target_position(), angler.get_position(), pos.x, pos.y, RAD_TO_DEG(pos.a));
 			//if (pun_ball) printf("	> %d Ball Off.Pos:%f BallSen:%d | AnglrTarg:%f Anglr:%f | Pos (%f, %f, %f) \n", pros::millis(), puncherLeft.get_position(), ball_sensor.get_value(), angler.get_target_position(), angler.get_position(), pos.x, pos.y, RAD_TO_DEG(pos.a));
 			pun_ball = false;
 		}
@@ -141,7 +142,8 @@ void pun_handle() {
 					pun_set(0);
 					pun_move(PUN_OFFSET + (pun_shots * PUN_TPR));
 
-					log_ln(LOG_PUNCHER, "%d Shot end Pos:%f", millis(), puncherLeft.get_position());
+					AngleTarget* a_targ = new PointAngleTarget({shot_req[shot_req_handled_num].flag_pos.x, shot_req[shot_req_handled_num].flag_pos.y});
+					log_ln(LOG_PUNCHER, "%d Shot end Pos:%f. A:%f, AOffset:%f", millis(), puncherLeft.get_position(), RAD_TO_DEG(pos.a), RAD_TO_DEG(a_targ->getTarget()-pos.a));
 
 					pun_state_change(PunState::Bolt_Wait);
 				}

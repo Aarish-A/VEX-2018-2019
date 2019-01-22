@@ -39,7 +39,12 @@ void opcontrol() {
 			else if (field_pos== FieldPos_PF_Back_Red) field_pos_s = "PfR";
 			else if (field_pos== FieldPos_PF_Back_Blue) field_pos_s = "PfB";
 
-			ctrler.print(2, 0, "%s %d %d %d     ", field_pos_s, (int)intake.get_temperature(), (int)puncherLeft.get_temperature(), (int)puncherRight.get_temperature());
+			std::string team_s = red_team? "r" : "b";
+
+			ctrler.print(2, 0, "%s %s %d %d %d      ", field_pos_s, team_s, (int)intake.get_temperature(), (int)puncherLeft.get_temperature(), (int)puncherRight.get_temperature());
+			//ctrler.print(2, 0, "%.1f %.1f %.1f     ", pos.x, pos.y, RAD_TO_DEG(pos.a));
+			//ctrler.print(2, 0, "%d %d %.1f     ", enc_l.get_value(), enc_r.get_value(), RAD_TO_DEG(pos.a));
+			//ctrler.print(2, 0, "%f          ", ((enc_l.get_value() * SPN_TO_IN_L) - (enc_r.get_value() * SPN_TO_IN_R)) / 3600_deg);
 
 		}
 

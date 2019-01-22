@@ -15,7 +15,7 @@ enum class PunState {
 };
 
 constexpr double PUN_RATIO = 5.0/3.0;
-constexpr double PUN_OFFSET = 46 * PUN_RATIO;
+constexpr double PUN_OFFSET = 57 * PUN_RATIO;
 constexpr double PUN_HOLD = 180 * PUN_RATIO; // Relative to the slip point
 constexpr double PUN_TPR = 360 * PUN_RATIO; // Relative to the slip point
 constexpr double PUN_NO_RETURN = 50 * PUN_RATIO; // Back from the slip point
@@ -31,7 +31,7 @@ extern PunState pun_state;
 extern PunState pun_state_last;
 extern int pun_state_change_time;
 
-extern float pun_shots;
+extern int pun_shots;
 extern bool pun_ball;
 
 extern bool auto_set_shot;

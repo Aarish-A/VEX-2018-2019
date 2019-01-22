@@ -1,4 +1,6 @@
 #include "main.h"
+#include "auto.hpp"
+#include "config.hpp"
 
 /**
  * Runs the user autonomous code. This function will be started in its own task
@@ -14,6 +16,18 @@
 
 using namespace pros;
 
+void auto_update(void* param) {
+  while (true)
+  {
+    pos.update();
+    pros::delay(1);
+  }
+}
 void autonomous() {
+  pros::Task((pros::task_fn_t)auto_update);
+  pros::delay(500);
+  angler.move(0);
+  flatten_angle(true, true, true);
+  //flatten_against_wall(true, true);
 
 }

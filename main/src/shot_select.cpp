@@ -71,10 +71,10 @@ void set_turn_dir(Dir turn_dir) {
 	else if(shot_req[shot_req_num-1].field_pos == FieldPos_PF_Back_Blue) { //Shooting from behind the platform (blue)
 		shot_req[shot_req_num-1].flag_pos.y = 89;
 		if (turn_dir == Dir_Left) {
-			shot_req[shot_req_num-1].flag_pos.x = -18;
+			shot_req[shot_req_num-1].flag_pos.x = -27;
 		}
 		else if (turn_dir == Dir_Right) {
-			shot_req[shot_req_num-1].flag_pos.x = 30;
+			shot_req[shot_req_num-1].flag_pos.x = 21;
 		}
 		else shot_req[shot_req_num-1].flag_pos.x = 0;
 	}
@@ -88,6 +88,8 @@ void set_turn_dir(Dir turn_dir) {
 		}
 		else shot_req[shot_req_num-1].flag_pos.x = 0;
 	}
+
+	if (red_team) shot_req[shot_req_num-1].flag_pos.x += (5.5 + (FLAG_WIDTH/2));
 }
 
 void set_handled_vars() {
@@ -107,7 +109,10 @@ void shot_req_make() {
   //Set Field Pos
   if (shot_req_num == 0)
   {
-    if (check_single_press(BTN_FIELD_FRONT)) set_field_pos(FieldPos_Front);
+    if (check_single_press(BTN_FIELD_FRONT)) {
+			set_field_pos(FieldPos_Front);
+			pos.reset();
+		}
     else if (check_single_press(BTN_FIELD_PF_BACK_RED)) {
 			set_field_pos(FieldPos_PF_Back_Red);
 		}
@@ -198,7 +203,8 @@ void shot_req_handle(void *param) {
 
 			if (shot_req[0].field_pos == FieldPos_Back || shot_req[0].field_pos == FieldPos_PF_Back_Red || shot_req[0].field_pos == FieldPos_PF_Back_Blue)  {
 				pos.reset(0,0,0);
-				flatten_against_wall(shot_req[0].field_pos == FieldPos_Back ? false : true, true);
+				if (shot_req[0].field_pos == FieldPos_Back) flatten_against_wall(false, true);
+				else if (shot_req[0].field_pos == FieldPos_PF_Back_Red || shot_req[0].field_pos == FieldPos_PF_Back_Blue) flatten_angle(true, true, true);
 				pos.reset(0, 0, 0);
 			}
 			//Angle handle 1
@@ -208,10 +214,17 @@ void shot_req_handle(void *param) {
 			//Drive Handle 1
 			if (shot_req[0].field_pos == FieldPos_PF_Back_Red || shot_req[0].field_pos == FieldPos_PF_Back_Blue) {
 				log_ln(LOG_SHOTS, "%d S1 Turn to face %f, %f ", pros::millis(), shot_req[shot_req_handled_num].flag_pos.x, shot_req[shot_req_handled_num].flag_pos.y);
-				setDrive(0, -60, 0);
-			  while (pos.y > -4_in) pros::delay(10);
-			  log_ln(LOG_SHOTS, "%d Done Back up PF (%f, %f, %f)", pros::millis(), pos.x, pos.y, RAD_TO_DEG(pos.a));
-			  turn_vel(new PointAngleTarget({shot_req[shot_req_handled_num].flag_pos.x, shot_req[shot_req_handled_num].flag_pos.y}), (200/70_deg), 0);
+				setDrive(0, -40, 0);
+			  while (pos.y > -3.5_in) pros::delay(10);
+				/*
+				setDrive(0, -20, 0);
+				pros::delay(350);
+				setDrive(0);
+				*/
+				setDriveVel(0);
+				pros::delay(500);
+			  log_ln(LOG_SHOTS, "%d Done Back up PF (%f, %f, %f) Vel(%f, %f, %f)", pros::millis(), pos.x, pos.y, RAD_TO_DEG(pos.a), pos.velLocal.x, pos.velLocal.y, RAD_TO_DEG(pos.aVel));
+			  turn_vel(new PointAngleTarget({shot_req[shot_req_handled_num].flag_pos.x, shot_req[shot_req_handled_num].flag_pos.y}), (200/90_deg), 0);
 			}
 			else if (shot_req[shot_req_handled_num].field_pos == FieldPos_Back) {
 				log_ln(LOG_SHOTS, "%d S1 Turn to face %f, %f ", pros::millis(), shot_req[shot_req_handled_num].flag_pos.x, shot_req[shot_req_handled_num].flag_pos.y);
@@ -231,7 +244,7 @@ void shot_req_handle(void *param) {
 				//Drive Handle 2
 				if (shot_req[0].field_pos == FieldPos_PF_Back_Red || shot_req[0].field_pos == FieldPos_PF_Back_Blue) {
 					log_ln(LOG_SHOTS, "%d S2 Turn to face %f, %f ", pros::millis(), shot_req[shot_req_handled_num].flag_pos.x, shot_req[shot_req_handled_num].flag_pos.y);
-				  turn_vel(new PointAngleTarget({shot_req[shot_req_handled_num].flag_pos.x, shot_req[shot_req_handled_num].flag_pos.y}), (200/70_deg), 0);
+				  turn_vel(new PointAngleTarget({shot_req[shot_req_handled_num].flag_pos.x, shot_req[shot_req_handled_num].flag_pos.y}), (200/90_deg), 0);
 				}
 				else if (shot_req[shot_req_handled_num].field_pos == FieldPos_Back) {
 					log_ln(LOG_SHOTS, "%d S2 Turn to face %f, %f ", pros::millis(), shot_req[shot_req_handled_num].flag_pos.x, shot_req[shot_req_handled_num].flag_pos.y);

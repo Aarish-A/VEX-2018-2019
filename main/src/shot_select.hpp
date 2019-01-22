@@ -10,6 +10,8 @@
 #include "controls.hpp"
 #include "intake.hpp"
 
+constexpr double FLAG_WIDTH = 9.75;
+
 constexpr double ANGLER_BALL = 13;
 constexpr int ANGLER_DZ = 30;
 
