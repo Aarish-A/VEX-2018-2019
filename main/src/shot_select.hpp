@@ -13,7 +13,6 @@
 /* Flags */
 constexpr bool SHOT_DRIVE_BRAKE = false;
 
-
 /* Constants */
 constexpr double FLAG_WIDTH = 9.75;
 constexpr double HALF_FLAG_WIDTH = FLAG_WIDTH/2.0;
@@ -78,6 +77,7 @@ struct ShotSelect {
 
 extern bool angler_pu_flag;
 
+/* Helper Functions */
 void set_field_pos(FieldPos field_pos);
 void set_angle_targ(bool top);
 void set_turn_dir(Dir turn_dir);
@@ -105,4 +105,5 @@ extern pros::Task* shot_req_handle_task;
 void inc_shot_req_num();
 void dec_shot_req_num();
 
-const int ANGLER_REACH_T0 = 600;
+/* Time Outs */
+const int ANGLER_REACH_T0 = 1200;
