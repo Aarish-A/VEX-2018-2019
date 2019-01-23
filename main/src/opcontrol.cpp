@@ -11,9 +11,18 @@
 
 using namespace pros;
 
+/* Info abt drive efficency */
+const double EFF_LIM = 30;
+void log_drive_efficency(void *param);
+double eff_fl = drive_fl.get_efficiency();
+double eff_bl = drive_bl.get_efficiency();
+double eff_fr = drive_fr.get_efficiency();
+double eff_br = drive_br.get_efficiency();
+
 void opcontrol() {
-	int p_time = 0;
+	int print_time = 0;
 	shot_req_handle_start_task(); //Start shot req handle task
+	Task log_drive_efficency_task(log_drive_efficency); //Start logging drive efficency
 	printf("%d Start opcontrol\n", pros::millis());
 	// ctrler.print(2, 0, "RUNNING");
 
@@ -28,8 +37,8 @@ void opcontrol() {
 		decapper_handle();
 		//printf("%d\n", (int)decapper.get_position());
 
-		if (millis() - p_time > 100) {
-			p_time = millis();
+		if (millis() - print_time > 100) {
+			print_time = millis();
 			std::string field_pos_s = "def";
 			FieldPos field_pos= shot_req[0].field_pos;
 
@@ -41,11 +50,11 @@ void opcontrol() {
 
 			std::string team_s = blue_team? "b" : "r";
 
-			double eff_fl = drive_fl.get_efficiency();
-			double eff_bl = drive_bl.get_efficiency();
-			double eff_fr = drive_fr.get_efficiency();
-			double eff_br = drive_br.get_efficiency();
-			const double EFF_LIM = 30;
+			eff_fl = drive_fl.get_efficiency();
+			eff_bl = drive_bl.get_efficiency();
+			eff_fr = drive_fr.get_efficiency();
+			eff_br = drive_br.get_efficiency();
+
 			if (eff_fl < EFF_LIM || eff_fr < EFF_LIM || eff_bl < EFF_LIM || eff_br < EFF_LIM)
 				ctrler.rumble(". .");
 
@@ -60,5 +69,34 @@ void opcontrol() {
 		}
 
 		delay(10);
+	}
+}
+
+void log_drive_efficency(void *param) {
+	const int FLUSH_DELAY = 10000;
+	const int LOG_DELAY = 1000;
+
+	const char* file_name = "/usd/drive_efficency.txt";
+
+	FILE* drive_efficency = fopen(file_name, "a");
+	pros::delay(500);
+	if (drive_efficency == NULL) {
+		log_ln(LOG_DRIVE,"	>>>> Could not open drive efficency log file");
+		return;
+	}
+	fputs("\r\n\r\n--------------------------------------------------\r\n\r\n", drive_efficency);
+
+	uint32_t nextFlush = 0;
+
+	while (true) {
+		fprintf(drive_efficency, "%f, %f, %f, %f \r\n", eff_fl, eff_bl, eff_fr, eff_br);
+
+		if (millis() >= nextFlush) {
+			fclose(drive_efficency);
+			while ((drive_efficency = fopen(file_name, "a")) == NULL) delay(5);
+			nextFlush = millis() + FLUSH_DELAY;
+		}
+
+		delay(LOG_DELAY);
 	}
 }
