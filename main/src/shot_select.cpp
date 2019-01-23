@@ -194,6 +194,8 @@ void shot_req_handle(void *param) {
 	shot_req_num = 0;
 	while (true) {
 		if (shot_req_num > 0) {
+			if (!SHOT_DRIVE_BRAKE) setDrive(0); //Set drive pow to 0
+
 			if (shot_req[0].field_pos == FieldPos_PF_Back_Red || shot_req[0].field_pos == FieldPos_PF_Back_Blue) {
 				intake_state_set(0, IntakeState::Off);
 				angler.move(0);
