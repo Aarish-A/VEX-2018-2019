@@ -29,32 +29,40 @@ lv_obj_t* auto_select_tab_title;
 
 
 void gui_init() {
+  printf("Log Program done\n");
+  // pros::delay(50);
   for(int i = 0; i < 4; i++) {
     FILE* log = NULL;
+    printf("file pointer\n");
+    pros::delay(1000);
     if (i == 0) {
       log = fopen("/usd/back_mid_shot_position.txt", "r");
-      fscanf(log, "%d", &(pf_back_SP.mid));
+      if(log != NULL) fscanf(log, "%d", &(pf_back_SP.mid));
     } else if (i == 1) {
       log = fopen("/usd/back_top_shot_position.txt", "r");
-      fscanf(log, "%d", &(pf_back_SP.top));
+      if(log != NULL) fscanf(log, "%d", &(pf_back_SP.top));
     } else if (i == 2) {
       log = fopen("/usd/front_mid_shot_position.txt", "r");
-      fscanf(log, "%d", &(front_SP.mid));
+      if(log != NULL) fscanf(log, "%d", &(front_SP.mid));
     } else if (i == 3) {
       log = fopen("/usd/front_top_shot_position.txt", "r");
-      fscanf(log, "%d", &(front_SP.top));
+      if(log != NULL) fscanf(log, "%d", &(front_SP.top));
     }
 
+  //   printf("for loop exited");
+  //   pros::delay(50);
     if (log == NULL) {
       printf("Failed to read shot positions file %d\n", i);
     } else {
       printf("Created shot positions file! %d", i);
     }
+    pros::delay(50);
     printf("%d\n", shot_slider_value[i]);
     fclose(log);
   }
 
-  // Main Screen
+  //
+  // // Main Screen
   screen = lv_obj_create(NULL, NULL);
   lv_scr_load(screen);
 	menu = lv_tabview_create(lv_scr_act(), NULL);

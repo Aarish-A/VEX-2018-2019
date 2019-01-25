@@ -26,9 +26,11 @@ void auto_update(void* param) {
 }
 void autonomous() {
   pros::Task((pros::task_fn_t)auto_update);
-  pros::delay(10);
 
-  
+  uint32_t autoStartTime = millis();
+  setDriveVel(0);
+  delay(10);
+
   //flatten_against_wall(true, true);
 
 }

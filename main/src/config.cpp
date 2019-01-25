@@ -8,12 +8,12 @@ pros::Motor drive_br(8, pros::E_MOTOR_GEARSET_18, false, pros::E_MOTOR_ENCODER_D
 pros::Motor angler(9, pros::E_MOTOR_GEARSET_18, false, pros::E_MOTOR_ENCODER_DEGREES);
 pros::Motor intake(2, pros::E_MOTOR_GEARSET_18, false, pros::E_MOTOR_ENCODER_DEGREES);
 pros::Motor decapper(6, pros::E_MOTOR_GEARSET_18, false, pros::E_MOTOR_ENCODER_DEGREES);
-pros::Motor puncherLeft(5, pros::E_MOTOR_GEARSET_18, false, pros::E_MOTOR_ENCODER_DEGREES);
-pros::Motor puncherRight(3, pros::E_MOTOR_GEARSET_18, false, pros::E_MOTOR_ENCODER_DEGREES);
+pros::Motor puncherLeft(3, pros::E_MOTOR_GEARSET_18, false, pros::E_MOTOR_ENCODER_DEGREES);
+pros::Motor puncherRight(5, pros::E_MOTOR_GEARSET_18, false, pros::E_MOTOR_ENCODER_DEGREES);
 pros::ADIEncoder enc_l(1, 2, false);
 pros::ADIEncoder enc_r(3, 4, true);
 pros::ADIEncoder enc_s(5, 6, true);
 pros::ADILineSensor ball_sensor(5);
-pros::Vision vision_sensor(11);
+pros::Vision vision_sensor(6);
 
 Tracking pos(enc_l, enc_r, enc_s);

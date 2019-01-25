@@ -3,7 +3,7 @@
 pros::Task* shot_req_handle_task = nullptr;
 
 /* Shot Positions */
-ShotPos front_SP (FieldPos_Front, 87, 0);
+ShotPos front_SP (FieldPos_Front, 98, 0);
 ShotPos pf_SP (FieldPos_PF, 90, 70);
 ShotPos pf_back_SP (FieldPos_PF_Back_Red, 88, 0);
 ShotPos back_SP (FieldPos_Back, 90, 10);
@@ -58,27 +58,45 @@ void set_angle_targ(bool top) {
 
 void set_turn_dir(Dir turn_dir) {
   shot_req[shot_req_num-1].turn_dir = turn_dir;
-	if (shot_req[shot_req_num-1].field_pos == FieldPos_PF_Back_Red) { //Shooting from behind the platform (red)
-		shot_req[shot_req_num-1].flag_pos.y = 89;
+	pros::vision_object_s_t object_array[1];
+	vision_sensor.read_by_size(0, 1, object_array);
+
+	// if (shot_req[shot_req_num-1].field_pos == FieldPos_PF_Back_Red) { //Shooting from behind the platform (red)
+	if (object_array[0].signature == 1) {
+		ctrler.print(2, 0, "Red     ");
+		shot_req[shot_req_num-1].flag_pos.y = 94;
 		if (turn_dir == Dir_Left) {
-			shot_req[shot_req_num-1].flag_pos.x = -30;
+			ctrler.print(2, 0, "Red  Left");
+			shot_req[shot_req_num-1].flag_pos.x = -29;
 		}
 		else if (turn_dir == Dir_Right) {
-			shot_req[shot_req_num-1].flag_pos.x = 18;
+			ctrler.print(2, 0, "Red  Right");
+			shot_req[shot_req_num-1].flag_pos.x = 20;
 		}
 		else shot_req[shot_req_num-1].flag_pos.x = 0;
 	}
-	else if(shot_req[shot_req_num-1].field_pos == FieldPos_PF_Back_Blue) { //Shooting from behind the platform (blue)
-		shot_req[shot_req_num-1].flag_pos.y = 89;
+	else if (object_array[0].signature == 2) {
+		ctrler.print(2, 0, "Blue   ");
+	// else if(shot_req[shot_req_num-1].field_pos == FieldPos_PF_Back_Blue) { //Shooting from behind the platform (blue)
+		shot_req[shot_req_num-1].flag_pos.y = 94;
 		if (turn_dir == Dir_Left) {
-			shot_req[shot_req_num-1].flag_pos.x = -27;
+			ctrler.print(2, 0, "Blue  Left");
+			shot_req[shot_req_num-1].flag_pos.x = -26;
 		}
 		else if (turn_dir == Dir_Right) {
-			shot_req[shot_req_num-1].flag_pos.x = 21;
+			ctrler.print(2, 0, "Blue  Right");
+			shot_req[shot_req_num-1].flag_pos.x = 23;
 		}
 		else shot_req[shot_req_num-1].flag_pos.x = 0;
+	}
+	else if (object_array[0].signature == 3) {
+		ctrler.print(2, 0, "Yellow   ");
+	// else if(shot_req[shot_req_num-1].field_pos == FieldPos_PF_Back_Blue) { //Shooting from behind the platform (blue)
+		shot_req[shot_req_num-1].flag_pos.y = 94;
+		shot_req[shot_req_num-1].flag_pos.x = 0;
 	}
 	else { //Shooting from the back
+		ctrler.print(2, 0, "No colour  ");
 		shot_req[shot_req_num-1].flag_pos.y = 125;
 		if (turn_dir == Dir_Left) {
 			shot_req[shot_req_num-1].flag_pos.x = -48;
@@ -210,7 +228,7 @@ void shot_req_handle(void *param) {
 				if (shot_req[0].field_pos == FieldPos_Back) flatten_against_wall(false, true);
 				else if (shot_req[0].field_pos == FieldPos_PF_Back_Red || shot_req[0].field_pos == FieldPos_PF_Back_Blue) {
 					setDrive(0, 10, 0);
-					pros::delay(200);
+					pros::delay(150);
 					//flatten_angle(true, true, true);
 				}
 				pos.reset(0, 0, 0);
@@ -231,9 +249,9 @@ void shot_req_handle(void *param) {
 
 				setDriveVel(0);
 				pros::delay(20);
-				angler.move_absolute(shot_req[shot_req_handled_num].angle_targ, 200);
 			  log_ln(LOG_SHOTS, "%d Done Back up PF (%f, %f, %f) Vel(%f, %f, %f)", pros::millis(), pos.x, pos.y, RAD_TO_DEG(pos.a), pos.velLocal.x, pos.velLocal.y, RAD_TO_DEG(pos.aVel));
-			  turn_vel(new PointAngleTarget({shot_req[shot_req_handled_num].flag_pos.x, shot_req[shot_req_handled_num].flag_pos.y}), (200/80_deg), 0);
+				angler.move_absolute(shot_req[shot_req_handled_num].angle_targ, 200);
+				turn_vel(new PointAngleTarget({shot_req[shot_req_handled_num].flag_pos.x, shot_req[shot_req_handled_num].flag_pos.y}), (200/80_deg), 0, 1.3, shot_req_handled_num);
 			}
 			else if (shot_req[shot_req_handled_num].field_pos == FieldPos_Back) {
 				log_ln(LOG_SHOTS, "%d S1 Turn to face %f, %f ", pros::millis(), shot_req[shot_req_handled_num].flag_pos.x, shot_req[shot_req_handled_num].flag_pos.y);
@@ -244,10 +262,6 @@ void shot_req_handle(void *param) {
 
 			//Shooter Handle 1
 			angler.move_absolute(shot_req[shot_req_handled_num].angle_targ, 200);
-			if (!SHOT_DRIVE_BRAKE) {
-				pros::delay(200);
-				setDrive(0);
-			}
 			while (!shot_req[shot_req_handled_num].shot_handled) pros::delay(10);
 			shot_req_handled_num++;
 
@@ -269,10 +283,6 @@ void shot_req_handle(void *param) {
 
 				//Shooter Handle 2
 				angler.move_absolute(shot_req[shot_req_handled_num].angle_targ, 200);
-				if (!SHOT_DRIVE_BRAKE) {
-					pros::delay(200);
-					setDrive(0);
-				}
 				while (!shot_req[shot_req_handled_num].shot_handled) pros::delay(10);
 				shot_req_handled_num++;
 

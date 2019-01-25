@@ -13,44 +13,45 @@ void log_init() {
   char* c_time_string;
 
   /* Obtain current time. */
-  current_time = time(NULL);
-
-  if (current_time == ((time_t)-1))
-  {
-      printf("Failure to obtain the current time.\n");
-  }
-
-  /* Convert to local time format. */
-  c_time_string = ctime(&current_time);
-
-  if (c_time_string == NULL)
-  {
-      printf("Failure to convert the current time.\n");
-  }
-  else
-   {
-    printf("%d Date: %s \n", pros::millis(), c_time_string);
-
-    /*
-    log_file_name = "/usd/";
-    strcat(log_file_name, c_time_string);
-    */
-  }
+  // current_time = time(NULL);
+  //
+  // if (current_time == ((time_t)-1))
+  // {
+  //     printf("Failure to obtain the current time.\n");
+  // }
+  //
+  // /* Convert to local time format. */
+  // c_time_string = ctime(&current_time);
+  //
+  // if (c_time_string == NULL)
+  // {
+  //     printf("Failure to convert the current time.\n");
+  // }
+  // else
+  //  {
+  //   printf("%d Date: %s \n", pros::millis(), c_time_string);
+  //
+  //   /*
+  //   log_file_name = "/usd/";
+  //   strcat(log_file_name, c_time_string);
+  //   */
+  // }
 
   log_file = fopen(log_file_name, log_mode);
   log_close_timer = 0;
   printf(">>>> %d log_init(): Start Logging for Program \n", pros::millis());
 	if (log_file == NULL) {
 		printf("  >>>> %d COULD NOT OPEN SD LOG FILE\n", pros::millis());
-    // ctrler.rumble("--------");
+     //ctrler.rumble("--------");
     pros::delay(3000);
 		return;
 	}
   printf(">>>> %d log_init(): Successfully opened SD log file \n", pros::millis());
-	fputs("\r\n\r\n--------------------------------------------------\r\n\r\n", log_file);
-  fprintf(log_file, ">>>> %d Start Logging for Program \n", pros::millis());
+	// fputs("\r\n\r\n--------------------------------------------------\r\n\r\n", log_file);
+  // fprintf(log_file, ">>>> %d Start Logging for Program \n", pros::millis());
 
   log_close_timer = pros::millis() + LOG_CLOSE_TIME;
+  printf("time closed");
 }
 
 void log(bool system, const char * format, ...) {

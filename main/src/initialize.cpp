@@ -19,7 +19,8 @@ void initialize() {
   buttons[BTN_DECAPPER_DOWN].button_press_time = BTN_PRESS_TIME;
 
 	log_init();
-
+  printf("log init completed\n");
+  // pros::delay(1000);
 	gui_init();
 	pun_init();
 	pun_cal();

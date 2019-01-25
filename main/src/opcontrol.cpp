@@ -55,14 +55,14 @@ void opcontrol() {
 			eff_fr = drive_fr.get_efficiency();
 			eff_br = drive_br.get_efficiency();
 
-			if (eff_fl < EFF_LIM || eff_fr < EFF_LIM || eff_bl < EFF_LIM || eff_br < EFF_LIM)
+			/*if (eff_fl < EFF_LIM || eff_fr < EFF_LIM || eff_bl < EFF_LIM || eff_br < EFF_LIM)
 				ctrler.rumble(". .");
+				*/
 
 			//ctrler.print(2, 0, "%s %.1f %.1f %.1f %.1f    ", field_pos_s, eff_fl, eff_bl, eff_fr, eff_br);
 
-			//ctrler.print(2, 0, "%s %s %d %d %d      ", field_pos_s, team_s, (int)intake.get_temperature(), (int)puncherLeft.get_temperature(), (int)puncherRight.get_temperature());
+			ctrler.print(2, 0, "%s %s %d %d %d      ", field_pos_s, team_s, (int)intake.get_temperature(), (int)puncherLeft.get_temperature(), (int)puncherRight.get_temperature());
 
-			ctrler.print(2, 0, "%.1f %.1f %.1f     ", pos.x, pos.y, RAD_TO_DEG(pos.a));
 			//ctrler.print(2, 0, "%d %d %.1f     ", enc_l.get_value(), enc_r.get_value(), RAD_TO_DEG(pos.a));
 			//ctrler.print(2, 0, "%f          ", ((enc_l.get_value() * SPN_TO_IN_L) - (enc_r.get_value() * SPN_TO_IN_R)) / 3600_deg);
 
