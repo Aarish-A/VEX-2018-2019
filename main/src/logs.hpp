@@ -5,9 +5,9 @@
 #include <time.h>
 #include <stdio.h>
 
-constexpr bool LOG_DRIVE = 0;
-constexpr bool LOG_PUNCHER = 0;
-constexpr bool LOG_ANGLER = 0;
+constexpr bool LOG_DRIVE = 1;
+constexpr bool LOG_PUNCHER = 1;
+constexpr bool LOG_ANGLER = 1;
 constexpr bool LOG_DECAPPER = 0;
 constexpr bool LOG_JOYSTICK = 0;
 constexpr bool LOG_ERROR = 0;
