@@ -12,10 +12,13 @@ float last_number = PUN_OFFSET + (pun_shots * PUN_TPR) + PUN_HOLD;
 bool auto_set_shot = false;
 
 void pun_state_change(PunState state) {
-	log_ln(LOG_PUNCHER, "  >> %d Moved from state %d -> %d. ShotN:%d", pros::millis(), pun_state_lst, pun_state, pun_shots);
-	pun_state_lst = pun_state;
-	pun_state = state;
-	pun_state_change_time = pros::millis();
+	if (state != pun_state)
+	{
+		log_ln(LOG_PUNCHER, "  >> %d Moved from state %d -> %d. ShotN:%d", pros::millis(), pun_state_lst, pun_state, pun_shots);
+		pun_state_lst = pun_state;
+		pun_state = state;
+		pun_state_change_time = pros::millis();
+	}
 }
 
 void pun_init() {
@@ -87,13 +90,20 @@ void pun_handle() {
 		switch (pun_state) {
 			case PunState::Loading:
 			{
-				float cur_err = (PUN_OFFSET + (pun_shots * PUN_TPR) + PUN_HOLD) - puncherLeft.get_position();
+				double cur_err = (PUN_OFFSET + (pun_shots * PUN_TPR) + PUN_HOLD) - puncherLeft.get_position();
+				double targ = (4.0 * PUN_RATIO);
 				//log_ln(LOG_PUNCHER, "%d PUNLOADING, CUR: %f, T: %f, E: %f, ETarg:%f", pros::millis(), puncherLeft.get_position(), (PUN_OFFSET + (pun_shots * PUN_TPR) + PUN_HOLD), cur_err, (4.0 * PUN_RATIO));
-				if (cur_err <= (4.0 * PUN_RATIO)) {
+				if (cur_err <= targ) {
 					pun_set(PUN_HOLD_PWR);
 					log_ln(LOG_PUNCHER, "%d PunLoading. PunPos: %f", pros::millis(), puncherLeft.get_position());
 					last_number = PUN_OFFSET + (pun_shots * PUN_TPR) + PUN_HOLD;
 					pun_state_change(PunState::Loaded);
+				}
+
+				if (millis() > pun_state_change_time+500) { //Takes 300 ms
+					pun_set(0);
+					log_ln(LOG_PUNCHER, " >>> %d PUN FATAL ERROR (from Loading) - T_O | Pos: %f | Cur_Err(%f) needs to be <= to %f", millis(), puncherLeft.get_position(), cur_err, targ);
+					pun_state_change(PunState::FatalError);
 				}
 				break;
 			}
@@ -102,14 +112,14 @@ void pun_handle() {
 				if (( shot_req_num > 0 && shot_req[shot_req_handled_num].drive_turn_handled && //For Driver control - shot request must have been made, drive must have been handled & angler must have reached or timed out
 						(fabs(angler.get_position()-shot_req[shot_req_handled_num].angle_targ) < 5 || (shot_req[shot_req_handled_num].angler_to && pros::millis() > shot_req[shot_req_handled_num].angler_to) ) )
 						|| auto_set_shot) //For auto - auto_set_shot flag set to true
-				{
-					//pun_move(PUN_OFFSET + (++pun_shots * PUN_TPR));
-					++pun_shots;
-					pun_set(127);
-					log_ln(LOG_PUNCHER, "%d Shot start (from ShotLoaded)", pros::millis());
+					{
+						//pun_move(PUN_OFFSET + (++pun_shots * PUN_TPR));
+						++pun_shots;
+						pun_set(127);
+						log_ln(LOG_PUNCHER, "%d Shot start (from ShotLoaded)", pros::millis());
 
-					pun_state_change(PunState::Pull_Back);
-				}
+						pun_state_change(PunState::Pull_Back);
+					}
 				break;
 			}
 
@@ -166,7 +176,7 @@ void pun_handle() {
 
       case PunState::FatalError:
 			{
-
+				pun_set(0);
         break;
 			}
 		}
