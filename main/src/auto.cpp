@@ -92,10 +92,10 @@ void move_drive(double dis, int vel, bool stop) {
   }
 	printf("%f %f\n", dis, posCur);
 	if (stop) {
-	  double targetFL = drive_fl.get_position() + dis - posCur;
-	  double targetBL = drive_bl.get_position() + dis - posCur;
-	  double targetFR = drive_fr.get_position() + dis - posCur;
-	  double targetBR = drive_br.get_position() + dis - posCur;
+		double targetFL = drive_fl.get_position() + (dis - posCur) * (DRIVE_TPR / (DRIVE_DIA * M_PI));
+	  double targetBL = drive_bl.get_position() + (dis - posCur) * (DRIVE_TPR / (DRIVE_DIA * M_PI));
+	  double targetFR = drive_fr.get_position() + (dis - posCur) * (DRIVE_TPR / (DRIVE_DIA * M_PI));
+	  double targetBR = drive_br.get_position() + (dis - posCur) * (DRIVE_TPR / (DRIVE_DIA * M_PI));
 
 	  drive_fl.move_absolute(targetFL, 25);
 	  drive_bl.move_absolute(targetBL, 25);
@@ -126,10 +126,10 @@ void move_drive_simple(double dis, int vel, bool stop) {
   } while ((dis - posCur) * sgn(dis) > 0.5_in);
 	printf("%f %f\n", dis, posCur);
 	if (stop) {
-	  double targetFL = drive_fl.get_position() + dis - posCur;
-	  double targetBL = drive_bl.get_position() + dis - posCur;
-	  double targetFR = drive_fr.get_position() + dis - posCur;
-	  double targetBR = drive_br.get_position() + dis - posCur;
+		double targetFL = drive_fl.get_position() + (dis - posCur) * (DRIVE_TPR / (DRIVE_DIA * M_PI));
+	  double targetBL = drive_bl.get_position() + (dis - posCur) * (DRIVE_TPR / (DRIVE_DIA * M_PI));
+	  double targetFR = drive_fr.get_position() + (dis - posCur) * (DRIVE_TPR / (DRIVE_DIA * M_PI));
+	  double targetBR = drive_br.get_position() + (dis - posCur) * (DRIVE_TPR / (DRIVE_DIA * M_PI));
 
 	  drive_fl.move_absolute(targetFL, 25);
 	  drive_bl.move_absolute(targetBL, 25);
