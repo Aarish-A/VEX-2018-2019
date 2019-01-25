@@ -17,6 +17,7 @@
 using namespace pros;
 
 void auto_update(void* param) {
+  pos.reset();
   while (true)
   {
     pos.update();
@@ -25,9 +26,9 @@ void auto_update(void* param) {
 }
 void autonomous() {
   pros::Task((pros::task_fn_t)auto_update);
-  pros::delay(500);
-  angler.move(0);
-  flatten_angle(true, true, true);
+  pros::delay(10);
+
+  
   //flatten_against_wall(true, true);
 
 }
