@@ -3,7 +3,7 @@
 pros::Task* shot_req_handle_task = nullptr;
 
 /* Shot Positions */
-ShotPos front_SP (FieldPos_Front, 90, 0);
+ShotPos front_SP (FieldPos_Front, 98, 0);
 ShotPos pf_SP (FieldPos_PF, 90, 70);
 ShotPos pf_back_SP (FieldPos_PF_Back_Red, 88, 0);
 ShotPos back_SP (FieldPos_Back, 90, 10);
@@ -59,7 +59,7 @@ void set_angle_targ(bool top) {
 void set_turn_dir(Dir turn_dir) {
   shot_req[shot_req_num-1].turn_dir = turn_dir;
 	if (shot_req[shot_req_num-1].field_pos == FieldPos_PF_Back_Red) { //Shooting from behind the platform (red)
-		shot_req[shot_req_num-1].flag_pos.y = 89;
+		shot_req[shot_req_num-1].flag_pos.y = 94;
 		if (turn_dir == Dir_Left) {
 			shot_req[shot_req_num-1].flag_pos.x = -30;
 		}
@@ -69,7 +69,7 @@ void set_turn_dir(Dir turn_dir) {
 		else shot_req[shot_req_num-1].flag_pos.x = 0;
 	}
 	else if(shot_req[shot_req_num-1].field_pos == FieldPos_PF_Back_Blue) { //Shooting from behind the platform (blue)
-		shot_req[shot_req_num-1].flag_pos.y = 89;
+		shot_req[shot_req_num-1].flag_pos.y = 94;
 		if (turn_dir == Dir_Left) {
 			shot_req[shot_req_num-1].flag_pos.x = -27;
 		}
