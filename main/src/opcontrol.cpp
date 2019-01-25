@@ -8,6 +8,7 @@
 #include "logs.hpp"
 #include "gui.hpp"
 #include "decapper.hpp"
+#include "vision.hpp"
 
 using namespace pros;
 
@@ -26,6 +27,7 @@ void opcontrol() {
 		intake_handle();
 		angler_handle();
 		decapper_handle();
+		vision_handle();
 		//printf("%d\n", (int)decapper.get_position());
 
 		if (millis() - p_time > 100) {

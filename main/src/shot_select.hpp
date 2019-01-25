@@ -9,6 +9,7 @@
 #include "angler.hpp"
 #include "controls.hpp"
 #include "intake.hpp"
+#include "vision.hpp"
 
 constexpr double FLAG_WIDTH = 9.75;
 
