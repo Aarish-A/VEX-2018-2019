@@ -54,9 +54,68 @@ void drive_brake() {
 	drive_bl.move_relative(0, 100);
 	drive_fr.move_relative(0, 100);
 	drive_br.move_relative(0, 100);
+	/*
+	pros::delay(150);
+	log_ln(LOG_AUTO, "%d Done turn brake Pos:(%f, %f, %f), Vel:(%f, %f, %f)", millis(), pos.x, pos.y, RAD_TO_DEG(pos.a), pos.xVel, pos.yVel, RAD_TO_DEG(pos.aVel));
+	setDrive(0);
+	*/
 }
 
-void move_drive(double dis, int vel, bool stop) {
+
+void move_drive(vector targ, int vel, bool stop) {
+	double offset = (targ-pos.position()).magnitude();
+
+  log_ln(LOG_AUTO, "%d Moving to (%f, %f) from (%f, %f, %f)", millis(), targ.x, targ.y, pos.x, pos.y, RAD_TO_DEG(pos.a));
+  uint32_t lastAccel = 0, lastDecel = 0;
+  int i = 10;
+  while (true) {
+		offset = (targ-pos.position()).magnitude();
+
+    uint32_t curTime = millis();
+
+		//log_ln("%d %f %f %d %d", curTime, pos, dis, enc_L.get_value(), enc_R.get_value());
+		if (offset * sgn(offset) <= 0.5_in) break;
+		double actVel = ((drive_fl.get_actual_velocity() + drive_bl.get_actual_velocity() + drive_fr.get_actual_velocity() + drive_br.get_actual_velocity()) / 4.0) / 60.0 * 360.0;
+    double tkToDecel = (actVel * actVel) / (2 * ((1000.0 / MOVE_DECEL_RATE) / 60.0) * 360.0);
+		double inToDecel = tkToDecel * DRIVE_DIA * M_PI / DRIVE_TPR;
+    //log_ln(LOG_AUTO, "%d %d %f %f", curTime, i, inToDecel, dis - posCur);
+    if (inToDecel < (offset) * sgn(offset) - 0.5_in) {
+      if (curTime - lastAccel > MOVE_ACCEL_RATE && i < vel) {
+        i += 1;
+        lastAccel = curTime;
+      }
+    }
+    else {
+      if (curTime - lastDecel > MOVE_DECEL_RATE && i > 10) {
+        i -= 1;
+        lastDecel = curTime;
+      }
+    }
+    setDriveVel(0, i * sgn(offset), 0);
+    delay(1);
+  }
+	log_ln(LOG_AUTO, "%d Done move to (%f, %f) at (%f, %f, %f) Offs: %f", millis(), targ.x, targ.y, pos.x, pos.y, RAD_TO_DEG(pos.a), offset);
+	if (stop) {
+		double targetFL = drive_fl.get_position() + (offset) * (DRIVE_TPR / (DRIVE_DIA * M_PI));
+	  double targetBL = drive_bl.get_position() + (offset) * (DRIVE_TPR / (DRIVE_DIA * M_PI));
+	  double targetFR = drive_fr.get_position() + (offset) * (DRIVE_TPR / (DRIVE_DIA * M_PI));
+	  double targetBR = drive_br.get_position() + (offset) * (DRIVE_TPR / (DRIVE_DIA * M_PI));
+
+	  drive_fl.move_absolute(targetFL, 25);
+	  drive_bl.move_absolute(targetBL, 25);
+	  drive_fr.move_absolute(targetFR, 25);
+	  drive_br.move_absolute(targetBR, 25);
+	  log_ln(LOG_AUTO, "%d Stopping from FL: %f, BL: %f, FR: %f, BR %f", millis(), drive_fl.get_position(), drive_bl.get_position(), drive_fr.get_position(), drive_br.get_position());
+	  while (fabs(drive_fl.get_position() - targetFL) > 3 || fabs(drive_bl.get_position() - targetBL) > 3 || fabs(drive_fr.get_position() - targetFR) > 3 || fabs(drive_br.get_position() - targetBR) > 3) delay(1);
+	  delay(100);
+	}
+  log_ln(LOG_AUTO, "%d Moved to FL: %f, BL: %f, FR: %f, BR %f", millis(), drive_fl.get_position(), drive_bl.get_position(), drive_fr.get_position(), drive_br.get_position());
+  //log_ln("%f %f", (enc_L.get_value() - enc_LStart) / 360.0 * 2.75 * M_PI, (enc_R.get_value() - enc_RStart) / 360.0 * 2.75 * M_PI);
+  setDrive(0);
+}
+
+
+void move_drive_rel(double dis, int vel, bool stop) {
   int enc_LStart = enc_l.get_value();
   int enc_RStart = enc_r.get_value();
 
@@ -92,10 +151,10 @@ void move_drive(double dis, int vel, bool stop) {
   }
 	printf("%f %f\n", dis, posCur);
 	if (stop) {
-	  double targetFL = drive_fl.get_position() + dis - posCur;
-	  double targetBL = drive_bl.get_position() + dis - posCur;
-	  double targetFR = drive_fr.get_position() + dis - posCur;
-	  double targetBR = drive_br.get_position() + dis - posCur;
+		double targetFL = drive_fl.get_position() + (dis - posCur) * (DRIVE_TPR / (DRIVE_DIA * M_PI));
+	  double targetBL = drive_bl.get_position() + (dis - posCur) * (DRIVE_TPR / (DRIVE_DIA * M_PI));
+	  double targetFR = drive_fr.get_position() + (dis - posCur) * (DRIVE_TPR / (DRIVE_DIA * M_PI));
+	  double targetBR = drive_br.get_position() + (dis - posCur) * (DRIVE_TPR / (DRIVE_DIA * M_PI));
 
 	  drive_fl.move_absolute(targetFL, 25);
 	  drive_bl.move_absolute(targetBL, 25);
@@ -110,7 +169,7 @@ void move_drive(double dis, int vel, bool stop) {
   setDrive(0);
 }
 
-void move_drive_simple(double dis, int vel, bool stop) {
+void move_drive_rel_simple(double dis, int vel, bool stop) {
 	int enc_LStart = enc_l.get_value();
   int enc_RStart = enc_r.get_value();
 
@@ -126,10 +185,10 @@ void move_drive_simple(double dis, int vel, bool stop) {
   } while ((dis - posCur) * sgn(dis) > 0.5_in);
 	printf("%f %f\n", dis, posCur);
 	if (stop) {
-	  double targetFL = drive_fl.get_position() + dis - posCur;
-	  double targetBL = drive_bl.get_position() + dis - posCur;
-	  double targetFR = drive_fr.get_position() + dis - posCur;
-	  double targetBR = drive_br.get_position() + dis - posCur;
+		double targetFL = drive_fl.get_position() + (dis - posCur) * (DRIVE_TPR / (DRIVE_DIA * M_PI));
+	  double targetBL = drive_bl.get_position() + (dis - posCur) * (DRIVE_TPR / (DRIVE_DIA * M_PI));
+	  double targetFR = drive_fr.get_position() + (dis - posCur) * (DRIVE_TPR / (DRIVE_DIA * M_PI));
+	  double targetBR = drive_br.get_position() + (dis - posCur) * (DRIVE_TPR / (DRIVE_DIA * M_PI));
 
 	  drive_fl.move_absolute(targetFL, 25);
 	  drive_bl.move_absolute(targetBL, 25);

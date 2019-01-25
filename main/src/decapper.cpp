@@ -65,14 +65,14 @@ void decapper_cap(void *param)
 {
   flatten_against_wall(true,true);
   pos.reset();
-  move_drive_simple(-2.0_in, 40, true);
+  move_drive_rel_simple(-2.0_in, 40, true);
   decapper_move(DECAPPER_CAPPING);
   while (decapper.get_position() < DECAPPER_CAPPING - 5) delay(10);
   setDriveVel(0);
   delay(10);
   decapper_set(-10);
   delay(100);
-  move_drive_simple(-1.0_in, 40, true);
+  move_drive_rel_simple(-1.0_in, 40, true);
   decapper_set(-127);
   set_decapper_state(Decapper_States::Lowering);
 }

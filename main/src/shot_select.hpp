@@ -11,6 +11,10 @@
 #include "intake.hpp"
 #include "vision.hpp"
 
+/* Flags */
+constexpr bool SHOT_DRIVE_BRAKE = false;
+
+/* Constants */
 constexpr double FLAG_WIDTH = 9.75;
 
 constexpr double ANGLER_BALL = 13;
@@ -59,11 +63,13 @@ struct ShotSelect {
   vector flag_pos;
 
   bool drive_turn_handled;
+  int angler_to;
   bool shot_handled;
 };
 
 extern bool angler_pu_flag;
 
+/* Helper Functions */
 void set_field_pos(FieldPos field_pos);
 void set_angle_targ(bool top);
 void set_turn_dir(Dir turn_dir);
@@ -91,4 +97,5 @@ extern pros::Task* shot_req_handle_task;
 void inc_shot_req_num();
 void dec_shot_req_num();
 
-/* Btn Pressed Timer */
+/* Time Outs */
+const int ANGLER_REACH_T0 = 1200;
