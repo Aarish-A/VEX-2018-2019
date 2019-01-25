@@ -208,7 +208,11 @@ void shot_req_handle(void *param) {
 			if (shot_req[0].field_pos == FieldPos_Back || shot_req[0].field_pos == FieldPos_PF_Back_Red || shot_req[0].field_pos == FieldPos_PF_Back_Blue)  {
 				pos.reset(0,0,0);
 				if (shot_req[0].field_pos == FieldPos_Back) flatten_against_wall(false, true);
-				else if (shot_req[0].field_pos == FieldPos_PF_Back_Red || shot_req[0].field_pos == FieldPos_PF_Back_Blue) flatten_angle(true, true, true);
+				else if (shot_req[0].field_pos == FieldPos_PF_Back_Red || shot_req[0].field_pos == FieldPos_PF_Back_Blue) {
+					setDrive(0, 10, 0);
+					pros::delay(200);
+					//flatten_angle(true, true, true);
+				}
 				pos.reset(0, 0, 0);
 			}
 			//Angle handle 1
