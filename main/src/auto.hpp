@@ -34,8 +34,11 @@ void setDriveVel(int vel);
 
 void drive_brake();
 
-void move_drive(double dis, int vel = 200, bool stop = true);
-void move_drive_simple(double dis, int vel, bool stop = true);
+void move_drive(vector targ, int vel = 200, bool stop = true);
+
+void move_drive_rel(double targ, int vel = 200, bool stop = true);
+void move_drive_rel_simple(double dis, int vel, bool stop = true);
+
 //void turnDrive(double targ, int vel);
 void turn_vel(AngleTarget *target, double kP, double offset = 0);
 void turn_vel_side(AngleTarget *target, double kP, double offset, bool f_w);

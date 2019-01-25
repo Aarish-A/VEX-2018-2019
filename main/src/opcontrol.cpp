@@ -58,11 +58,11 @@ void opcontrol() {
 			if (eff_fl < EFF_LIM || eff_fr < EFF_LIM || eff_bl < EFF_LIM || eff_br < EFF_LIM)
 				ctrler.rumble(". .");
 
-			ctrler.print(2, 0, "%s %.1f %.1f %.1f %.1f    ", field_pos_s, eff_fl, eff_bl, eff_fr, eff_br);
+			//ctrler.print(2, 0, "%s %.1f %.1f %.1f %.1f    ", field_pos_s, eff_fl, eff_bl, eff_fr, eff_br);
 
 			//ctrler.print(2, 0, "%s %s %d %d %d      ", field_pos_s, team_s, (int)intake.get_temperature(), (int)puncherLeft.get_temperature(), (int)puncherRight.get_temperature());
 
-			//ctrler.print(2, 0, "%.1f %.1f %.1f     ", pos.x, pos.y, RAD_TO_DEG(pos.a));
+			ctrler.print(2, 0, "%.1f %.1f %.1f     ", pos.x, pos.y, RAD_TO_DEG(pos.a));
 			//ctrler.print(2, 0, "%d %d %.1f     ", enc_l.get_value(), enc_r.get_value(), RAD_TO_DEG(pos.a));
 			//ctrler.print(2, 0, "%f          ", ((enc_l.get_value() * SPN_TO_IN_L) - (enc_r.get_value() * SPN_TO_IN_R)) / 3600_deg);
 
@@ -72,7 +72,8 @@ void opcontrol() {
 	}
 }
 
-void log_drive_efficency(void *param) {
+void log_drive_efficency(void *param)
+{
 	const int FLUSH_DELAY = 10000;
 	const int LOG_DELAY = 1000;
 
@@ -80,7 +81,8 @@ void log_drive_efficency(void *param) {
 
 	FILE* drive_efficency = fopen(file_name, "a");
 	pros::delay(500);
-	if (drive_efficency == NULL) {
+	if (drive_efficency == NULL)
+	{
 		log_ln(LOG_DRIVE,"	>>>> Could not open drive efficency log file");
 		return;
 	}
@@ -88,10 +90,12 @@ void log_drive_efficency(void *param) {
 
 	uint32_t nextFlush = 0;
 
-	while (true) {
+	while (true)
+	{
 		fprintf(drive_efficency, "%f, %f, %f, %f \r\n", eff_fl, eff_bl, eff_fr, eff_br);
 
-		if (millis() >= nextFlush) {
+		if (millis() >= nextFlush)
+		{
 			fclose(drive_efficency);
 			while ((drive_efficency = fopen(file_name, "a")) == NULL) delay(5);
 			nextFlush = millis() + FLUSH_DELAY;
