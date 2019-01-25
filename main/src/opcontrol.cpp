@@ -33,15 +33,15 @@ void opcontrol() {
 			std::string field_pos_s = "def";
 			FieldPos field_pos= shot_req[0].field_pos;
 
-			if (field_pos== FieldPos_Front) field_pos_s = "Fr ";
-			else if (field_pos== FieldPos_Back) field_pos_s = "Bck";
-			else if (field_pos== FieldPos_PF) field_pos_s = "PF ";
-			else if (field_pos== FieldPos_PF_Back_Red) field_pos_s = "PfR";
-			else if (field_pos== FieldPos_PF_Back_Blue) field_pos_s = "PfB";
+			// if (field_pos== FieldPos_Front) field_pos_s = "Fr ";
+			// else if (field_pos== FieldPos_Back) field_pos_s = "Bck";
+			// else if (field_pos== FieldPos_PF) field_pos_s = "PF ";
+			// else if (field_pos== FieldPos_PF_Back_Red) field_pos_s = "PfR";
+			// else if (field_pos== FieldPos_PF_Back_Blue) field_pos_s = "PfB";
 
-			std::string team_s = blue_team? "b" : "r";
+			// std::string team_s = blue_team? "b" : "r";
 
-			ctrler.print(2, 0, "%s %s %d %d %d      ", field_pos_s, team_s, (int)intake.get_temperature(), (int)puncherLeft.get_temperature(), (int)puncherRight.get_temperature());
+			// ctrler.print(2, 0, "%s %s %d %d %d      ", field_pos_s, team_s, (int)intake.get_temperature(), (int)puncherLeft.get_temperature(), (int)puncherRight.get_temperature());
 			//ctrler.print(2, 0, "%.1f %.1f %.1f     ", pos.x, pos.y, RAD_TO_DEG(pos.a));
 			//ctrler.print(2, 0, "%d %d %.1f     ", enc_l.get_value(), enc_r.get_value(), RAD_TO_DEG(pos.a));
 			//ctrler.print(2, 0, "%f          ", ((enc_l.get_value() * SPN_TO_IN_L) - (enc_r.get_value() * SPN_TO_IN_R)) / 3600_deg);

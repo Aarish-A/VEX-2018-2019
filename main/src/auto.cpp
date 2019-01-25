@@ -144,7 +144,7 @@ void move_drive_simple(double dis, int vel, bool stop) {
   setDrive(0);
 }
 
-void turn_vel(AngleTarget *target, double kP, double offset)
+void turn_vel(AngleTarget *target, double kP, double offset, float drive_turn_handled_offset, short req_handled_num)
 {
 	kP = fabs(kP);
 	double dA = target->getTarget() - getGlobalAngle() + offset;
@@ -152,6 +152,7 @@ void turn_vel(AngleTarget *target, double kP, double offset)
 	while (fabs(dA) > 0.8_deg) {
 		//log_ln(" > %d Turning %f dA: %f| FL: %f, BL: %f, FR: %f, BR %f", millis(), RAD_TO_DEG(pos.a), RAD_TO_DEG(dA), drive_fl.get_position(), drive_bl.get_position(), drive_fr.get_position(), drive_br.get_position());
 		dA = target->getTarget() - getGlobalAngle() + offset;
+		if (fabs(dA) < drive_turn_handled_offset && drive_turn_handled_offset != 0) shot_req[req_handled_num].drive_turn_handled = true;
 		setDriveVel(0, 0, (dA * kP));
 		delay(2);
 	}

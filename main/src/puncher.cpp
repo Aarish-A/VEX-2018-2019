@@ -103,7 +103,7 @@ void pun_handle() {
 				//printf(" >> %d PunLoaded %f ", millis(), puncherLeft.get_position());
 				//if (ctrler.get_digital_new_press(E_CONTROLLER_DIGITAL_A)) {
 
-				if (( shot_req_num > 0  && fabs(angler.get_position()-shot_req[shot_req_handled_num].angle_targ) < 5) ||auto_set_shot) {
+				if (( shot_req_num > 0  && 	shot_req[shot_req_handled_num].drive_turn_handled && fabs(angler.get_position()-shot_req[shot_req_handled_num].angle_targ) < 5) ||auto_set_shot) {
 					//pun_move(PUN_OFFSET + (++pun_shots * PUN_TPR));
 					++pun_shots;
 					pun_set(127);
