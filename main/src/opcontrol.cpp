@@ -22,10 +22,11 @@ double eff_br = drive_br.get_efficiency();
 void opcontrol() {
 	int print_time = 0;
 	shot_req_handle_start_task(); //Start shot req handle task
-	Task log_drive_efficency_task(log_drive_efficency); //Start logging drive efficency
+	//Task log_drive_efficency_task(log_drive_efficency); //Start logging drive efficency
 	printf("%d Start opcontrol\n", pros::millis());
 	// ctrler.print(2, 0, "RUNNING");
 
+	pun_state_change(PunState::Loading);
 	while (true) {
 		pos.update();
 		update_buttons();
