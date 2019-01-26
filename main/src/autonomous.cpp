@@ -35,7 +35,8 @@ void autonomous() {
   delay(10);
 
   //1 Pick up balls
-  angler.move(ANGLER_PU_POS);
+  log_ln(LOG_AUTO, "%d Angler Start move: %d", millis(), angler.get_position());
+  //angler_move(ANGLER_PU_POS, 100);
   intake.move(127);
   double cap_dis = 35.0_in;
   move_drive_rel(cap_dis, 200);
