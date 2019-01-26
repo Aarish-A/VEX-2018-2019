@@ -158,28 +158,29 @@ lv_res_t shot_tuning_save_button_action(lv_obj_t* button) {
   for(int i = 0; i < 4; i++) {
     FILE* log = NULL;
     if (i == 0) {
-      if(log != NULL)log = fopen("/usd/back_mid_shot_position.txt", "w");
+      log = fopen("/usd/back_mid_shot_position.txt", "w");
       pf_back_SP.mid = lv_slider_get_value(shot_slider[0]);
     } else if (i == 1) {
-      if(log != NULL)log = fopen("/usd/back_top_shot_position.txt", "w");
+      log = fopen("/usd/back_top_shot_position.txt", "w");
       pf_back_SP.top = lv_slider_get_value(shot_slider[1]);
     } else if (i == 2) {
-      if(log != NULL)log = fopen("/usd/front_mid_shot_position.txt", "w");
+      log = fopen("/usd/front_mid_shot_position.txt", "w");
       front_SP.mid = lv_slider_get_value(shot_slider[2]);
     } else if (i == 3) {
-      if(log != NULL) log = fopen("/usd/front_top_shot_position.txt", "w");
+      log = fopen("/usd/front_top_shot_position.txt", "w");
       front_SP.top = lv_slider_get_value(shot_slider[3]);
     }
 
     if (log == NULL) {
       printf("Failed to create shot positions file %d\n", i);
+      printf("shot save NULL");
     } else {
       printf("Created shot positions file! %d\n", i);
+      fprintf(log, "%d", lv_slider_get_value(shot_slider[i]));
+      printf("%d\n", lv_slider_get_value(shot_slider[i]));
+      printf("shot save NOT NULL");
+      fclose(log);
     }
-    fprintf(log, "%d", lv_slider_get_value(shot_slider[i]));
-    printf("%d\n", lv_slider_get_value(shot_slider[i]));
-
-    fclose(log);
   }
   return LV_RES_OK; /*Return OK if the message box is not deleted*/
 }

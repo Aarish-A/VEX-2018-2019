@@ -84,7 +84,7 @@ void log_ln(bool system, const char * format, ...) {
 
     va_list args;
     va_start(args, format);
-
+    log_file = fopen(log_file_name, log_mode);
     vprintf(format, args);
     printf("\n");
     if (log_file == NULL) {
