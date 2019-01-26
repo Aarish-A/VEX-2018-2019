@@ -98,7 +98,7 @@ void pun_handle() {
 					pun_state_change(PunState::Loaded);
 				}
 
-				if (millis() > pun_state_change_time+500) { //Takes 300 ms
+				if (millis() > pun_state_change_time+1000) { //Takes 300 ms
 					pun_set(0);
 					log_ln(LOG_PUNCHER, " >>> %d PUN FATAL ERROR (from Loading) - T_O | Pos: %f | Cur_Err(%f) needs to be <= to %f", millis(), puncherLeft.get_position(), cur_err, targ);
 					pun_state_change(PunState::FatalError);
@@ -118,6 +118,14 @@ void pun_handle() {
 
 						pun_state_change(PunState::Pull_Back);
 					}
+				else if(auto_set_shot)
+				{
+					++pun_shots;
+					pun_set(127);
+					log_ln(LOG_PUNCHER, "%d Shot start (from ShotLoaded)", pros::millis());
+
+					pun_state_change(PunState::Pull_Back);
+				}
 				break;
 			}
 

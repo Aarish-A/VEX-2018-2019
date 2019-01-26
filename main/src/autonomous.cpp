@@ -20,11 +20,11 @@
 using namespace pros;
 
 void auto_set_first_shot() {
-  shot_req_handled_num = 0;
+  shot_req_handled_num = 1;
   auto_set_shot = true;
 }
 void auto_set_second_shot() {
-  shot_req_handled_num = 1;
+  shot_req_handled_num = 2;
   auto_set_shot = true;
 }
 void auto_set_angler_target(double target) {
@@ -51,28 +51,31 @@ void autonomous() {
   delay(10);
 
   //1 Pick up balls
-  log_ln(LOG_AUTO, "%d Angler Start move: %d", millis(), angler.get_position());
-  angler_move(ANGLER_PU_POS, 100);
+  // log_ln(LOG_AUTO, "%d Angler Start move: %d", millis(), angler.get_position());
+  // angler_move(ANGLER_PU_POS, 100);
   intake.move(127);
-  double cap_dis = 43.0_in;
-  move_drive_rel(cap_dis, 200);
-  delay(200);
+  // double cap_dis = 43.0_in;
+  // move_drive_rel(cap_dis, 200);
+  // delay(200);
+  //
+  // //2 Back up turn and shoot
+  // auto_set_angler_target(front_SP.top);
+  // move_drive_rel(-(cap_dis-6), 200);
+  // turn_vel(new FixedAngleTarget(-84.0_deg), (200/90_deg));
+  // intake.move(0);
 
-  //2 Back up turn and shoot
-  auto_set_angler_target(front_SP.top);
-  move_drive_rel(-(cap_dis-6), 200);
-  turn_vel(new FixedAngleTarget(-84.0_deg), (200/90_deg));
-  intake.move(0);
-
-  auto_set_first_shot();
+  auto_set_shot = true;
   while (auto_set_shot) pros::delay(10);
   log_ln(LOG_AUTO, " > %d Done first shot | angler:%f targ:%f |(%f, %f, %f)", millis(), angler.get_position(), auto_angler_target, pos.x, pos.y, RAD_TO_DEG(pos.a));
+  printf("Done first shot");
   auto_set_angler_target(front_SP.mid);
-  auto_set_second_shot();
+  pros::delay(2000);
+  auto_set_shot = true;
   while (auto_set_shot) pros::delay(10);
+  printf("Done second shot");
   log_ln(LOG_AUTO, " > %d Done second shot | angler:%f targ:%f |(%f, %f, %f)", millis(), angler.get_position(), auto_angler_target, pos.x, pos.y, RAD_TO_DEG(pos.a));
   log_ln(LOG_AUTO, "%d done turn shoot (%f, %f, %f)", millis(), pos.x, pos.y, RAD_TO_DEG(pos.a));
-
+  printf("Auto is done");
 
   //flatten_against_wall(true, true);
 
