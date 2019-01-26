@@ -10,10 +10,9 @@ constexpr bool LOG_PUNCHER = 1;
 constexpr bool LOG_ANGLER = 1;
 constexpr bool LOG_DECAPPER = 0;
 constexpr bool LOG_JOYSTICK = 0;
-constexpr bool LOG_ERROR = 1;
+constexpr bool LOG_ERROR = 0;
 constexpr bool LOG_AUTO = 1;
-constexpr bool LOG_SHOTS = 1;
-constexpr bool LOG_VISION = 1;
+constexpr bool LOG_SHOTS = 0;
 
 constexpr int LOG_CLOSE_TIME = 1000;
 constexpr int LOG_MUTEX_TO = 50;

@@ -158,16 +158,16 @@ lv_res_t shot_tuning_save_button_action(lv_obj_t* button) {
   for(int i = 0; i < 4; i++) {
     FILE* log = NULL;
     if (i == 0) {
-      log = fopen("/usd/back_mid_shot_position.txt", "w");
+      if(log != NULL)log = fopen("/usd/back_mid_shot_position.txt", "w");
       pf_back_SP.mid = lv_slider_get_value(shot_slider[0]);
     } else if (i == 1) {
-      log = fopen("/usd/back_top_shot_position.txt", "w");
+      if(log != NULL)log = fopen("/usd/back_top_shot_position.txt", "w");
       pf_back_SP.top = lv_slider_get_value(shot_slider[1]);
     } else if (i == 2) {
-      log = fopen("/usd/front_mid_shot_position.txt", "w");
+      if(log != NULL)log = fopen("/usd/front_mid_shot_position.txt", "w");
       front_SP.mid = lv_slider_get_value(shot_slider[2]);
     } else if (i == 3) {
-      log = fopen("/usd/front_top_shot_position.txt", "w");
+      if(log != NULL) log = fopen("/usd/front_top_shot_position.txt", "w");
       front_SP.top = lv_slider_get_value(shot_slider[3]);
     }
 
