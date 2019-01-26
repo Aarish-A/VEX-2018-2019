@@ -35,6 +35,7 @@ extern int pun_shots;
 extern bool pun_ball;
 
 extern bool auto_set_shot;
+extern double auto_angler_target;
 
 void pun_init();
 void pun_set(int power);
