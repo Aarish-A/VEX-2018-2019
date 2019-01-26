@@ -3,10 +3,8 @@
 #include "config.hpp"
 #include "logs.hpp"
 
-// filter
-//
-pros::vision_object_s_t object_buffer_array[10];
-int buffer_index = 0;
+extern pros::vision_object_s_t object_buffer_array[10];
+extern int buffer_index;
 
 void vison_init();
 void vision_handle();

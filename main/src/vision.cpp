@@ -1,5 +1,8 @@
 #include "vision.hpp"
 
+pros::vision_object_s_t object_buffer_array[10];
+int buffer_index = 0;
+
 void vison_init() {
 
 }
