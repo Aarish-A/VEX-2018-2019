@@ -19,9 +19,18 @@
 
 using namespace pros;
 
+void auto_set_first_shot() {
+  shot_req_handled_num = 0;
+  auto_set_shot = true;
+}
+void auto_set_second_shot() {
+  shot_req_handled_num = 1;
+  auto_set_shot = true;
+}
 void auto_set_angler_target(double target) {
   auto_angler_target = target;
   angler_move(target);
+  log_ln(LOG_AUTO, "%d Angler Move to %f. CurPos:%f", millis(), auto_angler_target, angler.get_position());
 }
 
 void auto_update(void* param) {
@@ -52,18 +61,20 @@ void autonomous() {
   //2 Back up turn and shoot
   auto_set_angler_target(front_SP.top);
   move_drive_rel(-(cap_dis-6), 200);
-  angler_move(ANGLER_PU_POS, 100);
-  turn_vel(new FixedAngleTarget(-80.0_deg), (200/90_deg));
+  turn_vel(new FixedAngleTarget(-84.0_deg), (200/90_deg));
   intake.move(0);
 
-  auto_set_shot = true;
+  auto_set_first_shot();
   while (auto_set_shot) pros::delay(10);
+  log_ln(LOG_AUTO, " > %d Done first shot | angler:%f targ:%f |(%f, %f, %f)", millis(), angler.get_position(), auto_angler_target, pos.x, pos.y, RAD_TO_DEG(pos.a));
   auto_set_angler_target(front_SP.mid);
-  auto_set_shot = true;
+  auto_set_second_shot();
   while (auto_set_shot) pros::delay(10);
+  log_ln(LOG_AUTO, " > %d Done second shot | angler:%f targ:%f |(%f, %f, %f)", millis(), angler.get_position(), auto_angler_target, pos.x, pos.y, RAD_TO_DEG(pos.a));
   log_ln(LOG_AUTO, "%d done turn shoot (%f, %f, %f)", millis(), pos.x, pos.y, RAD_TO_DEG(pos.a));
 
 
   //flatten_against_wall(true, true);
 
+  shot_req_handled_num = 0;
 }
