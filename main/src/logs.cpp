@@ -48,7 +48,7 @@ void log_init() {
 	}
   printf(">>>> %d log_init(): Successfully opened SD log file \n", pros::millis());
 	// fputs("\r\n\r\n--------------------------------------------------\r\n\r\n", log_file);
-  // fprintf(log_file, ">>>> %d Start Logging for Program \n", pros::millis());
+  fprintf(log_file, ">>>> %d Start Logging for Program \n", pros::millis());
 
   log_close_timer = pros::millis() + LOG_CLOSE_TIME;
   printf("time closed");
@@ -84,24 +84,24 @@ void log_ln(bool system, const char * format, ...) {
 
     va_list args;
     va_start(args, format);
-    log_file = fopen(log_file_name, log_mode);
+    //log_file = fopen(log_file_name, log_mode);
     vprintf(format, args);
     printf("\n");
-    if (log_file == NULL) {
-  		printf("  >>>> %d COULD NOT OPEN SD LOG FILE\n", pros::millis());
-  	}
-    else {
-      vfprintf(log_file, format, args);
-      fprintf(log_file, "\r\n");
-
-      if (pros::millis() > log_close_timer) {
-        log_close_timer = pros::millis() + LOG_CLOSE_TIME;
-
-        fclose(log_file);
-        while ((log_file = fopen(log_file_name, log_mode)) == NULL) pros::delay(3);
-      }
-    }
-    va_end (args);
+    // if (log_file == NULL) {
+  	// 	printf("  >>>> %d COULD NOT OPEN SD LOG FILE\n", pros::millis());
+  	// }
+    // else {
+    //   vfprintf(log_file, format, args);
+    //   //fprintf(log_file, "\r\n");
+    //
+    //   if (pros::millis() > log_close_timer) {
+    //     log_close_timer = pros::millis() + LOG_CLOSE_TIME;
+    //
+    //     //fclose(log_file);
+    //     while ((log_file = fopen(log_file_name, log_mode)) == NULL) pros::delay(3);
+    //   }
+    // }
+    // va_end (args);
     mutex.give();
   }
 }
