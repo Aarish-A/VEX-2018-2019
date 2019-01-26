@@ -133,7 +133,7 @@ void move_drive_rel(double dis, int vel, bool stop) {
 		double actVel = ((drive_fl.get_actual_velocity() + drive_bl.get_actual_velocity() + drive_fr.get_actual_velocity() + drive_br.get_actual_velocity()) / 4.0) / 60.0 * 360.0;
     double tkToDecel = (actVel * actVel) / (2 * ((1000.0 / MOVE_DECEL_RATE) / 60.0) * 360.0);
 		double inToDecel = tkToDecel * DRIVE_DIA * M_PI / DRIVE_TPR;
-    log_ln(LOG_AUTO, "%d %d %f %f", curTime, i, inToDecel, dis - posCur);
+    //log_ln(LOG_AUTO, "%d %d %f %f", curTime, i, inToDecel, dis - posCur);
     if (inToDecel < (dis - posCur) * sgn(dis) - 0.5_in) {
       if (curTime - lastAccel > MOVE_ACCEL_RATE && i < vel) {
         i += 1;
@@ -164,7 +164,7 @@ void move_drive_rel(double dis, int vel, bool stop) {
 	  while (fabs(drive_fl.get_position() - targetFL) > 3 || fabs(drive_bl.get_position() - targetBL) > 3 || fabs(drive_fr.get_position() - targetFR) > 3 || fabs(drive_br.get_position() - targetBR) > 3) delay(1);
 	  delay(100);
 	}
-  log_ln(LOG_AUTO, "%d Moved to FL: %f, BL: %f, FR: %f, BR %f", millis(), drive_fl.get_position(), drive_bl.get_position(), drive_fr.get_position(), drive_br.get_position());
+  log_ln(LOG_AUTO, "%d Moved to FL: %f, BL: %f, FR: %f, BR %f | Pos(%f, %f, %f) |  Vel(%f, %f, %f) ", millis(), drive_fl.get_position(), drive_bl.get_position(), drive_fr.get_position(), drive_br.get_position(), pos.x, pos.y, RAD_TO_DEG(pos.a), pos.xVel, pos.yVel, RAD_TO_DEG(pos.aVel));
   //log_ln("%f %f", (enc_L.get_value() - enc_LStart) / 360.0 * 2.75 * M_PI, (enc_R.get_value() - enc_RStart) / 360.0 * 2.75 * M_PI);
   setDrive(0);
 }
