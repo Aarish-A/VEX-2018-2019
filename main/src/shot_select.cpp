@@ -61,34 +61,34 @@ void set_turn_dir(Dir turn_dir) {
 
 	// if (shot_req[shot_req_num-1].field_pos == FieldPos_PF_Back_Red) { //Shooting from behind the platform (red)
 	if (detecting_signature(1)) {
-		ctrler.print(2, 0, "Red     ");
+		// ctrler.print(2, 0, "Red     ");
 		shot_req[shot_req_num-1].flag_pos.y = 94;
 		if (turn_dir == Dir_Left) {
-			ctrler.print(2, 0, "Red  Left");
+			// ctrler.print(2, 0, "Red  Left");
 			shot_req[shot_req_num-1].flag_pos.x = -29;
 		}
 		else if (turn_dir == Dir_Right) {
-			ctrler.print(2, 0, "Red  Right");
+			// ctrler.print(2, 0, "Red  Right");
 			shot_req[shot_req_num-1].flag_pos.x = 20;
 		}
 		else shot_req[shot_req_num-1].flag_pos.x = 0;
 	}
 	else if (detecting_signature(2)) {
-		ctrler.print(2, 0, "Blue   ");
+		// ctrler.print(2, 0, "Blue   ");
 	// else if(shot_req[shot_req_num-1].field_pos == FieldPos_PF_Back_Blue) { //Shooting from behind the platform (blue)
 		shot_req[shot_req_num-1].flag_pos.y = 94;
 		if (turn_dir == Dir_Left) {
-			ctrler.print(2, 0, "Blue  Left");
+			// ctrler.print(2, 0, "Blue  Left");
 			shot_req[shot_req_num-1].flag_pos.x = -26;
 		}
 		else if (turn_dir == Dir_Right) {
-			ctrler.print(2, 0, "Blue  Right");
+			// ctrler.print(2, 0, "Blue  Right");
 			shot_req[shot_req_num-1].flag_pos.x = 23;
 		}
 		else shot_req[shot_req_num-1].flag_pos.x = 0;
 	}
 	else if (detecting_signature(3)) {
-		ctrler.print(2, 0, "Yellow   ");
+		// ctrler.print(2, 0, "Yellow   ");
 	// else if(shot_req[shot_req_num-1].field_pos == FieldPos_PF_Back_Blue) { //Shooting from behind the platform (blue)
 		shot_req[shot_req_num-1].flag_pos.y = 94;
 		shot_req[shot_req_num-1].flag_pos.x = 0;
