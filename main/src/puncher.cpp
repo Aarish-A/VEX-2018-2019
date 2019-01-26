@@ -12,13 +12,10 @@ float last_number = PUN_OFFSET + (pun_shots * PUN_TPR) + PUN_HOLD;
 bool auto_set_shot = false;
 
 void pun_state_change(PunState state) {
-	if (state != pun_state)
-	{
-		log_ln(LOG_PUNCHER, "  >> %d Moved from state %d -> %d. ShotN:%d", pros::millis(), pun_state_lst, pun_state, pun_shots);
 		pun_state_lst = pun_state;
 		pun_state = state;
 		pun_state_change_time = pros::millis();
-	}
+		log_ln(LOG_PUNCHER, "  >> %d Moved from state %d -> %d. ShotN:%d", pros::millis(), pun_state_lst, pun_state, pun_shots);
 }
 
 void pun_init() {
