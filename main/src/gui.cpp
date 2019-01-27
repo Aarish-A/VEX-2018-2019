@@ -52,7 +52,6 @@ void gui_init() {
   for(int i = 0; i < 4; i++) {
     FILE* log = NULL;
     printf("file pointer\n");
-    pros::delay(1000);
     if (i == 0) {
       log = fopen("/usd/back_mid_shot_position.txt", "r");
       if(log != NULL) fscanf(log, "%d", &(pf_back_SP.mid));
