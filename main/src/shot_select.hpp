@@ -15,7 +15,7 @@
 constexpr bool SHOT_DRIVE_BRAKE = false;
 
 /* Constants */
-constexpr double FLAG_WIDTH = 9.75;
+constexpr double FLAG_WIDTH = 16.50;
 
 constexpr double ANGLER_BALL = 13;
 constexpr int ANGLER_DZ = 30;

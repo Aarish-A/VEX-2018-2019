@@ -65,13 +65,13 @@ void set_turn_dir(Dir turn_dir) {
 		shot_req[shot_req_num-1].flag_pos.y = 94;
 		if (turn_dir == Dir_Left) {
 			// ctrler.print(2, 0, "Red  Left");
-			if (game_side == 'R') shot_req[shot_req_num-1].flag_pos.x = -29;
-			else if (game_side == 'B') shot_req[shot_req_num-1].flag_pos.x = 0;
+			if (game_side == 'R') shot_req[shot_req_num-1].flag_pos.x = -29 - FLAG_WIDTH;
+			else if (game_side == 'B') shot_req[shot_req_num-1].flag_pos.x = -29;
 		}
 		else if (turn_dir == Dir_Right) {
 			// ctrler.print(2, 0, "Red  Right");
-			if (game_side == 'R') shot_req[shot_req_num-1].flag_pos.x = 20;
-			else if (game_side == 'B') shot_req[shot_req_num-1].flag_pos.x = 0;
+			if (game_side == 'R') shot_req[shot_req_num-1].flag_pos.x = 20  - FLAG_WIDTH;
+			else if (game_side == 'B') shot_req[shot_req_num-1].flag_pos.x = 20;
 		}
 		else shot_req[shot_req_num-1].flag_pos.x = 0;
 	}
@@ -81,13 +81,13 @@ void set_turn_dir(Dir turn_dir) {
 		shot_req[shot_req_num-1].flag_pos.y = 94;
 		if (turn_dir == Dir_Left) {
 			// ctrler.print(2, 0, "Blue  Left");
-			if (game_side == 'R') shot_req[shot_req_num-1].flag_pos.x = -26;
-			else if (game_side == 'B') shot_req[shot_req_num-1].flag_pos.x = 0;
+			if (game_side == 'R') shot_req[shot_req_num-1].flag_pos.x = -26 - FLAG_WIDTH;
+			else if (game_side == 'B') shot_req[shot_req_num-1].flag_pos.x = -26;
 		}
 		else if (turn_dir == Dir_Right) {
 			// ctrler.print(2, 0, "Blue  Right");
-			if (game_side == 'R') shot_req[shot_req_num-1].flag_pos.x = 23;
-			else if (game_side == 'R') shot_req[shot_req_num-1].flag_pos.x = 0;
+			if (game_side == 'R') shot_req[shot_req_num-1].flag_pos.x = 23 - FLAG_WIDTH;
+			else if (game_side == 'R') shot_req[shot_req_num-1].flag_pos.x = 23;
 		}
 		else {
 			shot_req[shot_req_num-1].flag_pos.x = 0;
@@ -124,6 +124,7 @@ void set_handled_vars() {
 void set_shot_req(bool top, Dir turn_dir) {
 	inc_shot_req_num();
 	set_angle_targ(top);
+	top ? log_ln(LOG_SHOTS, "TOP PRESSED") : log_ln(LOG_SHOTS, "MID PRESSED");
 	set_turn_dir(turn_dir);
 	set_handled_vars();
 	log_ln(LOG_SHOTS, "%d Shot Req (Task PTR:%d)| Anglr:%f | RNum:%d | HandledNum:%d | FPos:%d | 1angle:%d, 1trn:%d (%f, %f), Hndled1 drive:%d shot:%d| 2angle:%d, 2turn:%d (%f, %f), Hndled1 drive:%d shot:%d ", pros::millis(), shot_req_handle_task, angler.get_position(), shot_req_num, shot_req_handled_num, shot_req[0].field_pos, shot_req[0].angle_targ, shot_req[0].turn_dir, shot_req[0].flag_pos.x, shot_req[0].flag_pos.y, shot_req[0].drive_turn_handled, shot_req[0].shot_handled, shot_req[1].angle_targ, shot_req[1].turn_dir, shot_req[1].flag_pos.x, shot_req[1].flag_pos.y, shot_req[1].drive_turn_handled, shot_req[1].shot_handled);
@@ -187,10 +188,22 @@ void shot_req_make() {
 		//Make shot requests depending on which button sequence was pressed
 		if (T_DOUBLE) set_shot_req(true, Dir_Centre);
 		else if (M_DOUBLE) set_shot_req(false, Dir_Centre);
-		else if (L_T) set_shot_req(true, Dir_Left);
-		else if (L_M) set_shot_req(false, Dir_Left);
-		else if (R_T) set_shot_req(true, Dir_Right);
-		else if (R_M) set_shot_req(false, Dir_Right);
+		else if (L_T) {
+			set_shot_req(true, Dir_Left);
+			log_ln(LOG_SHOTS, "%d Was supposed to shoot LT, L_T was %d", pros::millis(), (int)L_T);
+		}
+		else if (L_M) {
+			set_shot_req(false, Dir_Left);
+			log_ln(LOG_SHOTS, "%d Was supposed to shoot LM, L_M was %d", pros::millis(), (int)L_M);
+		}
+		else if (R_T) {
+			set_shot_req(true, Dir_Right);
+			log_ln(LOG_SHOTS, "%d Was supposed to shoot RT, R_T was %d", pros::millis(), (int)R_T);
+		}
+		else if (R_M) {
+			set_shot_req(false, Dir_Right);
+			log_ln(LOG_SHOTS, "%d Was supposed to shoot RM, R_M was %d", pros::millis(), (int)R_M);
+		}
 	}
 }
 
