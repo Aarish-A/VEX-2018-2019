@@ -87,7 +87,7 @@ void set_turn_dir(Dir turn_dir) {
 		else if (turn_dir == Dir_Right) {
 			// ctrler.print(2, 0, "Blue  Right");
 			if (game_side == 'R') shot_req[shot_req_num-1].flag_pos.x = 23 - FLAG_WIDTH;
-			else if (game_side == 'R') shot_req[shot_req_num-1].flag_pos.x = 23;
+			else if (game_side == 'B') shot_req[shot_req_num-1].flag_pos.x = 23;
 		}
 		else {
 			shot_req[shot_req_num-1].flag_pos.x = 0;
