@@ -10,6 +10,8 @@
 #include "decapper.hpp"
 #include "vision.hpp"
 #include "config.hpp"
+#include "auto.hpp"
+#include "shot_select.hpp"
 using namespace pros;
 
 /* Info abt drive efficency */
@@ -20,6 +22,8 @@ double eff_bl = drive_bl.get_efficiency();
 double eff_fr = drive_fr.get_efficiency();
 double eff_br = drive_br.get_efficiency();
 
+void auto_set_angler_target(double target);
+
 void opcontrol() {
 	int print_time = 0;
 	shot_req_handle_start_task(); //Start shot req handle task
@@ -28,6 +32,12 @@ void opcontrol() {
 	// ctrler.print(2, 0, "RUNNING");
 
 	pun_state_change(PunState::Loading);
+while(!ctrler.get_digital_new_press(E_CONTROLLER_DIGITAL_A))
+{pros::delay(10);}
+
+	autonomous();
+
+  shot_req_handled_num = 0;
 	while (true) {
 		pos.update();
 		update_buttons();
@@ -71,7 +81,6 @@ void opcontrol() {
 			//ctrler.print(2, 0, "%.1f %.1f %.1f     ", pos.x, pos.y, RAD_TO_DEG(pos.a));
 			//ctrler.print(2, 0, "%d %d %.1f     ", enc_l.get_value(), enc_r.get_value(), RAD_TO_DEG(pos.a));
 			//ctrler.print(2, 0, "%f          ", ((enc_l.get_value() * SPN_TO_IN_L) - (enc_r.get_value() * SPN_TO_IN_R)) / 3600_deg);
-
 		}
 
 		delay(10);

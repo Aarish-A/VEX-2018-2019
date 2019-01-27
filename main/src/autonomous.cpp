@@ -104,6 +104,7 @@ if (current_auto_routine == 0 && game_side == 'R')
   //flatten_against_wall(true, true);
 
   shot_req_handled_num = 0;
+  return;
 }
 else if (current_auto_routine == 1 && game_side == 'R')
 {
