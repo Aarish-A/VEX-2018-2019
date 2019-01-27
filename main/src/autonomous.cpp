@@ -83,7 +83,7 @@ if(autoPoti.get_value()>1600)
   move_drive_rel(16_in,200);
   pros::delay(750);
   move_drive_rel(-7.3_in,200,true);
-  auto_set_angler_target(front_SP.top+15);
+  auto_set_angler_target(front_SP.top+22);
   auto_set_shot = true;
   while (auto_set_shot) pros::delay(10);
   pros::delay(750);
@@ -91,8 +91,8 @@ if(autoPoti.get_value()>1600)
   auto_set_shot = true;
   while (auto_set_shot) pros::delay(10);
   angler_move(ANGLER_CAP_FLIP_POS);
-  intake.move(-35);
-  move_drive_rel(18_in,200,false);
+  intake.move(-70);
+  move_drive_rel(15_in,200,false);
   printf("Auto time is %d",(millis()-autoStartTime));
   log_ln(LOG_AUTO, " > %d Done second shot | angler:%f targ:%f |(%f, %f, %f)", millis(), angler.get_position(), auto_angler_target, pos.x, pos.y, RAD_TO_DEG(pos.a));
   log_ln(LOG_AUTO, "%d done turn shoot (%f, %f, %f)", millis(), pos.x, pos.y, RAD_TO_DEG(pos.a));
@@ -113,8 +113,7 @@ else
   move_drive_rel(-22_in,200);
   auto_set_angler_target(front_SP.top-15);
   intake.move(0);
-  turn_vel(new FixedAngleTarget(-69_deg), (200/90_deg));
-  auto_set_shot = true;
+  turn_vel_auto(new FixedAngleTarget(-69_deg), (200/90_deg),0,2.5);
   while (auto_set_shot) pros::delay(10);
   auto_set_angler_target(front_SP.mid);
   pros::delay(750);
@@ -125,19 +124,16 @@ else
   move_drive_rel(-26.5_in, 200);
   turn_vel(new FixedAngleTarget(0_deg), (200/90_deg));
   move_drive_rel(27_in, 200);
-  pros::delay(750);
+  pros::delay(250);
   move_drive_rel(-8_in,200);
   auto_set_angler_target(front_SP.top+29);
-  intake.move(0);
-  turn_vel(new FixedAngleTarget(-58_deg), (200/90_deg));
-  auto_set_shot = true;
+  turn_vel_auto(new FixedAngleTarget(-58_deg), (200/90_deg),0,1.5);
   while (auto_set_shot) pros::delay(10);
   auto_set_angler_target(front_SP.mid+62);
   pros::delay(750);
   auto_set_shot = true;
   while (auto_set_shot) pros::delay(10);
   printf("Auto time is:%d\n",millis()-autoStartTime);
-  printf("Hello i am testing\n");
   //2 Back up turn and shoot
 }
 }

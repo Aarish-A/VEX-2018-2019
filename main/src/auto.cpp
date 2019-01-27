@@ -224,6 +224,27 @@ void turn_vel(AngleTarget *target, double kP, double offset, float drive_turn_ha
 	drive_brake();
 }
 
+void turn_vel_auto(AngleTarget *target, double kP, double offset, float drive_turn_handled_offset)
+{
+	kP = fabs(kP);
+	double dA = target->getTarget() - getGlobalAngle() + offset;
+  log_ln(LOG_AUTO, "%d Turning to %f | DeltaA: %f ", millis(), RAD_TO_DEG(target->getTarget()), RAD_TO_DEG(dA) );
+	while (fabs(dA) > 0.8_deg) {
+		//log_ln(" > %d Turning %f dA: %f| FL: %f, BL: %f, FR: %f, BR %f", millis(), RAD_TO_DEG(pos.a), RAD_TO_DEG(dA), drive_fl.get_position(), drive_bl.get_position(), drive_fr.get_position(), drive_br.get_position());
+		dA = target->getTarget() - getGlobalAngle() + offset;
+		//log_ln(LOG_AUTO, "%d dA: %f", pros::millis(), dA);
+		if ((fabs(dA) < DEG_TO_RAD(drive_turn_handled_offset)) && drive_turn_handled_offset != 0) {
+			auto_set_shot = true;
+			log_ln(LOG_AUTO, "%d REACHED DRIVE TURN HANDLED OFFSET THRESHOLD", pros::millis());
+		}
+		setDriveVel(0, 0, (dA * kP));
+		delay(2);
+	}
+  log_ln(LOG_AUTO, "%d Turned to %f | FL: %f, BL: %f, FR: %f, BR %f", millis(), RAD_TO_DEG(getGlobalAngle()), drive_fl.get_position(), drive_bl.get_position(), drive_fr.get_position(), drive_br.get_position());
+  setDrive(0);
+	drive_brake();
+}
+
 void turn_vel_side(AngleTarget *target, double kP, double offset, bool f_w)
 {
 	int t_start = pros::millis();
