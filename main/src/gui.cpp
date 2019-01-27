@@ -26,7 +26,12 @@ lv_obj_t* shot_tuning_save_button_label;
 
 // Diagnostics Tab
 lv_obj_t* auto_select_tab_title;
-
+lv_obj_t* red_side_button;
+lv_obj_t* red_side_button_label;
+lv_obj_t* blue_side_button;
+lv_obj_t* blue_side_button_label;
+lv_obj_t* auto_buttons[2];
+std::string auto_routines[2] = { "FRONT", "BACK" };
 
 void gui_init() {
   printf("Log Program done\n");
@@ -138,9 +143,54 @@ void gui_init() {
   auto_select_tab_title = lv_label_create(auto_select_tab, NULL);
   lv_label_set_text(auto_select_tab_title, "Auto Select");
   lv_obj_align(auto_select_tab_title, NULL, LV_ALIGN_IN_TOP_MID, 0, 5);
+
+  red_side_button = lv_btn_create(auto_select_tab, NULL);
+  lv_obj_set_free_num(red_side_button, 1);
+  lv_btn_set_action(red_side_button, LV_BTN_ACTION_LONG_PR, red_side_button_action);
+  lv_obj_set_width(red_side_button, 200);
+  lv_obj_align(red_side_button, auto_select_tab_title, LV_ALIGN_OUT_BOTTOM_MID, -100, 10);
+  lv_obj_t* red_side_button_label = lv_label_create(red_side_button, NULL);
+  lv_label_set_text(red_side_button_label, "Red");
+
+
+  blue_side_button = lv_btn_create(auto_select_tab, NULL);
+  lv_obj_set_free_num(blue_side_button, 1);
+  lv_btn_set_action(blue_side_button, LV_BTN_ACTION_LONG_PR, blue_side_button_action);
+  lv_obj_set_width(blue_side_button, 200);
+  lv_obj_align(blue_side_button, auto_select_tab_title, LV_ALIGN_OUT_BOTTOM_MID, 100, 10);
+  lv_obj_t* blue_side_button_label = lv_label_create(blue_side_button, NULL);
+  lv_label_set_text(blue_side_button_label, "Blue");
 }
 
 void gui_handle() {
+}
+
+lv_res_t red_side_button_action(lv_obj_t* button) {
+  FILE* log = NULL;
+  while ((log = fopen("/usd/game_side.txt", "w")) == NULL) pros::delay(2);
+  if (log == NULL) {
+    printf("Couldn't create game side file\n");
+  } else {
+    fprintf(log, "R");
+    game_side = 'R';
+    ctrler.rumble(". . .");
+    fclose(log);
+  }
+  return LV_RES_OK;
+}
+
+lv_res_t blue_side_button_action(lv_obj_t* button) {
+  FILE* log = NULL;
+  while ((log = fopen("/usd/game_side.txt", "w")) == NULL) pros::delay(2);
+  if (log == NULL) {
+    printf("Couldn't create game side file\n");
+  } else {
+    fprintf(log, "B");
+    game_side = 'B';
+    ctrler.rumble(". . .");
+    fclose(log);
+  }
+  return LV_RES_OK;
 }
 
 lv_res_t shot_tuning_slider_action(lv_obj_t* slider) {

@@ -9,6 +9,7 @@ void vison_init() {
 
 void vision_handle() {
   object_buffer_array[buffer_index] = vision_sensor.get_by_size(0);
+  // printf("%d CUR SIG: %d\n", pros::millis(), (int)object_buffer_array[buffer_index].signature);
   if (buffer_index < 9) buffer_index++;
   else buffer_index = 0;
 }

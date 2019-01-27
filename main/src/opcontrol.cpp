@@ -40,37 +40,37 @@ void opcontrol() {
 		vision_handle();
 		//printf("%d\n", (int)decapper.get_position());
 
-		// if (millis() - print_time > 100) {
-		// 	print_time = millis();
-		// 	std::string field_pos_s = "def";
-		// 	FieldPos field_pos= shot_req[0].field_pos;
-		//
-		// 	if (field_pos== FieldPos_Front) field_pos_s = "Fr ";
-		// 	else if (field_pos== FieldPos_Back) field_pos_s = "Bck";
-		// 	else if (field_pos== FieldPos_PF) field_pos_s = "PF ";
-		// 	else if (field_pos== FieldPos_PF_Back_Red) field_pos_s = "PfR";
-		// 	else if (field_pos== FieldPos_PF_Back_Blue) field_pos_s = "PfB";
-		//
-		// 	std::string team_s = blue_team? "b" : "r";
-		//
-		// 	eff_fl = drive_fl.get_efficiency();
-		// 	eff_bl = drive_bl.get_efficiency();
-		// 	eff_fr = drive_fr.get_efficiency();
-		// 	eff_br = drive_br.get_efficiency();
-		//
-		// 	/*if (eff_fl < EFF_LIM || eff_fr < EFF_LIM || eff_bl < EFF_LIM || eff_br < EFF_LIM)
-		// 		ctrler.rumble(". .");
-		// 		*/
-		//
-		// 	//ctrler.print(2, 0, "%s %.1f %.1f %.1f %.1f    ", field_pos_s, eff_fl, eff_bl, eff_fr, eff_br);
-		//
-		// 	ctrler.print(2, 0, "%s %s %d %d %d      ", field_pos_s, team_s, (int)intake.get_temperature(), (int)puncherLeft.get_temperature(), (int)puncherRight.get_temperature());
-		//
-		// 	//ctrler.print(2, 0, "%.1f %.1f %.1f     ", pos.x, pos.y, RAD_TO_DEG(pos.a));
-		// 	//ctrler.print(2, 0, "%d %d %.1f     ", enc_l.get_value(), enc_r.get_value(), RAD_TO_DEG(pos.a));
-		// 	//ctrler.print(2, 0, "%f          ", ((enc_l.get_value() * SPN_TO_IN_L) - (enc_r.get_value() * SPN_TO_IN_R)) / 3600_deg);
-		//
-		// }
+		if (millis() - print_time > 100) {
+			print_time = millis();
+			std::string field_pos_s = "def";
+			FieldPos field_pos= shot_req[0].field_pos;
+
+			if (field_pos== FieldPos_Front) field_pos_s = "Fr ";
+			else if (field_pos== FieldPos_Back) field_pos_s = "Bck";
+			else if (field_pos== FieldPos_PF) field_pos_s = "PF ";
+			else if (field_pos== FieldPos_PF_Back_Red) field_pos_s = "PfR";
+			else if (field_pos== FieldPos_PF_Back_Blue) field_pos_s = "PfB";
+
+			std::string team_s = blue_team? "b" : "r";
+
+			// eff_fl = drive_fl.get_efficiency();
+			// eff_bl = drive_bl.get_efficiency();
+			// eff_fr = drive_fr.get_efficiency();
+			// eff_br = drive_br.get_efficiency();
+
+			/*if (eff_fl < EFF_LIM || eff_fr < EFF_LIM || eff_bl < EFF_LIM || eff_br < EFF_LIM)
+				ctrler.rumble(". .");
+				*/
+
+			// ctrler.print(2, 0, "%s %.1f %.1f %.1f %.1f    ", field_pos_s, eff_fl, eff_bl, eff_fr, eff_br);
+
+			// ctrler.print(2, 0, "%s %s %d %d %d      ", field_pos_s, team_s, (int)intake.get_temperature(), (int)puncherLeft.get_temperature(), (int)puncherRight.get_temperature());
+			ctrler.print(2, 0, "%c  ", game_side);
+			//ctrler.print(2, 0, "%.1f %.1f %.1f     ", pos.x, pos.y, RAD_TO_DEG(pos.a));
+			//ctrler.print(2, 0, "%d %d %.1f     ", enc_l.get_value(), enc_r.get_value(), RAD_TO_DEG(pos.a));
+			//ctrler.print(2, 0, "%f          ", ((enc_l.get_value() * SPN_TO_IN_L) - (enc_r.get_value() * SPN_TO_IN_R)) / 3600_deg);
+
+		}
 
 		delay(10);
 	}

@@ -9,6 +9,8 @@
 #include "gui.hpp"
 #include "decapper.hpp"
 
+void game_initialize();
+
 void initialize() {
   printf("%d Start initialize\n", pros::millis());
   buttons[BTN_SHOT_L_T].button_press_time = BTN_PRESS_TIME;
@@ -17,6 +19,7 @@ void initialize() {
   buttons[BTN_SHOT_R_M].button_press_time = BTN_PRESS_TIME;
   buttons[BTN_DECAPPER_UP].button_press_time = BTN_PRESS_TIME;
   buttons[BTN_DECAPPER_DOWN].button_press_time = BTN_PRESS_TIME;
+  game_initialize();
 
 	log_init();
   printf("log init completed\n");
@@ -30,6 +33,19 @@ void initialize() {
 	angler_cal();
   decapper_cal();
   log_ln(LOG_DRIVE, "%d Finished Init ", pros::millis());
+}
+
+void game_initialize() {
+  FILE* file = NULL;
+  file = fopen("/usd/game_side.txt", "r");
+
+  if (file == NULL) {
+    printf("Could not open game side file");
+  } else {
+    fscanf(file, "%c", &game_side);
+    printf("printed %c", game_side);
+    fclose(file);
+  }
 }
 
 /**

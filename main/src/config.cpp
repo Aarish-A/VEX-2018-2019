@@ -17,3 +17,4 @@ pros::ADILineSensor ball_sensor(5);
 pros::Vision vision_sensor(6);
 
 Tracking pos(enc_l, enc_r, enc_s);
+char game_side = 'R';

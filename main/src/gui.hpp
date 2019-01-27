@@ -1,6 +1,7 @@
 #pragma once
 #include "main.h"
 #include "shot_select.hpp"
+#include "config.hpp"
 
 // Main Screen
 extern lv_obj_t* screen;
@@ -26,10 +27,24 @@ extern lv_obj_t* shot_slider_label[4];
 extern lv_obj_t* shot_tuning_save_button;
 extern lv_obj_t* shot_tuning_save_button_label;
 
-// Diagnostics Tab
+// Auto Select Tab
 extern lv_obj_t* auto_select_tab_title;
+extern lv_obj_t* red_side_button;
+extern lv_obj_t* red_side_button_label;
+extern lv_obj_t* blue_side_button;
+extern lv_obj_t* blue_side_button_label;
+extern lv_obj_t* auto_buttons[2];
+
+enum auto_routines {
+  FRONT,
+  BACK
+};
+
+extern std::string auto_routines[2];
 
 void gui_init();
 void gui_handle();
 lv_res_t shot_tuning_slider_action(lv_obj_t * slider);
+lv_res_t red_side_button_action(lv_obj_t* button);
+lv_res_t blue_side_button_action(lv_obj_t* button);
 lv_res_t shot_tuning_save_button_action(lv_obj_t* button);

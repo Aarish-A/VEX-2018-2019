@@ -19,3 +19,4 @@ extern pros::ADILineSensor ball_sensor;
 extern pros::Vision vision_sensor;
 
 extern Tracking pos;
+extern char game_side;

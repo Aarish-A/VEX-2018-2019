@@ -59,42 +59,48 @@ void set_angle_targ(bool top) {
 void set_turn_dir(Dir turn_dir) {
   shot_req[shot_req_num-1].turn_dir = turn_dir;
 
-	// if (shot_req[shot_req_num-1].field_pos == FieldPos_PF_Back_Red) { //Shooting from behind the platform (red)
-	if (detecting_signature(1)) {
+	if (shot_req[shot_req_num-1].field_pos == FieldPos_PF_Back_Red) { //Shooting from behind the platform (red)
+	// if (detecting_signature(1)) {
 		// ctrler.print(2, 0, "Red     ");
 		shot_req[shot_req_num-1].flag_pos.y = 94;
 		if (turn_dir == Dir_Left) {
-			ctrler.print(2, 0, "Red  Left");
-			shot_req[shot_req_num-1].flag_pos.x = -29;
+			// ctrler.print(2, 0, "Red  Left");
+			if (game_side == 'R') shot_req[shot_req_num-1].flag_pos.x = -29;
+			else if (game_side == 'B') shot_req[shot_req_num-1].flag_pos.x = 0;
 		}
 		else if (turn_dir == Dir_Right) {
-			ctrler.print(2, 0, "Red  Right");
-			shot_req[shot_req_num-1].flag_pos.x = 20;
+			// ctrler.print(2, 0, "Red  Right");
+			if (game_side == 'R') shot_req[shot_req_num-1].flag_pos.x = 20;
+			else if (game_side == 'B') shot_req[shot_req_num-1].flag_pos.x = 0;
 		}
 		else shot_req[shot_req_num-1].flag_pos.x = 0;
 	}
-	else if (detecting_signature(2)) {
-		ctrler.print(2, 0, "Blue   ");
-	// else if(shot_req[shot_req_num-1].field_pos == FieldPos_PF_Back_Blue) { //Shooting from behind the platform (blue)
+	// else if (detecting_signature(2)) {
+		// ctrler.print(2, 0, "Blue   ");
+	else if(shot_req[shot_req_num-1].field_pos == FieldPos_PF_Back_Blue) { //Shooting from behind the platform (blue)
 		shot_req[shot_req_num-1].flag_pos.y = 94;
 		if (turn_dir == Dir_Left) {
-			ctrler.print(2, 0, "Blue  Left");
-			// shot_req[shot_req_num-1].flag_pos.x = -26;
+			// ctrler.print(2, 0, "Blue  Left");
+			if (game_side == 'R') shot_req[shot_req_num-1].flag_pos.x = -26;
+			else if (game_side == 'B') shot_req[shot_req_num-1].flag_pos.x = 0;
 		}
 		else if (turn_dir == Dir_Right) {
-			ctrler.print(2, 0, "Blue  Right");
-			shot_req[shot_req_num-1].flag_pos.x = 23;
+			// ctrler.print(2, 0, "Blue  Right");
+			if (game_side == 'R') shot_req[shot_req_num-1].flag_pos.x = 23;
+			else if (game_side == 'R') shot_req[shot_req_num-1].flag_pos.x = 0;
 		}
-		else shot_req[shot_req_num-1].flag_pos.x = 0;
+		else {
+			shot_req[shot_req_num-1].flag_pos.x = 0;
+		}
 	}
-	else if (detecting_signature(3)) {
-		ctrler.print(2, 0, "Yellow   ");
+	// else if (detecting_signature(3)) {
+		// ctrler.print(2, 0, "Yellow   ");
 	// else if(shot_req[shot_req_num-1].field_pos == FieldPos_PF_Back_Blue) { //Shooting from behind the platform (blue)
-		shot_req[shot_req_num-1].flag_pos.y = 94;
-		shot_req[shot_req_num-1].flag_pos.x = 0;
-	}
+		// shot_req[shot_req_num-1].flag_pos.y = 94;
+		// shot_req[shot_req_num-1].flag_pos.x = 0;
+	// }
 	else { //Shooting from the back
-		ctrler.print(2, 0, "No colour  ");
+		// ctrler.print(2, 0, "No colour  ");
 		shot_req[shot_req_num-1].flag_pos.y = 125;
 		if (turn_dir == Dir_Left) {
 			shot_req[shot_req_num-1].flag_pos.x = -48;
