@@ -49,7 +49,8 @@ void autonomous() {
   uint32_t autoStartTime = millis();
   setDriveVel(0);
   delay(10);
-if(autoPoti.get_value()>1600)
+// if(autoPoti.get_value()>1600)
+if (current_auto_routine == 0)
 {
 
   //1 Pick up balls
@@ -102,7 +103,7 @@ if(autoPoti.get_value()>1600)
 
   shot_req_handled_num = 0;
 }
-else
+else if (current_auto_routine == 1)
 {
   log_ln(LOG_AUTO, "%d Angler Start move: %d", millis(), angler.get_position());
   angler_move(ANGLER_PU_POS, 100);
