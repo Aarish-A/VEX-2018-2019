@@ -2,6 +2,7 @@
 #include "main.h"
 #include "shot_select.hpp"
 #include "config.hpp"
+#include <string>
 
 // Main Screen
 extern lv_obj_t* screen;
@@ -31,20 +32,30 @@ extern lv_obj_t* shot_tuning_save_button_label;
 extern lv_obj_t* auto_select_tab_title;
 extern lv_obj_t* red_side_button;
 extern lv_obj_t* red_side_button_label;
+
 extern lv_obj_t* blue_side_button;
 extern lv_obj_t* blue_side_button_label;
-extern lv_obj_t* auto_buttons[2];
 
-enum auto_routines {
+extern lv_obj_t* auto_buttons[8];
+extern lv_obj_t* auto_buttons_label[8];
+enum class auto_routines {
   FRONT,
-  BACK
+  BACK,
+  UNUSED2,
+  UNUSED3,
+  UNUSED4,
+  UNUSED5,
+  UNUSED6,
+  UNUSED7
 };
 
-extern std::string auto_routines[2];
+extern std::string auto_routines[8];
 
 void gui_init();
 void gui_handle();
 lv_res_t shot_tuning_slider_action(lv_obj_t * slider);
+lv_res_t auto_button_action_front(lv_obj_t* button);
+lv_res_t auto_button_action_back(lv_obj_t* button);
 lv_res_t red_side_button_action(lv_obj_t* button);
 lv_res_t blue_side_button_action(lv_obj_t* button);
 lv_res_t shot_tuning_save_button_action(lv_obj_t* button);

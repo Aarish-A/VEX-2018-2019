@@ -9,7 +9,8 @@
 #include "gui.hpp"
 #include "decapper.hpp"
 
-void game_initialize();
+void side_initialize();
+void auto_routine_initialize();
 
 void initialize() {
   printf("%d Start initialize\n", pros::millis());
@@ -19,7 +20,8 @@ void initialize() {
   buttons[BTN_SHOT_R_M].button_press_time = BTN_PRESS_TIME;
   buttons[BTN_DECAPPER_UP].button_press_time = BTN_PRESS_TIME;
   buttons[BTN_DECAPPER_DOWN].button_press_time = BTN_PRESS_TIME;
-  game_initialize();
+  side_initialize();
+  auto_routine_initialize();
 
 	log_init();
   printf("log init completed\n");
@@ -35,7 +37,20 @@ void initialize() {
   log_ln(LOG_DRIVE, "%d Finished Init ", pros::millis());
 }
 
-void game_initialize() {
+void auto_routine_initialize() {
+  FILE* file = NULL;
+  file = fopen("/usd/auto_routine.txt", "r");
+
+  if (file == NULL) {
+    printf("Could not open auto routine file");
+  } else {
+    fscanf(file, "%d", &current_auto_routine);
+    printf("printed %d", current_auto_routine);
+    fclose(file);
+  }
+}
+
+void side_initialize() {
   FILE* file = NULL;
   file = fopen("/usd/game_side.txt", "r");
 

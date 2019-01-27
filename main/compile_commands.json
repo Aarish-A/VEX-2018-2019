@@ -25,75 +25,11 @@
             "-fdiagnostics-color",
             "--std=gnu++17",
             "-o",
-            "bin/drive.cpp.o",
-            "src/drive.cpp"
+            "bin/button.cpp.o",
+            "src/button.cpp"
         ],
         "directory": "/Users/zainlakhani/Documents/GitHub/5225A-2018-2019/main",
-        "file": "src/drive.cpp"
-    },
-    {
-        "arguments": [
-            "clang++",
-            "-c",
-            "-target",
-            "armv7ar-none-none-eabi",
-            "-isystem/usr/local/Caskroom/gcc-arm-embedded/8-2018-q4-major/gcc-arm-none-eabi-8-2018-q4-major/bin/../lib/gcc/arm-none-eabi/8.2.1/../../../../arm-none-eabi/include/c++/8.2.1",
-            "-isystem/usr/local/Caskroom/gcc-arm-embedded/8-2018-q4-major/gcc-arm-none-eabi-8-2018-q4-major/bin/../lib/gcc/arm-none-eabi/8.2.1/../../../../arm-none-eabi/include/c++/8.2.1/arm-none-eabi/thumb/v7+fp/softfp",
-            "-isystem/usr/local/Caskroom/gcc-arm-embedded/8-2018-q4-major/gcc-arm-none-eabi-8-2018-q4-major/bin/../lib/gcc/arm-none-eabi/8.2.1/../../../../arm-none-eabi/include/c++/8.2.1/backward",
-            "-isystem/usr/local/Caskroom/gcc-arm-embedded/8-2018-q4-major/gcc-arm-none-eabi-8-2018-q4-major/bin/../lib/gcc/arm-none-eabi/8.2.1/include",
-            "-isystem/usr/local/Caskroom/gcc-arm-embedded/8-2018-q4-major/gcc-arm-none-eabi-8-2018-q4-major/bin/../lib/gcc/arm-none-eabi/8.2.1/include-fixed",
-            "-isystem/usr/local/Caskroom/gcc-arm-embedded/8-2018-q4-major/gcc-arm-none-eabi-8-2018-q4-major/bin/../lib/gcc/arm-none-eabi/8.2.1/../../../../arm-none-eabi/include",
-            "-iquote./include",
-            "-iquote./include/./",
-            "-mcpu=cortex-a9",
-            "-mfpu=neon-fp16",
-            "-mfloat-abi=softfp",
-            "-D_POSIX_THREADS",
-            "-D_UNIX98_THREAD_MUTEX_ATTRIBUTES",
-            "-Os",
-            "-funwind-tables",
-            "-ffunction-sections",
-            "-fdata-sections",
-            "-fdiagnostics-color",
-            "--std=gnu++17",
-            "-o",
-            "bin/autonomous.cpp.o",
-            "src/autonomous.cpp"
-        ],
-        "directory": "/Users/zainlakhani/Documents/GitHub/5225A-2018-2019/main",
-        "file": "src/autonomous.cpp"
-    },
-    {
-        "arguments": [
-            "clang++",
-            "-c",
-            "-target",
-            "armv7ar-none-none-eabi",
-            "-isystem/usr/local/Caskroom/gcc-arm-embedded/8-2018-q4-major/gcc-arm-none-eabi-8-2018-q4-major/bin/../lib/gcc/arm-none-eabi/8.2.1/../../../../arm-none-eabi/include/c++/8.2.1",
-            "-isystem/usr/local/Caskroom/gcc-arm-embedded/8-2018-q4-major/gcc-arm-none-eabi-8-2018-q4-major/bin/../lib/gcc/arm-none-eabi/8.2.1/../../../../arm-none-eabi/include/c++/8.2.1/arm-none-eabi/thumb/v7+fp/softfp",
-            "-isystem/usr/local/Caskroom/gcc-arm-embedded/8-2018-q4-major/gcc-arm-none-eabi-8-2018-q4-major/bin/../lib/gcc/arm-none-eabi/8.2.1/../../../../arm-none-eabi/include/c++/8.2.1/backward",
-            "-isystem/usr/local/Caskroom/gcc-arm-embedded/8-2018-q4-major/gcc-arm-none-eabi-8-2018-q4-major/bin/../lib/gcc/arm-none-eabi/8.2.1/include",
-            "-isystem/usr/local/Caskroom/gcc-arm-embedded/8-2018-q4-major/gcc-arm-none-eabi-8-2018-q4-major/bin/../lib/gcc/arm-none-eabi/8.2.1/include-fixed",
-            "-isystem/usr/local/Caskroom/gcc-arm-embedded/8-2018-q4-major/gcc-arm-none-eabi-8-2018-q4-major/bin/../lib/gcc/arm-none-eabi/8.2.1/../../../../arm-none-eabi/include",
-            "-iquote./include",
-            "-iquote./include/./",
-            "-mcpu=cortex-a9",
-            "-mfpu=neon-fp16",
-            "-mfloat-abi=softfp",
-            "-D_POSIX_THREADS",
-            "-D_UNIX98_THREAD_MUTEX_ATTRIBUTES",
-            "-Os",
-            "-funwind-tables",
-            "-ffunction-sections",
-            "-fdata-sections",
-            "-fdiagnostics-color",
-            "--std=gnu++17",
-            "-o",
-            "bin/angler.cpp.o",
-            "src/angler.cpp"
-        ],
-        "directory": "/Users/zainlakhani/Documents/GitHub/5225A-2018-2019/main",
-        "file": "src/angler.cpp"
+        "file": "src/button.cpp"
     },
     {
         "arguments": [
@@ -153,11 +89,11 @@
             "-fdiagnostics-color",
             "--std=gnu++17",
             "-o",
-            "bin/intake.cpp.o",
-            "src/intake.cpp"
+            "bin/autonomous.cpp.o",
+            "src/autonomous.cpp"
         ],
         "directory": "/Users/zainlakhani/Documents/GitHub/5225A-2018-2019/main",
-        "file": "src/intake.cpp"
+        "file": "src/autonomous.cpp"
     },
     {
         "arguments": [
@@ -185,11 +121,43 @@
             "-fdiagnostics-color",
             "--std=gnu++17",
             "-o",
-            "bin/opcontrol.cpp.o",
-            "src/opcontrol.cpp"
+            "bin/tracking.cpp.o",
+            "src/tracking.cpp"
         ],
         "directory": "/Users/zainlakhani/Documents/GitHub/5225A-2018-2019/main",
-        "file": "src/opcontrol.cpp"
+        "file": "src/tracking.cpp"
+    },
+    {
+        "arguments": [
+            "clang++",
+            "-c",
+            "-target",
+            "armv7ar-none-none-eabi",
+            "-isystem/usr/local/Caskroom/gcc-arm-embedded/8-2018-q4-major/gcc-arm-none-eabi-8-2018-q4-major/bin/../lib/gcc/arm-none-eabi/8.2.1/../../../../arm-none-eabi/include/c++/8.2.1",
+            "-isystem/usr/local/Caskroom/gcc-arm-embedded/8-2018-q4-major/gcc-arm-none-eabi-8-2018-q4-major/bin/../lib/gcc/arm-none-eabi/8.2.1/../../../../arm-none-eabi/include/c++/8.2.1/arm-none-eabi/thumb/v7+fp/softfp",
+            "-isystem/usr/local/Caskroom/gcc-arm-embedded/8-2018-q4-major/gcc-arm-none-eabi-8-2018-q4-major/bin/../lib/gcc/arm-none-eabi/8.2.1/../../../../arm-none-eabi/include/c++/8.2.1/backward",
+            "-isystem/usr/local/Caskroom/gcc-arm-embedded/8-2018-q4-major/gcc-arm-none-eabi-8-2018-q4-major/bin/../lib/gcc/arm-none-eabi/8.2.1/include",
+            "-isystem/usr/local/Caskroom/gcc-arm-embedded/8-2018-q4-major/gcc-arm-none-eabi-8-2018-q4-major/bin/../lib/gcc/arm-none-eabi/8.2.1/include-fixed",
+            "-isystem/usr/local/Caskroom/gcc-arm-embedded/8-2018-q4-major/gcc-arm-none-eabi-8-2018-q4-major/bin/../lib/gcc/arm-none-eabi/8.2.1/../../../../arm-none-eabi/include",
+            "-iquote./include",
+            "-iquote./include/./",
+            "-mcpu=cortex-a9",
+            "-mfpu=neon-fp16",
+            "-mfloat-abi=softfp",
+            "-D_POSIX_THREADS",
+            "-D_UNIX98_THREAD_MUTEX_ATTRIBUTES",
+            "-Os",
+            "-funwind-tables",
+            "-ffunction-sections",
+            "-fdata-sections",
+            "-fdiagnostics-color",
+            "--std=gnu++17",
+            "-o",
+            "bin/intake.cpp.o",
+            "src/intake.cpp"
+        ],
+        "directory": "/Users/zainlakhani/Documents/GitHub/5225A-2018-2019/main",
+        "file": "src/intake.cpp"
     },
     {
         "arguments": [
@@ -249,102 +217,6 @@
             "-fdiagnostics-color",
             "--std=gnu++17",
             "-o",
-            "bin/config.cpp.o",
-            "src/config.cpp"
-        ],
-        "directory": "/Users/zainlakhani/Documents/GitHub/5225A-2018-2019/main",
-        "file": "src/config.cpp"
-    },
-    {
-        "arguments": [
-            "clang++",
-            "-c",
-            "-target",
-            "armv7ar-none-none-eabi",
-            "-isystem/usr/local/Caskroom/gcc-arm-embedded/8-2018-q4-major/gcc-arm-none-eabi-8-2018-q4-major/bin/../lib/gcc/arm-none-eabi/8.2.1/../../../../arm-none-eabi/include/c++/8.2.1",
-            "-isystem/usr/local/Caskroom/gcc-arm-embedded/8-2018-q4-major/gcc-arm-none-eabi-8-2018-q4-major/bin/../lib/gcc/arm-none-eabi/8.2.1/../../../../arm-none-eabi/include/c++/8.2.1/arm-none-eabi/thumb/v7+fp/softfp",
-            "-isystem/usr/local/Caskroom/gcc-arm-embedded/8-2018-q4-major/gcc-arm-none-eabi-8-2018-q4-major/bin/../lib/gcc/arm-none-eabi/8.2.1/../../../../arm-none-eabi/include/c++/8.2.1/backward",
-            "-isystem/usr/local/Caskroom/gcc-arm-embedded/8-2018-q4-major/gcc-arm-none-eabi-8-2018-q4-major/bin/../lib/gcc/arm-none-eabi/8.2.1/include",
-            "-isystem/usr/local/Caskroom/gcc-arm-embedded/8-2018-q4-major/gcc-arm-none-eabi-8-2018-q4-major/bin/../lib/gcc/arm-none-eabi/8.2.1/include-fixed",
-            "-isystem/usr/local/Caskroom/gcc-arm-embedded/8-2018-q4-major/gcc-arm-none-eabi-8-2018-q4-major/bin/../lib/gcc/arm-none-eabi/8.2.1/../../../../arm-none-eabi/include",
-            "-iquote./include",
-            "-iquote./include/./",
-            "-mcpu=cortex-a9",
-            "-mfpu=neon-fp16",
-            "-mfloat-abi=softfp",
-            "-D_POSIX_THREADS",
-            "-D_UNIX98_THREAD_MUTEX_ATTRIBUTES",
-            "-Os",
-            "-funwind-tables",
-            "-ffunction-sections",
-            "-fdata-sections",
-            "-fdiagnostics-color",
-            "--std=gnu++17",
-            "-o",
-            "bin/angle_target.cpp.o",
-            "src/angle_target.cpp"
-        ],
-        "directory": "/Users/zainlakhani/Documents/GitHub/5225A-2018-2019/main",
-        "file": "src/angle_target.cpp"
-    },
-    {
-        "arguments": [
-            "clang++",
-            "-c",
-            "-target",
-            "armv7ar-none-none-eabi",
-            "-isystem/usr/local/Caskroom/gcc-arm-embedded/8-2018-q4-major/gcc-arm-none-eabi-8-2018-q4-major/bin/../lib/gcc/arm-none-eabi/8.2.1/../../../../arm-none-eabi/include/c++/8.2.1",
-            "-isystem/usr/local/Caskroom/gcc-arm-embedded/8-2018-q4-major/gcc-arm-none-eabi-8-2018-q4-major/bin/../lib/gcc/arm-none-eabi/8.2.1/../../../../arm-none-eabi/include/c++/8.2.1/arm-none-eabi/thumb/v7+fp/softfp",
-            "-isystem/usr/local/Caskroom/gcc-arm-embedded/8-2018-q4-major/gcc-arm-none-eabi-8-2018-q4-major/bin/../lib/gcc/arm-none-eabi/8.2.1/../../../../arm-none-eabi/include/c++/8.2.1/backward",
-            "-isystem/usr/local/Caskroom/gcc-arm-embedded/8-2018-q4-major/gcc-arm-none-eabi-8-2018-q4-major/bin/../lib/gcc/arm-none-eabi/8.2.1/include",
-            "-isystem/usr/local/Caskroom/gcc-arm-embedded/8-2018-q4-major/gcc-arm-none-eabi-8-2018-q4-major/bin/../lib/gcc/arm-none-eabi/8.2.1/include-fixed",
-            "-isystem/usr/local/Caskroom/gcc-arm-embedded/8-2018-q4-major/gcc-arm-none-eabi-8-2018-q4-major/bin/../lib/gcc/arm-none-eabi/8.2.1/../../../../arm-none-eabi/include",
-            "-iquote./include",
-            "-iquote./include/./",
-            "-mcpu=cortex-a9",
-            "-mfpu=neon-fp16",
-            "-mfloat-abi=softfp",
-            "-D_POSIX_THREADS",
-            "-D_UNIX98_THREAD_MUTEX_ATTRIBUTES",
-            "-Os",
-            "-funwind-tables",
-            "-ffunction-sections",
-            "-fdata-sections",
-            "-fdiagnostics-color",
-            "--std=gnu++17",
-            "-o",
-            "bin/util.cpp.o",
-            "src/util.cpp"
-        ],
-        "directory": "/Users/zainlakhani/Documents/GitHub/5225A-2018-2019/main",
-        "file": "src/util.cpp"
-    },
-    {
-        "arguments": [
-            "clang++",
-            "-c",
-            "-target",
-            "armv7ar-none-none-eabi",
-            "-isystem/usr/local/Caskroom/gcc-arm-embedded/8-2018-q4-major/gcc-arm-none-eabi-8-2018-q4-major/bin/../lib/gcc/arm-none-eabi/8.2.1/../../../../arm-none-eabi/include/c++/8.2.1",
-            "-isystem/usr/local/Caskroom/gcc-arm-embedded/8-2018-q4-major/gcc-arm-none-eabi-8-2018-q4-major/bin/../lib/gcc/arm-none-eabi/8.2.1/../../../../arm-none-eabi/include/c++/8.2.1/arm-none-eabi/thumb/v7+fp/softfp",
-            "-isystem/usr/local/Caskroom/gcc-arm-embedded/8-2018-q4-major/gcc-arm-none-eabi-8-2018-q4-major/bin/../lib/gcc/arm-none-eabi/8.2.1/../../../../arm-none-eabi/include/c++/8.2.1/backward",
-            "-isystem/usr/local/Caskroom/gcc-arm-embedded/8-2018-q4-major/gcc-arm-none-eabi-8-2018-q4-major/bin/../lib/gcc/arm-none-eabi/8.2.1/include",
-            "-isystem/usr/local/Caskroom/gcc-arm-embedded/8-2018-q4-major/gcc-arm-none-eabi-8-2018-q4-major/bin/../lib/gcc/arm-none-eabi/8.2.1/include-fixed",
-            "-isystem/usr/local/Caskroom/gcc-arm-embedded/8-2018-q4-major/gcc-arm-none-eabi-8-2018-q4-major/bin/../lib/gcc/arm-none-eabi/8.2.1/../../../../arm-none-eabi/include",
-            "-iquote./include",
-            "-iquote./include/./",
-            "-mcpu=cortex-a9",
-            "-mfpu=neon-fp16",
-            "-mfloat-abi=softfp",
-            "-D_POSIX_THREADS",
-            "-D_UNIX98_THREAD_MUTEX_ATTRIBUTES",
-            "-Os",
-            "-funwind-tables",
-            "-ffunction-sections",
-            "-fdata-sections",
-            "-fdiagnostics-color",
-            "--std=gnu++17",
-            "-o",
             "bin/auto.cpp.o",
             "src/auto.cpp"
         ],
@@ -377,11 +249,75 @@
             "-fdiagnostics-color",
             "--std=gnu++17",
             "-o",
-            "bin/gui.cpp.o",
-            "src/gui.cpp"
+            "bin/drive.cpp.o",
+            "src/drive.cpp"
         ],
         "directory": "/Users/zainlakhani/Documents/GitHub/5225A-2018-2019/main",
-        "file": "src/gui.cpp"
+        "file": "src/drive.cpp"
+    },
+    {
+        "arguments": [
+            "clang++",
+            "-c",
+            "-target",
+            "armv7ar-none-none-eabi",
+            "-isystem/usr/local/Caskroom/gcc-arm-embedded/8-2018-q4-major/gcc-arm-none-eabi-8-2018-q4-major/bin/../lib/gcc/arm-none-eabi/8.2.1/../../../../arm-none-eabi/include/c++/8.2.1",
+            "-isystem/usr/local/Caskroom/gcc-arm-embedded/8-2018-q4-major/gcc-arm-none-eabi-8-2018-q4-major/bin/../lib/gcc/arm-none-eabi/8.2.1/../../../../arm-none-eabi/include/c++/8.2.1/arm-none-eabi/thumb/v7+fp/softfp",
+            "-isystem/usr/local/Caskroom/gcc-arm-embedded/8-2018-q4-major/gcc-arm-none-eabi-8-2018-q4-major/bin/../lib/gcc/arm-none-eabi/8.2.1/../../../../arm-none-eabi/include/c++/8.2.1/backward",
+            "-isystem/usr/local/Caskroom/gcc-arm-embedded/8-2018-q4-major/gcc-arm-none-eabi-8-2018-q4-major/bin/../lib/gcc/arm-none-eabi/8.2.1/include",
+            "-isystem/usr/local/Caskroom/gcc-arm-embedded/8-2018-q4-major/gcc-arm-none-eabi-8-2018-q4-major/bin/../lib/gcc/arm-none-eabi/8.2.1/include-fixed",
+            "-isystem/usr/local/Caskroom/gcc-arm-embedded/8-2018-q4-major/gcc-arm-none-eabi-8-2018-q4-major/bin/../lib/gcc/arm-none-eabi/8.2.1/../../../../arm-none-eabi/include",
+            "-iquote./include",
+            "-iquote./include/./",
+            "-mcpu=cortex-a9",
+            "-mfpu=neon-fp16",
+            "-mfloat-abi=softfp",
+            "-D_POSIX_THREADS",
+            "-D_UNIX98_THREAD_MUTEX_ATTRIBUTES",
+            "-Os",
+            "-funwind-tables",
+            "-ffunction-sections",
+            "-fdata-sections",
+            "-fdiagnostics-color",
+            "--std=gnu++17",
+            "-o",
+            "bin/angler.cpp.o",
+            "src/angler.cpp"
+        ],
+        "directory": "/Users/zainlakhani/Documents/GitHub/5225A-2018-2019/main",
+        "file": "src/angler.cpp"
+    },
+    {
+        "arguments": [
+            "clang++",
+            "-c",
+            "-target",
+            "armv7ar-none-none-eabi",
+            "-isystem/usr/local/Caskroom/gcc-arm-embedded/8-2018-q4-major/gcc-arm-none-eabi-8-2018-q4-major/bin/../lib/gcc/arm-none-eabi/8.2.1/../../../../arm-none-eabi/include/c++/8.2.1",
+            "-isystem/usr/local/Caskroom/gcc-arm-embedded/8-2018-q4-major/gcc-arm-none-eabi-8-2018-q4-major/bin/../lib/gcc/arm-none-eabi/8.2.1/../../../../arm-none-eabi/include/c++/8.2.1/arm-none-eabi/thumb/v7+fp/softfp",
+            "-isystem/usr/local/Caskroom/gcc-arm-embedded/8-2018-q4-major/gcc-arm-none-eabi-8-2018-q4-major/bin/../lib/gcc/arm-none-eabi/8.2.1/../../../../arm-none-eabi/include/c++/8.2.1/backward",
+            "-isystem/usr/local/Caskroom/gcc-arm-embedded/8-2018-q4-major/gcc-arm-none-eabi-8-2018-q4-major/bin/../lib/gcc/arm-none-eabi/8.2.1/include",
+            "-isystem/usr/local/Caskroom/gcc-arm-embedded/8-2018-q4-major/gcc-arm-none-eabi-8-2018-q4-major/bin/../lib/gcc/arm-none-eabi/8.2.1/include-fixed",
+            "-isystem/usr/local/Caskroom/gcc-arm-embedded/8-2018-q4-major/gcc-arm-none-eabi-8-2018-q4-major/bin/../lib/gcc/arm-none-eabi/8.2.1/../../../../arm-none-eabi/include",
+            "-iquote./include",
+            "-iquote./include/./",
+            "-mcpu=cortex-a9",
+            "-mfpu=neon-fp16",
+            "-mfloat-abi=softfp",
+            "-D_POSIX_THREADS",
+            "-D_UNIX98_THREAD_MUTEX_ATTRIBUTES",
+            "-Os",
+            "-funwind-tables",
+            "-ffunction-sections",
+            "-fdata-sections",
+            "-fdiagnostics-color",
+            "--std=gnu++17",
+            "-o",
+            "bin/angle_target.cpp.o",
+            "src/angle_target.cpp"
+        ],
+        "directory": "/Users/zainlakhani/Documents/GitHub/5225A-2018-2019/main",
+        "file": "src/angle_target.cpp"
     },
     {
         "arguments": [
@@ -473,11 +409,75 @@
             "-fdiagnostics-color",
             "--std=gnu++17",
             "-o",
-            "bin/button.cpp.o",
-            "src/button.cpp"
+            "bin/config.cpp.o",
+            "src/config.cpp"
         ],
         "directory": "/Users/zainlakhani/Documents/GitHub/5225A-2018-2019/main",
-        "file": "src/button.cpp"
+        "file": "src/config.cpp"
+    },
+    {
+        "arguments": [
+            "clang++",
+            "-c",
+            "-target",
+            "armv7ar-none-none-eabi",
+            "-isystem/usr/local/Caskroom/gcc-arm-embedded/8-2018-q4-major/gcc-arm-none-eabi-8-2018-q4-major/bin/../lib/gcc/arm-none-eabi/8.2.1/../../../../arm-none-eabi/include/c++/8.2.1",
+            "-isystem/usr/local/Caskroom/gcc-arm-embedded/8-2018-q4-major/gcc-arm-none-eabi-8-2018-q4-major/bin/../lib/gcc/arm-none-eabi/8.2.1/../../../../arm-none-eabi/include/c++/8.2.1/arm-none-eabi/thumb/v7+fp/softfp",
+            "-isystem/usr/local/Caskroom/gcc-arm-embedded/8-2018-q4-major/gcc-arm-none-eabi-8-2018-q4-major/bin/../lib/gcc/arm-none-eabi/8.2.1/../../../../arm-none-eabi/include/c++/8.2.1/backward",
+            "-isystem/usr/local/Caskroom/gcc-arm-embedded/8-2018-q4-major/gcc-arm-none-eabi-8-2018-q4-major/bin/../lib/gcc/arm-none-eabi/8.2.1/include",
+            "-isystem/usr/local/Caskroom/gcc-arm-embedded/8-2018-q4-major/gcc-arm-none-eabi-8-2018-q4-major/bin/../lib/gcc/arm-none-eabi/8.2.1/include-fixed",
+            "-isystem/usr/local/Caskroom/gcc-arm-embedded/8-2018-q4-major/gcc-arm-none-eabi-8-2018-q4-major/bin/../lib/gcc/arm-none-eabi/8.2.1/../../../../arm-none-eabi/include",
+            "-iquote./include",
+            "-iquote./include/./",
+            "-mcpu=cortex-a9",
+            "-mfpu=neon-fp16",
+            "-mfloat-abi=softfp",
+            "-D_POSIX_THREADS",
+            "-D_UNIX98_THREAD_MUTEX_ATTRIBUTES",
+            "-Os",
+            "-funwind-tables",
+            "-ffunction-sections",
+            "-fdata-sections",
+            "-fdiagnostics-color",
+            "--std=gnu++17",
+            "-o",
+            "bin/util.cpp.o",
+            "src/util.cpp"
+        ],
+        "directory": "/Users/zainlakhani/Documents/GitHub/5225A-2018-2019/main",
+        "file": "src/util.cpp"
+    },
+    {
+        "arguments": [
+            "clang++",
+            "-c",
+            "-target",
+            "armv7ar-none-none-eabi",
+            "-isystem/usr/local/Caskroom/gcc-arm-embedded/8-2018-q4-major/gcc-arm-none-eabi-8-2018-q4-major/bin/../lib/gcc/arm-none-eabi/8.2.1/../../../../arm-none-eabi/include/c++/8.2.1",
+            "-isystem/usr/local/Caskroom/gcc-arm-embedded/8-2018-q4-major/gcc-arm-none-eabi-8-2018-q4-major/bin/../lib/gcc/arm-none-eabi/8.2.1/../../../../arm-none-eabi/include/c++/8.2.1/arm-none-eabi/thumb/v7+fp/softfp",
+            "-isystem/usr/local/Caskroom/gcc-arm-embedded/8-2018-q4-major/gcc-arm-none-eabi-8-2018-q4-major/bin/../lib/gcc/arm-none-eabi/8.2.1/../../../../arm-none-eabi/include/c++/8.2.1/backward",
+            "-isystem/usr/local/Caskroom/gcc-arm-embedded/8-2018-q4-major/gcc-arm-none-eabi-8-2018-q4-major/bin/../lib/gcc/arm-none-eabi/8.2.1/include",
+            "-isystem/usr/local/Caskroom/gcc-arm-embedded/8-2018-q4-major/gcc-arm-none-eabi-8-2018-q4-major/bin/../lib/gcc/arm-none-eabi/8.2.1/include-fixed",
+            "-isystem/usr/local/Caskroom/gcc-arm-embedded/8-2018-q4-major/gcc-arm-none-eabi-8-2018-q4-major/bin/../lib/gcc/arm-none-eabi/8.2.1/../../../../arm-none-eabi/include",
+            "-iquote./include",
+            "-iquote./include/./",
+            "-mcpu=cortex-a9",
+            "-mfpu=neon-fp16",
+            "-mfloat-abi=softfp",
+            "-D_POSIX_THREADS",
+            "-D_UNIX98_THREAD_MUTEX_ATTRIBUTES",
+            "-Os",
+            "-funwind-tables",
+            "-ffunction-sections",
+            "-fdata-sections",
+            "-fdiagnostics-color",
+            "--std=gnu++17",
+            "-o",
+            "bin/opcontrol.cpp.o",
+            "src/opcontrol.cpp"
+        ],
+        "directory": "/Users/zainlakhani/Documents/GitHub/5225A-2018-2019/main",
+        "file": "src/opcontrol.cpp"
     },
     {
         "arguments": [
@@ -569,10 +569,10 @@
             "-fdiagnostics-color",
             "--std=gnu++17",
             "-o",
-            "bin/tracking.cpp.o",
-            "src/tracking.cpp"
+            "bin/gui.cpp.o",
+            "src/gui.cpp"
         ],
         "directory": "/Users/zainlakhani/Documents/GitHub/5225A-2018-2019/main",
-        "file": "src/tracking.cpp"
+        "file": "src/gui.cpp"
     }
 ]
