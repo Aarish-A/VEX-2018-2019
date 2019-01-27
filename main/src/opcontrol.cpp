@@ -9,7 +9,7 @@
 #include "gui.hpp"
 #include "decapper.hpp"
 #include "vision.hpp"
-
+#include "config.hpp"
 using namespace pros;
 
 /* Info abt drive efficency */
@@ -38,6 +38,8 @@ void opcontrol() {
 		angler_handle();
 		decapper_handle();
 		vision_handle();
+		printf("%d\n",autoPoti.get_value());
+		// printf("%d\n", autoPoti.get_value());
 		//printf("%d\n", (int)decapper.get_position());
 
 		if (millis() - print_time > 100) {

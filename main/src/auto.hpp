@@ -5,6 +5,7 @@
 #include "util.hpp"
 #include "logs.hpp"
 #include "shot_select.hpp"
+#include "puncher.hpp"
 #include <math.h>
 
 extern bool blue_team;
@@ -42,6 +43,7 @@ void move_drive_rel_simple(double dis, int vel, bool stop = true);
 
 //void turnDrive(double targ, int vel);
 void turn_vel(AngleTarget *target, double kP, double offset = 0, float drive_turn_handled_time = 0, short req_handled_num = 0);
+void turn_vel_auto(AngleTarget *target, double kP, double offset = 0, float drive_turn_handled_time = 0);
 void turn_vel_side(AngleTarget *target, double kP, double offset, bool f_w);
 
 void flatten_against_wall(bool f_w, bool hold);

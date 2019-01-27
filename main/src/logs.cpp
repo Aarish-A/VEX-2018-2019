@@ -87,20 +87,20 @@ void log_ln(bool system, const char * format, ...) {
     log_file = fopen(log_file_name, log_mode);
     vprintf(format, args);
     printf("\n");
-    if (log_file == NULL) {
-  		printf("  >>>> %d COULD NOT OPEN SD LOG FILE\n", pros::millis());
-  	}
-    else {
-      vfprintf(log_file, format, args);
-      fprintf(log_file, "\r\n");
-
-      if (pros::millis() > log_close_timer) {
-        log_close_timer = pros::millis() + LOG_CLOSE_TIME;
-
-        fclose(log_file);
-        while ((log_file = fopen(log_file_name, log_mode)) == NULL) pros::delay(3);
-      }
-    }
+    // if (log_file == NULL) {
+  	// 	printf("  >>>> %d COULD NOT OPEN SD LOG FILE\n", pros::millis());
+  	// }
+    // else {
+    //   vfprintf(log_file, format, args);
+    //   fprintf(log_file, "\r\n");
+    //
+    //   if (pros::millis() > log_close_timer) {
+    //     log_close_timer = pros::millis() + LOG_CLOSE_TIME;
+    //
+    //     fclose(log_file);
+    //     while ((log_file = fopen(log_file_name, log_mode)) == NULL) pros::delay(3);
+    //   }
+    // }
     va_end (args);
     mutex.give();
   }

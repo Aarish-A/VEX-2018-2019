@@ -15,6 +15,7 @@ extern pros::Motor puncherRight;
 extern pros::ADIEncoder enc_l;
 extern pros::ADIEncoder enc_r;
 extern pros::ADIEncoder enc_s;
+extern pros::ADIAnalogIn autoPoti;
 extern pros::ADILineSensor ball_sensor;
 extern pros::Vision vision_sensor;
 
