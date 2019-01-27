@@ -50,7 +50,7 @@ void autonomous() {
   setDriveVel(0);
   delay(10);
 // if(autoPoti.get_value()>1600)
-if (current_auto_routine == 0)
+if (current_auto_routine == 0 && game_side == 'R')
 {
 
   //1 Pick up balls
@@ -72,7 +72,8 @@ if (current_auto_routine == 0)
   log_ln(LOG_AUTO, " > %d Done first shot | angler:%f targ:%f |(%f, %f, %f)", millis(), angler.get_position(), auto_angler_target, pos.x, pos.y, RAD_TO_DEG(pos.a));
   printf("Done first shot");
   auto_set_angler_target(front_SP.mid);
-  pros::delay(750);
+  pros::delay(250);
+  while (!pun_ball) pros::delay(5);
   auto_set_shot = true;
   while (auto_set_shot) pros::delay(10);
   printf("Done second shot");
@@ -87,8 +88,9 @@ if (current_auto_routine == 0)
   auto_set_angler_target(front_SP.top+22);
   auto_set_shot = true;
   while (auto_set_shot) pros::delay(10);
-  pros::delay(750);
   auto_set_angler_target(front_SP.mid);
+  pros::delay(250);
+  while (!pun_ball) pros::delay(5);
   auto_set_shot = true;
   while (auto_set_shot) pros::delay(10);
   angler_move(ANGLER_CAP_FLIP_POS);
@@ -103,7 +105,7 @@ if (current_auto_routine == 0)
 
   shot_req_handled_num = 0;
 }
-else if (current_auto_routine == 1)
+else if (current_auto_routine == 1 && game_side == 'R')
 {
   log_ln(LOG_AUTO, "%d Angler Start move: %d", millis(), angler.get_position());
   angler_move(ANGLER_PU_POS, 100);
@@ -112,12 +114,14 @@ else if (current_auto_routine == 1)
   move_drive_rel(cap_dis, 200);
   delay(200);
   move_drive_rel(-22_in,200);
-  auto_set_angler_target(front_SP.top-15);
+  auto_set_angler_target(front_SP.top-13);
   intake.move(0);
   turn_vel_auto(new FixedAngleTarget(-69_deg), (200/90_deg),0,2.5);
   while (auto_set_shot) pros::delay(10);
   auto_set_angler_target(front_SP.mid);
-  pros::delay(750);
+  // pros::delay(750);
+  pros::delay(250);
+  while (!pun_ball) pros::delay(5);
   auto_set_shot = true;
   while (auto_set_shot) pros::delay(10);
   intake.move(127);
@@ -127,14 +131,16 @@ else if (current_auto_routine == 1)
   move_drive_rel(27_in, 200);
   pros::delay(250);
   move_drive_rel(-8_in,200);
-  auto_set_angler_target(front_SP.top+29);
+  auto_set_angler_target(front_SP.top+30);
   turn_vel_auto(new FixedAngleTarget(-58_deg), (200/90_deg),0,1.5);
   while (auto_set_shot) pros::delay(10);
   auto_set_angler_target(front_SP.mid+62);
-  pros::delay(750);
+  // pros::delay(750);
+  pros::delay(250);
+  while (!pun_ball) pros::delay(5);
   auto_set_shot = true;
   while (auto_set_shot) pros::delay(10);
-  printf("Auto time is:%d\n",millis()-autoStartTime);
+  log_ln(LOG_AUTO,"Auto time is:%d\n",millis()-autoStartTime);
   //2 Back up turn and shoot
 }
 }

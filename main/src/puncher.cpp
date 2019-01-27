@@ -71,6 +71,8 @@ void pun_handle() {
   static uint32_t ball_on_time = 0;
   static uint32_t wait_slip_end = 0;
 	//log_ln(LOG_PUNCHER, "%d LN: %f", pros::millis(), last_number);
+	log_ln(LOG_PUNCHER, "%d Ball Detector is at %d", pros::millis(), ball_sensor.get_value());
+	log_ln(LOG_PUNCHER, "%d The ball is %d", pros::millis(), (int)pun_ball);
 
   if (ball_sensor.get_value() < PUN_BALL_THRESH) {
 			ball_on_time = millis();
@@ -112,9 +114,10 @@ void pun_handle() {
 						|| (auto_set_shot && fabs(angler.get_position()-auto_angler_target) < 5)) //For auto - auto_set_shot flag set to true
 					{
 						//pun_move(PUN_OFFSET + (++pun_shots * PUN_TPR));
+						uint32_t shot_timeout = pros::millis() + 4000;
 						++pun_shots;
 						pun_set(127);
-						log_ln(LOG_PUNCHER, "%d Shot start (from ShotLoaded)", pros::millis());
+						log_ln(LOG_PUNCHER, "%d Shot start (from ShotLoaded first condition)", pros::millis());
 
 						pun_state_change(PunState::Pull_Back);
 					}
@@ -122,7 +125,7 @@ void pun_handle() {
 				{
 					++pun_shots;
 					pun_set(127);
-					log_ln(LOG_PUNCHER, "%d Shot start (from ShotLoaded)", pros::millis());
+					log_ln(LOG_PUNCHER, "%d Shot start (from ShotLoaded second condition))", pros::millis());
 
 					pun_state_change(PunState::Pull_Back);
 				}

@@ -22,7 +22,7 @@ constexpr double PUN_NO_RETURN = 50 * PUN_RATIO; // Back from the slip point
 constexpr double PUN_BALL_CHK_START[2] = {PUN_TPR - (PUN_HOLD + 5), PUN_TPR - (PUN_HOLD + 100)}; // Back from the slip point
 constexpr uint32_t PUN_WAIT_TIME = 100;
 constexpr int PUN_BALL_THRESH = 2700;
-constexpr uint32_t PUN_BALL_OFF_TIME = 50;
+constexpr uint32_t PUN_BALL_OFF_TIME = 100;
 constexpr int PUN_HOLD_PWR = 5;
 
 constexpr int PUN_LOAD_WAIT_TIME = 150;
