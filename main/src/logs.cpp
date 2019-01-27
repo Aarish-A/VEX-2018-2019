@@ -59,7 +59,7 @@ void log(bool system, const char * format, ...) {
     mutex.take(LOG_MUTEX_TO);
     va_list args;
     va_start(args, format);
-
+    log_file = fopen(log_file_name,log_mode);
     vprintf(format, args);
     if (log_file == NULL) {
   		printf("  >>>> %d COULD NOT OPEN SD LOG FILE\n", pros::millis());

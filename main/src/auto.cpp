@@ -211,6 +211,10 @@ void turn_vel(AngleTarget *target, double kP, double offset, float drive_turn_ha
 	while (fabs(dA) > 0.8_deg) {
 		//log_ln(" > %d Turning %f dA: %f| FL: %f, BL: %f, FR: %f, BR %f", millis(), RAD_TO_DEG(pos.a), RAD_TO_DEG(dA), drive_fl.get_position(), drive_bl.get_position(), drive_fr.get_position(), drive_br.get_position());
 		dA = target->getTarget() - getGlobalAngle() + offset;
+<<<<<<< HEAD
+		// log_ln(LOG_AUTO, "%d dA: %f", pros::millis(), dA);
+=======
+>>>>>>> 3019e13308cb24ef94d8e19ca4e2d3584999f33c
 		if ((fabs(dA) < DEG_TO_RAD(drive_turn_handled_offset)) && drive_turn_handled_offset != 0) {
 			shot_req[req_handled_num].drive_turn_handled = true;
 			// log_ln(LOG_AUTO, "%d REACHED DRIVE TURN HANDLED OFFSET THRESHOLD", pros::millis());

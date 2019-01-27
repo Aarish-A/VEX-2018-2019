@@ -178,11 +178,11 @@ void gui_init() {
   for (int i = 0; i < 8; i++) {
     auto_buttons[i] = lv_btn_create(auto_select_tab, NULL);
     lv_obj_set_free_num(auto_buttons[i], 1);
-    if (i == (int)auto_routines::FRONT) lv_btn_set_action(auto_buttons[i], LV_BTN_ACTION_LONG_PR, auto_button_action_front);
-    else if (i == (int)auto_routines::BACK) lv_btn_set_action(auto_buttons[i], LV_BTN_ACTION_LONG_PR, auto_button_action_back);
+    if (i == 0) lv_btn_set_action(auto_buttons[i], LV_BTN_ACTION_LONG_PR, auto_button_action_front);
+    else if (i == 1) lv_btn_set_action(auto_buttons[i], LV_BTN_ACTION_LONG_PR, auto_button_action_back);
     // lv_obj_set_width(auto_buttons[i], 200);
     lv_obj_set_size(auto_buttons[i], 200, 50);
-    if (((i + 1) % 2) == 1) heightOffset = 80 * (i + 1);
+    if (((i + 1) % 2) == 1) heightOffset = 120 * (i + 1);
     lv_obj_align(auto_buttons[i], auto_select_tab_title, LV_ALIGN_OUT_BOTTOM_MID, (((i + 1) % 2) == 1 ? -100 : 100), heightOffset);
     auto_buttons_label[i] = lv_label_create(auto_buttons[i], NULL);
     std::string str = auto_routines[i];
@@ -196,7 +196,10 @@ void gui_handle() {
 
 lv_res_t auto_button_action_front(lv_obj_t* button) {
   FILE* log = NULL;
-  while ((log = fopen("/usd/auto_routine.txt", "w")) == NULL) pros::delay(2);
+  while ((log = fopen("/usd/auto_routine.txt", "w")) == NULL) {
+    pros::delay(2);
+    printf("yeyee");
+  }
   if (log == NULL) {
     printf("Couldn't create auton routine file\n");
   } else {
