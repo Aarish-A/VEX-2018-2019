@@ -61,10 +61,15 @@ if (current_auto_routine == 0 && game_side == 'R')
   double cap_dis = 43.0_in;
   move_drive_rel(cap_dis, 200);
   delay(200);
-
+  move_drive_rel(-6_in,200);
+  delay(500);
+  angler_move(ANGLER_CAP_FLIP_POS);
+  intake.move(-127);
+  move_drive_rel(16_in,200,true);
+  intake.move(127);
   //2 Back up turn and shoot
   auto_set_angler_target(front_SP.top+15);
-  move_drive_rel(-(cap_dis-6), 200);
+  move_drive_rel(-(cap_dis+4), 200);
   turn_vel(new FixedAngleTarget(-84.0_deg), (200/90_deg));
   intake.move(0);
 
@@ -109,6 +114,7 @@ if (current_auto_routine == 0 && game_side == 'R')
   move_drive_rel(4_in,200);
   turn_vel(new FixedAngleTarget(0_deg), (200/90_deg));
   flatten_against_wall(false, true);
+  delay(200);
   intake.move(0);
   pos.reset(pos.x, 0, 0_deg);
   pros::delay(1000);
@@ -119,16 +125,23 @@ if (current_auto_routine == 0 && game_side == 'R')
   pros::delay(750);
   drive_set(0,0,0);
   drive_fl.tare_position();
-  pros::delay(100);
+  pos.reset(pos.x,pos.y,0);
+  pros::delay(250);
   drive_set(-75,0,0);
   printf("Encoder before: %f\n",drive_fl.get_position());
   while(drive_fl.get_position()>-38){delay(10);}
   drive_set(0,0,0);
   printf("Encoder after: %f\n",drive_fl.get_position());
-  move_drive_rel(3_in,200);
-  move_drive_rel(-8_in,200);
-  auto_set_angler_target(front_SP.top+30);
-  turn_vel(new FixedAngleTarget(-58_deg), (200/90_deg));
+  move_drive_rel(5_in,200);
+  move_drive_rel(-10_in,200);
+  angler_move(ANGLER_CAP_FLIP_POS);
+  delay(750);
+  intake.move(-80);
+  move_drive_rel(14_in,200,false);
+  move_drive_rel(-13.5_in,200);
+  auto_set_angler_target(front_SP.top+34);
+  intake.move(127);
+  turn_vel(new FixedAngleTarget(-59.5_deg), (200/90_deg));
   pros::delay(250);
   auto_set_shot = true;
   while (auto_set_shot) pros::delay(10);
@@ -140,20 +153,47 @@ if (current_auto_routine == 0 && game_side == 'R')
   while (auto_set_shot) pros::delay(10);
   angler_move(ANGLER_PU_POS);
   turn_vel(new FixedAngleTarget(-90_deg), (200/90_deg));
-  move_drive_rel(22_in,200);
+  move_drive_rel(23_in,200);
   turn_vel(new FixedAngleTarget(0_deg), (200/90_deg));
   move_drive_rel(12_in,200);
+  move_drive_rel(-6_in,200);
+  delay(750);
+  angler_move(ANGLER_CAP_FLIP_POS);
+  intake.move(-80);
+  move_drive_rel(16_in,200,false);
+  move_drive_rel(-16_in,200);
+  intake.move(127);
   drive_set(-75,0,0);
-  pros::delay(750);
+  pros::delay(1000);
   drive_fl.tare_position();
+  pos.reset(pos.x,pos.y,0);
   drive_set(75,0,0);
   while(drive_fl.get_position()<75){delay(10);}
   drive_set(0,0,0);
-  turn_vel(new FixedAngleTarget(-58_deg), (200/90_deg));
+  turn_vel(new FixedAngleTarget(-57.5_deg), (200/90_deg));
   auto_set_angler_target(front_SP.mid+48);
   while (!pun_ball) pros::delay(5);
   auto_set_shot = true;
   while (auto_set_shot) pros::delay(10);
+  delay(200);
+  turn_vel(new FixedAngleTarget(0_deg), (200/90_deg));
+  drive_set(-75,0,0);
+  pros::delay(1000);
+  drive_fl.tare_position();
+  pos.reset(pos.x,pos.y,0);
+  drive_set(75,0,0);
+  while(drive_fl.get_position()<100){delay(10);}
+  drive_set(0,0,0);
+  turn_vel(new FixedAngleTarget(-90_deg), (200/90_deg));
+  angler_move(ANGLER_CAP_PU_POS);
+  flatten_against_wall(true, true);
+  delay(500);
+  move_drive_rel_simple(13_in,200);
+  delay(500);
+  pos.reset(0,0,0);
+  turn_vel_auto(new FixedAngleTarget(90_deg), (200/90_deg));
+  flatten_against_wall(true, true);
+  move_drive_rel_simple(14_in,200);
   log_ln(LOG_AUTO, " > %d Done second shot | angler:%f targ:%f |(%f, %f, %f)", millis(), angler.get_position(), auto_angler_target, pos.x, pos.y, RAD_TO_DEG(pos.a));
   log_ln(LOG_AUTO, "%d done turn shoot (%f, %f, %f)", millis(), pos.x, pos.y, RAD_TO_DEG(pos.a));
   printf("Auto is done");
