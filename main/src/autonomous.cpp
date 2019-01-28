@@ -115,10 +115,6 @@ if (current_auto_routine == 0 && game_side == 'R')
   angler_move(ANGLER_CAP_PU_POS,100);
   intake.move(127);
   move_drive_rel(37_in,200);
-  // turn_vel_side(new FixedAngleTarget(9_deg), (200/90_deg),0,false);
-  // move_drive_rel(10_in,200);
-  // turn_vel_side(new FixedAngleTarget(0_deg), (200/90_deg),0,false);
-  // move_drive_rel(10_in,200);
   drive_set(75,0,0);
   pros::delay(750);
   drive_set(0,0,0);
@@ -158,14 +154,11 @@ if (current_auto_routine == 0 && game_side == 'R')
   while (!pun_ball) pros::delay(5);
   auto_set_shot = true;
   while (auto_set_shot) pros::delay(10);
-  // intake.move(-80);
-  // move_drive_rel(7_in,200);
-  // printtf("Auto time is %d",(millis()-autoStartTime));
   log_ln(LOG_AUTO, " > %d Done second shot | angler:%f targ:%f |(%f, %f, %f)", millis(), angler.get_position(), auto_angler_target, pos.x, pos.y, RAD_TO_DEG(pos.a));
   log_ln(LOG_AUTO, "%d done turn shoot (%f, %f, %f)", millis(), pos.x, pos.y, RAD_TO_DEG(pos.a));
   printf("Auto is done");
   ctrler.print(2,0,"Auto Time: %d",millis()-autoStartTime);
-  //flatten_against_wall(true, true);
+
 
   shot_req_handled_num = 0;
 }
