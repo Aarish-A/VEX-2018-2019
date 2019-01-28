@@ -71,8 +71,8 @@ void pun_handle() {
   static uint32_t ball_on_time = 0;
   static uint32_t wait_slip_end = 0;
 	//log_ln(LOG_PUNCHER, "%d LN: %f", pros::millis(), last_number);
-	log_ln(LOG_PUNCHER, "%d Ball Detector is at %d", pros::millis(), ball_sensor.get_value());
-	log_ln(LOG_PUNCHER, "%d The ball is %d", pros::millis(), (int)pun_ball);
+	// log_ln(LOG_PUNCHER, "%d Ball Detector is at %d", pros::millis(), ball_sensor.get_value());
+	// log_ln(LOG_PUNCHER, "%d The ball is %d", pros::millis(), (int)pun_ball);
 
   if (ball_sensor.get_value() < PUN_BALL_THRESH) {
 			ball_on_time = millis();
@@ -188,6 +188,8 @@ void pun_handle() {
       case PunState::FatalError:
 			{
 				pun_set(0);
+				log_ln(LOG_PUNCHER,"puncher power was just set to 0 in state: Fatal Error");
+				log_ln(LOG_PUNCHER, "In fatal error puncher power: %d", puncherLeft.get_power());
         break;
 			}
 		}
