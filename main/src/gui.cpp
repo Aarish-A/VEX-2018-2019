@@ -173,7 +173,7 @@ void gui_init() {
   blue_side_button_label = lv_label_create(blue_side_button, NULL);
   lv_label_set_text(blue_side_button_label, "Blue");
 
-  int heightOffset = 0;
+  int heightOffset = 120;
   for (int i = 0; i < 8; i++) {
     auto_buttons[i] = lv_btn_create(auto_select_tab, NULL);
     lv_obj_set_free_num(auto_buttons[i], 1);
@@ -182,7 +182,7 @@ void gui_init() {
     else if (i == 2) lv_btn_set_action(auto_buttons[i], LV_BTN_ACTION_LONG_PR, auto_button_action_back_far_first);
     // lv_obj_set_width(auto_buttons[i], 200);
     lv_obj_set_size(auto_buttons[i], 200, 50);
-    if (((i + 1) % 2) == 1) heightOffset = 120 * (i + 1);
+    if (((i + 1) % 2) == 0) heightOffset += 80;
     lv_obj_align(auto_buttons[i], auto_select_tab_title, LV_ALIGN_OUT_BOTTOM_MID, (((i + 1) % 2) == 1 ? -100 : 100), heightOffset);
     auto_buttons_label[i] = lv_label_create(auto_buttons[i], NULL);
     std::string str = auto_routines[i];
