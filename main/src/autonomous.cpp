@@ -21,11 +21,11 @@
 using namespace pros;
 
 void auto_set_first_shot() {
-  shot_req_handled_num = 1;
+  shot_req_handled_num = 0;
   auto_set_shot = true;
 }
 void auto_set_second_shot() {
-  shot_req_handled_num = 2;
+  shot_req_handled_num = 1;
   auto_set_shot = true;
 }
 void auto_set_angler_target(double target) {
