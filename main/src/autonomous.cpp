@@ -122,9 +122,10 @@ else if (current_auto_routine == 1 && game_side == 'R')
   move_drive_rel(-22_in,200);
   auto_set_angler_target(front_SP.top+10);
   intake.move(0);
-  turn_vel_auto( FixedAngleTarget(-69_deg), (200/90_deg),0,2.5);
+  turn_vel( FixedAngleTarget(-70_deg), (200/90_deg));
+  auto_set_shot = true;
   while (auto_set_shot) pros::delay(10);
-  angler_move(front_SP.mid+11);
+  angler_move(front_SP.mid+40);
   // pros::delay(750);
   pros::delay(250);
   while (!pun_ball) pros::delay(5);
@@ -137,10 +138,12 @@ else if (current_auto_routine == 1 && game_side == 'R')
   move_drive_rel(27_in, 200);
   pros::delay(250);
   move_drive_rel(-8_in,200);
-  auto_set_angler_target(front_SP.top+60);
-  turn_vel_auto( FixedAngleTarget(-58_deg), (200/90_deg),0,1.5);
+  auto_set_angler_target(front_SP.top+63);
+  turn_vel( FixedAngleTarget(-58_deg), (200/90_deg));
+  move_drive_rel(10_in,200);
+  auto_set_shot=true;
   while (auto_set_shot) pros::delay(10);
-  auto_set_angler_target(front_SP.mid+90);
+  auto_set_angler_target(front_SP.mid+100);
   // pros::delay(750);
   pros::delay(250);
   while (!pun_ball) pros::delay(5);
