@@ -125,7 +125,7 @@ else if (current_auto_routine == 1 && game_side == 'R')
   intake.move(127);
   angler_move(ANGLER_CAP_PU_POS,100);
   turn_vel( FixedAngleTarget(-90_deg), (200/70_deg));
-  move_drive_rel(-26.5_in, 200);
+  move_drive_rel(-25.5_in, 200);
   turn_vel( FixedAngleTarget(0_deg), (200/90_deg));
   move_drive_rel(12_in, 200);
   pros::delay(250);
@@ -136,7 +136,7 @@ else if (current_auto_routine == 1 && game_side == 'R')
   drive_set(-75,0,0);
   while(fabs(drive_fl.get_position())<100){delay(10);}
   drive_set(0,0,0);
-  turn_vel( FixedAngleTarget(-57_deg), (200/90_deg));
+  turn_vel( FixedAngleTarget(-78_deg), (200/90_deg));
   move_drive_rel(10_in,200);
   auto_set_first_shot(first_flag_pos);
   while (auto_set_shot) pros::delay(10);
