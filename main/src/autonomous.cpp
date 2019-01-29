@@ -39,10 +39,10 @@ void auto_update(void* param) {
   if (pun_state != PunState::Loaded) pun_state_change(PunState::Loading);
   while (true)
   {
-    if (is_disabled) printf(" >>> %d IN AUTO_UPDATE IN DISABLED\n", millis());
+    //if (is_disabled) printf(" >>> %d IN AUTO_UPDATE IN DISABLED\n", millis());
     //pos.update();
     pun_handle();
-    pros::delay(1);
+    pros::delay(10);
   }
 }
 void autonomous() {
@@ -96,7 +96,7 @@ if (current_auto_routine == 0 && game_side == 'R')
   auto_set_angler_target(front_SP.mid);
   pros::delay(250);
   ball_drop_time = pros::millis();
-  while (!pun_ball && (millis()-ball_drop_time) < 1000 ) pros::delay(5);
+  while (!pun_ball && (millis()-ball_drop_time) < 1000) pros::delay(5);
   auto_set_shot = true;
   while (auto_set_shot) pros::delay(10);
   angler_move(ANGLER_CAP_FLIP_POS);

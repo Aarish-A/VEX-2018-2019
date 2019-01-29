@@ -228,7 +228,7 @@ void shot_req_handle(void *param) {
 	log_ln(LOG_SHOTS, "%d Start Shot Req Handle Task ",  pros::millis());
 	shot_req_num = 0;
 	while (true) {
-		if (is_disabled) printf(" >>> %d IN SHOT_REQ_HANDLE IN DISABLED\n", pros::millis());
+		if (is_disabled) printf(" >>> %d IN SHOT_REQ_HANDLE IN DISABLED S_R_N:\n", pros::millis());
 		if (shot_req_num > 0) {
 			if (!SHOT_DRIVE_BRAKE) setDrive(0); //Set drive pow to 0
 
