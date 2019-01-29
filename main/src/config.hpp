@@ -21,4 +21,14 @@ extern pros::Vision vision_sensor;
 
 extern Tracking pos;
 extern char game_side;
-extern int current_auto_routine;
+
+enum Auto {
+  auto_skills,
+  auto_front_shoot_close_mid,
+  auto_back_shoot_mid_far,
+  auto_back_shoot_far_mid,
+
+  auto_kAutoLen
+};
+
+extern Auto auto_cur;

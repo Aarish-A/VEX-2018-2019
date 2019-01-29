@@ -44,8 +44,8 @@ void auto_routine_initialize() {
   if (file == NULL) {
     printf("Could not open auto routine file");
   } else {
-    fscanf(file, "%d", &current_auto_routine);
-    printf("printed %d", current_auto_routine);
+    fscanf(file, "%d", &auto_cur);
+    printf("printed %d", auto_cur);
     fclose(file);
   }
 }

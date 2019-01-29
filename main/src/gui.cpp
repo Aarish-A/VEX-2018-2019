@@ -203,7 +203,8 @@ lv_res_t auto_button_action_front(lv_obj_t* button) {
     printf("Couldn't create auton routine file\n");
   } else {
     fprintf(log, "0");
-    current_auto_routine = 0;
+    if (auto_cur > 0) auto_cur = static_cast<Auto> (auto_cur-1);
+    else auto_cur = static_cast<Auto> (auto_kAutoLen-1);
     ctrler.rumble(". . .");
     fclose(log);
   }
@@ -217,7 +218,8 @@ lv_res_t auto_button_action_back(lv_obj_t* button) {
     printf("Couldn't create auto routine file\n");
   } else {
     fprintf(log, "1");
-    current_auto_routine = 1;
+    if (auto_cur < auto_kAutoLen-1) auto_cur = static_cast<Auto> (auto_cur+1);
+    else auto_cur = static_cast<Auto> (0);
     ctrler.rumble(". . .");
     fclose(log);
   }
