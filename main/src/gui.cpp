@@ -37,8 +37,8 @@ lv_obj_t* auto_buttons[8];
 lv_obj_t* auto_buttons_label[8];
 std::string auto_routines[8] = {
   "FRONT",
-  "BACK",
-  "UNUSED2",
+  "BACK MID FIRST",
+  "BACK FAR FIRST",
   "UNUSED3",
   "UNUSED4",
   "UNUSED5",
@@ -178,7 +178,8 @@ void gui_init() {
     auto_buttons[i] = lv_btn_create(auto_select_tab, NULL);
     lv_obj_set_free_num(auto_buttons[i], 1);
     if (i == 0) lv_btn_set_action(auto_buttons[i], LV_BTN_ACTION_LONG_PR, auto_button_action_front);
-    else if (i == 1) lv_btn_set_action(auto_buttons[i], LV_BTN_ACTION_LONG_PR, auto_button_action_back);
+    else if (i == 1) lv_btn_set_action(auto_buttons[i], LV_BTN_ACTION_LONG_PR, auto_button_action_back_mid_first);
+    else if (i == 2) lv_btn_set_action(auto_buttons[i], LV_BTN_ACTION_LONG_PR, auto_button_action_back_far_first);
     // lv_obj_set_width(auto_buttons[i], 200);
     lv_obj_set_size(auto_buttons[i], 200, 50);
     if (((i + 1) % 2) == 1) heightOffset = 120 * (i + 1);
@@ -210,7 +211,7 @@ lv_res_t auto_button_action_front(lv_obj_t* button) {
   return LV_RES_OK;
 }
 
-lv_res_t auto_button_action_back(lv_obj_t* button) {
+lv_res_t auto_button_action_back_mid_first(lv_obj_t* button) {
   FILE* log = NULL;
   while ((log = fopen("/usd/auto_routine.txt", "w")) == NULL) pros::delay(2);
   if (log == NULL) {
@@ -218,6 +219,20 @@ lv_res_t auto_button_action_back(lv_obj_t* button) {
   } else {
     fprintf(log, "1");
     current_auto_routine = 1;
+    ctrler.rumble(". . .");
+    fclose(log);
+  }
+  return LV_RES_OK;
+}
+
+lv_res_t auto_button_action_back_far_first(lv_obj_t* button) {
+  FILE* log = NULL;
+  while ((log = fopen("/usd/auto_routine.txt", "w")) == NULL) pros::delay(2);
+  if (log == NULL) {
+    printf("Couldn't create auto routine file\n");
+  } else {
+    fprintf(log, "2");
+    current_auto_routine = 2;
     ctrler.rumble(". . .");
     fclose(log);
   }

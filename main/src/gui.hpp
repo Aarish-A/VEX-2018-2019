@@ -40,8 +40,8 @@ extern lv_obj_t* auto_buttons[8];
 extern lv_obj_t* auto_buttons_label[8];
 enum class auto_routines {
   FRONT,
-  BACK,
-  UNUSED2,
+  BACK_MID_FIRST,
+  BACK_FAR_FIRST,
   UNUSED3,
   UNUSED4,
   UNUSED5,
@@ -55,7 +55,8 @@ void gui_init();
 void gui_handle();
 lv_res_t shot_tuning_slider_action(lv_obj_t * slider);
 lv_res_t auto_button_action_front(lv_obj_t* button);
-lv_res_t auto_button_action_back(lv_obj_t* button);
+lv_res_t auto_button_action_back_mid_first(lv_obj_t* button);
+lv_res_t auto_button_action_back_far_first(lv_obj_t* button);
 lv_res_t red_side_button_action(lv_obj_t* button);
 lv_res_t blue_side_button_action(lv_obj_t* button);
 lv_res_t shot_tuning_save_button_action(lv_obj_t* button);

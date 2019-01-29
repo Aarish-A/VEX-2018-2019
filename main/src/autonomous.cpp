@@ -113,6 +113,44 @@ else if (current_auto_routine == 1 && game_side == 'R')
   double cap_dis = 43.0_in;
   move_drive_rel(cap_dis, 200);
   delay(200);
+  move_drive_rel(-22_in,200);
+  double first_flag_pos = front_SP.top+10;
+  auto_set_angler_target(first_flag_pos);
+  intake.move(0);
+  turn_vel( FixedAngleTarget(-71_deg), (200/90_deg));
+  auto_set_first_shot(first_flag_pos);
+  while (auto_set_shot) pros::delay(10);
+  auto_set_second_shot(front_SP.mid+40);
+  while (auto_set_shot) pros::delay(10);
+  intake.move(127);
+  angler_move(ANGLER_CAP_PU_POS,100);
+  move_drive_rel(-26.5_in, 200);
+  turn_vel( FixedAngleTarget(0_deg), (200/90_deg));
+  move_drive_rel(27_in, 200);
+  pros::delay(250);
+  move_drive_rel(-8_in,200);
+  first_flag_pos = front_SP.top+10;
+  auto_set_angler_target(first_flag_pos);
+  drive_fl.tare_position();
+  drive_set(-75,0,0);
+  while(fabs(drive_fl.get_position())<100){delay(10);}
+  drive_set(0,0,0);
+  turn_vel( FixedAngleTarget(-57_deg), (200/90_deg));
+  move_drive_rel(10_in,200);
+  auto_set_first_shot(first_flag_pos);
+  while (auto_set_shot) pros::delay(10);
+  auto_set_second_shot(front_SP.mid+60);
+  while (auto_set_shot) pros::delay(10);
+  ctrler.print(2,0,"Auto T: %d",millis()-autoStartTime);
+}
+else if (current_auto_routine == 2 && game_side == 'R')
+{
+  log_ln(LOG_AUTO, "%d Angler Start move: %d", millis(), angler.get_position());
+  angler_move(ANGLER_PU_POS, 100);
+  intake.move(127);
+  double cap_dis = 43.0_in;
+  move_drive_rel(cap_dis, 200);
+  delay(200);
   move_drive_rel(-12_in,200);
   double first_flag_pos = front_SP.top+10;
   auto_set_angler_target(first_flag_pos);
@@ -137,44 +175,6 @@ else if (current_auto_routine == 1 && game_side == 'R')
   while(fabs(drive_fl.get_position())<100){delay(10);}
   drive_set(0,0,0);
   turn_vel( FixedAngleTarget(-78_deg), (200/90_deg));
-  move_drive_rel(10_in,200);
-  auto_set_first_shot(first_flag_pos);
-  while (auto_set_shot) pros::delay(10);
-  auto_set_second_shot(front_SP.mid+60);
-  while (auto_set_shot) pros::delay(10);
-  ctrler.print(2,0,"Auto T: %d",millis()-autoStartTime);
-}
-else if (current_auto_routine == 2 && game_side == 'R')
-{
-  log_ln(LOG_AUTO, "%d Angler Start move: %d", millis(), angler.get_position());
-  angler_move(ANGLER_PU_POS, 100);
-  intake.move(127);
-  double cap_dis = 43.0_in;
-  move_drive_rel(cap_dis, 200);
-  delay(200);
-  move_drive_rel(-22_in,200);
-  double first_flag_pos = front_SP.top+10;
-  auto_set_angler_target(first_flag_pos);
-  intake.move(0);
-  turn_vel( FixedAngleTarget(-71_deg), (200/90_deg));
-  auto_set_first_shot(first_flag_pos);
-  while (auto_set_shot) pros::delay(10);
-  auto_set_second_shot(front_SP.mid+40);
-  while (auto_set_shot) pros::delay(10);
-  intake.move(127);
-  angler_move(ANGLER_CAP_PU_POS,100);
-  move_drive_rel(-26.5_in, 200);
-  turn_vel( FixedAngleTarget(0_deg), (200/90_deg));
-  move_drive_rel(27_in, 200);
-  pros::delay(250);
-  move_drive_rel(-8_in,200);
-  first_flag_pos = front_SP.top+10;
-  auto_set_angler_target(first_flag_pos);
-  drive_fl.tare_position();
-  drive_set(-75,0,0);
-  while(fabs(drive_fl.get_position())<100){delay(10);}
-  drive_set(0,0,0);
-  turn_vel( FixedAngleTarget(-57_deg), (200/90_deg));
   move_drive_rel(10_in,200);
   auto_set_first_shot(first_flag_pos);
   while (auto_set_shot) pros::delay(10);
