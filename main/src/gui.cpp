@@ -204,7 +204,7 @@ lv_res_t auto_button_action_front(lv_obj_t* button) {
     printf("Couldn't create auton routine file\n");
   } else {
     fprintf(log, "%d", auto_routines::FRONT);
-    current_auto_routine = 0;
+    current_auto_routine = auto_routines::FRONT;
     ctrler.rumble(". . .");
     fclose(log);
   }
@@ -218,7 +218,7 @@ lv_res_t auto_button_action_back_mid_first(lv_obj_t* button) {
     printf("Couldn't create auto routine file\n");
   } else {
     fprintf(log, "%d", auto_routines::BACK_MID_FIRST);
-    current_auto_routine = 1;
+    current_auto_routine = auto_routines::BACK_MID_FIRST;
     ctrler.rumble(". . .");
     fclose(log);
   }
@@ -232,7 +232,7 @@ lv_res_t auto_button_action_back_far_first(lv_obj_t* button) {
     printf("Couldn't create auto routine file\n");
   } else {
     fprintf(log, "%d", auto_routines::BACK_FAR_FIRST);
-    current_auto_routine = 2;
+    current_auto_routine =  auto_routines::BACK_FAR_FIRST;
     ctrler.rumble(". . .");
     fclose(log);
   }
