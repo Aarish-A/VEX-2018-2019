@@ -2,6 +2,17 @@
 #include "main.h"
 #include "tracking.hpp"
 
+enum class auto_routines {
+  FRONT,
+  BACK_MID_FIRST,
+  BACK_FAR_FIRST,
+  UNUSED3,
+  UNUSED4,
+  UNUSED5,
+  UNUSED6,
+  UNUSED7
+};
+
 extern pros::Controller ctrler;
 extern pros::Motor drive_fl;
 extern pros::Motor drive_bl;
@@ -21,6 +32,6 @@ extern pros::Vision vision_sensor;
 
 extern Tracking pos;
 extern char game_side;
-extern int current_auto_routine;
+extern auto_routines current_auto_routine;
 
 extern bool is_disabled;

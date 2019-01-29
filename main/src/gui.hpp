@@ -38,16 +38,6 @@ extern lv_obj_t* blue_side_button_label;
 
 extern lv_obj_t* auto_buttons[8];
 extern lv_obj_t* auto_buttons_label[8];
-enum class auto_routines {
-  FRONT,
-  BACK_MID_FIRST,
-  BACK_FAR_FIRST,
-  UNUSED3,
-  UNUSED4,
-  UNUSED5,
-  UNUSED6,
-  UNUSED7
-};
 
 extern std::string auto_routines[8];
 
