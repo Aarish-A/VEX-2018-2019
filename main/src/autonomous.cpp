@@ -39,12 +39,15 @@ void auto_update(void* param) {
   if (pun_state != PunState::Loaded) pun_state_change(PunState::Loading);
   while (true)
   {
-    pos.update();
+    if (is_disabled) printf(" >>> %d IN AUTO_UPDATE IN DISABLED\n", millis());
+    //pos.update();
     pun_handle();
     pros::delay(1);
   }
 }
 void autonomous() {
+  is_disabled = false;
+  shot_req_handle_stop_task();
   pros::Task((pros::task_fn_t)auto_update);
 
   uint32_t autoStartTime = millis();
@@ -99,7 +102,7 @@ if (current_auto_routine == 0 && game_side == 'R')
   angler_move(ANGLER_CAP_FLIP_POS);
   intake.move(-70);
   move_drive_rel(15_in,200,false);
-  
+
   log_ln(LOG_AUTO, " > %d Done second shot | angler:%f targ:%f |(%f, %f, %f)", millis(), angler.get_position(), auto_angler_target, pos.x, pos.y, RAD_TO_DEG(pos.a));
   log_ln(LOG_AUTO, "%d done turn shoot (%f, %f, %f)", millis(), pos.x, pos.y, RAD_TO_DEG(pos.a));
   printf("Auto is done");

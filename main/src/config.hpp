@@ -22,3 +22,5 @@ extern pros::Vision vision_sensor;
 extern Tracking pos;
 extern char game_side;
 extern int current_auto_routine;
+
+extern bool is_disabled;
