@@ -122,14 +122,14 @@ void pun_handle() {
 
 						pun_state_change(PunState::Pull_Back);
 					}
-				/*else if(auto_set_shot)
+				else if(auto_set_shot)
 				{
 					++pun_shots;
 					pun_set(127);
 					log_ln(LOG_PUNCHER, "%d Shot start (from ShotLoaded second condition))", pros::millis());
 
 					pun_state_change(PunState::Pull_Back);
-				}*/
+				}
 				break;
 			}
 

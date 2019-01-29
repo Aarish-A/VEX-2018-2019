@@ -72,8 +72,6 @@ void side_initialize() {
 void disabled() {
   is_disabled = true;
   printf("  >>>%d IN DISABLED\n", pros::millis());
-  setDrive(0);
-  angler.move(0);
 }
 
 /**
