@@ -74,6 +74,7 @@ void opcontrol() {
 			//ctrler.print(2, 0, "%f          ", ((enc_l.get_value() * SPN_TO_IN_L) - (enc_r.get_value() * SPN_TO_IN_R)) / 3600_deg);
 
 		}
+		//printf("%d, %f to %f \n", pros::millis(), puncherLeft.get_position(), PUN_OFFSET + (1 * PUN_TPR) - PUN_BALL_CHK_START[1]);
 
 		delay(10);
 	}
