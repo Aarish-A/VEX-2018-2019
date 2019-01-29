@@ -19,19 +19,21 @@
  */
 
 using namespace pros;
-
-void auto_set_first_shot() {
-  shot_req_handled_num = 1;
-  auto_set_shot = true;
-}
-void auto_set_second_shot() {
-  shot_req_handled_num = 2;
-  auto_set_shot = true;
-}
 void auto_set_angler_target(double target) {
   auto_angler_target = target;
   angler_move(target);
   log_ln(LOG_AUTO, "%d Angler Move to %f. CurPos:%f", millis(), auto_angler_target, angler.get_position());
+}
+
+void auto_set_first_shot(double angler_target) {
+  shot_req_handled_num = 0;
+  auto_set_shot = true;
+  auto_set_angler_target(angler_target);
+}
+void auto_set_second_shot(double angler_target) {
+  shot_req_handled_num = 1;
+  auto_set_shot = true;
+  auto_set_angler_target(angler_target);
 }
 
 void auto_update(void* param) {
