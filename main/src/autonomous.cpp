@@ -129,17 +129,17 @@ else if (current_auto_routine == 1 && game_side == 'R')
   move_drive_rel(27_in, 200);
   pros::delay(250);
   move_drive_rel(-8_in,200);
-  first_flag_pos = front_SP.top+52;
+  first_flag_pos = front_SP.top+10;
   auto_set_angler_target(first_flag_pos);
   drive_fl.tare_position();
   drive_set(-75,0,0);
   while(fabs(drive_fl.get_position())<100){delay(10);}
   drive_set(0,0,0);
-  turn_vel( FixedAngleTarget(-59_deg), (200/90_deg));
+  turn_vel( FixedAngleTarget(-57_deg), (200/90_deg));
   move_drive_rel(10_in,200);
   auto_set_first_shot(first_flag_pos);
   while (auto_set_shot) pros::delay(10);
-  auto_set_second_shot(front_SP.mid+86);
+  auto_set_second_shot(front_SP.mid+60);
   while (auto_set_shot) pros::delay(10);
   ctrler.print(2,0,"Auto T: %d",millis()-autoStartTime);
   //2 Back up turn and shoot
