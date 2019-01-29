@@ -60,7 +60,7 @@ void autonomous() {
   {
     switch(current_auto_routine)
     {
-      case 0:
+      case auto_routines::FRONT:
       {
         //1 Pick up balls
         log_ln(LOG_AUTO, "%d Angler Start move: %d", millis(), angler.get_position());
@@ -109,7 +109,7 @@ void autonomous() {
         shot_req_handled_num = 0;
         break;
       }
-      case 1:
+      case auto_routines::BACK_MID_FIRST:
       {
         log_ln(LOG_AUTO, "%d Angler Start move: %d", millis(), angler.get_position());
         angler_move(ANGLER_PU_POS, 100);
@@ -148,7 +148,7 @@ void autonomous() {
         ctrler.print(2,0,"Auto T: %d",millis()-autoStartTime);
         break;
       }
-      case 2:
+      case auto_routines::BACK_FAR_FIRST:
       {
         log_ln(LOG_AUTO, "%d Angler Start move: %d", millis(), angler.get_position());
         angler_move(ANGLER_PU_POS, 100);
@@ -190,5 +190,5 @@ void autonomous() {
       }
     }
   }
-  
+
 }
