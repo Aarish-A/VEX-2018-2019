@@ -6,8 +6,8 @@ bool blue_team = true;
 
 double getGlobalAngle() {
 	//return (DRIVE_DIA * M_PI * (driveFL.get_position() - driveBR.get_position() + driveBL.get_position() - driveFR.get_position())) / (2 * DRIVE_TPR * (DRIVE_LENGTH + DRIVE_WIDTH));
-	//return (enc_l.get_value() * SPN_TO_IN_L - enc_r.get_value() * SPN_TO_IN_R) / (WHL_DIS_L + WHL_DIS_R);
-	return pos.a;
+	return (enc_l.get_value() * SPN_TO_IN_L - enc_r.get_value() * SPN_TO_IN_R) / (WHL_DIS_L + WHL_DIS_R);
+	//return pos.a;
 }
 
 void resetGlobalAngle() {
@@ -203,14 +203,14 @@ void move_drive_rel_simple(double dis, int vel, bool stop) {
   setDrive(0);
 }
 
-void turn_vel(AngleTarget *target, double kP, double offset, float drive_turn_handled_offset, short req_handled_num)
+void turn_vel(const AngleTarget& target, double kP, double offset, float drive_turn_handled_offset, short req_handled_num)
 {
 	kP = fabs(kP);
-	double dA = target->getTarget() - getGlobalAngle() + offset;
-  log_ln(LOG_AUTO, "%d Turning to %f | DeltaA: %f ", millis(), RAD_TO_DEG(target->getTarget()), RAD_TO_DEG(dA) );
+	double dA = target.getTarget() - getGlobalAngle() + offset;
+  log_ln(LOG_AUTO, "%d Turning to %f | DeltaA: %f ", millis(), RAD_TO_DEG(target.getTarget()), RAD_TO_DEG(dA) );
 	while (fabs(dA) > 0.8_deg) {
 		// log_ln(" > %d Turning %f dA: %f| FL: %f, BL: %f, FR: %f, BR %f", millis(), RAD_TO_DEG(pos.a), RAD_TO_DEG(dA), drive_fl.get_position(), drive_bl.get_position(), drive_fr.get_position(), drive_br.get_position());
-		dA = target->getTarget() - getGlobalAngle() + offset;
+		dA = target.getTarget() - getGlobalAngle() + offset;
 		if ((fabs(dA) < DEG_TO_RAD(drive_turn_handled_offset)) && drive_turn_handled_offset != 0) {
 			shot_req[req_handled_num].drive_turn_handled = true;
 			// log_ln(LOG_AUTO, "%d REACHED DRIVE TURN HANDLED OFFSET THRESHOLD", pros::millis());
@@ -223,14 +223,14 @@ void turn_vel(AngleTarget *target, double kP, double offset, float drive_turn_ha
 	drive_brake();
 }
 
-void turn_vel_auto(AngleTarget *target, double kP, double offset, float drive_turn_handled_offset)
+void turn_vel_auto(const AngleTarget& target, double kP, double offset, float drive_turn_handled_offset)
 {
 	kP = fabs(kP);
-	double dA = target->getTarget() - getGlobalAngle() + offset;
-  log_ln(LOG_AUTO, "%d Turning to %f | DeltaA: %f ", millis(), RAD_TO_DEG(target->getTarget()), RAD_TO_DEG(dA) );
+	double dA = target.getTarget() - getGlobalAngle() + offset;
+  log_ln(LOG_AUTO, "%d Turning to %f | DeltaA: %f ", millis(), RAD_TO_DEG(target.getTarget()), RAD_TO_DEG(dA) );
 	while (fabs(dA) > 0.8_deg) {
 		//log_ln(" > %d Turning %f dA: %f| FL: %f, BL: %f, FR: %f, BR %f", millis(), RAD_TO_DEG(pos.a), RAD_TO_DEG(dA), drive_fl.get_position(), drive_bl.get_position(), drive_fr.get_position(), drive_br.get_position());
-		dA = target->getTarget() - getGlobalAngle() + offset;
+		dA = target.getTarget() - getGlobalAngle() + offset;
 		//log_ln(LOG_AUTO, "%d dA: %f", pros::millis(), dA);
 		if ((fabs(dA) < DEG_TO_RAD(drive_turn_handled_offset)) && drive_turn_handled_offset != 0) {
 			auto_set_shot = true;
@@ -244,15 +244,15 @@ void turn_vel_auto(AngleTarget *target, double kP, double offset, float drive_tu
 	drive_brake();
 }
 
-void turn_vel_side(AngleTarget *target, double kP, double offset, bool f_w)
+void turn_vel_side(const AngleTarget& target, double kP, double offset, bool f_w)
 {
 	int t_start = pros::millis();
-	double dA = target->getTarget() - getGlobalAngle() + offset;
-  log_ln(LOG_AUTO, "%d Turning to %f | DeltaA: %f", millis(), RAD_TO_DEG(target->getTarget()), RAD_TO_DEG(dA) );
+	double dA = target.getTarget() - getGlobalAngle() + offset;
+  log_ln(LOG_AUTO, "%d Turning to %f | DeltaA: %f", millis(), RAD_TO_DEG(target.getTarget()), RAD_TO_DEG(dA) );
 
 	if (f_w) {
 		while (fabs(dA) > 0.8_deg) {
-			dA = target->getTarget() - getGlobalAngle() + offset;
+			dA = target.getTarget() - getGlobalAngle() + offset;
 			//log("%d Pos:%f DeltaA:%f Pow:%f \n", pros::millis(), RAD_TO_DEG(pos.a), RAD_TO_DEG(dA), kP*fabs(dA));
 			if (dA > 0) {
 				drive_bl.move_velocity(kP*fabs(dA));
@@ -270,7 +270,7 @@ void turn_vel_side(AngleTarget *target, double kP, double offset, bool f_w)
 	}
 	else {
 		while (fabs(dA) > 0.8_deg) {
-			dA = target->getTarget() - getGlobalAngle() + offset;
+			dA = target.getTarget() - getGlobalAngle() + offset;
 			//log("%d Pos:%f DeltaA:%f Pow:%f \n", pros::millis(), RAD_TO_DEG(pos.a), RAD_TO_DEG(dA), kP*fabs(dA));
 			if (dA > 0) {
 				drive_br.move_velocity(-kP*fabs(dA));

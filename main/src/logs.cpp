@@ -43,7 +43,7 @@ void log_init() {
 	if (log_file == NULL) {
 		printf("  >>>> %d COULD NOT OPEN SD LOG FILE\n", pros::millis());
      //ctrler.rumble("--------");
-    pros::delay(3000);
+    //pros::delay(3000);
 		return;
 	}
   printf(">>>> %d log_init(): Successfully opened SD log file \n", pros::millis());
@@ -84,7 +84,7 @@ void log_ln(bool system, const char * format, ...) {
 
     va_list args;
     va_start(args, format);
-    if (log_file == NULL) log_file = fopen(log_file_name, log_mode);
+    // if (log_file == NULL) log_file = fopen(log_file_name, log_mode);
     vprintf(format, args);
     printf("\n");
     if (log_file == NULL) {

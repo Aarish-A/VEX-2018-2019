@@ -38,6 +38,7 @@ void initialize() {
 }
 
 void auto_routine_initialize() {
+  is_disabled = false;
   FILE* file = NULL;
   file = fopen("/usd/auto_routine.txt", "r");
 
@@ -68,7 +69,12 @@ void side_initialize() {
  * the VEX Competition Switch, following either autonomous or opcontrol. When
  * the robot is enabled, this task will exit.
  */
-void disabled() {}
+void disabled() {
+  is_disabled = true;
+  printf("  >>>%d IN DISABLED\n", pros::millis());
+  setDrive(0);
+  angler.move(0);
+}
 
 /**
  * Runs after initialize(), and before autonomous when connected to the Field

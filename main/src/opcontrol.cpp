@@ -21,6 +21,7 @@ double eff_fr = drive_fr.get_efficiency();
 double eff_br = drive_br.get_efficiency();
 
 void opcontrol() {
+	is_disabled = false;
 	int print_time = 0;
 	shot_req_handle_start_task(); //Start shot req handle task
 	//Task log_drive_efficency_task(log_drive_efficency); //Start logging drive efficency
