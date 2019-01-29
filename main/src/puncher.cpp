@@ -81,8 +81,8 @@ void pun_handle() {
 		}
 
 		if (millis() >= ball_on_time + PUN_BALL_OFF_TIME) {
-			AngleTarget* a_targ = new PointAngleTarget({shot_req[shot_req_handled_num].flag_pos.x, shot_req[shot_req_handled_num].flag_pos.y});
-			if (pun_ball) log_ln(LOG_PUNCHER, "	> %d Ball Off. Anglr:%f Pos:%f BallSen:%d. A:%f, AOffset:%f", pros::millis(), angler.get_position(), puncherLeft.get_position(), ball_sensor.get_value(), RAD_TO_DEG(pos.a), RAD_TO_DEG(a_targ->getTarget()-pos.a));//, angler.get_target_position(), angler.get_position(), pos.x, pos.y, RAD_TO_DEG(pos.a));
+			PointAngleTarget a_targ = PointAngleTarget({shot_req[shot_req_handled_num].flag_pos.x, shot_req[shot_req_handled_num].flag_pos.y});
+			if (pun_ball) log_ln(LOG_PUNCHER, "	> %d Ball Off. Anglr:%f Pos:%f BallSen:%d. A:%f, AOffset:%f", pros::millis(), angler.get_position(), puncherLeft.get_position(), ball_sensor.get_value(), RAD_TO_DEG(pos.a), RAD_TO_DEG(a_targ.getTarget()-pos.a));//, angler.get_target_position(), angler.get_position(), pos.x, pos.y, RAD_TO_DEG(pos.a));
 			//if (pun_ball) printf("	> %d Ball Off.Pos:%f BallSen:%d | AnglrTarg:%f Anglr:%f | Pos (%f, %f, %f) \n", pros::millis(), puncherLeft.get_position(), ball_sensor.get_value(), angler.get_target_position(), angler.get_position(), pos.x, pos.y, RAD_TO_DEG(pos.a));
 			pun_ball = false;
 		}
@@ -162,8 +162,8 @@ void pun_handle() {
 					pun_set(0);
 					pun_move(PUN_OFFSET + (pun_shots * PUN_TPR));
 
-					AngleTarget* a_targ = new PointAngleTarget({shot_req[shot_req_handled_num].flag_pos.x, shot_req[shot_req_handled_num].flag_pos.y});
-					log_ln(LOG_PUNCHER, "%d Shot end Pos:%f. A:%f, AOffset:%f", millis(), puncherLeft.get_position(), RAD_TO_DEG(pos.a), RAD_TO_DEG(a_targ->getTarget()-pos.a));
+					PointAngleTarget a_targ = PointAngleTarget({shot_req[shot_req_handled_num].flag_pos.x, shot_req[shot_req_handled_num].flag_pos.y});
+					log_ln(LOG_PUNCHER, "%d Shot end Pos:%f. A:%f, AOffset:%f", millis(), puncherLeft.get_position(), RAD_TO_DEG(pos.a), RAD_TO_DEG(a_targ.getTarget()-pos.a));
 
 					auto_set_shot = false;
 					pun_state_change(PunState::Bolt_Wait);

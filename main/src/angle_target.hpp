@@ -9,7 +9,7 @@
 
   class AngleTarget {
   public:
-    virtual double getTarget() = 0;
+    virtual double getTarget() const = 0;
   };
 
   class FixedAngleTarget final : public AngleTarget {
@@ -18,7 +18,7 @@
   public:
     FixedAngleTarget(double target);
 
-    double getTarget() override;
+    double getTarget() const override;
   };
 
   class PointAngleTarget final : public AngleTarget {
@@ -26,5 +26,5 @@
 
   public:
     PointAngleTarget(vector target);
-    double getTarget() override;
+    double getTarget() const override;
   };

@@ -16,8 +16,8 @@ struct vector {
   vector operator+();
   vector operator-();
 
-  double phase();
-  double magnitude();
+  double phase() const;
+  double magnitude() const;
 };
 
 vector rotate(vector v, double offset);

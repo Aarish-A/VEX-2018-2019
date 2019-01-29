@@ -31,11 +31,11 @@ vector vector::operator-() {
   return {-x, -y};
 }
 
-double vector::phase() {
+double vector::phase() const {
   return atan2(x, y);
 }
 
-double vector::magnitude() {
+double vector::magnitude() const {
   return sqrt(x * x + y * y);
 }
 

@@ -142,11 +142,11 @@
     this->aRst = a;
   }
 
-  vector Tracking::position() {
+  vector Tracking::position() const {
     return {x, y};
   }
 
-  vector Tracking::velocity() {
+  vector Tracking::velocity() const {
     return {xVel, yVel};
   }
 //}
