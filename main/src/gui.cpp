@@ -177,9 +177,9 @@ void gui_init() {
   for (int i = 0; i < 8; i++) {
     auto_buttons[i] = lv_btn_create(auto_select_tab, NULL);
     lv_obj_set_free_num(auto_buttons[i], 1);
-    if (i == 0) lv_btn_set_action(auto_buttons[i], LV_BTN_ACTION_LONG_PR, auto_button_action_front);
-    else if (i == 1) lv_btn_set_action(auto_buttons[i], LV_BTN_ACTION_LONG_PR, auto_button_action_back_mid_first);
-    else if (i == 2) lv_btn_set_action(auto_buttons[i], LV_BTN_ACTION_LONG_PR, auto_button_action_back_far_first);
+    if (i == (int)auto_routines::FRONT) lv_btn_set_action(auto_buttons[i], LV_BTN_ACTION_LONG_PR, auto_button_action_front);
+    else if (i == (int)auto_routines::BACK_MID_FIRST) lv_btn_set_action(auto_buttons[i], LV_BTN_ACTION_LONG_PR, auto_button_action_back_mid_first);
+    else if (i == (int)auto_routines::BACK_FAR_FIRST) lv_btn_set_action(auto_buttons[i], LV_BTN_ACTION_LONG_PR, auto_button_action_back_far_first);
     // lv_obj_set_width(auto_buttons[i], 200);
     lv_obj_set_size(auto_buttons[i], 200, 50);
     if (((i + 1) % 2) == 0) heightOffset += 80;
@@ -203,7 +203,7 @@ lv_res_t auto_button_action_front(lv_obj_t* button) {
   if (log == NULL) {
     printf("Couldn't create auton routine file\n");
   } else {
-    fprintf(log, "0");
+    fprintf(log, "%d", auto_routines::FRONT);
     current_auto_routine = 0;
     ctrler.rumble(". . .");
     fclose(log);
@@ -217,7 +217,7 @@ lv_res_t auto_button_action_back_mid_first(lv_obj_t* button) {
   if (log == NULL) {
     printf("Couldn't create auto routine file\n");
   } else {
-    fprintf(log, "1");
+    fprintf(log, "%d", auto_routines::BACK_MID_FIRST);
     current_auto_routine = 1;
     ctrler.rumble(". . .");
     fclose(log);
@@ -231,7 +231,7 @@ lv_res_t auto_button_action_back_far_first(lv_obj_t* button) {
   if (log == NULL) {
     printf("Couldn't create auto routine file\n");
   } else {
-    fprintf(log, "2");
+    fprintf(log, "%d", auto_routines::BACK_FAR_FIRST);
     current_auto_routine = 2;
     ctrler.rumble(". . .");
     fclose(log);
