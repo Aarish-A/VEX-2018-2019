@@ -68,7 +68,7 @@ if (current_auto_routine == 0 && game_side == 'R')
   //2 Back up turn and shoot
   auto_set_angler_target(front_SP.top+15);
   move_drive_rel(-(cap_dis-6), 200);
-  turn_vel(new FixedAngleTarget(-84.0_deg), (200/90_deg));
+  turn_vel(new FixedAngleTarget(-87.0_deg), (200/90_deg));
   intake.move(0);
 
   auto_set_shot = true;
@@ -83,7 +83,7 @@ if (current_auto_routine == 0 && game_side == 'R')
   while (auto_set_shot) pros::delay(10);
   printf("Done second shot");
   angler_move(ANGLER_PU_POS,100);
-  move_drive_rel(8_in,200);
+  move_drive_rel(6.5_in,200);
   turn_vel(new FixedAngleTarget(-41_deg), (200/90_deg));
   angler_move(ANGLER_CAP_PU_POS,100);
   intake.move(127);
