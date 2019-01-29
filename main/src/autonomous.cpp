@@ -117,7 +117,7 @@ else if (current_auto_routine == 1 && game_side == 'R')
   double first_flag_pos = front_SP.top+10;
   auto_set_angler_target(first_flag_pos);
   intake.move(0);
-  turn_vel( FixedAngleTarget(-70_deg), (200/90_deg));
+  turn_vel( FixedAngleTarget(-71.5_deg), (200/90_deg));
   auto_set_first_shot(first_flag_pos);
   while (auto_set_shot) pros::delay(10);
   auto_set_second_shot(front_SP.mid+40);
@@ -129,15 +129,14 @@ else if (current_auto_routine == 1 && game_side == 'R')
   move_drive_rel(27_in, 200);
   pros::delay(250);
   move_drive_rel(-8_in,200);
-  first_flag_pos = front_SP.top+63;
+  first_flag_pos = front_SP.top+52;
   auto_set_angler_target(first_flag_pos);
-  turn_vel( FixedAngleTarget(-58_deg), (200/90_deg));
+  turn_vel( FixedAngleTarget(-58.3_deg), (200/90_deg));
   move_drive_rel(10_in,200);
   auto_set_first_shot(first_flag_pos);
   while (auto_set_shot) pros::delay(10);
-  auto_set_second_shot(front_SP.mid+100);
+  auto_set_second_shot(front_SP.mid+86);
   while (auto_set_shot) pros::delay(10);
-  log_ln(LOG_AUTO,"Auto time is:%d\n",millis()-autoStartTime);
   ctrler.print(2,0,"Auto T: %d",millis()-autoStartTime);
   //2 Back up turn and shoot
 }
