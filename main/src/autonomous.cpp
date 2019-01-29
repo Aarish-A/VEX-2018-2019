@@ -215,15 +215,10 @@ void autonomous() {
         double cap_dis = 43.0_in;
         move_drive_rel(cap_dis, 200);
         delay(200);
-        move_drive_rel(-6_in,200);
-        delay(500);
-        angler_move(ANGLER_CAP_FLIP_POS);
-        intake.move(-127);
-        move_drive_rel(16_in,200,true);
-        intake.move(127);
+
         //2 Back up turn and shoot
         auto_set_angler_target(front_SP.top+15);
-        move_drive_rel(-(cap_dis+4), 200);
+        move_drive_rel(-(cap_dis-6), 200);
         turn_vel(new FixedAngleTarget(-84.0_deg), (200/90_deg));
         intake.move(0);
 
@@ -258,10 +253,12 @@ void autonomous() {
         angler_move(ANGLER_CAP_FLIP_POS);
         intake.move(-70);
         move_drive_rel(15_in,200,false);
+
         log_ln(LOG_AUTO, " > %d Done second shot | angler:%f targ:%f |(%f, %f, %f)", millis(), angler.get_position(), auto_angler_target, pos.x, pos.y, RAD_TO_DEG(pos.a));
         log_ln(LOG_AUTO, "%d done turn shoot (%f, %f, %f)", millis(), pos.x, pos.y, RAD_TO_DEG(pos.a));
         printf("Auto is done");
         ctrler.print(2,0,"Auto Time: %d",millis()-autoStartTime);
+        //flatten_against_wall(true, true);
 
         shot_req_handled_num = 0;
         break;
