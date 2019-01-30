@@ -133,7 +133,7 @@ void autonomous() {
         double first_flag_pos = front_SP.top-15;
         auto_set_angler_target(first_flag_pos);
         intake.move(0);
-        turn_vel( FixedAngleTarget(-71_deg), (200/90_deg));
+        turn_vel( FixedAngleTarget(-69.5_deg), (200/90_deg));
         auto_set_first_shot(first_flag_pos);
         while (auto_set_shot) pros::delay(10);
         pros::delay(150);
@@ -146,7 +146,7 @@ void autonomous() {
         move_drive_rel(27_in, 200);
         pros::delay(250);
         move_drive_rel(-8_in,200);
-        first_flag_pos = front_SP.top+45;
+        first_flag_pos = front_SP.top+30;
         auto_set_angler_target(first_flag_pos);
         drive_fl.tare_position();
         drive_set(-75,0,0);
@@ -277,7 +277,7 @@ void autonomous() {
         move_drive_rel(27_in, 200);
         pros::delay(250);
         move_drive_rel(-8_in,200);
-        first_flag_pos = front_SP.top+45;
+        first_flag_pos = front_SP.top+37;
         auto_set_angler_target(first_flag_pos);
         drive_fl.tare_position();
         drive_set(75,0,0);
