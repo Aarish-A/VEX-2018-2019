@@ -280,9 +280,10 @@ void shot_req_handle(void *param) {
 
 			//Shooter Handle 1
 			angler.move_absolute(shot_req[shot_req_handled_num].angle_targ, 200);
+			printf("angler shot target: %f\n", angler.get_target_position());
 			while (!shot_req[shot_req_handled_num].shot_handled) pros::delay(10);
 			shot_req_handled_num++;
-
+			printf("angler shot target: %f\n", angler.get_position());
 			if (shot_req_num > 1) {
 				//Angle handle 1
 				angler.move_absolute(shot_req[shot_req_handled_num].angle_targ, 200);
