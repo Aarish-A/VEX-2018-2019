@@ -58,6 +58,7 @@ void shoot_flip_cap_on_45()
   intake.move(0);
   auto_set_first_shot(front_SP.top+29);
   while (auto_set_shot) pros::delay(10);
+  pros::delay(150);
   auto_set_second_shot(front_SP.mid+4);
   while (auto_set_shot) pros::delay(10);
   intake.move(-70);
@@ -101,6 +102,7 @@ void autonomous() {
         while (auto_set_shot) pros::delay(10);
         log_ln(LOG_AUTO, " > %d Done first shot | angler:%f targ:%f |(%f, %f, %f)", millis(), angler.get_position(), auto_angler_target, pos.x, pos.y, RAD_TO_DEG(pos.a));
         printf("Done first shot");
+        pros::delay(150);
         auto_set_second_shot(front_SP.mid+7);
         while (auto_set_shot) pros::delay(10);
         printf("Done second shot");
@@ -134,6 +136,7 @@ void autonomous() {
         turn_vel( FixedAngleTarget(-71_deg), (200/90_deg));
         auto_set_first_shot(first_flag_pos);
         while (auto_set_shot) pros::delay(10);
+        pros::delay(150);
         auto_set_second_shot(front_SP.mid+40);
         while (auto_set_shot) pros::delay(10);
         intake.move(127);
@@ -153,6 +156,7 @@ void autonomous() {
         move_drive_rel(10_in,200);
         auto_set_first_shot(first_flag_pos);
         while (auto_set_shot) pros::delay(10);
+        pros::delay(150);
         auto_set_second_shot(front_SP.mid+60);
         while (auto_set_shot) pros::delay(10);
         ctrler.print(2,0,"Auto T: %d",millis()-autoStartTime);
@@ -173,6 +177,7 @@ void autonomous() {
         turn_vel( FixedAngleTarget(-52_deg), (200/90_deg));
         auto_set_first_shot(first_flag_pos);
         while (auto_set_shot) pros::delay(10);
+        pros::delay(150);
         auto_set_second_shot(front_SP.mid+65);
         while (auto_set_shot) pros::delay(10);
         intake.move(127);
@@ -193,6 +198,7 @@ void autonomous() {
         move_drive_rel(10_in,200);
         auto_set_first_shot(first_flag_pos);
         while (auto_set_shot) pros::delay(10);
+        pros::delay(150);
         auto_set_second_shot(front_SP.mid+60);
         while (auto_set_shot) pros::delay(10);
         ctrler.print(2,0,"Auto T: %d",millis()-autoStartTime);
@@ -225,6 +231,7 @@ void autonomous() {
         while (auto_set_shot) pros::delay(10);
         log_ln(LOG_AUTO, " > %d Done first shot | angler:%f targ:%f |(%f, %f, %f)", millis(), angler.get_position(), auto_angler_target, pos.x, pos.y, RAD_TO_DEG(pos.a));
         printf("Done first shot");
+        pros::delay(150);
         auto_set_second_shot(front_SP.mid+7);
         while (auto_set_shot) pros::delay(10);
         printf("Done second shot");
@@ -259,6 +266,7 @@ void autonomous() {
         turn_vel( FixedAngleTarget(-71_deg), (200/90_deg));
         auto_set_first_shot(first_flag_pos);
         while (auto_set_shot) pros::delay(10);
+        pros::delay(150);
         auto_set_second_shot(front_SP.mid+40);
         while (auto_set_shot) pros::delay(10);
         intake.move(127);
@@ -278,6 +286,7 @@ void autonomous() {
         move_drive_rel(10_in,200);
         auto_set_first_shot(first_flag_pos);
         while (auto_set_shot) pros::delay(10);
+        pros::delay(150);
         auto_set_second_shot(front_SP.mid+60);
         while (auto_set_shot) pros::delay(10);
         ctrler.print(2,0,"Auto T: %d",millis()-autoStartTime);
@@ -298,6 +307,7 @@ void autonomous() {
         turn_vel( FixedAngleTarget(-52_deg), (200/90_deg));
         auto_set_first_shot(first_flag_pos);
         while (auto_set_shot) pros::delay(10);
+        pros::delay(150);
         auto_set_second_shot(front_SP.mid+65);
         while (auto_set_shot) pros::delay(10);
         intake.move(127);
@@ -318,6 +328,7 @@ void autonomous() {
         move_drive_rel(10_in,200);
         auto_set_first_shot(first_flag_pos);
         while (auto_set_shot) pros::delay(10);
+        pros::delay(150);
         auto_set_second_shot(front_SP.mid+60);
         while (auto_set_shot) pros::delay(10);
         ctrler.print(2,0,"Auto T: %d",millis()-autoStartTime);
