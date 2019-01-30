@@ -47,6 +47,26 @@ void auto_update(void* param) {
     pros::delay(10);
   }
 }
+
+void shoot_flip_cap_on_45()
+{
+  angler_move(ANGLER_CAP_PU_POS,100);
+  intake.move(127);
+  move_drive_rel(17.5_in,200);
+  pros::delay(750);
+  move_drive_rel(-8.8_in,200,true);
+  intake.move(0);
+  auto_set_first_shot(front_SP.top+29);
+  while (auto_set_shot) pros::delay(10);
+  auto_set_second_shot(front_SP.mid+4);
+  while (auto_set_shot) pros::delay(10);
+  intake.move(-70);
+  auto_set_angler_target(ANGLER_CAP_FLIP_POS);
+  move_drive_rel_simple(15_in,70, false);
+  //pros::delay(0);
+  move_drive_rel(-15_in,200, false);
+}
+
 void autonomous() {
   is_disabled = false;
   shot_req_handle_stop_task();
@@ -60,7 +80,7 @@ void autonomous() {
   {
     switch(current_auto_routine)
     {
-      case 0:
+      case auto_routines::FRONT:
       {
         //1 Pick up balls
         log_ln(LOG_AUTO, "%d Angler Start move: %d", millis(), angler.get_position());
@@ -86,19 +106,9 @@ void autonomous() {
         printf("Done second shot");
         angler_move(ANGLER_PU_POS,100);
         move_drive_rel(6.5_in,200);
+
         turn_vel( FixedAngleTarget(-41_deg), (200/90_deg));
-        angler_move(ANGLER_CAP_PU_POS,100);
-        intake.move(127);
-        move_drive_rel(17.5_in,200);
-        pros::delay(750);
-        move_drive_rel(-8.8_in,200,true);
-        auto_set_first_shot(front_SP.top+29);
-        while (auto_set_shot) pros::delay(10);
-        auto_set_second_shot(front_SP.mid+4);
-        while (auto_set_shot) pros::delay(10);
-        auto_set_angler_target(ANGLER_CAP_FLIP_POS);
-        intake.move(-70);
-        move_drive_rel(15_in,200,false);
+        shoot_flip_cap_on_45();
 
         log_ln(LOG_AUTO, " > %d Done second shot | angler:%f targ:%f |(%f, %f, %f)", millis(), angler.get_position(), auto_angler_target, pos.x, pos.y, RAD_TO_DEG(pos.a));
         log_ln(LOG_AUTO, "%d done turn shoot (%f, %f, %f)", millis(), pos.x, pos.y, RAD_TO_DEG(pos.a));
@@ -109,7 +119,7 @@ void autonomous() {
         shot_req_handled_num = 0;
         break;
       }
-      case 1:
+      case auto_routines::BACK_MID_FIRST:
       {
         log_ln(LOG_AUTO, "%d Angler Start move: %d", millis(), angler.get_position());
         angler_move(ANGLER_PU_POS, 100);
@@ -148,7 +158,7 @@ void autonomous() {
         ctrler.print(2,0,"Auto T: %d",millis()-autoStartTime);
         break;
       }
-      case 2:
+      case auto_routines::BACK_FAR_FIRST:
       {
         log_ln(LOG_AUTO, "%d Angler Start move: %d", millis(), angler.get_position());
         angler_move(ANGLER_PU_POS, 100);
@@ -194,7 +204,7 @@ void autonomous() {
   {
     switch(current_auto_routine)
     {
-      case 0:
+      case auto_routines::FRONT:
       {
         //1 Pick up balls
         log_ln(LOG_AUTO, "%d Angler Start move: %d", millis(), angler.get_position());
@@ -220,19 +230,10 @@ void autonomous() {
         printf("Done second shot");
         angler_move(ANGLER_PU_POS,100);
         move_drive_rel(6.5_in,200);
-        turn_vel( FixedAngleTarget(-41_deg), (200/90_deg));
-        angler_move(ANGLER_CAP_PU_POS,100);
-        intake.move(127);
-        move_drive_rel(17.5_in,200);
-        pros::delay(750);
-        move_drive_rel(-8.8_in,200,true);
-        auto_set_first_shot(front_SP.top+29);
-        while (auto_set_shot) pros::delay(10);
-        auto_set_second_shot(front_SP.mid+4);
-        while (auto_set_shot) pros::delay(10);
-        auto_set_angler_target(ANGLER_CAP_FLIP_POS);
-        intake.move(-70);
-        move_drive_rel(15_in,200,false);
+
+        //Turn towwards cap
+        turn_vel( FixedAngleTarget(46_deg), (200/90_deg));
+        shoot_flip_cap_on_45();
 
         log_ln(LOG_AUTO, " > %d Done second shot | angler:%f targ:%f |(%f, %f, %f)", millis(), angler.get_position(), auto_angler_target, pos.x, pos.y, RAD_TO_DEG(pos.a));
         log_ln(LOG_AUTO, "%d done turn shoot (%f, %f, %f)", millis(), pos.x, pos.y, RAD_TO_DEG(pos.a));
@@ -243,7 +244,7 @@ void autonomous() {
         shot_req_handled_num = 0;
         break;
       }
-      case 1:
+      case auto_routines::BACK_MID_FIRST:
       {
         log_ln(LOG_AUTO, "%d Angler Start move: %d", millis(), angler.get_position());
         angler_move(ANGLER_PU_POS, 100);
@@ -282,7 +283,7 @@ void autonomous() {
         ctrler.print(2,0,"Auto T: %d",millis()-autoStartTime);
         break;
       }
-      case 2:
+      case auto_routines::BACK_FAR_FIRST:
       {
         log_ln(LOG_AUTO, "%d Angler Start move: %d", millis(), angler.get_position());
         angler_move(ANGLER_PU_POS, 100);
