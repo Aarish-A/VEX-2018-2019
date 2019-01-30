@@ -113,7 +113,7 @@ void gui_init() {
   for(int i = 0; i < 4; i++) {
     shot_slider[i] = lv_slider_create(shot_tuning_tab, NULL);
     lv_obj_set_size(shot_slider[i], 300, 30);
-    lv_slider_set_range(shot_slider[i], 0, 100);
+    lv_slider_set_range(shot_slider[i], 0, 150);
     lv_slider_set_action(shot_slider[i], shot_tuning_slider_action);
     if (i == 0) lv_obj_align(shot_slider[i], shot_tuning_title, LV_ALIGN_OUT_BOTTOM_MID, 5, 10);
     else lv_obj_align(shot_slider[i], shot_slider[i - 1], LV_ALIGN_OUT_BOTTOM_RIGHT, 0, 10);
