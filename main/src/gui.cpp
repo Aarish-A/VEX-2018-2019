@@ -8,6 +8,7 @@ lv_obj_t* menu;
 lv_obj_t* diagnostics_tab;
 lv_obj_t* shot_tuning_tab;
 lv_obj_t* auto_select_tab;
+lv_obj_t* shot_test_tab;
 
 // Diagnostics Tab
 lv_obj_t* diagnostics_tab_title;
@@ -17,10 +18,10 @@ char battery_bar_string[4];
 
 // Shot Tuning Tab
 lv_obj_t* shot_tuning_title;
-lv_obj_t* shot_slider[4];
-lv_obj_t* shot_slider_text[4];
-lv_obj_t* shot_slider_label[4];
-int shot_slider_value[] = { 0, 0, 0, 0 };
+lv_obj_t* shot_slider[6];
+lv_obj_t* shot_slider_text[6];
+lv_obj_t* shot_slider_label[6];
+int shot_slider_value[] = { 0, 0, 0, 0, 0, 0};
 lv_obj_t* shot_tuning_save_button;
 lv_obj_t* shot_tuning_save_button_label;
 
@@ -32,6 +33,18 @@ lv_obj_t* blue_side_button;
 lv_obj_t* blue_side_button_label;
 extern lv_obj_t* auto_buttons[8];
 extern lv_obj_t* auto_buttons_label[8];
+
+// Shot Testing Tab
+lv_obj_t* shot_testing_title;
+lv_obj_t* top_flag_auto_shot;
+lv_obj_t* top_flag_auto_shot_label;
+lv_obj_t* mid_flag_auto_shot;
+lv_obj_t* mid_flag_auto_shot_label;
+lv_obj_t* mid_flag_turn_shot;
+lv_obj_t* mid_flag_turn_shot_label;
+lv_obj_t* top_flag_turn_shot;
+lv_obj_t* top_flag_turn_shot_label;
+
 
 lv_obj_t* auto_buttons[8];
 lv_obj_t* auto_buttons_label[8];
@@ -49,7 +62,7 @@ std::string auto_routines[8] = {
 void gui_init() {
   printf("Log Program done\n");
   // pros::delay(50);
-  for(int i = 0; i < 4; i++) {
+  for(int i = 0; i < 6; i++) {
     FILE* log = NULL;
     printf("file pointer\n");
     if (i == 0) {
@@ -64,6 +77,12 @@ void gui_init() {
     } else if (i == 3) {
       log = fopen("/usd/front_top_shot_position.txt", "r");
       if(log != NULL) fscanf(log, "%d", &(front_SP.top));
+    } else if (i == 4) {
+      log = fopen("/usd/front_top_auto_position.txt", "r");
+      if(log != NULL) fscanf(log, "%d", &(auto_SP.top));
+    } else if (i == 5) {
+      log = fopen("/usd/front_mid_auto_position.txt", "r");
+      if(log != NULL) fscanf(log, "%d", &(auto_SP.mid));
     }
 
   //   printf("for loop exited");
@@ -89,12 +108,13 @@ void gui_init() {
 	diagnostics_tab = lv_tabview_add_tab(menu, "Diagnostics");
 	shot_tuning_tab = lv_tabview_add_tab(menu, "Shot Tuning");
 	auto_select_tab = lv_tabview_add_tab(menu, "Auto Select");
+  shot_test_tab = lv_tabview_add_tab(menu, "Test Shots");
 
 	// // Diagnostics Tab
-	// diagnostics_tab_title = lv_label_create(diagnostics_tab, NULL);
-	// lv_label_set_text(diagnostics_tab_title, "Diagnostics");
-	// lv_obj_align(diagnostics_tab_title, NULL, LV_ALIGN_IN_TOP_MID, 0, 5);
-  //
+	diagnostics_tab_title = lv_label_create(diagnostics_tab, NULL);
+	lv_label_set_text(diagnostics_tab_title, "Diagnostics");
+	lv_obj_align(diagnostics_tab_title, NULL, LV_ALIGN_IN_TOP_MID, 0, 5);
+
 	// battery_bar_text = lv_bar_create(diagnostics_tab, NULL);
 	// lv_obj_set_size(battery_bar, 200, 30);
 	// lv_bar_set_value(battery_bar, pros::battery::get_capacity());
@@ -104,16 +124,52 @@ void gui_init() {
   // sprintf(battery_bar_string, "%.1f p/c", pros::battery::get_capacity());
   // lv_label_set_text(battery_bar_text, battery_bar_string);
 
+  // Shot Testing Tab
+  shot_testing_title = lv_label_create(shot_test_tab, NULL);
+	lv_label_set_text(shot_testing_title, "Shot Testing");
+	lv_obj_align(shot_testing_title, NULL, LV_ALIGN_IN_TOP_MID, 0, 5);
+
+  top_flag_auto_shot = lv_btn_create(shot_test_tab, NULL);
+  lv_obj_set_free_num(top_flag_auto_shot, 1);
+  lv_btn_set_action(top_flag_auto_shot, LV_BTN_ACTION_LONG_PR, shot_test_top_auto_action);
+  lv_obj_align(top_flag_auto_shot, NULL, LV_ALIGN_OUT_BOTTOM_MID, -20, 15);
+  lv_obj_set_width(top_flag_auto_shot, 250);
+  top_flag_auto_shot_label = lv_label_create(top_flag_auto_shot, NULL);
+  lv_label_set_text(top_flag_auto_shot_label, "Top Auto");
+
+  mid_flag_auto_shot = lv_btn_create(shot_test_tab, NULL);
+  lv_obj_set_free_num(mid_flag_auto_shot, 1);
+  lv_btn_set_action(mid_flag_auto_shot, LV_BTN_ACTION_LONG_PR, shot_test_mid_auto_action);
+  lv_obj_align(mid_flag_auto_shot, top_flag_auto_shot, LV_ALIGN_OUT_BOTTOM_MID, 0, 15);
+  lv_obj_set_width(mid_flag_auto_shot, 250);
+  mid_flag_auto_shot_label = lv_label_create(mid_flag_auto_shot, NULL);
+  lv_label_set_text(mid_flag_auto_shot_label, "Mid Auto");
+
+  mid_flag_turn_shot = lv_btn_create(shot_test_tab, NULL);
+  lv_obj_set_free_num(mid_flag_turn_shot, 1);
+  lv_btn_set_action(mid_flag_turn_shot, LV_BTN_ACTION_LONG_PR, shot_test_mid_turn_action);
+  lv_obj_align(mid_flag_turn_shot, mid_flag_auto_shot, LV_ALIGN_OUT_BOTTOM_MID, 0, 15);
+  lv_obj_set_width(mid_flag_turn_shot, 250);
+  mid_flag_turn_shot_label = lv_label_create(mid_flag_turn_shot, NULL);
+  lv_label_set_text(mid_flag_turn_shot_label, "Mid Turn");
+
+  top_flag_turn_shot = lv_btn_create(shot_test_tab, NULL);
+  lv_obj_set_free_num(top_flag_turn_shot, 1);
+  lv_btn_set_action(top_flag_turn_shot, LV_BTN_ACTION_LONG_PR, shot_test_top_turn_action);
+  lv_obj_align(top_flag_turn_shot, mid_flag_turn_shot, LV_ALIGN_OUT_BOTTOM_MID, 0, 15);
+  lv_obj_set_width(top_flag_turn_shot, 250);
+  top_flag_turn_shot_label = lv_label_create(top_flag_turn_shot, NULL);
+  lv_label_set_text(top_flag_turn_shot_label, "Top Turn");
 
 	// Shot Tuning Tab
 	shot_tuning_title = lv_label_create(shot_tuning_tab, NULL);
 	lv_label_set_text(shot_tuning_title, "Shot Tuning");
 	lv_obj_align(shot_tuning_title, NULL, LV_ALIGN_IN_TOP_MID, 0, 5);
 
-  for(int i = 0; i < 4; i++) {
+  for(int i = 0; i < 6; i++) {
     shot_slider[i] = lv_slider_create(shot_tuning_tab, NULL);
     lv_obj_set_size(shot_slider[i], 300, 30);
-    lv_slider_set_range(shot_slider[i], 0, 150);
+    lv_slider_set_range(shot_slider[i], 0, 250);
     lv_slider_set_action(shot_slider[i], shot_tuning_slider_action);
     if (i == 0) lv_obj_align(shot_slider[i], shot_tuning_title, LV_ALIGN_OUT_BOTTOM_MID, 5, 10);
     else lv_obj_align(shot_slider[i], shot_slider[i - 1], LV_ALIGN_OUT_BOTTOM_RIGHT, 0, 10);
@@ -133,6 +189,12 @@ void gui_init() {
     } else if (i == 3) {
       lv_label_set_text(shot_slider_label[i], "Front Top");
       lv_bar_set_value(shot_slider[i], front_SP.top);
+    } else if (i == 4) {
+      lv_label_set_text(shot_slider_label[i], "Auto Top");
+      lv_bar_set_value(shot_slider[i], auto_SP.top);
+    } else if (i == 5) {
+      lv_label_set_text(shot_slider_label[i], "Auto Mid");
+      lv_bar_set_value(shot_slider[i], auto_SP.mid);
     }
 
     shot_slider_text[i] = lv_label_create(shot_tuning_tab, NULL);
@@ -146,7 +208,7 @@ void gui_init() {
   shot_tuning_save_button = lv_btn_create(shot_tuning_tab, NULL);
   lv_obj_set_free_num(shot_tuning_save_button, 1);
   lv_btn_set_action(shot_tuning_save_button, LV_BTN_ACTION_LONG_PR, shot_tuning_save_button_action);
-  lv_obj_align(shot_tuning_save_button, shot_slider[3], LV_ALIGN_OUT_BOTTOM_MID, -20, 30);
+  lv_obj_align(shot_tuning_save_button, shot_slider[3], LV_ALIGN_OUT_BOTTOM_MID, -20, 100);
   lv_obj_set_width(shot_tuning_save_button, 250);
   shot_tuning_save_button_label = lv_label_create(shot_tuning_save_button, NULL);
   lv_label_set_text(shot_tuning_save_button_label, "Save?");
@@ -288,7 +350,7 @@ lv_res_t blue_side_button_action(lv_obj_t* button) {
 }
 
 lv_res_t shot_tuning_slider_action(lv_obj_t* slider) {
-  for (int i = 0; i < 4; i++) {
+  for (int i = 0; i < 6; i++) {
     char shot_slider_string[4];
     sprintf(shot_slider_string, "%d", lv_slider_get_value(shot_slider[i]));
     lv_label_set_text(shot_slider_text[i], shot_slider_string);
@@ -296,10 +358,47 @@ lv_res_t shot_tuning_slider_action(lv_obj_t* slider) {
   }
   return LV_RES_OK;
 }
+lv_res_t shot_test_top_auto_action(lv_obj_t* button)
+{
+  ctrler.rumble(". . .");
+  pros::delay(2000);
+  printf("position is %d",auto_SP.top);
+  auto_set_first_shot(auto_SP.top);
 
+  return LV_RES_OK;
+}
+
+lv_res_t shot_test_mid_auto_action(lv_obj_t* button)
+{
+  ctrler.rumble(". . .");
+  pros::delay(2000);
+  printf("position is %d",auto_SP.mid);
+  auto_set_first_shot(auto_SP.mid);
+
+  return LV_RES_OK;
+}
+
+lv_res_t shot_test_mid_turn_action(lv_obj_t* button)
+{
+  ctrler.rumble(". . .");
+  pros::delay(2000);
+  printf("position is %d",pf_back_SP.mid);
+  auto_set_first_shot(pf_back_SP.mid);
+
+  return LV_RES_OK;
+}
+lv_res_t shot_test_top_turn_action(lv_obj_t* button)
+{
+  ctrler.rumble(". . .");
+  pros::delay(2000);
+  printf("position is %d",pf_back_SP.top);
+  auto_set_first_shot(pf_back_SP.top);
+
+  return LV_RES_OK;
+}
 lv_res_t shot_tuning_save_button_action(lv_obj_t* button) {
   ctrler.rumble(". . .");
-  for(int i = 0; i < 4; i++) {
+  for(int i = 0; i < 6; i++) {
     FILE* log = NULL;
     if (i == 0) {
       log = fopen("/usd/back_mid_shot_position.txt", "w");
@@ -313,6 +412,12 @@ lv_res_t shot_tuning_save_button_action(lv_obj_t* button) {
     } else if (i == 3) {
       log = fopen("/usd/front_top_shot_position.txt", "w");
       front_SP.top = lv_slider_get_value(shot_slider[3]);
+    } else if (i == 4) {
+      log = fopen("/usd/front_top_auto_position.txt", "w");
+      auto_SP.top = lv_slider_get_value(shot_slider[4]);
+    } else if (i == 5) {
+      log = fopen("/usd/front_mid_auto_position.txt", "w");
+      auto_SP.mid = lv_slider_get_value(shot_slider[5]);
     }
 
     if (log == NULL) {

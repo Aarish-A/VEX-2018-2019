@@ -57,6 +57,7 @@ struct ShotPos {
 
 extern ShotPos front_SP;
 extern ShotPos pf_SP;
+extern ShotPos auto_SP;
 extern ShotPos pf_back_SP;
 extern ShotPos back_SP;
 

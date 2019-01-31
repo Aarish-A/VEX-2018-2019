@@ -2,6 +2,8 @@
 #include "main.h"
 #include "shot_select.hpp"
 #include "config.hpp"
+#include "auto.hpp"
+#include "puncher.hpp"
 #include <string>
 
 // Main Screen
@@ -12,6 +14,7 @@ extern lv_obj_t* menu;
 extern lv_obj_t* diagnostics_tab;
 extern lv_obj_t* shot_tuning_tab;
 extern lv_obj_t* auto_select_tab;
+extern lv_obj_t* shot_test_tab;
 
 // Diagnostics Tab
 extern lv_obj_t* diagnostics_tab_title;
@@ -21,10 +24,10 @@ extern char battery_bar_string[4];
 
 // Shot Tuning Tab
 extern lv_obj_t* shot_tuning_title;
-extern lv_obj_t* shot_slider[4];
-extern lv_obj_t* shot_slider_text[4];
-extern int shot_slider_value[4];
-extern lv_obj_t* shot_slider_label[4];
+extern lv_obj_t* shot_slider[6];
+extern lv_obj_t* shot_slider_text[6];
+extern int shot_slider_value[6];
+extern lv_obj_t* shot_slider_label[6];
 extern lv_obj_t* shot_tuning_save_button;
 extern lv_obj_t* shot_tuning_save_button_label;
 
@@ -51,3 +54,7 @@ lv_res_t auto_button_action_back_far_first(lv_obj_t* button);
 lv_res_t red_side_button_action(lv_obj_t* button);
 lv_res_t blue_side_button_action(lv_obj_t* button);
 lv_res_t shot_tuning_save_button_action(lv_obj_t* button);
+lv_res_t shot_test_top_auto_action(lv_obj_t* button);
+lv_res_t shot_test_mid_auto_action(lv_obj_t* button);
+lv_res_t shot_test_mid_turn_action(lv_obj_t* button);
+lv_res_t shot_test_top_turn_action(lv_obj_t* button);
