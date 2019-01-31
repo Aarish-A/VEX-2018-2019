@@ -10,6 +10,7 @@
 #include "decapper.hpp"
 #include "vision.hpp"
 #include "config.hpp"
+#include "auto.hpp"
 using namespace pros;
 
 /* Info abt drive efficency */
@@ -23,6 +24,8 @@ double eff_br = drive_br.get_efficiency();
 void opcontrol() {
 	is_disabled = false;
 	int print_time = 0;
+	auto_update_stop_task();
+	drive_set(0);
 	shot_req_handle_start_task(); //Start shot req handle task
 	//Task log_drive_efficency_task(log_drive_efficency); //Start logging drive efficency
 	log_ln(LOG_AUTO, "   --- %d START OPCONTROL --- \n", pros::millis());
