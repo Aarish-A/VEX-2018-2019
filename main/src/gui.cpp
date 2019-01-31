@@ -107,10 +107,10 @@ void gui_init() {
   shot_test_tab = lv_tabview_add_tab(menu, "Test Shots");
 
 	// // Diagnostics Tab
-	// diagnostics_tab_title = lv_label_create(diagnostics_tab, NULL);
-	// lv_label_set_text(diagnostics_tab_title, "Diagnostics");
-	// lv_obj_align(diagnostics_tab_title, NULL, LV_ALIGN_IN_TOP_MID, 0, 5);
-  //
+	diagnostics_tab_title = lv_label_create(diagnostics_tab, NULL);
+	lv_label_set_text(diagnostics_tab_title, "Diagnostics");
+	lv_obj_align(diagnostics_tab_title, NULL, LV_ALIGN_IN_TOP_MID, 0, 5);
+
 	// battery_bar_text = lv_bar_create(diagnostics_tab, NULL);
 	// lv_obj_set_size(battery_bar, 200, 30);
 	// lv_bar_set_value(battery_bar, pros::battery::get_capacity());
@@ -136,7 +136,7 @@ void gui_init() {
   mid_flag_auto_shot = lv_btn_create(shot_test_tab, NULL);
   lv_obj_set_free_num(mid_flag_auto_shot, 1);
   lv_btn_set_action(mid_flag_auto_shot, LV_BTN_ACTION_LONG_PR, shot_test_mid_auto_action);
-  lv_obj_align(mid_flag_auto_shot, top_flag_auto_shot, LV_ALIGN_OUT_BOTTOM_MID, -20, 15);
+  lv_obj_align(mid_flag_auto_shot, top_flag_auto_shot, LV_ALIGN_OUT_BOTTOM_MID, 0, 15);
   lv_obj_set_width(mid_flag_auto_shot, 250);
   mid_flag_auto_shot_label = lv_label_create(mid_flag_auto_shot, NULL);
   lv_label_set_text(mid_flag_auto_shot_label, "Mid Auto");
