@@ -4,12 +4,62 @@ using namespace pros;
 
 bool blue_team = true;
 
+/* Auto Update Task */
+pros::Task* auto_update_task = nullptr;
+void auto_update(void* param) {
+  pos.reset();
+  //if (pun_state != PunState::Loaded) pun_state_change(PunState::Loading);
+  while (true)
+  {
+    //if (is_disabled) printf(" >>> %d IN AUTO_UPDATE IN DISABLED\n", millis());
+    //pos.update();
+    pun_handle();
+    pros::delay(10);
+  }
+}
+
+void auto_update_stop_task() {
+	if(auto_update_task != nullptr)
+	{
+		log_ln(LOG_SHOTS, "  >>> %d Stop Auto Update Task", pros::millis());
+		auto_update_task->remove();
+		delete auto_update_task;
+		auto_update_task = nullptr;
+	}
+}
+
+void auto_update_start_task() {
+	auto_update_stop_task();
+	log_ln(LOG_SHOTS, "  >>> %d Start Auto Update Task", pros::millis());
+	auto_update_task = new pros::Task((pros::task_fn_t)auto_update);//, (void*)NULL, TASK_PRIORITY_DEFAULT, TASK_STACK_DEPTH_DEFAULT, "auto_update_Task");
+}
+
+/* Auto puncher angler setter functions */
+void auto_set_angler_target(double target) {
+  auto_angler_target = target;
+  angler_move(target);
+  log_ln(LOG_AUTO, "%d Angler Move to %f. CurPos:%f", millis(), auto_angler_target, angler.get_position());
+}
+
+void auto_set_first_shot(double angler_target) {
+  shot_req_handled_num = 0;
+  auto_set_shot = true;
+  auto_set_angler_target(angler_target);
+}
+void auto_set_second_shot(double angler_target) {
+  shot_req_handled_num = 1;
+  auto_set_shot = true;
+  auto_set_angler_target(angler_target);
+}
+
+
 double getGlobalAngle() {
 	//return (DRIVE_DIA * M_PI * (driveFL.get_position() - driveBR.get_position() + driveBL.get_position() - driveFR.get_position())) / (2 * DRIVE_TPR * (DRIVE_LENGTH + DRIVE_WIDTH));
 	return (enc_l.get_value() * SPN_TO_IN_L - enc_r.get_value() * SPN_TO_IN_R) / (WHL_DIS_L + WHL_DIS_R);
 	//return pos.a;
 }
 
+/* Movement Functions */
 void resetGlobalAngle() {
 	/*driveFL.tare_position();
   driveBL.tare_position();

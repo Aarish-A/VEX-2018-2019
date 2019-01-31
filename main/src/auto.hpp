@@ -8,6 +8,17 @@
 #include "puncher.hpp"
 #include <math.h>
 
+/* Auto Task Handler */
+extern pros::Task* auto_update_task;
+void auto_update(void* param);
+void auto_update_stop_task();
+void auto_update_start_task() ;
+
+/* Auto Puncher and Angler Setter */
+void auto_set_angler_target(double target);
+void auto_set_first_shot(double target);
+void auto_set_second_shot(double target);
+
 extern bool blue_team;
 
 constexpr double DRIVE_DIA = 3.95;

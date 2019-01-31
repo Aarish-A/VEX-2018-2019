@@ -8,6 +8,7 @@
 #include "logs.hpp"
 #include "gui.hpp"
 #include "decapper.hpp"
+#include "shot_select.hpp"
 
 void side_initialize();
 void auto_routine_initialize();
@@ -71,6 +72,7 @@ void side_initialize() {
  */
 void disabled() {
   is_disabled = true;
+  shot_req_handle_stop_task();
   log_ln(LOG_AUTO, "   --- %d START DISABLED --- \n", pros::millis());
   setDrive(0);
   angler.move(0);
