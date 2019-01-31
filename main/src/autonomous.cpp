@@ -38,7 +38,7 @@ void auto_set_second_shot(double angler_target) {
 
 void auto_update(void* param) {
   pos.reset();
-  if (pun_state != PunState::Loaded) pun_state_change(PunState::Loading);
+  //if (pun_state != PunState::Loaded) pun_state_change(PunState::Loading);
   while (true)
   {
     //if (is_disabled) printf(" >>> %d IN AUTO_UPDATE IN DISABLED\n", millis());
@@ -76,6 +76,8 @@ void autonomous() {
   uint32_t autoStartTime = millis();
   setDriveVel(0);
     delay(10);
+  log_ln(LOG_AUTO, "   --- %d START AUTO --- \n", pros::millis());
+  log_ln(LOG_AUTO, " >>> %d PUN TEMP: %f", pros::millis(), puncherLeft.get_temperature());
   // if(autoPoti.get_value()>1600)
   if (game_side == 'R')
   {

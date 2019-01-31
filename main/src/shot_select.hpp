@@ -22,7 +22,7 @@ constexpr int ANGLER_DZ = 30;
 
 constexpr double ANGLER_PU_POS = 85;//ANGLER_BALL * 7;
 
-constexpr double ANGLER_CAP_PU_POS = 215;
+constexpr double ANGLER_CAP_PU_POS = 230;
 
 constexpr double ANGLER_CAP_FLIP_POS = 50;
 
@@ -61,7 +61,6 @@ struct ShotSelect {
   Dir turn_dir;
   FieldPos field_pos;
   vector flag_pos;
-
   bool drive_turn_handled;
   int angler_to;
   bool shot_handled;

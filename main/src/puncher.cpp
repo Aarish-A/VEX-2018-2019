@@ -64,7 +64,7 @@ void pun_cal() {
 	log_ln(LOG_PUNCHER, "%d Pun Cal Done Tare. LeftPos:%f, RightPos:%f", pros::millis(), puncherLeft.get_position(), puncherRight.get_position());
 
   pun_move(PUN_OFFSET + PUN_HOLD);
-  pun_state_change(PunState::Loading);
+  pun_state_change(PunState::Loaded);
 }
 
 void pun_handle() {
@@ -189,8 +189,8 @@ void pun_handle() {
       case PunState::FatalError:
 			{
 				pun_set(0);
-				log_ln(LOG_PUNCHER,"puncher power was just set to 0 in state: Fatal Error");
-				log_ln(LOG_PUNCHER, "In fatal error puncher power: %d", puncherLeft.get_power());
+				//log_ln(LOG_PUNCHER,"puncher power was just set to 0 in state: Fatal Error");
+				//log_ln(LOG_PUNCHER, "In fatal error puncher power: %d", puncherLeft.get_power());
         break;
 			}
 		}

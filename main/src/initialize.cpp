@@ -13,7 +13,7 @@ void side_initialize();
 void auto_routine_initialize();
 
 void initialize() {
-  printf("%d Start initialize\n", pros::millis());
+  log_ln(LOG_AUTO, "   --- %d START INITIALIZE --- \n", pros::millis());
   buttons[BTN_SHOT_L_T].button_press_time = BTN_PRESS_TIME;
 	buttons[BTN_SHOT_L_M].button_press_time = BTN_PRESS_TIME;
   buttons[BTN_SHOT_R_T].button_press_time = BTN_PRESS_TIME;
@@ -71,7 +71,7 @@ void side_initialize() {
  */
 void disabled() {
   is_disabled = true;
-  printf("  >>>%d IN DISABLED\n", pros::millis());
+  log_ln(LOG_AUTO, "   --- %d START DISABLED --- \n", pros::millis());
   setDrive(0);
   angler.move(0);
 }
