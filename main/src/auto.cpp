@@ -298,7 +298,7 @@ void flatten_against_wall(bool f_w, bool hold) {
 	if (f_w) {
 		//log_ln("%d FW Start", pros::millis());
 		setDrive(0,40, 0);
-		pros::delay(200);
+		pros::delay(600);
 		do {
 			//log_ln("%d Reset Back Up(%f, %f, %f) Vel(%f, %f, %f) VeelLoc(%f, %f)", pros::millis(), pos.x, pos.y, RAD_TO_DEG(pos.a), pos.xVel, pos.yVel, pos.aVel, pos.velLocal.x, pos.velLocal.y);
 			pros::delay(10);
