@@ -55,3 +55,5 @@ lv_res_t blue_side_button_action(lv_obj_t* button);
 lv_res_t shot_tuning_save_button_action(lv_obj_t* button);
 lv_res_t shot_test_top_auto_action(lv_obj_t* button);
 lv_res_t shot_test_mid_auto_action(lv_obj_t* button);
+lv_res_t shot_test_mid_turn_action(lv_obj_t* button);
+lv_res_t shot_test_top_turn_action(lv_obj_t* button);

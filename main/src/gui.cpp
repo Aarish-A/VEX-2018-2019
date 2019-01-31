@@ -40,6 +40,10 @@ lv_obj_t* top_flag_auto_shot;
 lv_obj_t* top_flag_auto_shot_label;
 lv_obj_t* mid_flag_auto_shot;
 lv_obj_t* mid_flag_auto_shot_label;
+lv_obj_t* mid_flag_turn_shot;
+lv_obj_t* mid_flag_turn_shot_label;
+lv_obj_t* top_flag_turn_shot;
+lv_obj_t* top_flag_turn_shot_label;
 
 
 lv_obj_t* auto_buttons[8];
@@ -141,6 +145,21 @@ void gui_init() {
   mid_flag_auto_shot_label = lv_label_create(mid_flag_auto_shot, NULL);
   lv_label_set_text(mid_flag_auto_shot_label, "Mid Auto");
 
+  mid_flag_turn_shot = lv_btn_create(shot_test_tab, NULL);
+  lv_obj_set_free_num(mid_flag_turn_shot, 1);
+  lv_btn_set_action(mid_flag_turn_shot, LV_BTN_ACTION_LONG_PR, shot_test_mid_turn_action);
+  lv_obj_align(mid_flag_turn_shot, mid_flag_auto_shot, LV_ALIGN_OUT_BOTTOM_MID, 0, 15);
+  lv_obj_set_width(mid_flag_turn_shot, 250);
+  mid_flag_turn_shot_label = lv_label_create(mid_flag_turn_shot, NULL);
+  lv_label_set_text(mid_flag_turn_shot_label, "Mid Turn");
+
+  top_flag_turn_shot = lv_btn_create(shot_test_tab, NULL);
+  lv_obj_set_free_num(top_flag_turn_shot, 1);
+  lv_btn_set_action(top_flag_turn_shot, LV_BTN_ACTION_LONG_PR, shot_test_top_turn_action);
+  lv_obj_align(top_flag_turn_shot, mid_flag_turn_shot, LV_ALIGN_OUT_BOTTOM_MID, 0, 15);
+  lv_obj_set_width(top_flag_turn_shot, 250);
+  top_flag_turn_shot_label = lv_label_create(top_flag_turn_shot, NULL);
+  lv_label_set_text(top_flag_turn_shot_label, "Top Turn");
 
 	// Shot Tuning Tab
 	shot_tuning_title = lv_label_create(shot_tuning_tab, NULL);
@@ -339,6 +358,24 @@ lv_res_t shot_test_mid_auto_action(lv_obj_t* button)
   return LV_RES_OK;
 }
 
+lv_res_t shot_test_mid_turn_action(lv_obj_t* button)
+{
+  ctrler.rumble(". . .");
+  pros::delay(2000);
+  printf("position is %d",pf_back_SP.mid);
+  auto_set_first_shot(pf_back_SP.mid);
+
+  return LV_RES_OK;
+}
+lv_res_t shot_test_top_turn_action(lv_obj_t* button)
+{
+  ctrler.rumble(". . .");
+  pros::delay(2000);
+  printf("position is %d",pf_back_SP.top);
+  auto_set_first_shot(pf_back_SP.top);
+
+  return LV_RES_OK;
+}
 lv_res_t shot_tuning_save_button_action(lv_obj_t* button) {
   ctrler.rumble(". . .");
   for(int i = 0; i < 6; i++) {
