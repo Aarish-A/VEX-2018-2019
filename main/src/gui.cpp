@@ -17,10 +17,10 @@ char battery_bar_string[4];
 
 // Shot Tuning Tab
 lv_obj_t* shot_tuning_title;
-lv_obj_t* shot_slider[4];
-lv_obj_t* shot_slider_text[4];
-lv_obj_t* shot_slider_label[4];
-int shot_slider_value[] = { 0, 0, 0, 0 };
+lv_obj_t* shot_slider[6];
+lv_obj_t* shot_slider_text[6];
+lv_obj_t* shot_slider_label[6];
+int shot_slider_value[] = { 0, 0, 0, 0, 0, 0};
 lv_obj_t* shot_tuning_save_button;
 lv_obj_t* shot_tuning_save_button_label;
 
@@ -49,7 +49,7 @@ std::string auto_routines[8] = {
 void gui_init() {
   printf("Log Program done\n");
   // pros::delay(50);
-  for(int i = 0; i < 4; i++) {
+  for(int i = 0; i < 6; i++) {
     FILE* log = NULL;
     printf("file pointer\n");
     if (i == 0) {
@@ -64,6 +64,12 @@ void gui_init() {
     } else if (i == 3) {
       log = fopen("/usd/front_top_shot_position.txt", "r");
       if(log != NULL) fscanf(log, "%d", &(front_SP.top));
+    } else if (i == 4) {
+      log = fopen("/usd/front_top_auto_position.txt", "r");
+      if(log != NULL) fscanf(log, "%d", &(auto_SP.top));
+    } else if (i == 5) {
+      log = fopen("/usd/front_mid_auto_position.txt", "r");
+      if(log != NULL) fscanf(log, "%d", &(auto_SP.mid));
     }
 
   //   printf("for loop exited");
@@ -110,10 +116,10 @@ void gui_init() {
 	lv_label_set_text(shot_tuning_title, "Shot Tuning");
 	lv_obj_align(shot_tuning_title, NULL, LV_ALIGN_IN_TOP_MID, 0, 5);
 
-  for(int i = 0; i < 4; i++) {
+  for(int i = 0; i < 6; i++) {
     shot_slider[i] = lv_slider_create(shot_tuning_tab, NULL);
     lv_obj_set_size(shot_slider[i], 300, 30);
-    lv_slider_set_range(shot_slider[i], 0, 150);
+    lv_slider_set_range(shot_slider[i], 0, 250);
     lv_slider_set_action(shot_slider[i], shot_tuning_slider_action);
     if (i == 0) lv_obj_align(shot_slider[i], shot_tuning_title, LV_ALIGN_OUT_BOTTOM_MID, 5, 10);
     else lv_obj_align(shot_slider[i], shot_slider[i - 1], LV_ALIGN_OUT_BOTTOM_RIGHT, 0, 10);
@@ -133,6 +139,12 @@ void gui_init() {
     } else if (i == 3) {
       lv_label_set_text(shot_slider_label[i], "Front Top");
       lv_bar_set_value(shot_slider[i], front_SP.top);
+    } else if (i == 4) {
+      lv_label_set_text(shot_slider_label[i], "Auto Top");
+      lv_bar_set_value(shot_slider[i], auto_SP.top);
+    } else if (i == 5) {
+      lv_label_set_text(shot_slider_label[i], "Auto Mid");
+      lv_bar_set_value(shot_slider[i], auto_SP.mid);
     }
 
     shot_slider_text[i] = lv_label_create(shot_tuning_tab, NULL);
@@ -146,7 +158,7 @@ void gui_init() {
   shot_tuning_save_button = lv_btn_create(shot_tuning_tab, NULL);
   lv_obj_set_free_num(shot_tuning_save_button, 1);
   lv_btn_set_action(shot_tuning_save_button, LV_BTN_ACTION_LONG_PR, shot_tuning_save_button_action);
-  lv_obj_align(shot_tuning_save_button, shot_slider[3], LV_ALIGN_OUT_BOTTOM_MID, -20, 30);
+  lv_obj_align(shot_tuning_save_button, shot_slider[3], LV_ALIGN_OUT_BOTTOM_MID, -20, 100);
   lv_obj_set_width(shot_tuning_save_button, 250);
   shot_tuning_save_button_label = lv_label_create(shot_tuning_save_button, NULL);
   lv_label_set_text(shot_tuning_save_button_label, "Save?");
@@ -268,7 +280,7 @@ lv_res_t blue_side_button_action(lv_obj_t* button) {
 }
 
 lv_res_t shot_tuning_slider_action(lv_obj_t* slider) {
-  for (int i = 0; i < 4; i++) {
+  for (int i = 0; i < 6; i++) {
     char shot_slider_string[4];
     sprintf(shot_slider_string, "%d", lv_slider_get_value(shot_slider[i]));
     lv_label_set_text(shot_slider_text[i], shot_slider_string);
@@ -279,7 +291,7 @@ lv_res_t shot_tuning_slider_action(lv_obj_t* slider) {
 
 lv_res_t shot_tuning_save_button_action(lv_obj_t* button) {
   ctrler.rumble(". . .");
-  for(int i = 0; i < 4; i++) {
+  for(int i = 0; i < 6; i++) {
     FILE* log = NULL;
     if (i == 0) {
       log = fopen("/usd/back_mid_shot_position.txt", "w");
@@ -293,6 +305,12 @@ lv_res_t shot_tuning_save_button_action(lv_obj_t* button) {
     } else if (i == 3) {
       log = fopen("/usd/front_top_shot_position.txt", "w");
       front_SP.top = lv_slider_get_value(shot_slider[3]);
+    } else if (i == 4) {
+      log = fopen("/usd/front_top_auto_position.txt", "w");
+      auto_SP.top = lv_slider_get_value(shot_slider[4]);
+    } else if (i == 5) {
+      log = fopen("/usd/front_mid_auto_position.txt", "w");
+      auto_SP.top = lv_slider_get_value(shot_slider[5]);
     }
 
     if (log == NULL) {

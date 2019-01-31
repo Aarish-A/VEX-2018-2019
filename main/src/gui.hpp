@@ -21,10 +21,10 @@ extern char battery_bar_string[4];
 
 // Shot Tuning Tab
 extern lv_obj_t* shot_tuning_title;
-extern lv_obj_t* shot_slider[4];
-extern lv_obj_t* shot_slider_text[4];
-extern int shot_slider_value[4];
-extern lv_obj_t* shot_slider_label[4];
+extern lv_obj_t* shot_slider[6];
+extern lv_obj_t* shot_slider_text[6];
+extern int shot_slider_value[6];
+extern lv_obj_t* shot_slider_label[6];
 extern lv_obj_t* shot_tuning_save_button;
 extern lv_obj_t* shot_tuning_save_button_label;
 

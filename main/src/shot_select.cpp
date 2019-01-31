@@ -4,6 +4,7 @@ pros::Task* shot_req_handle_task = nullptr;
 
 /* Shot Positions */
 ShotPos front_SP (FieldPos_Front, 98, 0);
+ShotPos auto_SP (FieldPos_Front, 88, 0);
 ShotPos pf_SP (FieldPos_PF, 90, 70);
 ShotPos pf_back_SP (FieldPos_PF_Back_Red, 88, 0);
 ShotPos back_SP (FieldPos_Back, 90, 10);
