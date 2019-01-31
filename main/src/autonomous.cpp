@@ -36,6 +36,7 @@ void auto_set_second_shot(double angler_target) {
   auto_set_angler_target(angler_target);
 }
 
+pros::Task* auto_update_task = nullptr;
 void auto_update(void* param) {
   pos.reset();
   //if (pun_state != PunState::Loaded) pun_state_change(PunState::Loading);
@@ -46,6 +47,22 @@ void auto_update(void* param) {
     pun_handle();
     pros::delay(10);
   }
+}
+
+void auto_update_stop_task() {
+	if(auto_update_task != nullptr)
+	{
+		log_ln(LOG_SHOTS, "  >>> %d Stop Auto Update Task", pros::millis());
+		auto_update_task->remove();
+		delete auto_update_task;
+		auto_update_task = nullptr;
+	}
+}
+
+void auto_update_start_task() {
+	auto_update_stop_task();
+	log_ln(LOG_SHOTS, "  >>> %d Start Auto Update Task", pros::millis());
+	auto_update_task = new pros::Task((pros::task_fn_t)auto_update);//, (void*)NULL, TASK_PRIORITY_DEFAULT, TASK_STACK_DEPTH_DEFAULT, "auto_update_Task");
 }
 
 void shoot_flip_cap_on_45()
@@ -71,7 +88,7 @@ void shoot_flip_cap_on_45()
 void autonomous() {
   is_disabled = false;
   shot_req_handle_stop_task();
-  pros::Task((pros::task_fn_t)auto_update);
+  auto_update_start_task();
 
   uint32_t autoStartTime = millis();
   setDriveVel(0);
@@ -340,4 +357,6 @@ void autonomous() {
       }
     }
   }
+
+  auto_update_stop_task();
 }
