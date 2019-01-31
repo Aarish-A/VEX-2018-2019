@@ -26,6 +26,10 @@ constexpr double ANGLER_CAP_PU_POS = 230;
 
 constexpr double ANGLER_CAP_FLIP_POS = 50;
 
+constexpr double ANGLER_FLIP_FLAG_POS = 105;
+
+constexpr double ANGLER_PARK_POS = 240;
+
 constexpr double ANGLER_BOT_LIM_POS = 40;
 constexpr double ANGLER_TOP_LIM_POS = 320;
 

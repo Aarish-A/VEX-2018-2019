@@ -45,6 +45,7 @@ void gui_init();
 void gui_handle();
 lv_res_t shot_tuning_slider_action(lv_obj_t * slider);
 lv_res_t auto_button_action_front(lv_obj_t* button);
+lv_res_t auto_button_action_front_park(lv_obj_t* button);
 lv_res_t auto_button_action_back_mid_first(lv_obj_t* button);
 lv_res_t auto_button_action_back_far_first(lv_obj_t* button);
 lv_res_t red_side_button_action(lv_obj_t* button);

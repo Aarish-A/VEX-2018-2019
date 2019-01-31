@@ -95,6 +95,52 @@ void autonomous() {
         shot_req_handled_num = 0;
         break;
       }
+      case auto_routines::FRONT_PARK:
+      {
+        //1 Pick up balls
+        log_ln(LOG_AUTO, "%d Angler Start move: %d", millis(), angler.get_position());
+        angler_move(ANGLER_PU_POS, 100);
+        intake.move(127);
+        double cap_dis = 43.0_in;
+        move_drive_rel(cap_dis, 200);
+        delay(200);
+
+        //2 Back up turn and shoot
+        double first_flag_pos = front_SP.top;
+        auto_set_angler_target(first_flag_pos);
+        move_drive_rel(-(cap_dis-4), 200);
+        turn_vel( FixedAngleTarget(-87.0_deg), (200/90_deg));
+        intake.move(0);
+
+        auto_set_first_shot(first_flag_pos);
+        while (auto_set_shot) pros::delay(10);
+        log_ln(LOG_AUTO, " > %d Done first shot | angler:%f targ:%f |(%f, %f, %f)", millis(), angler.get_position(), auto_angler_target, pos.x, pos.y, RAD_TO_DEG(pos.a));
+        printf("Done first shot");
+        pros::delay(150);
+        auto_set_second_shot(front_SP.mid+35);
+        while (auto_set_shot) pros::delay(10);
+        printf("Done second shot");
+        angler_move(ANGLER_PU_POS, 200);
+        intake.move(127);
+
+        // Flip Bottom Flag
+        turn_vel( FixedAngleTarget(-90.0_deg), (200/70_deg));
+        double bot_flag_dis = 41;
+        move_drive_rel(bot_flag_dis, 200, false);
+        pros::delay(250);
+        move_drive_rel(-bot_flag_dis, 200, true);
+        turn_vel( FixedAngleTarget(-45_deg), (200/90_deg));
+
+        //Back up and low park
+        /*
+        move_drive_rel(-(bot_flag_dis + 28), 200);
+        intake.move(0);
+        angler_move(ANGLER_PARK_POS);
+        turn_vel(FixedAngleTarget(0_deg), (200/90_deg));
+        move_drive_rel_simple(30, 200, false);
+        */
+        break;
+      }
       case auto_routines::BACK_MID_FIRST:
       {
         log_ln(LOG_AUTO, "%d Angler Start move: %d", millis(), angler.get_position());
@@ -223,6 +269,52 @@ void autonomous() {
         //flatten_against_wall(true, true);
 
         shot_req_handled_num = 0;
+        break;
+      }
+      case auto_routines::FRONT_PARK:
+      {
+        //1 Pick up balls
+        log_ln(LOG_AUTO, "%d Angler Start move: %d", millis(), angler.get_position());
+        angler_move(ANGLER_PU_POS, 100);
+        intake.move(127);
+        double cap_dis = 43.0_in;
+        move_drive_rel(cap_dis, 200);
+        delay(200);
+
+        //2 Back up turn and shoot
+        double first_flag_pos = front_SP.top;
+        auto_set_angler_target(first_flag_pos);
+        move_drive_rel(-(cap_dis-6), 200);
+        turn_vel( FixedAngleTarget(87.0_deg), (200/90_deg));
+        intake.move(0);
+
+        auto_set_first_shot(first_flag_pos);
+        while (auto_set_shot) pros::delay(10);
+        log_ln(LOG_AUTO, " > %d Done first shot | angler:%f targ:%f |(%f, %f, %f)", millis(), angler.get_position(), auto_angler_target, pos.x, pos.y, RAD_TO_DEG(pos.a));
+        printf("Done first shot");
+        pros::delay(150);
+        auto_set_second_shot(front_SP.mid+20);
+        while (auto_set_shot) pros::delay(10);
+        printf("Done second shot");
+        angler_move(ANGLER_PU_POS,200);
+        intake.move(127);
+
+        // Flip Bottom Flag
+        turn_vel( FixedAngleTarget(90.0_deg), (200/70_deg));
+        double bot_flag_dis = 41;
+        move_drive_rel(bot_flag_dis, 200, false);
+        pros::delay(250);
+        move_drive_rel(-bot_flag_dis, 200, true);
+        turn_vel( FixedAngleTarget(45_deg), (200/90_deg));
+
+        //Back up and low park
+        /*
+        move_drive_rel(-(bot_flag_dis + 28), 200);
+        intake.move(0);
+        angler_move(ANGLER_PARK_POS);
+        turn_vel(FixedAngleTarget(0_deg), (200/90_deg));
+        move_drive_rel_simple(30, 200, false);
+        */
         break;
       }
       case auto_routines::BACK_MID_FIRST:

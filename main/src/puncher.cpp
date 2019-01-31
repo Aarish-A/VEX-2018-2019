@@ -63,7 +63,11 @@ void pun_cal() {
   puncherRight.tare_position();
 	log_ln(LOG_PUNCHER, "%d Pun Cal Done Tare. LeftPos:%f, RightPos:%f", pros::millis(), puncherLeft.get_position(), puncherRight.get_position());
 
+	log_ln(LOG_PUNCHER, "%d Pun Cal - START LOADING - LeftPos:%f, RightPos:%f", pros::millis(), puncherLeft.get_position(), puncherRight.get_position());
   pun_move(PUN_OFFSET + PUN_HOLD);
+	while (puncherLeft.get_position() < PUN_OFFSET + PUN_HOLD) pros::delay(10);
+	log_ln(LOG_PUNCHER, "%d Pun Cal - DONE LOADING - LeftPos:%f, RightPos:%f", pros::millis(), puncherLeft.get_position(), puncherRight.get_position());
+	pun_set(PUN_HOLD_PWR);
   pun_state_change(PunState::Loaded);
 }
 

@@ -4,13 +4,15 @@
 
 enum class auto_routines {
   FRONT,
+  FRONT_PARK,
   BACK_MID_FIRST,
   BACK_FAR_FIRST,
-  UNUSED3,
   UNUSED4,
   UNUSED5,
   UNUSED6,
-  UNUSED7
+  UNUSED7,
+
+  K_AUTO_ROUTINE_NUM
 };
 
 extern pros::Controller ctrler;
