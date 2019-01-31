@@ -130,14 +130,14 @@ void autonomous() {
         move_drive_rel(cap_dis, 200);
         delay(200);
         move_drive_rel(-22_in,200);
-        double first_flag_pos = front_SP.top-15;
+        double first_flag_pos = pf_back_SP.top;
         auto_set_angler_target(first_flag_pos);
         intake.move(0);
         turn_vel( FixedAngleTarget(-69.5_deg), (200/90_deg));
         auto_set_first_shot(first_flag_pos);
         while (auto_set_shot) pros::delay(10);
         pros::delay(150);
-        auto_set_second_shot(front_SP.mid+45);
+        auto_set_second_shot(pf_back_SP.mid);
         while (auto_set_shot) pros::delay(10);
         intake.move(127);
         angler_move(ANGLER_CAP_PU_POS,100);
@@ -146,7 +146,7 @@ void autonomous() {
         move_drive_rel(27_in, 200);
         pros::delay(250);
         move_drive_rel(-8_in,200);
-        first_flag_pos = front_SP.top+30;
+        first_flag_pos = pf_back_SP.top+10;
         auto_set_angler_target(first_flag_pos);
         drive_fl.tare_position();
         drive_set(-75,0,0);
@@ -157,9 +157,9 @@ void autonomous() {
         auto_set_first_shot(first_flag_pos);
         while (auto_set_shot) pros::delay(10);
         pros::delay(150);
-        auto_set_second_shot(front_SP.mid+70);
+        auto_set_second_shot(pf_back_SP.mid+30);
         while (auto_set_shot) pros::delay(10);
-        ctrler.print(2,0,"Auto T: %d",millis()-autoStartTime);
+        ctrler.print(2,0,"Auto T: %d, %d",millis()-autoStartTime, puncherLeft.get_temperature());
         break;
       }
       case auto_routines::BACK_FAR_FIRST:
@@ -260,14 +260,14 @@ void autonomous() {
         move_drive_rel(cap_dis, 200);
         delay(200);
         move_drive_rel(-22_in,200);
-        double first_flag_pos = front_SP.top-15;
+        double first_flag_pos = pf_back_SP.top;
         auto_set_angler_target(first_flag_pos);
         intake.move(0);
         turn_vel( FixedAngleTarget(72_deg), (200/90_deg));
         auto_set_first_shot(first_flag_pos);
         while (auto_set_shot) pros::delay(10);
         pros::delay(150);
-        auto_set_second_shot(front_SP.mid+45);
+        auto_set_second_shot(pf_back_SP.mid);
         while (auto_set_shot) pros::delay(10);
         intake.move(127);
         angler_move(ANGLER_CAP_PU_POS,100);
@@ -277,7 +277,7 @@ void autonomous() {
         move_drive_rel(27_in, 200);
         pros::delay(250);
         move_drive_rel(-8_in,200);
-        first_flag_pos = front_SP.top+37;
+        first_flag_pos = pf_back_SP.top+10;
         auto_set_angler_target(first_flag_pos);
         drive_fl.tare_position();
         drive_set(75,0,0);
@@ -288,7 +288,7 @@ void autonomous() {
         auto_set_first_shot(first_flag_pos);
         while (auto_set_shot) pros::delay(10);
         pros::delay(150);
-        auto_set_second_shot(front_SP.mid+70);
+        auto_set_second_shot(pf_back_SP.mid+30);
         while (auto_set_shot) pros::delay(10);
         ctrler.print(2,0,"Auto T: %d",millis()-autoStartTime);
         break;
