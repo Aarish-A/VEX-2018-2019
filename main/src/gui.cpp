@@ -8,6 +8,7 @@ lv_obj_t* menu;
 lv_obj_t* diagnostics_tab;
 lv_obj_t* shot_tuning_tab;
 lv_obj_t* auto_select_tab;
+lv_obj_t* shot_test_tab;
 
 // Diagnostics Tab
 lv_obj_t* diagnostics_tab_title;
@@ -32,6 +33,12 @@ lv_obj_t* blue_side_button;
 lv_obj_t* blue_side_button_label;
 extern lv_obj_t* auto_buttons[8];
 extern lv_obj_t* auto_buttons_label[8];
+
+// Shot Testing Tab
+lv_obj_t* shot_testing_title;
+lv_obj_t* top_flag_auto_shot;
+lv_obj_t* top_flag_auto_shot_label;
+
 
 lv_obj_t* auto_buttons[8];
 lv_obj_t* auto_buttons_label[8];
@@ -95,6 +102,7 @@ void gui_init() {
 	diagnostics_tab = lv_tabview_add_tab(menu, "Diagnostics");
 	shot_tuning_tab = lv_tabview_add_tab(menu, "Shot Tuning");
 	auto_select_tab = lv_tabview_add_tab(menu, "Auto Select");
+  shot_test_tab = lv_tabview_add_tab(menu, "Test Shots");
 
 	// // Diagnostics Tab
 	// diagnostics_tab_title = lv_label_create(diagnostics_tab, NULL);
@@ -109,6 +117,19 @@ void gui_init() {
 	// lv_obj_align(battery_bar_text, battery_bar, LV_ALIGN_OUT_RIGHT_MID, 5, 0);
   // sprintf(battery_bar_string, "%.1f p/c", pros::battery::get_capacity());
   // lv_label_set_text(battery_bar_text, battery_bar_string);
+
+  // Shot Testing Tab
+  shot_testing_title = lv_label_create(shot_test_tab, NULL);
+	lv_label_set_text(shot_testing_title, "Shot Testing");
+	lv_obj_align(shot_testing_title, NULL, LV_ALIGN_IN_TOP_MID, 0, 5);
+
+  top_flag_auto_shot = lv_btn_create(shot_test_tab, NULL);
+  lv_obj_set_free_num(top_flag_auto_shot, 1);
+  lv_btn_set_action(top_flag_auto_shot, LV_BTN_ACTION_LONG_PR, shot_tuning_save_button_action);
+  lv_obj_align(top_flag_auto_shot, NULL, LV_ALIGN_OUT_BOTTOM_MID, -20, 15);
+  lv_obj_set_width(top_flag_auto_shot, 250);
+  top_flag_auto_shot_label = lv_label_create(top_flag_auto_shot, NULL);
+  lv_label_set_text(top_flag_auto_shot_label, "Top Auto");
 
 
 	// Shot Tuning Tab
@@ -288,7 +309,10 @@ lv_res_t shot_tuning_slider_action(lv_obj_t* slider) {
   }
   return LV_RES_OK;
 }
-
+lv_res_t shot_test_top_auto_action(lv_obj_t* button)
+{
+  
+}
 lv_res_t shot_tuning_save_button_action(lv_obj_t* button) {
   ctrler.rumble(". . .");
   for(int i = 0; i < 6; i++) {

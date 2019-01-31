@@ -12,6 +12,7 @@ extern lv_obj_t* menu;
 extern lv_obj_t* diagnostics_tab;
 extern lv_obj_t* shot_tuning_tab;
 extern lv_obj_t* auto_select_tab;
+extern lv_obj_t* shot_test_tab;
 
 // Diagnostics Tab
 extern lv_obj_t* diagnostics_tab_title;
