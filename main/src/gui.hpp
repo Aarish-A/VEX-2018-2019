@@ -2,6 +2,8 @@
 #include "main.h"
 #include "shot_select.hpp"
 #include "config.hpp"
+#include "auto.hpp"
+#include "puncher.hpp"
 #include <string>
 
 // Main Screen
@@ -51,3 +53,5 @@ lv_res_t auto_button_action_back_far_first(lv_obj_t* button);
 lv_res_t red_side_button_action(lv_obj_t* button);
 lv_res_t blue_side_button_action(lv_obj_t* button);
 lv_res_t shot_tuning_save_button_action(lv_obj_t* button);
+lv_res_t shot_test_top_auto_action(lv_obj_t* button);
+lv_res_t shot_test_mid_auto_action(lv_obj_t* button);
