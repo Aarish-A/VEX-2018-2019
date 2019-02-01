@@ -22,6 +22,7 @@ double eff_fr = drive_fr.get_efficiency();
 double eff_br = drive_br.get_efficiency();
 
 void opcontrol() {
+	resetGlobalAngle();
 	is_disabled = false;
 	int print_time = 0;
 	auto_update_stop_task();
@@ -58,7 +59,7 @@ void opcontrol() {
 			else if (field_pos== FieldPos_PF_Back_Blue) field_pos_s = "PfB";
 
 			std::string team_s = blue_team? "b" : "r";
-			ctrler.print(2, 0, "BD: %d   ", ball_sensor.get_value());
+			//ctrler.print(2, 0, "BD: %d   ", ball_sensor.get_value());
 			// eff_fl = drive_fl.get_efficiency();
 			// eff_bl = drive_bl.get_efficiency();
 			// eff_fr = drive_fr.get_efficiency();
@@ -72,7 +73,7 @@ void opcontrol() {
 			// ctrler.print(2, 0, "%s %.1f %.1f %.1f %.1f    ", field_pos_s, eff_fl, eff_bl, eff_fr, eff_br);
 			// ctrler.print(2, 0, "%s %s %d %d %d      ", field_pos_s, team_s, (int)intake.get_temperature(), (int)puncherLeft.get_temperature(), (int)puncherRight.get_temperature());
 			// ctrler.print(2, 0, "%d  ", (int)current_auto_routine);
-			//ctrler.print(2, 0, "%.1f %.1f %.1f     ", pos.x, pos.y, RAD_TO_DEG(pos.a));
+			ctrler.print(2, 0, "a: %.1f       ", RAD_TO_DEG(getGlobalAngle()));
 			//ctrler.print(2, 0, "%d %d %.1f     ", enc_l.get_value(), enc_r.get_value(), RAD_TO_DEG(pos.a));
 			//ctrler.print(2, 0, "%f          ", ((enc_l.get_value() * SPN_TO_IN_L) - (enc_r.get_value() * SPN_TO_IN_R)) / 3600_deg);
 

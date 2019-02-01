@@ -25,31 +25,38 @@ void shoot_flip_cap_on_45()
   angler_move(ANGLER_CAP_PU_POS,100);
   intake.move(127);
   move_drive_rel(17.5_in,200);
+  pros::delay(30000); //delete
   pros::delay(750);
   move_drive_rel(-8.8_in,200,true);
-  intake.move(0);
-  auto_set_first_shot(front_SP.top);
-  while (auto_set_shot) pros::delay(10);
-  pros::delay(150);
-  auto_set_second_shot(front_SP.mid+4);
-  while (auto_set_shot) pros::delay(10);
+
+  //Flip
   intake.move(-70);
   auto_set_angler_target(ANGLER_CAP_FLIP_POS);
   move_drive_rel_simple(15_in,70, false);
   //pros::delay(0);
   move_drive_rel(-15_in,200, false);
+
+  //Shoot
+  intake.move(0);
+  auto_set_first_shot(front_SP.top);
+  while (auto_set_shot) pros::delay(10);
+  pros::delay(50);
+  auto_set_second_shot(front_SP.mid+4);
+  while (auto_set_shot) pros::delay(10);
 }
 
 void autonomous() {
   is_disabled = false;
   shot_req_handle_stop_task();
   auto_update_start_task();
-
+  log_ln(LOG_AUTO, "%d Drive Angle:%f", millis(), RAD_TO_DEG(getGlobalAngle()));
   uint32_t autoStartTime = millis();
   setDriveVel(0);
     delay(10);
   log_ln(LOG_AUTO, "   --- %d START AUTO --- \n", pros::millis());
   log_ln(LOG_AUTO, " >>> %d PUN TEMP: %f", pros::millis(), puncherLeft.get_temperature());
+  pos.reset();
+  resetGlobalAngle();
   // if(autoPoti.get_value()>1600)
   if (game_side == 'R')
   {
@@ -58,17 +65,22 @@ void autonomous() {
       case auto_routines::FRONT:
       {
         //1 Pick up balls
-        log_ln(LOG_AUTO, "%d Angler Start move: %d", millis(), angler.get_position());
+        log_ln(LOG_AUTO, "%d L:%d, R:%d, Drive Angle:%f", millis(), enc_l.get_value(), enc_r.get_value(), RAD_TO_DEG(getGlobalAngle()));
         angler_move(ANGLER_PU_POS, 100);
         intake.move(127);
         double cap_dis = 43.0_in;
         move_drive_rel(cap_dis, 200);
+        log_ln(LOG_AUTO, "%d Move FW: L:%d, R:%d, Drive Angle:%f", millis(), enc_l.get_value(), enc_r.get_value(), RAD_TO_DEG(getGlobalAngle()));
         delay(200);
+        log_ln(LOG_AUTO, "%d WAIT 200: L:%d, R:%d, Drive Angle:%f", millis(), enc_l.get_value(), enc_r.get_value(), RAD_TO_DEG(getGlobalAngle()));
 
         //2 Back up turn and shoot
         double first_flag_pos = front_SP.top;
         auto_set_angler_target(first_flag_pos);
         move_drive_rel(-(cap_dis-6), 200);
+        log_ln(LOG_AUTO, "%d BACK UP: L:%d, R:%d, Drive Angle:%f", millis(), enc_l.get_value(), enc_r.get_value(), RAD_TO_DEG(getGlobalAngle()));
+        log_ln(LOG_AUTO, "%d Drive Angle:%f", millis(), RAD_TO_DEG(getGlobalAngle()));
+        pros::delay(30000); //deletes
         turn_vel( FixedAngleTarget(-87.0_deg), (200/90_deg));
         intake.move(0);
 
@@ -83,7 +95,11 @@ void autonomous() {
         angler_move(ANGLER_PU_POS,100);
         move_drive_rel(6.5_in,200);
 
-        turn_vel( FixedAngleTarget(-40_deg), (200/90_deg));
+        pros::delay(30000); //delete
+
+
+
+        turn_vel(FixedAngleTarget(-40_deg), (200/90_deg));
         shoot_flip_cap_on_45();
 
         log_ln(LOG_AUTO, " > %d Done second shot | angler:%f targ:%f |(%f, %f, %f)", millis(), angler.get_position(), auto_angler_target, pos.x, pos.y, RAD_TO_DEG(pos.a));
