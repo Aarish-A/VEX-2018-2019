@@ -53,8 +53,13 @@ lv_res_t auto_button_action_back_mid_first(lv_obj_t* button);
 lv_res_t auto_button_action_back_far_first(lv_obj_t* button);
 lv_res_t red_side_button_action(lv_obj_t* button);
 lv_res_t blue_side_button_action(lv_obj_t* button);
+void shot_tune_save();
 lv_res_t shot_tuning_save_button_action(lv_obj_t* button);
 lv_res_t shot_test_top_auto_action(lv_obj_t* button);
 lv_res_t shot_test_mid_auto_action(lv_obj_t* button);
 lv_res_t shot_test_mid_turn_action(lv_obj_t* button);
 lv_res_t shot_test_top_turn_action(lv_obj_t* button);
+
+// GUI Buttons
+extern bool enable_gui_buttons;
+void gui_button_handle();

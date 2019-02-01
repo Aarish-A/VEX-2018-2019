@@ -121,7 +121,7 @@ void gui_init() {
           auto_SP.mid = temp;
           log_ln(LOG_IO, "%d auto_SP.mid var set (init) | Read_Return: %d | Temp: %d | auto_SP.mid: %d", pros::millis(), read_return, temp, auto_SP.mid);
       }
-      else log_ln(LOG_IO, "%d auto_SP.mid var set failed (init) | Read_Return: %d | Temp: %d | auto_SP.mid: %d", pros::millis(), read_return, temp, auto_SP.mid); 
+      else log_ln(LOG_IO, "%d auto_SP.mid var set failed (init) | Read_Return: %d | Temp: %d | auto_SP.mid: %d", pros::millis(), read_return, temp, auto_SP.mid);
     }
 
   //   printf("for loop exited");
@@ -435,7 +435,7 @@ lv_res_t shot_test_top_turn_action(lv_obj_t* button)
 
   return LV_RES_OK;
 }
-lv_res_t shot_tuning_save_button_action(lv_obj_t* button) {
+void shot_tune_save() {
   ctrler.rumble(". . .");
   for(int i = 0; i < 6; i++) {
     FILE* log = NULL;
@@ -470,5 +470,19 @@ lv_res_t shot_tuning_save_button_action(lv_obj_t* button) {
       fclose(log);
     }
   }
+}
+lv_res_t shot_tuning_save_button_action(lv_obj_t* button) {
+  shot_tune_save();
   return LV_RES_OK; /*Return OK if the message box is not deleted*/
+}
+
+// GUI Buttons
+bool enable_gui_buttons = false;
+void gui_button_handle()
+{
+  if (check_rising(BTN_FIELD_PF_BACK_BLUE)) shot_tune_save();
+  else if (check_rising(BTN_SHOT_R_T)) auto_set_first_shot(pf_back_SP.top);
+  else if (check_rising(BTN_SHOT_R_M)) auto_set_first_shot(pf_back_SP.mid);
+  else if (check_rising(BTN_SHOT_L_T)) auto_set_first_shot(auto_SP.top);
+  else if (check_rising(BTN_SHOT_L_M)) auto_set_first_shot(auto_SP.mid);
 }

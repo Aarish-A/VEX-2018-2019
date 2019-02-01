@@ -37,11 +37,12 @@ void opcontrol() {
 	while (true) {
 		pos.update();
 		update_buttons();
-		shot_req_make();
+		if(!enable_gui_buttons) shot_req_make();
+		if(enable_gui_buttons) gui_button_handle();
 		pun_handle();
 		drive_handle();
 		intake_handle();
-		angler_handle();
+		if(!enable_gui_buttons) angler_handle();
 		decapper_handle();
 		vision_handle();
 		// printf("%d\n",autoPoti.get_value());
@@ -62,7 +63,7 @@ void opcontrol() {
 			else if (field_pos== FieldPos_PF_Back_Blue) field_pos_s = "PfB";
 
 			std::string team_s = blue_team? "b" : "r";
-			ctrler.print(2, 0, "%d%d%d%d%d%d%d      ", field_pos_s, team_s, (int)angler.get_temperature(), (int)puncherLeft.get_temperature(), (int)puncherRight.get_temperature(), (int)drive_fl.get_temperature(), (int)drive_fr.get_temperature(), (int)drive_bl.get_temperature(), (int)drive_br.get_temperature());
+			ctrler.print(2, 0, "%d %d%d%d%d%d%d      ", field_pos_s, team_s, (int)angler.get_temperature(), (int)puncherLeft.get_temperature(), (int)puncherRight.get_temperature(), (int)drive_fl.get_temperature(), (int)drive_fr.get_temperature(), (int)drive_bl.get_temperature(), (int)drive_br.get_temperature());
 			//ctrler.print(2, 0, "BD: %d   ", ball_sensor.get_value());
 			// eff_fl = drive_fl.get_efficiency();
 			// eff_bl = drive_bl.get_efficiency();
@@ -75,7 +76,7 @@ void opcontrol() {
 
 			// ctrler.print(2, 0, "%d,%d,%d,%d", (int)drive_bl.get_temperature(), (int)drive_br.get_temperature(), (int)drive_fl.get_temperature(), (int)drive_fr.get_temperature());
 			// ctrler.print(2, 0, "%s %.1f %.1f %.1f %.1f    ", field_pos_s, eff_fl, eff_bl, eff_fr, eff_br);
-			ctrler.print(2, 0, "%s %s %d %d %d      ", field_pos_s, team_s, (int)intake.get_temperature(), (int)puncherLeft.get_temperature(), (int)puncherRight.get_temperature());
+			//ctrler.print(2, 0, "%s %s %d %d %d      ", field_pos_s, team_s, (int)intake.get_temperature(), (int)puncherLeft.get_temperature(), (int)puncherRight.get_temperature());
 			// ctrler.print(2, 0, "%d  ", (int)current_auto_routine);
 			//ctrler.print(2, 0, "a: %.1f       ", RAD_TO_DEG(getGlobalAngle()));
 			//ctrler.print(2, 0, "%d %d %.1f     ", enc_l.get_value(), enc_r.get_value(), RAD_TO_DEG(pos.a));
