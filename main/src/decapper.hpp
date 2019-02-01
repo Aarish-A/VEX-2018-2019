@@ -6,19 +6,18 @@
 #include "auto.hpp"
 #include "tracking.hpp"
 
-constexpr double DECAPPER_PICKUP = 200;
-constexpr double DECAPPER_CAPPING = 1150;
-constexpr double DECAPPER_CAPPING_HOLD = 1100;
-constexpr double DECAPPER_DECAPLOW = 1300;
-constexpr double DECAPPER_DECAPPING = (DECAPPER_DECAPLOW-120);
+constexpr double DECAPPER_RATIO = 5.0/1.0;
+
+constexpr double DECAPPER_BOT_POS = 0;
+constexpr double DECAPPER_MID_POS = 45.0 * DECAPPER_RATIO;
+constexpr double DECAPPER_TOP_POS = 90.0 * DECAPPER_RATIO;
+
+constexpr int DECAPPER_BOT_HOLD_POW = -4;
+constexpr int DECAPPER_MID_HOLD_POW =  8;
 enum class Decapper_States {
-  Idle,
-  Lowering,
-  Pickup,
-  Capping,
-  Capping_Hold,
-  Decap_Low,
-  Decapping
+  Bot,
+  Mid,
+  Top,
 };
 extern pros::Task *decapper_cap_task;
 extern Decapper_States decapper_state;

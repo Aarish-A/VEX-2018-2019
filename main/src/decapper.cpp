@@ -2,7 +2,7 @@
 
 using namespace pros;
 pros::Task *decapper_cap_task = nullptr;
-Decapper_States decapper_state = Decapper_States::Idle;
+Decapper_States decapper_state = Decapper_States::Bot;
 Decapper_States decapper_state_last = decapper_state;
 int decapper_state_change_time = 0;
 
@@ -40,10 +40,10 @@ void decapper_cal()
 	}
   delay(100);
   decapper.tare_position();
-  decapper_set(-9);
-  set_decapper_state(Decapper_States::Idle);
+  decapper_set(DECAPPER_BOT_HOLD_POW);
+  set_decapper_state(Decapper_States::Bot);
 }
-
+/*
 void decapper_stop_cap_task(bool stop_motor)
 {
   if(decapper_cap_task != nullptr)
@@ -76,95 +76,44 @@ void decapper_cap(void *param)
   decapper_set(-127);
   set_decapper_state(Decapper_States::Lowering);
 }
-
+*/
 void decapper_handle()
 {
   switch(decapper_state)
   {
-    case Decapper_States::Lowering:
-      if(decapper.get_position()<20) {
-        decapper_set(-9);
-        set_decapper_state(Decapper_States::Idle);
-      }
-    case Decapper_States::Idle:
-      if(check_single_press(BTN_DECAPPER_DOWN))
-      {
-        decapper_move(DECAPPER_PICKUP,120);
-        set_decapper_state(Decapper_States::Pickup);
-      }
-			else if(check_single_press(BTN_DECAPPER_UP))
-			{
-				decapper_move(DECAPPER_DECAPLOW);
-				set_decapper_state(Decapper_States::Decap_Low);
-			}
-      break;
-
-    case Decapper_States::Pickup:
-      if(check_single_press(BTN_DECAPPER_DOWN))
-      {
-        //decapper.set_brake_mode(E_MOTOR_BRAKE_COAST);
-        decapper_move(DECAPPER_CAPPING_HOLD,120);
-        set_decapper_state(Decapper_States::Capping_Hold);
-      }
-      else if(check_double_press(BTN_DECAPPER_DOWN, BTN_DECAPPER_UP))
-      {
-        decapper_set(-127);
-        set_decapper_state(Decapper_States::Lowering);
-      }
-      break;
-    case Decapper_States::Capping_Hold:
-    if(decapper.get_position()>(DECAPPER_CAPPING_HOLD-400) && decapper.get_position()<(DECAPPER_CAPPING_HOLD-200))
+    case Decapper_States::Bot:
     {
-      decapper_set(60);
-    }
-    if(decapper.get_position()>(DECAPPER_CAPPING_HOLD-200))
-    {
-      decapper_move(DECAPPER_CAPPING_HOLD,70);
-    }
-    if(check_single_press(BTN_DECAPPER_DOWN))
-    {
-      decapper_start_cap_task();
-      set_decapper_state(Decapper_States::Capping);
-    }
-    else if(check_double_press(BTN_DECAPPER_DOWN, BTN_DECAPPER_UP))
-    {
-      decapper_set(-127);
-      set_decapper_state(Decapper_States::Lowering);
-    }
-      break;
-    case Decapper_States::Capping:
-      if(check_double_press(BTN_DECAPPER_DOWN, BTN_DECAPPER_UP))
+      if (check_single_press(BTN_DECAPPER_UP))
       {
-        decapper_stop_cap_task();
-        decapper_set(-127);
-        set_decapper_state(Decapper_States::Lowering);
+        decapper_move(DECAPPER_MID_POS);
+        decapper_state = Decapper_States::Mid;
       }
-      else if(check_single_press(BTN_DECAPPER_DOWN))
-      {
-        decapper_stop_cap_task();
-        set_decapper_state(Decapper_States::Idle);
-      }
+      else if (decapper.get_position() < (DECAPPER_BOT_POS + (2*DECAPPER_RATIO))) decapper_set(DECAPPER_BOT_HOLD_POW);
       break;
-
-    case Decapper_States::Decap_Low:
-			if(check_double_press(BTN_DECAPPER_DOWN, BTN_DECAPPER_UP))
-			{
-				decapper_set(-127);
-				set_decapper_state(Decapper_States::Lowering);
-			}
-			else if(check_single_press(BTN_DECAPPER_UP))
-			{
-				decapper_move(DECAPPER_DECAPPING);
-				set_decapper_state(Decapper_States::Decapping);
-			}
-      break;
-
-    case Decapper_States::Decapping:
-		if(decapper.get_position()<DECAPPER_DECAPPING+10)
-    {
-      decapper_move(DECAPPER_DECAPLOW);
-  		set_decapper_state(Decapper_States::Decap_Low);
     }
+    case Decapper_States::Mid:
+    {
+      if (check_single_press(BTN_DECAPPER_UP))
+      {
+        decapper_move(DECAPPER_TOP_POS);
+        decapper_state = Decapper_States::Top;
+      }
+      else if (check_single_press(BTN_DECAPPER_DOWN))
+      {
+        decapper_move(DECAPPER_BOT_POS);
+        decapper_state = Decapper_States::Bot;
+      }
+      else if (fabs(decapper.get_position() - DECAPPER_MID_POS) < (4*DECAPPER_RATIO)) decapper_set(DECAPPER_MID_HOLD_POW);
       break;
+    }
+    case Decapper_States::Top:
+    {
+      if (decapper.get_position() > (DECAPPER_TOP_POS - (1*DECAPPER_RATIO)))
+      {
+        decapper_move(DECAPPER_BOT_POS);
+        decapper_state = Decapper_States::Bot;
+      }
+      break;
+    }
   }
 }
