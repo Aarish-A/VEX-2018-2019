@@ -52,7 +52,7 @@ void set_angle_targ(bool top) {
       shot_req[shot_req_num-1].angle_targ = top? pf_back_SP.top : pf_back_SP.mid;
       break;
 		case FieldPos_PF_Back_Blue:
-	      shot_req[shot_req_num-1].angle_targ = top? pf_back_SP.top+13 : pf_back_SP.mid+13;
+	      shot_req[shot_req_num-1].angle_targ = top? pf_back_SP.top+18 : pf_back_SP.mid+18;
 	      break;
   }
 	log_ln(LOG_SHOTS, "%d Set Angle Targ: %d at i:%d | front_SP t:%d m:%d | back_SP t:%d m:%d | pf_SP t:%d m:%d", pros::millis(), shot_req[shot_req_num-1].angle_targ, shot_req_num-1, front_SP.top, front_SP.mid, back_SP.top, back_SP.mid, pf_back_SP.top, pf_back_SP.mid);
@@ -73,7 +73,7 @@ void set_angle_targ_right(bool top) {
       break;
 
     case FieldPos_PF_Back_Red:
-      shot_req[shot_req_num-1].angle_targ = top? pf_back_SP.top+13 : pf_back_SP.mid+13;
+      shot_req[shot_req_num-1].angle_targ = top? pf_back_SP.top+18 : pf_back_SP.mid+18;
       break;
 		case FieldPos_PF_Back_Blue:
 	      shot_req[shot_req_num-1].angle_targ = top? pf_back_SP.top : pf_back_SP.mid;
