@@ -52,6 +52,29 @@ void set_angle_targ(bool top) {
       shot_req[shot_req_num-1].angle_targ = top? pf_back_SP.top : pf_back_SP.mid;
       break;
 		case FieldPos_PF_Back_Blue:
+	      shot_req[shot_req_num-1].angle_targ = top? pf_back_SP.top+15 : pf_back_SP.mid+15;
+	      break;
+  }
+}
+
+void set_angle_targ_right(bool top) {
+  switch (shot_req[shot_req_num-1].field_pos) {
+    case FieldPos_Front:
+      shot_req[shot_req_num-1].angle_targ = top? front_SP.top : front_SP.mid;
+      break;
+
+    case FieldPos_Back:
+      shot_req[shot_req_num-1].angle_targ = top? back_SP.top : back_SP.mid;
+      break;
+
+    case FieldPos_PF:
+      shot_req[shot_req_num-1].angle_targ = top? pf_SP.top : pf_SP.mid;
+      break;
+
+    case FieldPos_PF_Back_Red:
+      shot_req[shot_req_num-1].angle_targ = top? pf_back_SP.top+15 : pf_back_SP.mid+15;
+      break;
+		case FieldPos_PF_Back_Blue:
 	      shot_req[shot_req_num-1].angle_targ = top? pf_back_SP.top : pf_back_SP.mid;
 	      break;
   }
@@ -66,7 +89,7 @@ void set_turn_dir(Dir turn_dir) {
 		shot_req[shot_req_num-1].flag_pos.y = 94;
 		if (turn_dir == Dir_Left) {
 			// ctrler.print(2, 0, "Red  Left");
-			if (game_side == 'R') shot_req[shot_req_num-1].flag_pos.x = -29 - FLAG_WIDTH;
+			if (game_side == 'R') shot_req[shot_req_num-1].flag_pos.x = -33 - FLAG_WIDTH;
 			else if (game_side == 'B') shot_req[shot_req_num-1].flag_pos.x = -33;
 		}
 		else if (turn_dir == Dir_Right) {
@@ -124,7 +147,8 @@ void set_handled_vars() {
 
 void set_shot_req(bool top, Dir turn_dir) {
 	inc_shot_req_num();
-	set_angle_targ(top);
+	if(turn_dir == Dir_Right) set_angle_targ_right(top);
+	else if(turn_dir == Dir_Left) set_angle_targ(top);
 	top ? log_ln(LOG_SHOTS, "TOP PRESSED") : log_ln(LOG_SHOTS, "MID PRESSED");
 	set_turn_dir(turn_dir);
 	set_handled_vars();

@@ -9,8 +9,8 @@
 constexpr double DECAPPER_RATIO = 5.0/1.0;
 
 constexpr double DECAPPER_BOT_POS = 0;
-constexpr double DECAPPER_MID_POS = 45.0 * DECAPPER_RATIO;
-constexpr double DECAPPER_TOP_POS = 90.0 * DECAPPER_RATIO;
+constexpr double DECAPPER_MID_POS = 406;
+constexpr double DECAPPER_TOP_POS = 750;
 
 constexpr int DECAPPER_BOT_HOLD_POW = -4;
 constexpr int DECAPPER_MID_HOLD_POW =  8;

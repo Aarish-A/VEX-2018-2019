@@ -103,15 +103,15 @@ void decapper_handle()
         decapper_move(DECAPPER_BOT_POS);
         decapper_state = Decapper_States::Bot;
       }
-      else if (fabs(decapper.get_position() - DECAPPER_MID_POS) < (4*DECAPPER_RATIO)) decapper_set(DECAPPER_MID_HOLD_POW);
+      else if (fabs(decapper.get_position() - DECAPPER_MID_POS) < (4*DECAPPER_RATIO)) decapper.move_relative(0, 200);
       break;
     }
     case Decapper_States::Top:
     {
-      if (decapper.get_position() > (DECAPPER_TOP_POS - (1*DECAPPER_RATIO)))
+      if (decapper.get_position()>DECAPPER_TOP_POS-15)
       {
-        decapper_move(DECAPPER_BOT_POS);
-        decapper_state = Decapper_States::Bot;
+          decapper_move(DECAPPER_MID_POS);
+          decapper_state = Decapper_States::Mid;
       }
       break;
     }
