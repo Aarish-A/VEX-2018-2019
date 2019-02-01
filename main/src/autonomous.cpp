@@ -75,7 +75,7 @@ void autonomous() {
         log_ln(LOG_AUTO, "%d WAIT 200: L:%d, R:%d, Drive Angle:%f", millis(), enc_l.get_value(), enc_r.get_value(), RAD_TO_DEG(getGlobalAngle()));
 
         //2 Back up turn and shoot
-        double first_flag_pos = front_SP.top;
+        double first_flag_pos = front_SP.top-30;
         auto_set_angler_target(first_flag_pos);
         move_drive_rel(-(cap_dis-6), 200);
         log_ln(LOG_AUTO, "%d BACK UP: L:%d, R:%d, Drive Angle:%f", millis(), enc_l.get_value(), enc_r.get_value(), RAD_TO_DEG(getGlobalAngle()));

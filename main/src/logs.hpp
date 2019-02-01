@@ -10,6 +10,7 @@ constexpr bool LOG_PUNCHER = 1;
 constexpr bool LOG_ANGLER = 1;
 constexpr bool LOG_DECAPPER = 0;
 constexpr bool LOG_JOYSTICK = 1;
+constexpr bool LOG_IO = 1;
 constexpr bool LOG_ERROR = 0;
 constexpr bool LOG_AUTO = 1;
 constexpr bool LOG_SHOTS = 1;

@@ -33,6 +33,7 @@ void opcontrol() {
 	// ctrler.print(2, 0, "RUNNING");
 
 	//pun_state_change(PunState::Loading);
+	u_int32_t loop_counter = 0;
 	while (true) {
 		pos.update();
 		update_buttons();
@@ -46,6 +47,8 @@ void opcontrol() {
 		// printf("%d\n",autoPoti.get_value());
 		// printf("%d\n", autoPoti.get_value());
 		//printf("%d\n", (int)decapper.get_position());
+		//log_ln(LOG_SHOTS, "  >>> %d PF BACK: %d %d | l_counter:%d", pros::millis(), pf_back_SP.top, pf_back_SP.mid, loop_counter);
+		//printf("  >>> %d PRINT - PF BACK: %d %d | l_counter:%d \n", pros::millis(), pf_back_SP.top, pf_back_SP.mid, loop_counter);
 
 		if (millis() - print_time > 30) {
 			print_time = millis();
@@ -59,6 +62,7 @@ void opcontrol() {
 			else if (field_pos== FieldPos_PF_Back_Blue) field_pos_s = "PfB";
 
 			std::string team_s = blue_team? "b" : "r";
+			ctrler.print(2, 0, "%d%d%d%d%d%d%d      ", field_pos_s, team_s, (int)angler.get_temperature(), (int)puncherLeft.get_temperature(), (int)puncherRight.get_temperature(), (int)drive_fl.get_temperature(), (int)drive_fr.get_temperature(), (int)drive_bl.get_temperature(), (int)drive_br.get_temperature());
 			//ctrler.print(2, 0, "BD: %d   ", ball_sensor.get_value());
 			// eff_fl = drive_fl.get_efficiency();
 			// eff_bl = drive_bl.get_efficiency();
@@ -71,15 +75,15 @@ void opcontrol() {
 
 			// ctrler.print(2, 0, "%d,%d,%d,%d", (int)drive_bl.get_temperature(), (int)drive_br.get_temperature(), (int)drive_fl.get_temperature(), (int)drive_fr.get_temperature());
 			// ctrler.print(2, 0, "%s %.1f %.1f %.1f %.1f    ", field_pos_s, eff_fl, eff_bl, eff_fr, eff_br);
-			// ctrler.print(2, 0, "%s %s %d %d %d      ", field_pos_s, team_s, (int)intake.get_temperature(), (int)puncherLeft.get_temperature(), (int)puncherRight.get_temperature());
+			ctrler.print(2, 0, "%s %s %d %d %d      ", field_pos_s, team_s, (int)intake.get_temperature(), (int)puncherLeft.get_temperature(), (int)puncherRight.get_temperature());
 			// ctrler.print(2, 0, "%d  ", (int)current_auto_routine);
-			ctrler.print(2, 0, "a: %.1f       ", RAD_TO_DEG(getGlobalAngle()));
+			//ctrler.print(2, 0, "a: %.1f       ", RAD_TO_DEG(getGlobalAngle()));
 			//ctrler.print(2, 0, "%d %d %.1f     ", enc_l.get_value(), enc_r.get_value(), RAD_TO_DEG(pos.a));
 			//ctrler.print(2, 0, "%f          ", ((enc_l.get_value() * SPN_TO_IN_L) - (enc_r.get_value() * SPN_TO_IN_R)) / 3600_deg);
 
 		}
 		//printf("%d, %f to %f \n", pros::millis(), puncherLeft.get_position(), PUN_OFFSET + (1 * PUN_TPR) - PUN_BALL_CHK_START[1]);
-
+		loop_counter++;
 		delay(10);
 	}
 }

@@ -52,9 +52,10 @@ void set_angle_targ(bool top) {
       shot_req[shot_req_num-1].angle_targ = top? pf_back_SP.top : pf_back_SP.mid;
       break;
 		case FieldPos_PF_Back_Blue:
-	      shot_req[shot_req_num-1].angle_targ = top? pf_back_SP.top+15 : pf_back_SP.mid+15;
+	      shot_req[shot_req_num-1].angle_targ = top? pf_back_SP.top+13 : pf_back_SP.mid+13;
 	      break;
   }
+	log_ln(LOG_SHOTS, "%d Set Angle Targ: %d at i:%d | front_SP t:%d m:%d | back_SP t:%d m:%d | pf_SP t:%d m:%d", pros::millis(), shot_req[shot_req_num-1].angle_targ, shot_req_num-1, front_SP.top, front_SP.mid, back_SP.top, back_SP.mid, pf_back_SP.top, pf_back_SP.mid);
 }
 
 void set_angle_targ_right(bool top) {
@@ -72,12 +73,13 @@ void set_angle_targ_right(bool top) {
       break;
 
     case FieldPos_PF_Back_Red:
-      shot_req[shot_req_num-1].angle_targ = top? pf_back_SP.top+15 : pf_back_SP.mid+15;
+      shot_req[shot_req_num-1].angle_targ = top? pf_back_SP.top+13 : pf_back_SP.mid+13;
       break;
 		case FieldPos_PF_Back_Blue:
 	      shot_req[shot_req_num-1].angle_targ = top? pf_back_SP.top : pf_back_SP.mid;
 	      break;
   }
+	log_ln(LOG_SHOTS, "%d Set Angle Targ: %d at i:%d | front_SP t:%d m:%d | back_SP t:%d m:%d | pf_SP t:%d m:%d", pros::millis(), shot_req[shot_req_num-1].angle_targ, shot_req_num-1, front_SP.top, front_SP.mid, back_SP.top, back_SP.mid, pf_back_SP.top, pf_back_SP.mid);
 }
 
 void set_turn_dir(Dir turn_dir) {
@@ -139,10 +141,13 @@ void set_turn_dir(Dir turn_dir) {
 }
 
 void set_handled_vars() {
-	shot_req[shot_req_num-1].drive_turn_handled = false;
-	shot_req[shot_req_num-1].shot_handled = false;
-
-	shot_req[shot_req_num-1].angler_to = 0;
+	if((shot_req_num-1) >=0 && (shot_req_num-1) <= 1)
+	{
+		shot_req[shot_req_num-1].drive_turn_handled = false;
+		shot_req[shot_req_num-1].shot_handled = false;
+		shot_req[shot_req_num-1].angler_to = 0;
+	}
+	else log_ln(LOG_SHOTS, "	>>>> %d SET_HANDLED_VARS TRIED TO ACCESS OUT OF BOUNDS. SHOT_REQ_NUM = %d", pros::millis(), shot_req_num);
 }
 
 void set_shot_req(bool top, Dir turn_dir) {
@@ -174,15 +179,24 @@ void shot_req_make() {
   }
 	else if (check_single_press(BTN_SHOOT_CANCEL)) {
 		shot_cancel_pressed = true;
+		//printf("%d IF 0: %d %d\n \n", pros::millis(), pf_back_SP.top, pf_back_SP.mid);
 		log_ln(LOG_SHOTS, "  >>> %d Cancel Shot Req Handle Task - Before Restart| TaskPtr %d | shot_req_num = %d, shot_req_handled_num = %d ", pros::millis(), shot_req_handle_task, shot_req_num, shot_req_handled_num);
+		//printf("%d IF 1: %d %d\n \n", pros::millis(), pf_back_SP.top, pf_back_SP.mid);
 		shot_req_handle_stop_task();
+		//printf("%d IF 2: %d %d\n \n", pros::millis(), pf_back_SP.top, pf_back_SP.mid);
 		log_ln(LOG_SHOTS, "  >>> %d Cancel Shot Req Handle Task - After Stop| TaskPtr %d | shot_req_num = %d, shot_req_handled_num = %d ", pros::millis(), shot_req_handle_task, shot_req_num, shot_req_handled_num);
+		//printf("%d IF 3: %d %d\n \n", pros::millis(), pf_back_SP.top, pf_back_SP.mid);
 		setDrive(0);
-
+		//printf("%d IF 4: %d %d\n \n", pros::millis(), pf_back_SP.top, pf_back_SP.mid);
+		//printf("%d IF 5: %d %d\n \n", pros::millis(), pf_back_SP.top, pf_back_SP.mid);
+		//printf("%d IF 6: %d %d\n \n", pros::millis(), pf_back_SP.top, pf_back_SP.mid);
+		set_handled_vars();
+		//printf("%d IF 7: %d %d\n \n", pros::millis(), pf_back_SP.top, pf_back_SP.mid);
+		shot_req_handle_start_task();
+		//printf("%d IF 8: %d %d\n \n", pros::millis(), pf_back_SP.top, pf_back_SP.mid);
 		shot_req_num = 0;
 		shot_req_handled_num = 0;
-		set_handled_vars();
-		shot_req_handle_start_task();
+		//printf("%d IF 9: %d %d\n \n", pros::millis(), pf_back_SP.top, pf_back_SP.mid);
 		log_ln(LOG_SHOTS, "  >>> %d Shot Req Handle Task  - Resume | TaskPtr %d | shot_req_num = %d, shot_req_handled_num = %d ", pros::millis(), shot_req_handle_task, shot_req_num, shot_req_handled_num);
 	}
 
@@ -233,6 +247,7 @@ void shot_req_make() {
 }
 
 void shot_req_handle_stop_task() {
+	//printf("  >>> %d ---S_STOP 0 check - %d %d \n", pros::millis(), pf_back_SP.top, pf_back_SP.mid);
 	if(shot_req_handle_task != nullptr)
 	{
 		log_ln(LOG_SHOTS, "  >>> %d Stop Shot Req Handle Task", pros::millis());
@@ -243,15 +258,18 @@ void shot_req_handle_stop_task() {
 }
 
 void shot_req_handle_start_task() {
+	//printf("  >>> %d ---S_Start 1 - %d %d \n", pros::millis(), pf_back_SP.top, pf_back_SP.mid);
 	shot_req_handle_stop_task();
+	//printf("  >>> %d S_Start 2 Stop - %d %d \n", pros::millis(), pf_back_SP.top, pf_back_SP.mid);
 	log_ln(LOG_SHOTS, "  >>> %d Start Shot Req Handle Task", pros::millis());
 	shot_req_handle_task = new pros::Task((pros::task_fn_t)shot_req_handle);//, (void*)NULL, TASK_PRIORITY_DEFAULT, TASK_STACK_DEPTH_DEFAULT, "Shot_Req_Handle_Task");
+	//printf("  >>> %d S_Start 3 new task - %d %d \n", pros::millis(), pf_back_SP.top, pf_back_SP.mid);
 }
 
 
 void shot_req_handle(void *param) {
 	log_ln(LOG_SHOTS, "%d Start Shot Req Handle Task ",  pros::millis());
-	shot_req_num = 0;
+	//shot_req_num = 0; //DELETE
 	while (true) {
 		if (is_disabled) printf(" >>> %d IN SHOT_REQ_HANDLE IN DISABLED S_R_N:\n", pros::millis());
 		if (shot_req_num > 0) {
@@ -335,11 +353,12 @@ void shot_req_handle(void *param) {
 
 			intake_state_set(127, IntakeState::Forw);
 
+			setDrive(0);
+
 			if (angler.get_position() < ANGLER_BOT_LIM_POS) angler.move_absolute(ANGLER_PU_POS, 200);
 
 			shot_req_num = 0;
 			shot_req_handled_num = 0;
-
 		}
 		pros::delay(10);
 	}
