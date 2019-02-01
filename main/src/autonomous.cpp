@@ -40,7 +40,7 @@ void shoot_flip_cap_on_45()
   intake.move(0);
   auto_set_first_shot(front_SP.top);
   while (auto_set_shot) pros::delay(10);
-  pros::delay(50);
+  pros::delay(100);
   auto_set_second_shot(front_SP.mid+4);
   while (auto_set_shot) pros::delay(10);
 }
@@ -113,10 +113,26 @@ void autonomous() {
       }
       case auto_routines::FRONT_PARK:
       {
-        //1 Pick up balls
+        //1 Shoot first ball
         log_ln(LOG_AUTO, "%d Angler Start move: %d", millis(), angler.get_position());
-        angler_move(ANGLER_PU_POS, 100);
+        angler_move(front_SP.top, 200);
         intake.move(127);
+        move_drive_rel(5, 200);
+        turn_vel(FixedAngleTarget(-45.0_deg), (200/90_deg));
+        auto_set_first_shot(front_SP.top);
+
+        //2 Drive to cap & Scrape
+        angler_move(ANGLER_CAP_PU_POS,100);
+        intake.move(127);
+        move_drive_rel(24, 200);
+        pros::delay(750);
+
+        //3
+
+        //2 Scrape
+
+        auto_set_first_shot(front_SP.mid);
+        /*
         double cap_dis = 43.0_in;
         move_drive_rel(cap_dis, 200);
         delay(200);
@@ -148,12 +164,13 @@ void autonomous() {
         turn_vel( FixedAngleTarget(-45_deg), (200/90_deg));
 
         //Back up and low park
-        /*
+
         move_drive_rel(-(bot_flag_dis + 28), 200);
         intake.move(0);
         angler_move(ANGLER_PARK_POS);
         turn_vel(FixedAngleTarget(0_deg), (200/90_deg));
         move_drive_rel_simple(30, 200, false);
+
         */
         break;
       }
@@ -348,7 +365,7 @@ void autonomous() {
         turn_vel( FixedAngleTarget(71_deg), (200/90_deg));
         auto_set_first_shot(first_flag_pos);
         while (auto_set_shot) pros::delay(10);
-        pros::delay(50);
+        pros::delay(150);
         auto_set_second_shot(auto_SP.mid-30);
         while (auto_set_shot) pros::delay(10);
         intake.move(127);
@@ -368,7 +385,7 @@ void autonomous() {
         move_drive_rel(10_in,200);
         auto_set_first_shot(first_flag_pos);
         while (auto_set_shot) pros::delay(10);
-        pros::delay(50);
+        pros::delay(150);
         auto_set_second_shot(auto_SP.mid);
         while (auto_set_shot) pros::delay(10);
         ctrler.print(2,0,"Auto T: %d",millis()-autoStartTime);
