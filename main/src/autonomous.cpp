@@ -53,14 +53,9 @@ void programming_skills() {
   double cap_dis = 43.0_in;
   move_drive_rel(cap_dis, 200);
   delay(200);
-  move_drive_rel(-6_in,200);
-  delay(500);
-  angler_move(ANGLER_CAP_FLIP_POS);
-  intake.move(-127);
-  move_drive_rel(16_in,200,true);
-  intake.move(127);
+
   //2 Back up turn and shoot
-  double first_flag_pos = front_SP.top+28;
+  double first_flag_pos = front_SP.top;
   auto_set_angler_target(first_flag_pos);
   move_drive_rel(-(cap_dis-6), 200);
   turn_vel( FixedAngleTarget(-87.0_deg), (200/90_deg));
@@ -70,37 +65,31 @@ void programming_skills() {
   while (auto_set_shot) pros::delay(10);
   log_ln(LOG_AUTO, " > %d Done first shot | angler:%f targ:%f |(%f, %f, %f)", millis(), angler.get_position(), auto_angler_target, pos.x, pos.y, RAD_TO_DEG(pos.a));
   printf("Done first shot");
-  auto_set_second_shot(front_SP.mid+7);
+  pros::delay(150);
+  auto_set_second_shot(front_SP.mid+35);
   while (auto_set_shot) pros::delay(10);
   printf("Done second shot");
   angler_move(ANGLER_PU_POS,100);
   move_drive_rel(6.5_in,200);
-  turn_vel( FixedAngleTarget(-41_deg), (200/90_deg));
-  angler_move(ANGLER_CAP_PU_POS,100);
-  intake.move(127);
-  move_drive_rel(17.5_in,200);
-  pros::delay(750);
-  move_drive_rel(-8.8_in,200,true);
-  auto_set_first_shot(front_SP.top+29);
-  while (auto_set_shot) pros::delay(10);
-  auto_set_second_shot(front_SP.mid+4);
-  while (auto_set_shot) pros::delay(10);
-  auto_set_angler_target(ANGLER_CAP_FLIP_POS);
-  intake.move(-70);
-  move_drive_rel(15_in,200,false);
+
+  turn_vel( FixedAngleTarget(-40_deg), (200/90_deg));
+  shoot_flip_cap_on_45();
+
   move_drive_rel(-25_in,200);
   turn_vel(FixedAngleTarget(-90_deg), (200/90_deg));
   move_drive_rel(39_in,200);
-  move_drive_rel(-110_in,200,false);
+  move_drive_rel(-115_in,200,false);
   flatten_against_wall(false, true);
-  pos.reset(84_in, pos.y, -90_deg);
+  pos.a = -90_deg;
   pros::delay(1000);
   move_drive_rel(4_in,200);
   turn_vel(FixedAngleTarget(0_deg), (200/90_deg));
+  setDrive(0, -40, 0);
+  delay(500);
   flatten_against_wall(false, true);
   delay(200);
   intake.move(0);
-  pos.reset(pos.x, 0, 0_deg);
+  pos.a = 0_deg;
   pros::delay(1000);
   angler_move(ANGLER_CAP_PU_POS,100);
   intake.move(127);
@@ -109,7 +98,7 @@ void programming_skills() {
   pros::delay(750);
   drive_set(0,0,0);
   drive_fl.tare_position();
-  pos.reset(pos.x,pos.y,0);
+  pos.a = 0_deg;
   pros::delay(250);
   drive_set(-75,0,0);
   printf("Encoder before: %f\n",drive_fl.get_position());
@@ -143,7 +132,7 @@ void programming_skills() {
   angler_move(ANGLER_CAP_FLIP_POS);
   intake.move(-80);
   move_drive_rel(16_in,200,false);
-  move_drive_rel(-16_in,200);
+  move_drive_rel(-14.5_in,200);
   intake.move(127);
   drive_set(-75,0,0);
   pros::delay(1000);
@@ -178,6 +167,7 @@ void programming_skills() {
   move_drive_rel_simple(14_in,200);
   log_ln(LOG_AUTO, " > %d Done second shot | angler:%f targ:%f |(%f, %f, %f)", millis(), angler.get_position(), auto_angler_target, pos.x, pos.y, RAD_TO_DEG(pos.a));
   log_ln(LOG_AUTO, "%d done turn shoot (%f, %f, %f)", millis(), pos.x, pos.y, RAD_TO_DEG(pos.a));
+  printf("Auto is done");
 }
 
 void autonomous() {
@@ -249,6 +239,8 @@ void autonomous() {
       }
       case auto_routines::FRONT_PARK:
       {
+        programming_skills();
+        /*
         //1 Pick up balls
         log_ln(LOG_AUTO, "%d Angler Start move: %d", millis(), angler.get_position());
         angler_move(ANGLER_PU_POS, 100);
@@ -280,6 +272,7 @@ void autonomous() {
         double bot_flag_dis = 41;
         move_drive_rel(bot_flag_dis, 200, false);
         pros::delay(250);
+        */
         /*
         move_drive_rel(-bot_flag_dis, 200, true);
         turn_vel( FixedAngleTarget(-50_deg), (200/90_deg));
