@@ -249,7 +249,52 @@ void autonomous() {
       }
       case auto_routines::FRONT_PARK:
       {
-        programming_skills();
+        //1 Pick up balls
+        log_ln(LOG_AUTO, "%d Angler Start move: %d", millis(), angler.get_position());
+        angler_move(ANGLER_PU_POS, 100);
+        intake.move(127);
+        double cap_dis = 43.0_in;
+        move_drive_rel(cap_dis, 200);
+        delay(200);
+
+        //2 Back up turn and shoot
+        double first_flag_pos = front_SP.top;
+        auto_set_angler_target(first_flag_pos);
+        move_drive_rel(-(cap_dis-4), 200);
+        turn_vel( FixedAngleTarget(-87.0_deg), (200/90_deg));
+        intake.move(0);
+
+        auto_set_first_shot(first_flag_pos);
+        while (auto_set_shot) pros::delay(10);
+        log_ln(LOG_AUTO, " > %d Done first shot | angler:%f targ:%f |(%f, %f, %f)", millis(), angler.get_position(), auto_angler_target, pos.x, pos.y, RAD_TO_DEG(pos.a));
+        printf("Done first shot");
+        pros::delay(150);
+        auto_set_second_shot(front_SP.mid);
+        while (auto_set_shot) pros::delay(10);
+        printf("Done second shot");
+        angler_move(ANGLER_PU_POS, 200);
+        intake.move(127);
+
+        // Flip Bottom Flag
+        turn_vel( FixedAngleTarget(-90.0_deg), (200/70_deg));
+        double bot_flag_dis = 41;
+        move_drive_rel(bot_flag_dis, 200, false);
+        pros::delay(250);
+        /*
+        move_drive_rel(-bot_flag_dis, 200, true);
+        turn_vel( FixedAngleTarget(-50_deg), (200/90_deg));
+        */
+        /*
+        setDrive(0, -70, 0);
+        log_ln(LOG_AUTO, "%d 1Vel:%f", drive_fl.get_actual_velocity());
+        pros::delay(200);
+        log_ln(LOG_AUTO, "%d 2Vel:%f", drive_fl.get_actual_velocity());
+        while (drive_fl.get_actual_velocity() < -1) {
+          log_ln(LOG_AUTO, "%d WHILE Vel:%f", drive_fl.get_actual_velocity());
+          pros::delay(10);
+        }
+        */
+
         /*
         //1 Shoot first ball
         log_ln(LOG_AUTO, "%d 0 L:%d, R:%d, Drive Angle:%f", millis(), enc_l.get_value(), enc_r.get_value(), RAD_TO_DEG(getGlobalAngle()));
@@ -508,7 +553,7 @@ void autonomous() {
         log_ln(LOG_AUTO, " > %d Done first shot | angler:%f targ:%f |(%f, %f, %f)", millis(), angler.get_position(), auto_angler_target, pos.x, pos.y, RAD_TO_DEG(pos.a));
         printf("Done first shot");
         pros::delay(150);
-        auto_set_second_shot(front_SP.mid+20);
+        auto_set_second_shot(front_SP.mid);
         while (auto_set_shot) pros::delay(10);
         printf("Done second shot");
         angler_move(ANGLER_PU_POS,200);
@@ -519,8 +564,10 @@ void autonomous() {
         double bot_flag_dis = 41;
         move_drive_rel(bot_flag_dis, 200, false);
         pros::delay(250);
+        /*
         move_drive_rel(-bot_flag_dis, 200, true);
-        turn_vel( FixedAngleTarget(45_deg), (200/90_deg));
+        turn_vel( FixedAngleTarget(50_deg), (200/90_deg));
+        */
 
         //Back up and low park
         /*
@@ -618,6 +665,7 @@ void autonomous() {
       }
     }
   }
+  ctrler.print(2,0,"Auto T: %d   ",millis()-autoStartTime);
   log_ln(LOG_AUTO, "%d Auto Done in %dms", pros::millis(), pros::millis()-autoStartTime);
   auto_update_stop_task();
 }
