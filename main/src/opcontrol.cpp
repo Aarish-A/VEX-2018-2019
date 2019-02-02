@@ -11,7 +11,7 @@
 #include "vision.hpp"
 #include "config.hpp"
 #include "auto.hpp"
-#include "autonomous.cpp"
+//#include "autonomous.cpp"
 using namespace pros;
 
 /* Info abt drive efficency */
@@ -34,8 +34,7 @@ void opcontrol() {
 	// ctrler.print(2, 0, "RUNNING");
 
 	//pun_state_change(PunState::Loading);
-	while(!master.get_digital_new_press(E_CONTROLLER_DIGITAL_R1)) pros::delay(5);
-	autonomous();
+
 	u_int32_t loop_counter = 0;
 	while (true) {
 		pos.update();
@@ -47,6 +46,7 @@ void opcontrol() {
 		angler_handle();
 		decapper_handle();
 		vision_handle();
+		//printf("%d %d %d \n", pros::millis(), enc_l.get_value(), enc_r.get_value());
 		// printf("%d\n",autoPoti.get_value());
 		// printf("%d\n", autoPoti.get_value());
 		//printf("%d\n", (int)decapper.get_position());

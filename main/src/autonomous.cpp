@@ -239,8 +239,7 @@ void autonomous() {
       }
       case auto_routines::FRONT_PARK:
       {
-        programming_skills();
-        /*
+
         //1 Pick up balls
         log_ln(LOG_AUTO, "%d Angler Start move: %d", millis(), angler.get_position());
         angler_move(ANGLER_PU_POS, 100);
@@ -272,7 +271,6 @@ void autonomous() {
         double bot_flag_dis = 41;
         move_drive_rel(bot_flag_dis, 200, false);
         pros::delay(250);
-        */
         /*
         move_drive_rel(-bot_flag_dis, 200, true);
         turn_vel( FixedAngleTarget(-50_deg), (200/90_deg));
