@@ -58,6 +58,7 @@ void autonomous() {
   pos.reset();
   resetGlobalAngle();
   // if(autoPoti.get_value()>1600)
+  log_ln(LOG_AUTO, "%d L:%d, R:%d, Drive Angle:%f", millis(), enc_l.get_value(), enc_r.get_value(), RAD_TO_DEG(getGlobalAngle()));
   if (game_side == 'R')
   {
     switch(current_auto_routine)
@@ -114,20 +115,22 @@ void autonomous() {
       case auto_routines::FRONT_PARK:
       {
         //1 Shoot first ball
+        log_ln(LOG_AUTO, "%d 0 L:%d, R:%d, Drive Angle:%f", millis(), enc_l.get_value(), enc_r.get_value(), RAD_TO_DEG(getGlobalAngle()));
         log_ln(LOG_AUTO, "%d Angler Start move: %d", millis(), angler.get_position());
         angler_move(front_SP.top, 200);
-        intake.move(127);
-        move_drive_rel(5, 200);
+        move_drive_rel(3, 50);
+        log_ln(LOG_AUTO, "%d L:%d, R:%d, Drive Angle:%f", millis(), enc_l.get_value(), enc_r.get_value(), RAD_TO_DEG(getGlobalAngle()));
         turn_vel(FixedAngleTarget(-45.0_deg), (200/90_deg));
-        auto_set_first_shot(front_SP.top);
 
+
+        auto_set_first_shot(front_SP.top);
         //2 Drive to cap & Scrape
         angler_move(ANGLER_CAP_PU_POS,100);
         intake.move(127);
         double cap_dis = 24;
         move_drive_rel(cap_dis, 200);
         pros::delay(750);
-
+        /*
         //3 Back up shoot first ball
         double flip_b_w = -8.5;
         move_drive_rel(flip_b_w, 200);
@@ -173,7 +176,7 @@ void autonomous() {
         printf("Done second shot");
         angler_move(ANGLER_PU_POS,100);
         move_drive_rel(6.5_in,200);
-
+        */
         /*
         double cap_dis = 43.0_in;
         move_drive_rel(cap_dis, 200);

@@ -62,7 +62,7 @@ void opcontrol() {
 			else if (field_pos== FieldPos_PF_Back_Blue) field_pos_s = "PfB";
 
 			std::string team_s = blue_team? "b" : "r";
-			ctrler.print(2, 0, "%d%d%d%d%d%d%d      ", field_pos_s, team_s, (int)angler.get_temperature(), (int)puncherLeft.get_temperature(), (int)puncherRight.get_temperature(), (int)drive_fl.get_temperature(), (int)drive_fr.get_temperature(), (int)drive_bl.get_temperature(), (int)drive_br.get_temperature());
+			//ctrler.print(2, 0, "%d %d%d%d%d%d%d      ", field_pos_s, team_s, (int)angler.get_temperature(), (int)puncherLeft.get_temperature(), (int)puncherRight.get_temperature(), (int)drive_fl.get_temperature(), (int)drive_fr.get_temperature(), (int)drive_bl.get_temperature(), (int)drive_br.get_temperature());
 			//ctrler.print(2, 0, "BD: %d   ", ball_sensor.get_value());
 			// eff_fl = drive_fl.get_efficiency();
 			// eff_bl = drive_bl.get_efficiency();
