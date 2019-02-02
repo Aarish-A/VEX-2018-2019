@@ -35,7 +35,7 @@ void opcontrol() {
 
 	//pun_state_change(PunState::Loading);
 
-	u_int32_t loop_counter = 0;
+	uint32_t loop_counter = 0;
 	while (true) {
 		pos.update();
 		update_buttons();
