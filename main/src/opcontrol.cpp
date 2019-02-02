@@ -11,6 +11,7 @@
 #include "vision.hpp"
 #include "config.hpp"
 #include "auto.hpp"
+#include "autonomous.cpp"
 using namespace pros;
 
 /* Info abt drive efficency */
@@ -33,6 +34,8 @@ void opcontrol() {
 	// ctrler.print(2, 0, "RUNNING");
 
 	//pun_state_change(PunState::Loading);
+	while(!master.get_digital_new_press(E_CONTROLLER_DIGITAL_R1)) pros::delay(5);
+	autonomous();
 	u_int32_t loop_counter = 0;
 	while (true) {
 		pos.update();
