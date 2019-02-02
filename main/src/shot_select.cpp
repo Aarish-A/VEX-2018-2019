@@ -350,12 +350,13 @@ void shot_req_handle(void *param) {
 
 				angler.move_absolute(ANGLER_PU_POS, 200);
 			}
-
+			angler.move_absolute(ANGLER_PU_POS, 200);
 			intake_state_set(127, IntakeState::Forw);
 
 			setDrive(0);
+			log_ln(LOG_SHOTS, ">>> %d Done shot requests - move angler pos:%f", pros::millis(), angler.get_position());
 
-			if (angler.get_position() < ANGLER_BOT_LIM_POS) angler.move_absolute(ANGLER_PU_POS, 200);
+			//if (angler.get_position() < ANGLER_BOT_LIM_POS) angler.move_absolute(ANGLER_PU_POS, 200);
 
 			shot_req_num = 0;
 			shot_req_handled_num = 0;
