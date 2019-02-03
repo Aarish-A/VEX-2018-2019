@@ -393,7 +393,17 @@ void autonomous() {
         break;
       }
       case auto_routines::BACK_MID_FIRST:
-      {
+      {/*
+        drive_bl.move(-50);
+				drive_fl.move(-50);
+				drive_br.move_relative(0, 100);
+				drive_fr.move_relative(0, 100);
+        delay(1200);
+
+        drive_brake();
+        pros::delay(150);
+        setDrive(0);
+        */
         log_ln(LOG_AUTO, "%d Angler Start move: %d", millis(), angler.get_position());
         angler_move(ANGLER_PU_POS, 100);
         intake.move(127);
@@ -417,12 +427,16 @@ void autonomous() {
         move_drive_rel(27_in, 200);
         pros::delay(250);
         move_drive_rel(-8_in,200);
+
         first_flag_pos = auto_SP.top;
         auto_set_angler_target(first_flag_pos);
         drive_fl.tare_position();
         drive_set(-75,0,0);
         while(fabs(drive_fl.get_position())<100){delay(10);}
         drive_set(0,0,0);
+        log_ln(LOG_AUTO, "%d After Strafe - A:%f \n", millis(), RAD_TO_DEG(getGlobalAngle()));
+        //delay(30000);
+
         turn_vel( FixedAngleTarget(-56_deg), (200/90_deg));
         move_drive_rel(10_in,200);
         auto_set_first_shot(first_flag_pos);

@@ -22,7 +22,7 @@ constexpr int ANGLER_DZ = 30;
 
 constexpr double ANGLER_PU_POS = 85;//ANGLER_BALL * 7;
 
-constexpr double ANGLER_CAP_PU_POS = 230;
+constexpr double ANGLER_CAP_PU_POS = 220;
 
 constexpr double ANGLER_CAP_FLIP_POS = 50;
 
