@@ -177,7 +177,7 @@ void autonomous() {
   log_ln(LOG_AUTO, "%d Drive Angle:%f", millis(), RAD_TO_DEG(getGlobalAngle()));
   uint32_t autoStartTime = millis();
   setDriveVel(0);
-  delay(10);
+    delay(10);
   log_ln(LOG_AUTO, "   --- %d START AUTO --- \n", pros::millis());
   log_ln(LOG_AUTO, " >>> %d PUN TEMP: %f", pros::millis(), puncherLeft.get_temperature());
   pos.reset();
@@ -201,12 +201,12 @@ void autonomous() {
         log_ln(LOG_AUTO, "%d WAIT 200: L:%d, R:%d, Drive Angle:%f", millis(), enc_l.get_value(), enc_r.get_value(), RAD_TO_DEG(getGlobalAngle()));
 
         //2 Back up turn and shoot
-        double first_flag_pos = front_SP.top;
+        double first_flag_pos = front_SP.top-30;
         auto_set_angler_target(first_flag_pos);
         move_drive_rel(-(cap_dis-6), 200);
         log_ln(LOG_AUTO, "%d BACK UP: L:%d, R:%d, Drive Angle:%f", millis(), enc_l.get_value(), enc_r.get_value(), RAD_TO_DEG(getGlobalAngle()));
         log_ln(LOG_AUTO, "%d Drive Angle:%f", millis(), RAD_TO_DEG(getGlobalAngle()));
-        pros::delay(30000); //deletes
+        ////pros::delay(30000); //deletes
         turn_vel( FixedAngleTarget(-87.0_deg), (200/90_deg));
         intake.move(0);
 
