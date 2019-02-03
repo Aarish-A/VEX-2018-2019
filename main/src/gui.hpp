@@ -4,6 +4,7 @@
 #include "config.hpp"
 #include "auto.hpp"
 #include "puncher.hpp"
+#include "button.hpp"
 #include <string>
 
 // Main Screen
@@ -15,6 +16,13 @@ extern lv_obj_t* diagnostics_tab;
 extern lv_obj_t* shot_tuning_tab;
 extern lv_obj_t* auto_select_tab;
 extern lv_obj_t* shot_test_tab;
+enum class gui_tab_states {
+  diagnostics_tab,
+  shot_tuning_tab,
+  auto_select_tab,
+  shot_test_tab
+};
+extern gui_tab_states current_gui_tab;
 
 // Diagnostics Tab
 extern lv_obj_t* diagnostics_tab_title;
@@ -30,6 +38,7 @@ extern int shot_slider_value[6];
 extern lv_obj_t* shot_slider_label[6];
 extern lv_obj_t* shot_tuning_save_button;
 extern lv_obj_t* shot_tuning_save_button_label;
+extern int selected_shot_slider;
 
 // Auto Select Tab
 extern lv_obj_t* auto_select_tab_title;
@@ -53,8 +62,10 @@ lv_res_t auto_button_action_back_mid_first(lv_obj_t* button);
 lv_res_t auto_button_action_back_far_first(lv_obj_t* button);
 lv_res_t red_side_button_action(lv_obj_t* button);
 lv_res_t blue_side_button_action(lv_obj_t* button);
+void shot_tuning_save();
 lv_res_t shot_tuning_save_button_action(lv_obj_t* button);
 lv_res_t shot_test_top_auto_action(lv_obj_t* button);
 lv_res_t shot_test_mid_auto_action(lv_obj_t* button);
 lv_res_t shot_test_mid_turn_action(lv_obj_t* button);
 lv_res_t shot_test_top_turn_action(lv_obj_t* button);
+void tab_switch_callback(lv_obj_t * tabview, uint16_t act_id);

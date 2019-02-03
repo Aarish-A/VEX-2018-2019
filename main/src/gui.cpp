@@ -9,6 +9,7 @@ lv_obj_t* diagnostics_tab;
 lv_obj_t* shot_tuning_tab;
 lv_obj_t* auto_select_tab;
 lv_obj_t* shot_test_tab;
+gui_tab_states current_gui_tab = gui_tab_states::diagnostics_tab;
 
 // Diagnostics Tab
 lv_obj_t* diagnostics_tab_title;
@@ -24,6 +25,7 @@ lv_obj_t* shot_slider_label[6];
 int shot_slider_value[] = { 0, 0, 0, 0, 0, 0};
 lv_obj_t* shot_tuning_save_button;
 lv_obj_t* shot_tuning_save_button_label;
+int selected_shot_slider = 0;
 
 // Diagnostics Tab
 lv_obj_t* auto_select_tab_title;
@@ -31,8 +33,6 @@ lv_obj_t* red_side_button;
 lv_obj_t* red_side_button_label;
 lv_obj_t* blue_side_button;
 lv_obj_t* blue_side_button_label;
-extern lv_obj_t* auto_buttons[8];
-extern lv_obj_t* auto_buttons_label[8];
 
 // Shot Testing Tab
 lv_obj_t* shot_testing_title;
@@ -121,7 +121,7 @@ void gui_init() {
           auto_SP.mid = temp;
           log_ln(LOG_IO, "%d auto_SP.mid var set (init) | Read_Return: %d | Temp: %d | auto_SP.mid: %d", pros::millis(), read_return, temp, auto_SP.mid);
       }
-      else log_ln(LOG_IO, "%d auto_SP.mid var set failed (init) | Read_Return: %d | Temp: %d | auto_SP.mid: %d", pros::millis(), read_return, temp, auto_SP.mid); 
+      else log_ln(LOG_IO, "%d auto_SP.mid var set failed (init) | Read_Return: %d | Temp: %d | auto_SP.mid: %d", pros::millis(), read_return, temp, auto_SP.mid);
     }
 
   //   printf("for loop exited");
@@ -142,6 +142,7 @@ void gui_init() {
   lv_scr_load(screen);
 	menu = lv_tabview_create(lv_scr_act(), NULL);
   lv_tabview_set_sliding(menu, false);
+  lv_tabview_set_tab_load_action(menu, tab_switch_callback);
 
   // Tabs
 	diagnostics_tab = lv_tabview_add_tab(menu, "Diagnostics");
@@ -294,6 +295,40 @@ void gui_init() {
 }
 
 void gui_handle() {
+  if (current_gui_tab == gui_tab_states::shot_tuning_tab) {
+    std::string slider = "";
+    if (selected_shot_slider == 0) slider = "BackMid";
+    else if (selected_shot_slider == 1) slider = "BackTop";
+    else if (selected_shot_slider == 2) slider = "FrontMid";
+    else if (selected_shot_slider == 3) slider = "FrontTop";
+    else if (selected_shot_slider == 4) slider = "AutoTop";
+    else if (selected_shot_slider == 5) slider = "AutoMid";
+    ctrler.print(2, 0, "%s at %d  ", slider, lv_slider_get_value(shot_slider[selected_shot_slider]));
+
+    if (check_single_press(BTN_NEXT_SHOT_SLIDER) && selected_shot_slider < 5) selected_shot_slider++;
+    else if (check_single_press(BTN_PREVIOUS_SHOT_SLIDER) && selected_shot_slider > 0) selected_shot_slider--;
+    else if (check_single_press(BTN_INCREMENT_SHOT_SLIDER)) {
+      lv_bar_set_value(shot_slider[selected_shot_slider], lv_slider_get_value(shot_slider[selected_shot_slider]) + 2);
+      char shot_slider_string[4];
+      sprintf(shot_slider_string, "%d", lv_slider_get_value(shot_slider[selected_shot_slider]));
+      lv_label_set_text(shot_slider_text[selected_shot_slider], shot_slider_string);
+    } else if (check_single_press(BTN_DECREMENT_SHOT_SLIDER)) {
+      lv_bar_set_value(shot_slider[selected_shot_slider], lv_slider_get_value(shot_slider[selected_shot_slider]) - 2);
+      char shot_slider_string[4];
+      sprintf(shot_slider_string, "%d", lv_slider_get_value(shot_slider[selected_shot_slider]));
+      lv_label_set_text(shot_slider_text[selected_shot_slider], shot_slider_string);
+    }
+    else if (check_single_press(BTN_TEST_SHOT_POSITION)) {
+      shot_tuning_save();
+      pros::delay(1000);
+      if (selected_shot_slider == 0) auto_set_first_shot(pf_back_SP.mid);
+      else if (selected_shot_slider == 1) auto_set_first_shot(pf_back_SP.top);
+      else if (selected_shot_slider == 2) auto_set_first_shot(front_SP.mid);
+      else if (selected_shot_slider == 3) auto_set_first_shot(front_SP.top);
+      else if (selected_shot_slider == 4) auto_set_first_shot(auto_SP.top);
+      else if (selected_shot_slider == 5) auto_set_first_shot(auto_SP.mid);
+    }
+  }
 }
 
 lv_res_t auto_button_action_front(lv_obj_t* button) {
@@ -435,6 +470,44 @@ lv_res_t shot_test_top_turn_action(lv_obj_t* button)
 
   return LV_RES_OK;
 }
+
+void shot_tuning_save() {
+  ctrler.rumble(". . .");
+  for(int i = 0; i < 6; i++) {
+    FILE* log = NULL;
+    if (i == 0) {
+      log = fopen("/usd/back_mid_shot_position.txt", "w");
+      pf_back_SP.mid = lv_slider_get_value(shot_slider[0]);
+    } else if (i == 1) {
+      log = fopen("/usd/back_top_shot_position.txt", "w");
+      pf_back_SP.top = lv_slider_get_value(shot_slider[1]);
+    } else if (i == 2) {
+      log = fopen("/usd/front_mid_shot_position.txt", "w");
+      front_SP.mid = lv_slider_get_value(shot_slider[2]);
+    } else if (i == 3) {
+      log = fopen("/usd/front_top_shot_position.txt", "w");
+      front_SP.top = lv_slider_get_value(shot_slider[3]);
+    } else if (i == 4) {
+      log = fopen("/usd/front_top_auto_position.txt", "w");
+      auto_SP.top = lv_slider_get_value(shot_slider[4]);
+    } else if (i == 5) {
+      log = fopen("/usd/front_mid_auto_position.txt", "w");
+      auto_SP.mid = lv_slider_get_value(shot_slider[5]);
+    }
+
+    if (log == NULL) {
+      printf("Failed to create shot positions file %d\n", i);
+      printf("shot save NULL");
+    } else {
+      printf("Created shot positions file! %d\n", i);
+      fprintf(log, "%d", lv_slider_get_value(shot_slider[i]));
+      printf("%d\n", lv_slider_get_value(shot_slider[i]));
+      printf("shot save NOT NULL");
+      fclose(log);
+    }
+  }
+}
+
 lv_res_t shot_tuning_save_button_action(lv_obj_t* button) {
   ctrler.rumble(". . .");
   for(int i = 0; i < 6; i++) {
@@ -471,4 +544,11 @@ lv_res_t shot_tuning_save_button_action(lv_obj_t* button) {
     }
   }
   return LV_RES_OK; /*Return OK if the message box is not deleted*/
+}
+
+void tab_switch_callback(lv_obj_t * tabview, uint16_t act_id) {
+  if (act_id == 0) current_gui_tab = gui_tab_states::diagnostics_tab;
+  if (act_id == 1) current_gui_tab = gui_tab_states::shot_tuning_tab;
+  if (act_id == 2) current_gui_tab = gui_tab_states::auto_select_tab;
+  if (act_id == 3) current_gui_tab = gui_tab_states::shot_test_tab;
 }
