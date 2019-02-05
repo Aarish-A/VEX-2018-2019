@@ -6,6 +6,7 @@ using namespace pros;
 
 void angler_init() {
 	angler.set_brake_mode(E_MOTOR_BRAKE_HOLD);
+	log_ln(LOG_ANGLER, "%d Finished angler init", pros::millis());
 }
 
 void angler_set(int power) {
@@ -17,9 +18,13 @@ void angler_move(double position, int32_t velocity) {
 }
 
 void angler_cal() {
+	log_ln(LOG_ANGLER, "%d Started angler cal", pros::millis());
   angler.move(-30);
 	delay(100);
-	while (angler.get_actual_velocity() < -10) delay(10);
+	while (angler.get_actual_velocity() < -10) {
+		log_ln(LOG_ANGLER, "%d Waiting for angler to stop moving", pros::millis());
+		delay(10);
+	}
 	angler.tare_position();
 	angler.move_absolute(ANGLER_PU_POS, 100);
 	uint32_t timeout = pros::millis() + 1000;

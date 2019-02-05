@@ -4,7 +4,9 @@ using namespace pros;
 
 IntakeState intake_state = IntakeState::Off;
 
-void intake_init() { }
+void intake_init() {
+  log_ln(LOG_ANGLER, "%d Finished intake init", pros::millis());
+}
 
 void intake_state_set(int power, IntakeState state) {
   intake_set(power);

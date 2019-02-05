@@ -66,7 +66,6 @@
     int left = encL.get_value();
     int right = encR.get_value();
     int strafe = 0;//encS.get_value();
-
     //log_ln("%d pos(%f, %f, %f) (%d, %d)", pros::millis(), x, y, RAD_TO_DEG(a), left, right);
 
 

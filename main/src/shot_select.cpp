@@ -269,6 +269,9 @@ void shot_req_handle_start_task() {
 
 void shot_req_handle(void *param) {
 	log_ln(LOG_SHOTS, "%d Start Shot Req Handle Task ",  pros::millis());
+	uint32_t start_turn_shot_time = 0;
+	uint32_t turn_shot_backup_time = 0;
+	uint32_t turn_shot_turn_time = 0;
 	//shot_req_num = 0; //DELETE
 	while (true) {
 		if (is_disabled) printf(" >>> %d IN SHOT_REQ_HANDLE IN DISABLED S_R_N:\n", pros::millis());
@@ -280,10 +283,10 @@ void shot_req_handle(void *param) {
 				angler.move(0);
 			}
 
-			log_ln(LOG_SHOTS, "%d Start handling first shot request ", pros::millis());
+			log_ln(LOG_SHOTS, "%d STARTED HANDLING FIRST SHOT REQUEST ", pros::millis());
 			set_handled_vars(); //Make sure all handled vars are reset to false
 			shot_req_handled_num = 0; //Make sure we start handling shot requests from index 0
-
+			start_turn_shot_time = pros::millis();
 			if (shot_req[0].field_pos == FieldPos_Back || shot_req[0].field_pos == FieldPos_PF_Back_Red || shot_req[0].field_pos == FieldPos_PF_Back_Blue)  {
 				pos.reset(0,0,0);
 				if (shot_req[0].field_pos == FieldPos_Back) flatten_against_wall(false, true);
@@ -301,18 +304,42 @@ void shot_req_handle(void *param) {
 			//Drive Handle 1
 			if (shot_req[0].field_pos == FieldPos_PF_Back_Red || shot_req[0].field_pos == FieldPos_PF_Back_Blue) {
 				log_ln(LOG_SHOTS, "%d S1 Turn to face %f, %f ", pros::millis(), shot_req[shot_req_handled_num].flag_pos.x, shot_req[shot_req_handled_num].flag_pos.y);
-				setDrive(0, -40, 0);
-			  while (pos.y > -3.5_in) pros::delay(10);
-
-				setDrive(0, 15, 0);
-				pros::delay(150);
-				setDrive(0);
-
-				setDriveVel(0);
-				pros::delay(20);
+				// setDrive(0, -40, 0);
+			  // while (pos.y > -3.5_in) {
+				// 	// printf("%d EncR: %d, EncL: %d\n", pros::millis(), enc_r.get_value(), enc_l.get_value());
+				// 	// printf("%d Pos.y: %f, trying to get to %f\n", pros::millis(), pos.y, -3.5_in);
+				// 	pros::delay(10);
+				// }
+				// turn_shot_backup_time = pros::millis();
+				// log_ln(LOG_SHOTS, "%d FINISHED TURN SHOT BACKUP, TOOK %d MILLIS", pros::millis(), pros::millis() - start_turn_shot_time);
+				//
+				// setDrive(0, 15, 0);
+				// pros::delay(150);
+				// setDrive(0);
+				//
+				// setDriveVel(0);
+				// pros::delay(20);
 			  log_ln(LOG_SHOTS, "%d Done Back up PF (%f, %f, %f) Vel(%f, %f, %f)", pros::millis(), pos.x, pos.y, RAD_TO_DEG(pos.a), pos.velLocal.x, pos.velLocal.y, RAD_TO_DEG(pos.aVel));
 				angler.move_absolute(shot_req[shot_req_handled_num].angle_targ, 200);
-				turn_vel(PointAngleTarget({shot_req[shot_req_handled_num].flag_pos.x, shot_req[shot_req_handled_num].flag_pos.y}), (200/80_deg), 0, 2.5, shot_req_handled_num);
+				drive_bl.tare_position();
+				drive_fl.tare_position();
+				drive_br.tare_position();
+				drive_fr.tare_position();
+				// drive_fr.move(30);
+				// drive_br.move(30);
+				int left = -800;
+				int right = -400;
+				drive_fr.move_absolute(right, 200);
+				drive_fr.move_absolute(right, 200);
+				drive_fl.move_absolute(left, 200);
+				drive_bl.move_absolute(left, 200);
+				// drive_fr.move(0);
+				// drive_br.move(0);
+				// drive_side_set(0, 0);
+				// turn_vel_side(PointAngleTarget({shot_req[shot_req_handled_num].flag_pos.x, shot_req[shot_req_handled_num].flag_pos.y}), (200/50_deg), 0, true);
+				// turn_vel(PointAngleTarget({shot_req[shot_req_handled_num].flag_pos.x, shot_req[shot_req_handled_num].flag_pos.y}), (200/80_deg), 0, 2.5, shot_req_handled_num);
+				turn_shot_turn_time = pros::millis();
+				log_ln(LOG_SHOTS, "%d FINISHED TURN SHOT TURN, TOOK %d MILLIS", pros::millis(), pros::millis() - turn_shot_backup_time);
 			}
 			else if (shot_req[shot_req_handled_num].field_pos == FieldPos_Back) {
 				log_ln(LOG_SHOTS, "%d S1 Turn to face %f, %f ", pros::millis(), shot_req[shot_req_handled_num].flag_pos.x, shot_req[shot_req_handled_num].flag_pos.y);
@@ -325,6 +352,10 @@ void shot_req_handle(void *param) {
 			angler.move_absolute(shot_req[shot_req_handled_num].angle_targ, 200);
 			printf("angler shot target: %f\n", angler.get_target_position());
 			while (!shot_req[shot_req_handled_num].shot_handled) pros::delay(10);
+			log_ln(LOG_SHOTS, "%d FINISHED TURN SHOT SHOT, TOOK %d MILLIS", pros::millis(), pros::millis() - turn_shot_turn_time);
+			uint32_t total_turn_shot_time = pros::millis() - start_turn_shot_time;
+			log_ln(LOG_SHOTS, "%d TOOK A TOTAL OF %d MILLIS TO COMPLETE TURN SHOT", pros::millis(), total_turn_shot_time);
+			ctrler.print(2, 8, "%d", total_turn_shot_time);
 			shot_req_handled_num++;
 			printf("angler shot target: %f\n", angler.get_position());
 			if (shot_req_num > 1) {
@@ -351,7 +382,7 @@ void shot_req_handle(void *param) {
 				angler.move_absolute(ANGLER_PU_POS, 200);
 			}
 			angler.move_absolute(ANGLER_PU_POS, 200);
-			intake_state_set(127, IntakeState::Forw);
+			// intake_state_set(127, IntakeState::Forw);
 
 			setDrive(0);
 			log_ln(LOG_SHOTS, ">>> %d Done shot requests - move angler pos:%f", pros::millis(), angler.get_position());

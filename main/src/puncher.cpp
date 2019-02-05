@@ -64,8 +64,11 @@ void pun_cal() {
 	log_ln(LOG_PUNCHER, "%d Pun Cal Done Tare. LeftPos:%f, RightPos:%f", pros::millis(), puncherLeft.get_position(), puncherRight.get_position());
 
 	log_ln(LOG_PUNCHER, "%d Pun Cal - START LOADING - LeftPos:%f, RightPos:%f", pros::millis(), puncherLeft.get_position(), puncherRight.get_position());
-  pun_move(PUN_OFFSET + PUN_HOLD);
-	while (puncherLeft.get_position() < PUN_OFFSET + PUN_HOLD) pros::delay(10);
+  pun_move(PUN_OFFSET + PUN_HOLD + 5);
+	while (puncherLeft.get_position() < PUN_OFFSET + PUN_HOLD) {
+		log_ln(LOG_PUNCHER, "%d Punching Resetted... Trying to move to %f, at %f", pros::millis(), PUN_OFFSET + PUN_HOLD, puncherLeft.get_position());
+		pros::delay(10);
+	}
 	log_ln(LOG_PUNCHER, "%d Pun Cal - DONE LOADING - LeftPos:%f, RightPos:%f", pros::millis(), puncherLeft.get_position(), puncherRight.get_position());
 	pun_set(PUN_HOLD_PWR);
   pun_state_change(PunState::Loaded);

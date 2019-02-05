@@ -327,7 +327,10 @@ void gui_handle() {
       else if (selected_shot_slider == 3) auto_set_first_shot(front_SP.top);
       else if (selected_shot_slider == 4) auto_set_first_shot(auto_SP.top);
       else if (selected_shot_slider == 5) auto_set_first_shot(auto_SP.mid);
-    } else if (check_single_press(BTN_EXIT_GUI)) current_gui_tab = gui_tab_states::diagnostics_tab;
+    } else if (check_single_press(BTN_EXIT_GUI)) {
+      current_gui_tab = gui_tab_states::diagnostics_tab;
+      lv_tabview_set_tab_act(menu, 0, 0);
+    }
   }
 }
 

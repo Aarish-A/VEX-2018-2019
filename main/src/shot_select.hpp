@@ -10,6 +10,7 @@
 #include "controls.hpp"
 #include "intake.hpp"
 #include "vision.hpp"
+#include "drive.hpp"
 
 /* Flags */
 constexpr bool SHOT_DRIVE_BRAKE = false;

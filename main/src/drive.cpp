@@ -25,12 +25,11 @@ void drive_set_vel(int vel) {
 }
 
 void drive_init() {
-	/*
-	drive_fl.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
-	drive_fr.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
-	drive_bl.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
-	drive_br.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
-	*/
+	drive_fl.set_brake_mode(pros::E_MOTOR_BRAKE_BRAKE);
+	drive_fr.set_brake_mode(pros::E_MOTOR_BRAKE_BRAKE);
+	drive_bl.set_brake_mode(pros::E_MOTOR_BRAKE_BRAKE);
+	drive_br.set_brake_mode(pros::E_MOTOR_BRAKE_BRAKE);
+	log_ln(LOG_DRIVE, "%d Finished drive initialize", pros::millis());
 }
 
 void drive_handle() {
