@@ -22,6 +22,7 @@
   const double SPN_TO_IN_R = (WHL_DIA_R * M_PI / WHL_TPR_R);
   const double SPN_TO_IN_S = (WHL_DIA_S * M_PI / WHL_TPR_S);
 
+  const double DRIVE_WHEEL_CIRC = 4*M_PI;
   const uint32_t VEL_TIME = 40;
 
   constexpr double RAD_TO_DEG(double rad) { return rad * 180 / M_PI; }

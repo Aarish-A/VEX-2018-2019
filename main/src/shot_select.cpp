@@ -311,8 +311,8 @@ void shot_req_handle(void *param) {
 				setDriveVel(0);
 				pros::delay(20);
 			  log_ln(LOG_SHOTS, "%d Done Back up PF (%f, %f, %f) Vel(%f, %f, %f)", pros::millis(), pos.x, pos.y, RAD_TO_DEG(pos.a), pos.velLocal.x, pos.velLocal.y, RAD_TO_DEG(pos.aVel));
-				angler.move_absolute(shot_req[shot_req_handled_num].angle_targ, 200);
 				turn_vel_side(PointAngleTarget({shot_req[shot_req_handled_num].flag_pos.x, shot_req[shot_req_handled_num].flag_pos.y}), (200/60_deg), 0, false);
+				angler.move_absolute(shot_req[shot_req_handled_num].angle_targ, 200);
 			}
 			else if (shot_req[shot_req_handled_num].field_pos == FieldPos_Back) {
 				log_ln(LOG_SHOTS, "%d S1 Turn to face %f, %f ", pros::millis(), shot_req[shot_req_handled_num].flag_pos.x, shot_req[shot_req_handled_num].flag_pos.y);
