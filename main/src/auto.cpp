@@ -54,19 +54,19 @@ void auto_set_second_shot(double angler_target) {
 
 
 double getGlobalAngle() {
-	//return (DRIVE_DIA * M_PI * (driveFL.get_position() - driveBR.get_position() + driveBL.get_position() - driveFR.get_position())) / (2 * DRIVE_TPR * (DRIVE_LENGTH + DRIVE_WIDTH));
-	return (enc_l.get_value() * SPN_TO_IN_L - enc_r.get_value() * SPN_TO_IN_R) / (WHL_DIS_L + WHL_DIS_R);
+	return (DRIVE_DIA * M_PI * (drive_fl.get_position() - drive_br.get_position() + drive_bl.get_position() - drive_fr.get_position())) / (2 * DRIVE_TPR * (DRIVE_LENGTH + DRIVE_WIDTH));
+	//return (enc_l.get_value() * SPN_TO_IN_L - enc_r.get_value() * SPN_TO_IN_R) / (WHL_DIS_L + WHL_DIS_R);
 	//return pos.a;
 }
 
 /* Movement Functions */
 void resetGlobalAngle() {
-	/*driveFL.tare_position();
-  driveBL.tare_position();
-  driveFR.tare_position();
-  driveBR.tare_position();*/
-	enc_l.reset();
-	enc_r.reset();
+	drive_fl.tare_position();
+  drive_bl.tare_position();
+  drive_fr.tare_position();
+  drive_br.tare_position();
+	//enc_l.reset();
+	//enc_r.reset();
 }
 
 void setDrive(int x, int y, int a) {
@@ -166,10 +166,18 @@ void move_drive(vector targ, int vel, bool stop) {
 
 
 void move_drive_rel(double dis, int vel, bool stop) {
+  //Calculations using internal encoders
+  double dis_tks = IN_TO_TK(dis);
+  double target_fl = drive_fl.get_position() + dis_tks;
+  double target_bl = drive_bl.get_position() + dis_tks;
+  double target_fr = drive_fr.get_position() + dis_tks;
+  double target_br = drive_br.get_position() + dis_tks;
+
+  //Calculations using external encoders
   int enc_LStart = enc_l.get_value();
   int enc_RStart = enc_r.get_value();
 
-  log_ln(LOG_AUTO, "%d Moving to %f", millis(), dis);
+  log_ln(LOG_AUTO, "%d Moving to %f | InternalEncs: %f %f %f %f | Targs: %f %f %f %f | ", millis(), dis, drive_fl.get_position(), drive_fr.get_position(), drive_bl.get_position(), drive_br.get_position(), target_fl, target_fr, target_bl, target_br);
 
 	double posCur;
   uint32_t lastAccel = 0, lastDecel = 0;
@@ -178,13 +186,19 @@ void move_drive_rel(double dis, int vel, bool stop) {
     uint32_t curTime = millis();
 		posCur = ((enc_l.get_value() - enc_LStart) * SPN_TO_IN_L + (enc_r.get_value() - enc_RStart) * SPN_TO_IN_R) / 2.0; // IN_TO_TK(pos.y);
 
-		//log_ln("%d %f %f %d %d", curTime, pos, dis, enc_L.get_value(), enc_R.get_value());
-		if ((dis - posCur) * sgn(dis) <= 0.5_in) break;
+		printf("%d | InternalEncs: %f %f %f %f | Pos:%f Dis:%f | Encs: %d %d |", curTime, drive_fl.get_position(), drive_fr.get_position(), drive_bl.get_position(), drive_br.get_position(), posCur, dis, enc_l.get_value(), enc_r.get_value());
+		//if ((dis - posCur) * sgn(dis) <= 0.5_in) break;
+    if ((target_fl - drive_fl.get_position()) * sgn(dis) <= IN_TO_TK(0.5) ||
+        (target_fr - drive_fr.get_position()) * sgn(dis) <= IN_TO_TK(0.5) ||
+        (target_bl - drive_bl.get_position()) * sgn(dis) <= IN_TO_TK(0.5) ||
+        (target_br - drive_br.get_position()) * sgn(dis) <= IN_TO_TK(0.5))
+        break;
+
 		double actVel = ((drive_fl.get_actual_velocity() + drive_bl.get_actual_velocity() + drive_fr.get_actual_velocity() + drive_br.get_actual_velocity()) / 4.0) / 60.0 * 360.0;
     double tkToDecel = (actVel * actVel) / (2 * ((1000.0 / MOVE_DECEL_RATE) / 60.0) * 360.0);
 		double inToDecel = tkToDecel * DRIVE_DIA * M_PI / DRIVE_TPR;
     //log_ln(LOG_AUTO, "%d %d %f %f", curTime, i, inToDecel, dis - posCur);
-    if (inToDecel < (dis - posCur) * sgn(dis) - 0.5_in) {
+    if (tkToDecel < ( (target_fl - drive_fl.get_position()) * sgn(dis) - (IN_TO_TK(0.5)*sgn(dis)) ) ) {
       if (curTime - lastAccel > MOVE_ACCEL_RATE && i < vel) {
         i += 1;
         lastAccel = curTime;
@@ -199,19 +213,19 @@ void move_drive_rel(double dis, int vel, bool stop) {
     setDriveVel(0, i * sgn(dis), 0);
     delay(1);
   }
-	printf("%f %f\n", dis, posCur);
 	if (stop) {
+    /*
 		double targetFL = drive_fl.get_position() + (dis - posCur) * (DRIVE_TPR / (DRIVE_DIA * M_PI));
 	  double targetBL = drive_bl.get_position() + (dis - posCur) * (DRIVE_TPR / (DRIVE_DIA * M_PI));
 	  double targetFR = drive_fr.get_position() + (dis - posCur) * (DRIVE_TPR / (DRIVE_DIA * M_PI));
 	  double targetBR = drive_br.get_position() + (dis - posCur) * (DRIVE_TPR / (DRIVE_DIA * M_PI));
-
-	  drive_fl.move_absolute(targetFL, 25);
-	  drive_bl.move_absolute(targetBL, 25);
-	  drive_fr.move_absolute(targetFR, 25);
-	  drive_br.move_absolute(targetBR, 25);
+    */
+	  drive_fl.move_absolute(target_fl, 25);
+	  drive_bl.move_absolute(target_bl, 25);
+	  drive_fr.move_absolute(target_fr, 25);
+	  drive_br.move_absolute(target_br, 25);
 	  log_ln(LOG_AUTO, "%d Stopping from FL: %f, BL: %f, FR: %f, BR %f", millis(), drive_fl.get_position(), drive_bl.get_position(), drive_fr.get_position(), drive_br.get_position());
-	  while (fabs(drive_fl.get_position() - targetFL) > 3 || fabs(drive_bl.get_position() - targetBL) > 3 || fabs(drive_fr.get_position() - targetFR) > 3 || fabs(drive_br.get_position() - targetBR) > 3) delay(1);
+	  while (fabs(drive_fl.get_position() - target_fl) > 3 || fabs(drive_bl.get_position() - target_bl) > 3 || fabs(drive_fr.get_position() - target_fr) > 3 || fabs(drive_br.get_position() - target_br) > 3) delay(1);
 	  delay(100);
 	}
   log_ln(LOG_AUTO, "%d Moved to FL: %f, BL: %f, FR: %f, BR %f |  Angle %f ", millis(), drive_fl.get_position(), drive_bl.get_position(), drive_fr.get_position(), drive_br.get_position(), RAD_TO_DEG(getGlobalAngle()));
@@ -256,10 +270,12 @@ void move_drive_rel_simple(double dis, int vel, bool stop) {
 void turn_vel(const AngleTarget& target, double kP, double offset, float drive_turn_handled_offset, short req_handled_num)
 {
 	kP = fabs(kP);
+  double enc_angle = (enc_l.get_value() * SPN_TO_IN_L - enc_r.get_value() * SPN_TO_IN_R) / (WHL_DIS_L + WHL_DIS_R);
 	double dA = target.getTarget() - getGlobalAngle() + offset;
   log_ln(LOG_AUTO, "%d Turning to %f | DeltaA: %f ", millis(), RAD_TO_DEG(target.getTarget()), RAD_TO_DEG(dA) );
 	while (fabs(dA) > 0.8_deg) {
-		// log_ln(" > %d Turning %f dA: %f| FL: %f, BL: %f, FR: %f, BR %f", millis(), RAD_TO_DEG(pos.a), RAD_TO_DEG(dA), drive_fl.get_position(), drive_bl.get_position(), drive_fr.get_position(), drive_br.get_position());
+    enc_angle = (enc_l.get_value() * SPN_TO_IN_L - enc_r.get_value() * SPN_TO_IN_R) / (WHL_DIS_L + WHL_DIS_R);
+		printf(" > %d Turning %f dA: %f| FL: %f, BL: %f, FR: %f, BR %f | EncA: %f\n", millis(), RAD_TO_DEG(getGlobalAngle()), RAD_TO_DEG(dA), drive_fl.get_position(), drive_bl.get_position(), drive_fr.get_position(), drive_br.get_position(), RAD_TO_DEG(enc_angle));
 		dA = target.getTarget() - getGlobalAngle() + offset;
 		if ((fabs(dA) < DEG_TO_RAD(drive_turn_handled_offset)) && drive_turn_handled_offset != 0) {
 			shot_req[req_handled_num].drive_turn_handled = true;
@@ -268,7 +284,8 @@ void turn_vel(const AngleTarget& target, double kP, double offset, float drive_t
 		setDriveVel(0, 0, (dA * kP));
 		delay(2);
 	}
-  log_ln(LOG_AUTO, "%d Turned to %f | FL: %f, BL: %f, FR: %f, BR %f", millis(), RAD_TO_DEG(getGlobalAngle()), drive_fl.get_position(), drive_bl.get_position(), drive_fr.get_position(), drive_br.get_position());
+  enc_angle = (enc_l.get_value() * SPN_TO_IN_L - enc_r.get_value() * SPN_TO_IN_R) / (WHL_DIS_L + WHL_DIS_R);
+  log_ln(LOG_AUTO, "%d Turned to %f | pos: %f | FL: %f, BL: %f, FR: %f, BR %f | EncAngle: %f", millis(), RAD_TO_DEG(getGlobalAngle()), drive_fl.get_position(), drive_bl.get_position(), drive_fr.get_position(), drive_br.get_position(), RAD_TO_DEG(enc_angle));
   setDrive(0);
 	drive_brake();
 }
