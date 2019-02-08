@@ -67,6 +67,7 @@ void resetGlobalAngle() {
   driveBR.tare_position();*/
 	enc_l.reset();
 	enc_r.reset();
+  log_ln(LOG_AUTO, "%d Reset Global Angle. L: %d, R:%d", millis(), enc_l.get_value(), enc_r.get_value());
 }
 
 void setDrive(int x, int y, int a) {
@@ -183,7 +184,7 @@ void move_drive_rel(double dis, int vel, bool stop) {
 		double actVel = ((drive_fl.get_actual_velocity() + drive_bl.get_actual_velocity() + drive_fr.get_actual_velocity() + drive_br.get_actual_velocity()) / 4.0) / 60.0 * 360.0;
     double tkToDecel = (actVel * actVel) / (2 * ((1000.0 / MOVE_DECEL_RATE) / 60.0) * 360.0);
 		double inToDecel = tkToDecel * DRIVE_DIA * M_PI / DRIVE_TPR;
-    //log_ln(LOG_AUTO, "%d %d %f %f", curTime, i, inToDecel, dis - posCur);
+    //printf("  >> %d i:%d inToDecel:%f Dis:%f, A:%f \n", curTime, i, inToDecel, dis - posCur, RAD_TO_DEG(getGlobalAngle()));
     if (inToDecel < (dis - posCur) * sgn(dis) - 0.5_in) {
       if (curTime - lastAccel > MOVE_ACCEL_RATE && i < vel) {
         i += 1;

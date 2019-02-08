@@ -422,20 +422,29 @@ void autonomous() {
         while (auto_set_shot) pros::delay(10);
         intake.move(127);
         angler_move(ANGLER_CAP_PU_POS,100);
-        move_drive_rel(-26.5_in, 200);
+        move_drive_rel(-26.0_in, 200);
         turn_vel( FixedAngleTarget(0_deg), (200/90_deg));
-        move_drive_rel(27_in, 200);
+        move_drive_rel(21_in, 75);
+
+        double turn_correction = 2_deg;
+        if (fabs(getGlobalAngle() - turn_correction) > 1) turn_vel( FixedAngleTarget(turn_correction), (200/70_deg));
+        
+        log_ln(LOG_AUTO, "%d Before Pickup - A:%f \n", millis(), RAD_TO_DEG(getGlobalAngle()));
+        //delay(30000);
+        move_drive_rel(7.5_in, 50);
         pros::delay(250);
-        move_drive_rel(-8_in,200);
+        move_drive_rel(-9.5_in,200);
+        log_ln(LOG_AUTO, "%d Before Strafe - A:%f \n", millis(), RAD_TO_DEG(getGlobalAngle()));
+        delay(30000);
 
         first_flag_pos = auto_SP.top;
         auto_set_angler_target(first_flag_pos);
         drive_fl.tare_position();
         drive_set(-75,0,0);
-        while(fabs(drive_fl.get_position())<100){delay(10);}
+        while(fabs(drive_fl.get_position())<70){delay(10);}
         drive_set(0,0,0);
         log_ln(LOG_AUTO, "%d After Strafe - A:%f \n", millis(), RAD_TO_DEG(getGlobalAngle()));
-        //delay(30000);
+        delay(30000);
 
         turn_vel( FixedAngleTarget(-56_deg), (200/90_deg));
         move_drive_rel(10_in,200);
