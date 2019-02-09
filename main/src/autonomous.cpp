@@ -304,27 +304,41 @@ void auto_red_back_mid_first() {
       vel = l-l_lst;
       printf("  >>%d Flatten Wait L:%d, L_Lst:%d, Vel:%d \n", millis(), l, l_lst, vel);
       l_lst = l;
-      pros::delay(10);
-    }while ((fabs(vel)>2));
+      pros::delay(50);
+    }while (vel<0);
     setDrive(0, -10, 0);
+    delay(200);
     resetGlobalAngle();
-    delay(100);
     printf("%d Done Angle Reset L:%d R:%d \n", millis(), enc_l.get_value(), enc_r.get_value());
     setDrive(0);
 
     //4 PU Off of Cap
-    move_drive_rel(4_in, 50);
+    move_drive_rel(6_in, 50);
     intake.move(127);
     angler_move(ANGLER_CAP_PU_POS,100);
-    turn_vel( FixedAngleTarget(90.5_deg), (200/90_deg));
-
+    turn_vel( FixedAngleTarget(90_deg), (200/90_deg));
+    delay(150);
+    setDriveVel(0);
+    setDrive(0);
+    delay(10);
     log_ln(LOG_AUTO, "%d Before Pickup - A:%f \n", millis(), RAD_TO_DEG(getGlobalAngle()));
-    move_drive_rel(27_in, 100);
+    move_drive_rel(28_in, 70);
     pros::delay(250);
     move_drive_rel(-10_in,200);
     log_ln(LOG_AUTO, "%d Before Strafe - A:%f \n", millis(), RAD_TO_DEG(getGlobalAngle()));
-    delay(600000);
 
+/*
+    //5 Shoot
+    turn_vel_side_simple(FixedAngleTarget(34_deg), (200/50_deg), 0, true);
+    first_flag_pos = auto_SP.top;
+    auto_set_first_shot(first_flag_pos);
+    while (auto_set_shot) pros::delay(10);
+    pros::delay(150);
+    auto_set_second_shot(auto_SP.mid);
+    while (auto_set_shot) pros::delay(10);
+    delay(600000);
+*/
+    //Strafe
     first_flag_pos = auto_SP.top;
     auto_set_angler_target(first_flag_pos);
     drive_fl.tare_position();
@@ -332,10 +346,8 @@ void auto_red_back_mid_first() {
     while(fabs(drive_fl.get_position())<70){delay(10);}
     drive_set(0,0,0);
     log_ln(LOG_AUTO, "%d After Strafe - A:%f \n", millis(), RAD_TO_DEG(getGlobalAngle()));
-    delay(30000);
 
-    turn_vel( FixedAngleTarget(-56_deg), (200/90_deg));
-    move_drive_rel(10_in,200);
+    turn_vel( FixedAngleTarget(31_deg), (200/90_deg));
     auto_set_first_shot(first_flag_pos);
     while (auto_set_shot) pros::delay(10);
     pros::delay(150);

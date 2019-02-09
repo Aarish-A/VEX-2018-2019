@@ -370,6 +370,53 @@ void turn_vel_side(const AngleTarget& target, double kP, double offset, bool f_w
 
 }
 
+void turn_vel_side_simple(const AngleTarget& target, double kP, double offset, bool f_w)
+{
+	int t_start = pros::millis();
+	double dA = target.getTarget() - getGlobalAngle() + offset;
+  log_ln(LOG_AUTO, "%d Turning to %f | DeltaA: %f", millis(), RAD_TO_DEG(target.getTarget()), RAD_TO_DEG(dA) );
+
+	if (f_w) {
+		while (fabs(dA) > 0.8_deg) {
+			dA = target.getTarget() - getGlobalAngle() + offset;
+			//log("%d Pos:%f DeltaA:%f Pow:%f \n", pros::millis(), RAD_TO_DEG(pos.a), RAD_TO_DEG(dA), kP*fabs(dA));
+			if (dA > 0) {
+				drive_bl.move_velocity(kP*fabs(dA));
+				drive_fl.move_velocity(kP*fabs(dA));
+				drive_br.move_relative(0, 100);
+				drive_fr.move_relative(0, 100);
+			} else {
+				drive_br.move_velocity(kP*fabs(dA));
+				drive_fr.move_velocity(kP*fabs(dA));
+				drive_bl.move_relative(0, 100);
+				drive_fl.move_relative(0, 100);
+			}
+			delay(5);
+		}
+	}
+	else {
+		while (fabs(dA) > 0.8_deg) {
+			dA = target.getTarget() - getGlobalAngle() + offset;
+			//log("%d Pos:%f DeltaA:%f Pow:%f \n", pros::millis(), RAD_TO_DEG(pos.a), RAD_TO_DEG(dA), kP*fabs(dA));
+			if (dA > 0) {
+				drive_br.move_velocity(-kP*fabs(dA));
+				drive_fr.move_velocity(-kP*fabs(dA));
+				drive_bl.move_relative(0, 100);
+				drive_fl.move_relative(0, 100);
+			} else {
+				drive_bl.move_velocity(-kP*fabs(dA));
+				drive_fl.move_velocity(-kP*fabs(dA));
+				drive_br.move_relative(0, 100);
+				drive_fr.move_relative(0, 100);
+			}
+			delay(5);
+		}
+	}
+  log_ln(LOG_AUTO, "%d Turned to %f in %d Vel:%f | FL: %f, BL: %f, FR: %f, BR %f", millis(), RAD_TO_DEG(getGlobalAngle()), millis()-t_start, pos.aVel, drive_fl.get_position(), drive_bl.get_position(), drive_fr.get_position(), drive_br.get_position());
+  setDrive(0);
+	drive_brake();
+}
+
 void flatten_against_wall(bool f_w, bool hold) {
 	//pos.reset(0,0,0);
 	//int pow = 40;
