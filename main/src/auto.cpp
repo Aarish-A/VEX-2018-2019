@@ -341,7 +341,7 @@ void turn_vel_fast(const AngleTarget& target, double kP, double offset, double c
   }
 }
 
-void turn_vel_auto(const AngleTarget& target, double kP, double offset, float drive_turn_handled_offset)
+void turn_vel_auto(const AngleTarget& target, double kP, double offset, float drive_turn_handled_offset, double angler_target)
 {
 	kP = fabs(kP);
 	double dA = target.getTarget() - getGlobalAngle() + offset;
@@ -351,7 +351,9 @@ void turn_vel_auto(const AngleTarget& target, double kP, double offset, float dr
 		dA = target.getTarget() - getGlobalAngle() + offset;
 		//log_ln(LOG_AUTO, "%d dA: %f", pros::millis(), dA);
 		if ((fabs(dA) < DEG_TO_RAD(drive_turn_handled_offset)) && drive_turn_handled_offset != 0) {
-			auto_set_shot = true;
+      shot_req_handled_num = 0;
+      auto_set_shot = true;
+      auto_set_angler_target(angler_target);
 			log_ln(LOG_AUTO, "%d REACHED DRIVE TURN HANDLED OFFSET THRESHOLD", pros::millis());
 		}
 		setDriveVel(0, 0, (dA * kP));
@@ -378,8 +380,8 @@ void turn_vel_side(const AngleTarget& target, double kP, double offset, bool f_w
 			if (dA > 0) {
 				drive_bl.move_velocity(kP*fabs(dA));
 				drive_fl.move_velocity(kP*fabs(dA));
-				drive_br.move_velocity(0);
-				drive_fr.move_velocity(0);
+				drive_br.move_relative(0,200);
+				drive_fr.move_relative(0,200);
 			} else {
 				drive_br.move_velocity(kP*fabs(dA));
 				drive_fr.move_velocity(kP*fabs(dA));
