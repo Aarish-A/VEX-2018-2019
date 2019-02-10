@@ -319,7 +319,7 @@ void auto_red_back_mid_first() {
 
 
     //4 PU Off of Cap
-    move_drive_rel(4.25_in, 40);
+    move_drive_rel(3.8_in, 40);
     intake.move(127);
     angler_move(ANGLER_CAP_PU_POS,100);
     //turn_vel( FixedAngleTarget(90_deg), (200/90_deg));
@@ -337,19 +337,24 @@ void auto_red_back_mid_first() {
     //5 Strafe
     first_flag_pos = auto_SP.top;
     auto_set_angler_target(first_flag_pos);
-    delay(150);
+    delay(100);
     drive_fl.tare_position();
     drive_set(-75,0,0);
+    log_ln(LOG_AUTO, ">>%d Start Strafe FL: %f, BL: %f, FR: %f, BR %f | Angle: %f", millis(), drive_fl.get_position(), drive_bl.get_position(), drive_fr.get_position(), drive_br.get_position(), RAD_TO_DEG(getGlobalAngle()));
     while(fabs(drive_fl.get_position())<70){delay(10);}
-    drive_set(0,0,0);
-    log_ln(LOG_AUTO, "%d After Strafe - A:%f \n", millis(), RAD_TO_DEG(getGlobalAngle()));
-
+    log_ln(LOG_AUTO, ">>%d Strafe Done Main LoopFL: %f, BL: %f, FR: %f, BR %f | Angle: %f", millis(), drive_fl.get_position(), drive_bl.get_position(), drive_fr.get_position(), drive_br.get_position(), RAD_TO_DEG(getGlobalAngle()));
+    drive_set(10,0,0);
+    delay(150);
+    drive_set(0);
+    log_ln(LOG_AUTO, ">>%d Strafe Done Break LoopFL: %f, BL: %f, FR: %f, BR %f | Angle: %f", millis(), drive_fl.get_position(), drive_bl.get_position(), drive_fr.get_position(), drive_br.get_position(), RAD_TO_DEG(getGlobalAngle()));
+    delay(50);
+    log_ln(LOG_AUTO, ">>%d Strafe Done Rest LoopFL: %f, BL: %f, FR: %f, BR %f | Angle: %f", millis(), drive_fl.get_position(), drive_bl.get_position(), drive_fr.get_position(), drive_br.get_position(), RAD_TO_DEG(getGlobalAngle()));
     //6 shoot
-    //turn_vel( FixedAngleTarget(30_deg), (200/90_deg));
-    turn_vel_fast( FixedAngleTarget(30_deg), 127/30_deg, 1.8_deg, 7_deg, false);
+    turn_vel( FixedAngleTarget(30_deg), (200/90_deg));
+    //turn_vel_fast( FixedAngleTarget(30_deg), 127/30_deg, 1.4_deg, 7_deg, false);
     auto_set_first_shot(first_flag_pos);
     while (auto_set_shot) pros::delay(10);
-    pros::delay(150);
+    pros::delay(250);
     auto_set_second_shot(auto_SP.mid);
     while (auto_set_shot) pros::delay(10);
 

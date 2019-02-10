@@ -288,7 +288,7 @@ void turn_vel_fast(const AngleTarget& target, double kP, double offset, double c
     dA = target.getTarget() - getGlobalAngle() + offset;
     double pow = kP * dA;
     //if (fabs(pow) < 25) pow = 25 * sgn(pow);
-		printf("  >>> %d Pow:%f | Turning %f CurA:%f, dA: %f| FL: %f, BL: %f, FR: %f, BR %f \n", millis(), pow, target.getTarget(), RAD_TO_DEG(getGlobalAngle()), RAD_TO_DEG(dA), drive_fl.get_position(), drive_bl.get_position(), drive_fr.get_position(), drive_br.get_position());
+		//printf("  >>> %d Pow:%f | Turning %f CurA:%f, dA: %f| FL: %f, BL: %f, FR: %f, BR %f \n", millis(), pow, target.getTarget(), RAD_TO_DEG(getGlobalAngle()), RAD_TO_DEG(dA), drive_fl.get_position(), drive_bl.get_position(), drive_fr.get_position(), drive_br.get_position());
     setDrive(0, 0, pow);
 		delay(2);
 	}
