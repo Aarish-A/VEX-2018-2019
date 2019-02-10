@@ -200,7 +200,9 @@ void move_drive_rel(double dis, int vel, bool stop) {
     setDriveVel(0, i * sgn(dis), 0);
     delay(1);
   }
-	printf("%f %f\n", dis, posCur);
+  log_ln(LOG_AUTO, ">>%d Move done main loop FL: %f, BL: %f, FR: %f, BR %f | Angle: %f", millis(), drive_fl.get_position(), drive_bl.get_position(), drive_fr.get_position(), drive_br.get_position(), RAD_TO_DEG(getGlobalAngle()));
+
+	//printf("%f %f\n", dis, posCur);
 	if (stop) {
 		double targetFL = drive_fl.get_position() + (dis - posCur) * (DRIVE_TPR / (DRIVE_DIA * M_PI));
 	  double targetBL = drive_bl.get_position() + (dis - posCur) * (DRIVE_TPR / (DRIVE_DIA * M_PI));
@@ -234,6 +236,8 @@ void move_drive_rel_simple(double dis, int vel, bool stop) {
 		//log_ln("%d %f %f %d %d", curTime, pos, dis, enc_L.get_value(), enc_R.get_value());
     delay(1);
   } while ((dis - posCur) * sgn(dis) > 0.5_in);
+  log_ln(LOG_AUTO, ">>%d Moved simple done main loop FL: %f, BL: %f, FR: %f, BR %f | Angle: %f", millis(), drive_fl.get_position(), drive_bl.get_position(), drive_fr.get_position(), drive_br.get_position(), RAD_TO_DEG(getGlobalAngle()));
+
 	printf("%f %f\n", dis, posCur);
 	if (stop) {
 		double targetFL = drive_fl.get_position() + (dis - posCur) * (DRIVE_TPR / (DRIVE_DIA * M_PI));
@@ -272,6 +276,69 @@ void turn_vel(const AngleTarget& target, double kP, double offset, float drive_t
   log_ln(LOG_AUTO, "%d Turned to %f | FL: %f, BL: %f, FR: %f, BR %f", millis(), RAD_TO_DEG(getGlobalAngle()), drive_fl.get_position(), drive_bl.get_position(), drive_fr.get_position(), drive_br.get_position());
   setDrive(0);
 	drive_brake();
+}
+
+void turn_vel_fast(const AngleTarget& target, double kP, double offset, double correct_amount, bool correct_left)
+{
+  kP = fabs(kP);
+	double dA = target.getTarget() - getGlobalAngle() + offset;
+  log_ln(LOG_AUTO, "%d Turning to %f | DeltaA: %f ", millis(), RAD_TO_DEG(target.getTarget()), RAD_TO_DEG(dA) );
+
+	while (fabs(dA) > correct_amount) {
+    dA = target.getTarget() - getGlobalAngle() + offset;
+    double pow = kP * dA;
+    //if (fabs(pow) < 25) pow = 25 * sgn(pow);
+		printf("  >>> %d Pow:%f | Turning %f CurA:%f, dA: %f| FL: %f, BL: %f, FR: %f, BR %f \n", millis(), pow, target.getTarget(), RAD_TO_DEG(getGlobalAngle()), RAD_TO_DEG(dA), drive_fl.get_position(), drive_bl.get_position(), drive_fr.get_position(), drive_br.get_position());
+    setDrive(0, 0, pow);
+		delay(2);
+	}
+  //log_ln(LOG_AUTO, "%d Turned to %f | FL: %f, BL: %f, FR: %f, BR %f", millis(), RAD_TO_DEG(getGlobalAngle()), drive_fl.get_position(), drive_bl.get_position(), drive_fr.get_position(), drive_br.get_position());
+  setDrive(0);
+
+  //Angle Correct at end
+
+  dA = target.getTarget() - getGlobalAngle() + offset;
+  double enc_rollout_targ = dA * (double)(WHL_DIS_L + WHL_DIS_R);
+  double whl_tick_targ = IN_TO_TK(enc_rollout_targ)/5;
+
+  printf("%d Print Start Angle Correction | A:%f. DA:%f. T:%f | enc_rollout_targ = %f, whl_tick_targ = %f | FL: %f, BL: %f, FR: %f, BR %f \n", millis(), RAD_TO_DEG(getGlobalAngle()), RAD_TO_DEG(dA), RAD_TO_DEG(target.getTarget()), enc_rollout_targ, whl_tick_targ, drive_fl.get_position(), drive_bl.get_position(), drive_fr.get_position(), drive_br.get_position());
+
+
+	if (dA > 0) {
+    printf(">>%d Left Correct dA:%f \n", millis(), dA);
+    drive_fl.move_relative(whl_tick_targ, 30);
+    drive_bl.move_relative(whl_tick_targ, 30);
+    drive_fr.move_relative(0, 30);
+    drive_br.move_relative(0, 30);
+  }
+  else {
+    printf(">>%d Right Correct dA:%f \n", millis(), dA);
+    whl_tick_targ = -whl_tick_targ;
+    drive_fr.move_relative(whl_tick_targ, 30);
+    drive_br.move_relative(whl_tick_targ, 30);
+    drive_fl.move_relative(0, 30);
+    drive_bl.move_relative(0, 30);
+  }
+
+  ///drive_brake();
+  log_ln(LOG_AUTO, "%d Start Angle Correction | A:%f. DA:%f. T:%f | enc_rollout_targ = %f, whl_tick_targ = %f", millis(), RAD_TO_DEG(getGlobalAngle()), RAD_TO_DEG(dA), RAD_TO_DEG(target.getTarget()), enc_rollout_targ, whl_tick_targ);
+  u_int32_t start_correction_t = millis();
+  while (millis() < start_correction_t + 300)
+  {
+    dA = target.getTarget() - getGlobalAngle() + offset;
+    //printf("  C>>> %d A:%f dA:%f T:%f | %f %f %f %f | %d %d \n", millis(), RAD_TO_DEG(getGlobalAngle()), RAD_TO_DEG(dA), RAD_TO_DEG(target.getTarget()), drive_fl.get_position(), drive_bl.get_position(), drive_fr.get_position(), drive_br.get_position(), enc_l.get_value(), enc_r.get_value());
+    pros::delay(10);
+  }
+  setDriveVel(0);
+  setDrive(0);
+  log_ln(LOG_AUTO, "%d Stop Angle Correction | A:%f. DA:%f. T:%f | enc_rollout_targ = %f, whl_tick_targ = %f", millis(), RAD_TO_DEG(getGlobalAngle()), RAD_TO_DEG(dA), RAD_TO_DEG(target.getTarget()), enc_rollout_targ, whl_tick_targ);
+  start_correction_t = millis();
+  while (millis() < start_correction_t + 70)
+  {
+    dA = target.getTarget() - getGlobalAngle() + offset;
+    //printf("  Wait>>> %d A:%f dA:%f T:%f | %f %f %f %f | %d %d \n", millis(), RAD_TO_DEG(getGlobalAngle()), RAD_TO_DEG(dA), RAD_TO_DEG(target.getTarget()), drive_fl.get_position(), drive_bl.get_position(), drive_fr.get_position(), drive_br.get_position(), enc_l.get_value(), enc_r.get_value());
+    pros::delay(10);
+  }
 }
 
 void turn_vel_auto(const AngleTarget& target, double kP, double offset, float drive_turn_handled_offset)

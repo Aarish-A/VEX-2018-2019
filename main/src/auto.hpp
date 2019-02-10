@@ -54,6 +54,7 @@ void move_drive_rel_simple(double dis, int vel, bool stop = true);
 
 //void turnDrive(double targ, int vel);
 void turn_vel(const AngleTarget& target, double kP, double offset = 0, float drive_turn_handled_time = 0, short req_handled_num = 0);
+void turn_vel_fast(const AngleTarget& target, double kP, double offset, double correct_amount, bool correct_left);
 void turn_vel_auto(const AngleTarget& target, double kP, double offset = 0, float drive_turn_handled_time = 0);
 void turn_vel_side(const AngleTarget& target, double kP, double offset, bool f_w);
 void turn_vel_side_simple(const AngleTarget& target, double kP, double offset, bool f_w);
