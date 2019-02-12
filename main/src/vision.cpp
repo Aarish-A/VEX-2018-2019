@@ -17,7 +17,8 @@ void vision_handle() {
 bool detecting_signature(short signature) {
   int counter = 0;
   for (int i = 0; i < 10; i++) {
-    if (signature == object_buffer_array[i].signature) counter++;
+    if (signature == 2 && object_buffer_array[i].signature && object_buffer_array[i].width > 250 && object_buffer_array[i].top_coord < 40) counter++;
+    else if (signature == object_buffer_array[i].signature) counter++;
   }
   if (counter > 5) {
     log_ln(LOG_VISION, "%d Detected Signature: %d", pros::millis(), signature);
