@@ -8,6 +8,9 @@ int pun_state_change_time = 0;
 int pun_shots = 0;
 bool pun_ball = false;
 float last_number = PUN_OFFSET + (pun_shots * PUN_TPR) + PUN_HOLD;
+float pun_target = 0.0;
+float pun_target_two = 0.0;
+float pun_target_three = 0.0;
 
 bool auto_set_shot = false;
 double auto_angler_target = 0;
@@ -95,6 +98,7 @@ void pun_handle() {
 		switch (pun_state) {
 			case PunState::Loading:
 			{
+
 				double cur_err = (PUN_OFFSET + (pun_shots * PUN_TPR) + PUN_HOLD) - puncherLeft.get_position();
 				double targ = (4.0 * PUN_RATIO);
 				//log_ln(LOG_PUNCHER, "%d PUNLOADING, CUR: %f, T: %f, E: %f, ETarg:%f", pros::millis(), puncherLeft.get_position(), (PUN_OFFSET + (pun_shots * PUN_TPR) + PUN_HOLD), cur_err, (4.0 * PUN_RATIO));
@@ -104,12 +108,13 @@ void pun_handle() {
 					last_number = PUN_OFFSET + (pun_shots * PUN_TPR) + PUN_HOLD;
 					pun_state_change(PunState::Loaded);
 				}
-
+				printf("%d Checking time :%d\n",millis(),pun_state_change_time+1000);
 				if (millis() > pun_state_change_time+1000) { //Takes 300 ms
 					pun_set(0);
 					log_ln(LOG_PUNCHER, " >>> %d PUN FATAL ERROR (from Loading) - T_O | Pos: %f | Cur_Err(%f) needs to be <= to %f", millis(), puncherLeft.get_position(), cur_err, targ);
 					pun_state_change(PunState::FatalError);
 				}
+				printf("%d checked time:%d\n",millis(),pun_state_change_time+1000);
 				break;
 			}
 			case PunState::Loaded:
@@ -122,6 +127,9 @@ void pun_handle() {
 						uint32_t shot_timeout = pros::millis() + 4000;
 						++pun_shots;
 						pun_set(127);
+						pun_target = PUN_OFFSET + (pun_shots * PUN_TPR) - PUN_NO_RETURN;
+						pun_target_two = PUN_OFFSET + (pun_shots * PUN_TPR) - PUN_BALL_CHK_START[shot_req_handled_num];
+						pun_target_three = (PUN_OFFSET + (pun_shots * PUN_TPR)-(15*PUN_RATIO));
 						log_ln(LOG_PUNCHER, "%d Shot start (from ShotLoaded first condition)", pros::millis());
 
 						pun_state_change(PunState::Pull_Back);
@@ -140,8 +148,10 @@ void pun_handle() {
 			case PunState::Pull_Back:
 			{
 				//log_ln(LOG_PUNCHER, "%d PULLBACK, CUR: %f T: %d", pros::millis(), puncherLeft.get_position(), (PUN_OFFSET + (pun_shots * PUN_TPR) - PUN_NO_RETURN));
-				if (puncherLeft.get_position() < (PUN_OFFSET + (pun_shots * PUN_TPR) - PUN_NO_RETURN) && !pun_ball
-				 	&& puncherLeft.get_position() > (PUN_OFFSET + (pun_shots * PUN_TPR) - PUN_BALL_CHK_START[shot_req_handled_num]) ) {
+				double puncher_position = puncherLeft.get_position();
+				log_ln(LOG_PUNCHER, "%d Pullback: Puncher at %f, trying to get to between %f and %f, ball: %d", pros::millis(), puncher_position, pun_target, pun_target_two, (int)pun_ball);
+				if (puncher_position < (pun_target) && !pun_ball
+				 	&& puncher_position > (pun_target_two)) {
 					log_ln(LOG_PUNCHER, "%d Shot failure, no ball pos:%f (b/w:%f & %f). BallSen:%d", millis(), puncherLeft.get_position(), (PUN_OFFSET + (pun_shots * PUN_TPR) - PUN_BALL_CHK_START[shot_req_handled_num]), (PUN_OFFSET + (pun_shots * PUN_TPR) - PUN_NO_RETURN), ball_sensor.get_value());
 					pun_move(PUN_OFFSET + (--pun_shots * PUN_TPR) + PUN_HOLD);
 					ctrler.rumble(" .");
@@ -151,7 +161,7 @@ void pun_handle() {
 					shot_req_handled_num = 0;
 					pun_state_change(PunState::Loading);
 				}
-				else if (shot_cancel_pressed && puncherLeft.get_position() < PUN_OFFSET + (pun_shots * PUN_TPR) - PUN_NO_RETURN) {
+				else if (shot_cancel_pressed && puncherLeft.get_position() < pun_target) {
 					pun_move(PUN_OFFSET + (--pun_shots * PUN_TPR) + PUN_HOLD);
 					log_ln(LOG_PUNCHER, "%d Shot failure, canceled. Enter PunLoad", millis());
 
@@ -162,7 +172,7 @@ void pun_handle() {
 					pun_state_change(PunState::Loading);
 
 				}
-				else if ((PUN_OFFSET + (pun_shots * PUN_TPR)-(15*PUN_RATIO)) < puncherLeft.get_position()) { //15 deg before slip position
+				else if (pun_target_three < puncherLeft.get_position()) { //15 deg before slip position
 					wait_slip_end = millis() + PUN_WAIT_TIME;
 					pun_set(0);
 					pun_move(PUN_OFFSET + (pun_shots * PUN_TPR));
@@ -172,6 +182,12 @@ void pun_handle() {
 
 					auto_set_shot = false;
 					pun_state_change(PunState::Bolt_Wait);
+				}
+				else if(millis() > pun_state_change_time+800)
+				{
+					pun_set(0);
+					log_ln(LOG_PUNCHER, "%d Time exceeded in PullBack State, going into Fatal Error", millis());
+					pun_state_change(PunState::FatalError);
 				}
 				break;
 			}

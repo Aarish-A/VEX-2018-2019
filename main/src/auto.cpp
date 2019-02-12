@@ -22,6 +22,7 @@ void auto_update_stop_task() {
 	if(auto_update_task != nullptr)
 	{
 		log_ln(LOG_SHOTS, "  >>> %d Stop Auto Update Task", pros::millis());
+    pun_set(PUN_HOLD_PWR);
 		auto_update_task->remove();
 		delete auto_update_task;
 		auto_update_task = nullptr;
@@ -497,7 +498,7 @@ void flatten_against_wall(bool f_w, bool hold) {
 		do {
 			//log_ln("%d Reset Back Up(%f, %f, %f) Vel(%f, %f, %f) VeelLoc(%f, %f)", pros::millis(), pos.x, pos.y, RAD_TO_DEG(pos.a), pos.xVel, pos.yVel, pos.aVel, pos.velLocal.x, pos.velLocal.y);
 			pros::delay(10);
-		} while (pos.velLocal.y > 1); //aVel < -0.1);
+		} while (abs(drive_fl.get_actual_velocity()) > 1); //aVel < -0.1);
 		if (hold) setDrive(0, hold_pow, 0);
 		else setDrive(0);
 	}
@@ -508,7 +509,7 @@ void flatten_against_wall(bool f_w, bool hold) {
 		do {
 			//log_ln("%d Reset Back Up(%f, %f, %f) Vel(%f, %f, %f) VeelLoc(%f, %f)", pros::millis(), pos.x, pos.y, RAD_TO_DEG(pos.a), pos.xVel, pos.yVel, pos.aVel, pos.velLocal.x, pos.velLocal.y);
 			pros::delay(10);
-		} while (pos.velLocal.y < -1); //aVel < -0.1);
+		} while (abs(drive_fl.get_actual_velocity()) > 1); //aVel < -0.1);
 		if (hold) setDrive(0, -hold_pow, 0);
 		else setDrive(0);
 	}
