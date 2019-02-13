@@ -32,6 +32,9 @@ void opcontrol() {
 	u_int32_t loop_counter = 0;
 	while (true) {
 		pos.update();
+		printf("Left Tracking %d\n", enc_l.get_value());
+		printf("Right Tracking %d\n", enc_r.get_value());
+		printf("Global angle: %f\n", RAD_TO_DEG(getGlobalAngle()));
 		update_buttons();
 		if (current_gui_tab == gui_tab_states::diagnostics_tab) {
 			shot_req_make();
