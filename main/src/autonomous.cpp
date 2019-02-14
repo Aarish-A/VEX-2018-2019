@@ -78,13 +78,12 @@ void auto_red_front() {
   angler_move(ANGLER_PU_POS,100);
 
   drive_set(-80, 0, 0);
-  pros::delay(250);
-  while(fabs(drive_fl.get_actual_velocity()) > 1) pros::delay(5);
-  delay(75);
+  pros::delay(750);
   resetGlobalAngle(); //HElLO ANJALEE, 0 IS NOW FACING THE FLAGS
   drive_fl.tare_position();
+  delay(100);
   drive_set(80, 0, 0);
-  while(fabs(drive_fl.get_position()) < 150) pros::delay(5);
+  while(fabs(drive_fl.get_position()) < 120) pros::delay(5);
   drive_set(0, 0, 0);
 
   // move_drive_rel(1.5_in,200);
@@ -97,11 +96,12 @@ void auto_red_front() {
   //
   angler_move(ANGLER_CAP_PU_POS,100);
   intake.move(127);
-  move_drive_rel(15_in,200);
+  move_drive_rel(16_in,200);
   // //pros::delay(30000); //delete
   pros::delay(500);
   move_drive_rel(-12_in,200,true);
   intake.move(0);
+  turn_vel( FixedAngleTarget(49.0_deg), (200/40_deg),0);
   auto_set_first_shot(front_SP.top);
   while (auto_set_shot) pros::delay(10);
   pros::delay(250);
@@ -130,48 +130,48 @@ void auto_red_front_park() {
   // SKILLS Runs
 
   // 1 PU and Flip
-  // angler_move(ANGLER_CAP_PU_POS, 100);
-  // intake.move(-80);
-  // move_drive_rel(43.0_in, 200);
-  // move_drive_rel(-5_in,200);
-  // angler_move(ANGLER_PU_POS, 100);
-  // intake.move(127);
-  // move_drive_rel(5_in,200);
-  // move_drive_rel(-42.0_in, 200);
-  // flatten_against_wall(false, true);
-  // resetGlobalAngle();
-  // move_drive_rel(5_in,200);
-  // turn_vel(FixedAngleTarget(-42.0_deg), 200/90_deg, 0_deg, true);
-  // auto_set_first_shot(front_SP.top);
-  // while (auto_set_shot) pros::delay(10);
-  // auto_set_second_shot(front_SP.mid);
-  // while (auto_set_shot) pros::delay(10);
+  angler_move(ANGLER_CAP_PU_POS, 100);
+  intake.move(-80);
+  move_drive_rel(43.0_in, 200);
+  move_drive_rel(-5_in,200);
+  angler_move(ANGLER_PU_POS, 100);
+  intake.move(127);
+  move_drive_rel(5_in,200);
+  move_drive_rel(-42.0_in, 200);
+  flatten_against_wall(false, true);
+  resetGlobalAngle();
+  move_drive_rel(5_in,200);
+  turn_vel(FixedAngleTarget(-42.0_deg), 200/90_deg, 0_deg, true);
+  auto_set_first_shot(front_SP.top);
+  while (auto_set_shot) pros::delay(10);
+  auto_set_second_shot(front_SP.mid);
+  while (auto_set_shot) pros::delay(10);
+  angler_move(ANGLER_PU_POS,100);
+
+  // 3 Cap ball pickup
+  turn_vel(FixedAngleTarget(-45.0_deg), 200/90_deg, 0_deg, true);
+  angler_move(ANGLER_CAP_PU_POS, 100);
+  move_drive_rel(25_in, 200);
+  pros::delay(600);
+  move_drive_rel(-8.8_in,200,true);
+
+  //Flip
+  intake.move(-70);
+  auto_set_angler_target(ANGLER_CAP_FLIP_POS);
+  move_drive_rel_simple(15_in,70, false);
+  //pros::delay(0);
+  move_drive_rel(-24_in,200, false);
+  turn_vel(FixedAngleTarget(90_deg), 200/90_deg, 0_deg, true);
+  // drive_fl.tare_position();
+  // //delay(1000);
+  // drive_set(-70, 0, 0);
+  // printf("I am here aarish");
+  // while(fabs(drive_fl.get_position()) < 85) pros::delay(5);
+  // drive_set(0, 0, 0);
   // angler_move(ANGLER_PU_POS,100);
-  //
-  // // 3 Cap ball pickup
-  // turn_vel(FixedAngleTarget(-45.0_deg), 200/90_deg, 0_deg, true);
-  // angler_move(ANGLER_CAP_PU_POS, 100);
-  // move_drive_rel(25_in, 200);
-  // pros::delay(600);
-  // move_drive_rel(-8.8_in,200,true);
-  //
-  // //Flip
-  // intake.move(-70);
-  // auto_set_angler_target(ANGLER_CAP_FLIP_POS);
-  // move_drive_rel_simple(15_in,70, false);
-  // //pros::delay(0);
-  // move_drive_rel(-24_in,200, false);
-  // turn_vel(FixedAngleTarget(90_deg), 200/90_deg, 0_deg, true);
-  // // drive_fl.tare_position();
-  // // //delay(1000);
-  // // drive_set(-70, 0, 0);
-  // // printf("I am here aarish");
-  // // while(fabs(drive_fl.get_position()) < 85) pros::delay(5);
-  // // drive_set(0, 0, 0);
-  // // angler_move(ANGLER_PU_POS,100);
-  // // 4 Backup and shoot
-  // auto_set_angler_target(ANGLER_PU_POS);
-  // move_drive_rel(65_in, 200, false);
+  // 4 Backup and shoot
+  auto_set_angler_target(ANGLER_PU_POS);
+  move_drive_rel(65_in, 200, false);
   flatten_against_wall(true, true);
   resetGlobalAngle();
   move_drive_rel(-4_in,200);
