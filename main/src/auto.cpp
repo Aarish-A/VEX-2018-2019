@@ -370,10 +370,13 @@ void turn_vel_side(const AngleTarget& target, double kP, double offset, bool f_w
 	int t_start = pros::millis();
 	double dA = target.getTarget() - getGlobalAngle() + offset;
   drive_fl.tare_position();
+  drive_br.tare_position();
+  drive_bl.tare_position();
+  drive_fr.tare_position();
   double ticks_targ = dA/SPN_TO_IN_L*(WHL_DIS_L+WHL_DIS_R);
   printf("ticks targ: %f", ticks_targ);
   log_ln(LOG_AUTO, "%d Turning to %f | DeltaA: %f", millis(), RAD_TO_DEG(target.getTarget()), RAD_TO_DEG(dA) );
-
+  printf("Da is %f", dA);
 	if (f_w) {
 		while (fabs(dA) > 0.8_deg) {
 			dA = target.getTarget() - getGlobalAngle() + offset;

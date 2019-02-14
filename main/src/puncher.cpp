@@ -108,13 +108,11 @@ void pun_handle() {
 					last_number = PUN_OFFSET + (pun_shots * PUN_TPR) + PUN_HOLD;
 					pun_state_change(PunState::Loaded);
 				}
-				printf("%d Checking time :%d\n",millis(),pun_state_change_time+1000);
 				if (millis() > pun_state_change_time+1000) { //Takes 300 ms
 					pun_set(0);
 					log_ln(LOG_PUNCHER, " >>> %d PUN FATAL ERROR (from Loading) - T_O | Pos: %f | Cur_Err(%f) needs to be <= to %f", millis(), puncherLeft.get_position(), cur_err, targ);
 					pun_state_change(PunState::FatalError);
 				}
-				printf("%d checked time:%d\n",millis(),pun_state_change_time+1000);
 				break;
 			}
 			case PunState::Loaded:
