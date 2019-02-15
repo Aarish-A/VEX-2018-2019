@@ -32,9 +32,9 @@ void opcontrol() {
 	u_int32_t loop_counter = 0;
 	while (true) {
 		pos.update();
-		printf("Left Tracking %d\n", enc_l.get_value());
-		printf("Right Tracking %d\n", enc_r.get_value());
-		printf("Global angle: %f\n", RAD_TO_DEG(getGlobalAngle()));
+		// printf("Left Tracking %d\n", enc_l.get_value());
+		// printf("Right Tracking %d\n", enc_r.get_value());
+		// printf("Global angle: %f\n", RAD_TO_DEG(getGlobalAngle()));
 		update_buttons();
 		if (current_gui_tab == gui_tab_states::diagnostics_tab) {
 			shot_req_make();
@@ -85,7 +85,7 @@ void update_controller_lcd() {
 			*/
 
 		// ctrler.print(2, 0, "%d,%d,%d,%d", (int)drive_bl.get_temperature(), (int)drive_br.get_temperature(), (int)drive_fl.get_temperature(), (int)drive_fr.get_temperature());
-		// ctrler.print(2, 0, "%s %.1f %.1f %.1f %.1f    ", field_pos_s, eff_fl, eff_bl, eff_fr, eff_br);
+		partner.print(2, 0, "%s    ", field_pos_s);
 		//ctrler.print(2, 0, "%s %s %d %d %d      ", field_pos_s, team_s, (int)intake.get_temperature(), (int)puncherLeft.get_temperature(), (int)puncherRight.get_temperature());
 		// ctrler.print(2, 0, "%d  ", (int)current_auto_routine);
 		//ctrler.print(2, 0, "a: %.1f       ", RAD_TO_DEG(getGlobalAngle()));

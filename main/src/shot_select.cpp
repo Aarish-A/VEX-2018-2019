@@ -157,6 +157,7 @@ void set_shot_req(bool top, Dir turn_dir) {
 	top ? log_ln(LOG_SHOTS, "TOP PRESSED") : log_ln(LOG_SHOTS, "MID PRESSED");
 	set_turn_dir(turn_dir);
 	set_handled_vars();
+	shot_req[shot_req_num-1].drive_turn_handled = true;
 	log_ln(LOG_SHOTS, "%d Shot Req (Task PTR:%d)| Anglr:%f | RNum:%d | HandledNum:%d | FPos:%d | 1angle:%d, 1trn:%d (%f, %f), Hndled1 drive:%d shot:%d| 2angle:%d, 2turn:%d (%f, %f), Hndled1 drive:%d shot:%d ", pros::millis(), shot_req_handle_task, angler.get_position(), shot_req_num, shot_req_handled_num, shot_req[0].field_pos, shot_req[0].angle_targ, shot_req[0].turn_dir, shot_req[0].flag_pos.x, shot_req[0].flag_pos.y, shot_req[0].drive_turn_handled, shot_req[0].shot_handled, shot_req[1].angle_targ, shot_req[1].turn_dir, shot_req[1].flag_pos.x, shot_req[1].flag_pos.y, shot_req[1].drive_turn_handled, shot_req[1].shot_handled);
 }
 
@@ -164,20 +165,20 @@ void shot_req_make() {
   //Set Field Pos
   if (shot_req_num == 0)
   {
-    if (check_single_press(BTN_FIELD_FRONT)) {
+    if (check_single_press(BTN_FIELD_FRONT, true)) {
 			set_field_pos(FieldPos_Front);
 			pos.reset();
 		}
-    else if (check_single_press(BTN_FIELD_PF_BACK_RED)) {
+    else if (check_single_press(BTN_FIELD_PF_BACK_RED, true)) {
 			set_field_pos(FieldPos_PF_Back_Red);
 		}
-		else if (check_single_press(BTN_FIELD_PF_BACK_BLUE)) {
+		else if (check_single_press(BTN_FIELD_PF_BACK_BLUE, true)) {
 			set_field_pos(FieldPos_PF_Back_Blue);
 		}
 		//else if (btn[BTN_SHOOT_CANCEL-6].pressed) set_field_pos(FieldPos_PF_Back);
-    else if (check_single_press(BTN_FIELD_BACK)) set_field_pos(FieldPos_Back);
+    else if (check_single_press(BTN_FIELD_BACK, true)) set_field_pos(FieldPos_Back);
   }
-	else if (check_single_press(BTN_SHOOT_CANCEL)) {
+	else if (check_single_press(BTN_SHOOT_CANCEL) || check_single_press(BTN_SHOOT_CANCEL, true)) {
 		shot_cancel_pressed = true;
 		//printf("%d IF 0: %d %d\n \n", pros::millis(), pf_back_SP.top, pf_back_SP.mid);
 		log_ln(LOG_SHOTS, "  >>> %d Cancel Shot Req Handle Task - Before Restart| TaskPtr %d | shot_req_num = %d, shot_req_handled_num = %d ", pros::millis(), shot_req_handle_task, shot_req_num, shot_req_handled_num);
@@ -212,17 +213,20 @@ void shot_req_make() {
 		if (shot_req[0].field_pos == FieldPos_Back || shot_req[0].field_pos == FieldPos_PF_Back_Blue || shot_req[0].field_pos == FieldPos_PF_Back_Red) { //Only register left buttons if shooting from front
 			T_DOUBLE = check_double_press(BTN_SHOT_L_T, BTN_SHOT_R_T);
 			M_DOUBLE = check_double_press(BTN_SHOT_L_M, BTN_SHOT_R_M);
-			L_T = check_single_press(BTN_SHOT_L_T);
-			L_M = check_single_press(BTN_SHOT_L_M);
+			L_T = check_single_press(BTN_SHOT_L_T, true);
+			L_M = check_single_press(BTN_SHOT_L_M, true);
+			R_T = check_single_press(BTN_SHOT_R_T, true);
+			R_M = check_single_press(BTN_SHOT_R_M, true);
 		}
 		else {
 			T_DOUBLE = false;
 			M_DOUBLE = false;
 			L_T = false;
 			L_M = false;
+			R_T = check_single_press(BTN_SHOT_R_T);
+			R_M = check_single_press(BTN_SHOT_R_M);
 		}
-		R_T = check_single_press(BTN_SHOT_R_T);
-		R_M = check_single_press(BTN_SHOT_R_M);
+
 
 		//Make shot requests depending on which button sequence was pressed
 		if (T_DOUBLE) set_shot_req(true, Dir_Centre);
@@ -272,6 +276,10 @@ void shot_req_handle(void *param) {
 	//shot_req_num = 0; //DELETE
 	while (true) {
 		if (is_disabled) printf(" >>> %d IN SHOT_REQ_HANDLE IN DISABLED S_R_N:\n", pros::millis());
+		while(!check_single_press(BTN_SHOT_R_T) && (shot_req[0].field_pos == FieldPos_PF_Back_Red || shot_req[0].field_pos == FieldPos_PF_Back_Blue)) {
+			pros::delay(10);
+			//printf("Drive thing: %d\n", shot_req[shot_req_num-1].drive_turn_handled);
+		}
 		if (shot_req_num > 0) {
 			if (!SHOT_DRIVE_BRAKE) setDrive(0); //Set drive pow to 0
 
@@ -281,6 +289,7 @@ void shot_req_handle(void *param) {
 			}
 
 			log_ln(LOG_SHOTS, "%d Start handling first shot request ", pros::millis());
+			printf("I am here aarish\n");
 			set_handled_vars(); //Make sure all handled vars are reset to false
 			shot_req_handled_num = 0; //Make sure we start handling shot requests from index 0
 
@@ -305,6 +314,7 @@ void shot_req_handle(void *param) {
 			  // while (pos.y > -3.5_in) pros::delay(10);
 				//
 				// setDrive(0, 15, 0);
+
 				// pros::delay(150);
 				// setDrive(0);
 

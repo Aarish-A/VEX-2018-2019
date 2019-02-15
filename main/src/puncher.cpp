@@ -153,6 +153,7 @@ void pun_handle() {
 					log_ln(LOG_PUNCHER, "%d Shot failure, no ball pos:%f (b/w:%f & %f). BallSen:%d", millis(), puncherLeft.get_position(), (PUN_OFFSET + (pun_shots * PUN_TPR) - PUN_BALL_CHK_START[shot_req_handled_num]), (PUN_OFFSET + (pun_shots * PUN_TPR) - PUN_NO_RETURN), ball_sensor.get_value());
 					pun_move(PUN_OFFSET + (--pun_shots * PUN_TPR) + PUN_HOLD);
 					ctrler.rumble(" .");
+					partner.rumble(" .");
 
 					auto_set_shot = false;
 					shot_req[shot_req_handled_num].shot_handled = true;

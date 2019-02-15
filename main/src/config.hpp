@@ -16,6 +16,7 @@ enum class auto_routines {
 };
 
 extern pros::Controller ctrler;
+extern pros::Controller partner;
 extern pros::Motor drive_fl;
 extern pros::Motor drive_bl;
 extern pros::Motor drive_fr;

@@ -31,7 +31,7 @@ constexpr int BTN_FIELD_PF_BACK_RED = GET_BTN_INDEX(pros::E_CONTROLLER_DIGITAL_Y
 constexpr int BTN_FIELD_PF_BACK_BLUE = GET_BTN_INDEX(pros::E_CONTROLLER_DIGITAL_A);
 constexpr int BTN_FIELD_BACK = GET_BTN_INDEX(pros::E_CONTROLLER_DIGITAL_B);
 //
-// /* Shooter Queue */
+// /* Shooter Queue Partner */
 constexpr int BTN_SHOT_L_T = GET_BTN_INDEX(pros::E_CONTROLLER_DIGITAL_L1);
 constexpr int BTN_SHOT_L_M = GET_BTN_INDEX(pros::E_CONTROLLER_DIGITAL_L2);
 constexpr int BTN_SHOT_R_T = GET_BTN_INDEX(pros::E_CONTROLLER_DIGITAL_R1);

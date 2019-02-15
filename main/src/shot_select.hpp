@@ -66,7 +66,7 @@ struct ShotSelect {
   Dir turn_dir;
   FieldPos field_pos;
   vector flag_pos;
-  bool drive_turn_handled;
+  bool drive_turn_handled = true;
   int angler_to;
   bool shot_handled;
 };
