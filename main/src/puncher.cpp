@@ -98,11 +98,11 @@ void pun_handle() {
 		switch (pun_state) {
 			case PunState::Loading:
 			{
-
-				double cur_err = (PUN_OFFSET + (pun_shots * PUN_TPR) + PUN_HOLD) - puncherLeft.get_position();
-				double targ = (4.0 * PUN_RATIO);
-				log_ln(LOG_PUNCHER, "%d PUNLOADING, CUR: %f, T: %f, E: %f, ETarg:%f", pros::millis(), puncherLeft.get_position(), (PUN_OFFSET + (pun_shots * PUN_TPR) + PUN_HOLD), cur_err, (4.0 * PUN_RATIO));
-				if (cur_err <= targ) {
+				double targ = (PUN_OFFSET + (pun_shots * PUN_TPR) + PUN_HOLD);
+				double cur_err =  targ - puncherLeft.get_position();
+				double e_targ = (4.0 * PUN_RATIO);
+				log_ln(LOG_PUNCHER, "%d PUNLOADING, CUR: %f, T: %f, E: %f, ETarg:%f", pros::millis(), puncherLeft.get_position(), targ, cur_err, e_targ);
+				if (cur_err <= e_targ) {
 					pun_set(PUN_HOLD_PWR);
 					log_ln(LOG_PUNCHER, "%d PunLoading. PunPos: %f", pros::millis(), puncherLeft.get_position());
 					last_number = PUN_OFFSET + (pun_shots * PUN_TPR) + PUN_HOLD;
@@ -110,7 +110,7 @@ void pun_handle() {
 				}
 				if (millis() > pun_state_change_time+1000) { //Takes 300 ms
 					pun_set(0);
-					log_ln(LOG_PUNCHER, " >>> %d PUN FATAL ERROR (from Loading) - T_O | Pos: %f | Cur_Err(%f) needs to be <= to %f", millis(), puncherLeft.get_position(), cur_err, targ);
+					log_ln(LOG_PUNCHER, " >>> %d PUN FATAL ERROR (from Loading) - T_O | Pos: %f | Cur_Err(%f) needs to be <= to %f", millis(), puncherLeft.get_position(), cur_err, e_targ);
 					pun_state_change(PunState::FatalError);
 				}
 				break;
@@ -129,7 +129,6 @@ void pun_handle() {
 						pun_target_two = PUN_OFFSET + (pun_shots * PUN_TPR) - PUN_BALL_CHK_START[shot_req_handled_num];
 						pun_target_three = (PUN_OFFSET + (pun_shots * PUN_TPR)-(15*PUN_RATIO));
 						log_ln(LOG_PUNCHER, "%d Shot start (from ShotLoaded first condition) | shot_req_num: %d | drive_turn_handled: %d | anglrOffs: %f | anglerTO: %f ", pros::millis(), shot_req_num, shot_req[shot_req_handled_num].drive_turn_handled, fabs(angler.get_position()-shot_req[shot_req_handled_num].angle_targ), shot_req[shot_req_handled_num].angler_to);
-
 
 						pun_state_change(PunState::Pull_Back);
 					}
