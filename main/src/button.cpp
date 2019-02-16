@@ -44,7 +44,7 @@ if(!partner)
 
   if (buttons[button].last_pressed_time && (pros::millis() - buttons[button].last_pressed_time) >= buttons[button].button_press_time) {
     buttons[button].last_pressed_time = 0;
-    log_ln(LOG_JOYSTICK, "%d Button %d Single Pressed", pros::millis(), button);
+    log_ln(LOG_JOYSTICK, "%d Button %d Single Pressed - Main", pros::millis(), button);
     return true;
   }
   else return false;
@@ -53,7 +53,7 @@ else
 {
   if (partner_joy[button].last_pressed_time && (pros::millis() - partner_joy[button].last_pressed_time) >= partner_joy[button].button_press_time) {
     partner_joy[button].last_pressed_time = 0;
-    log_ln(LOG_JOYSTICK, "%d Button %d Single Pressed", pros::millis(), button);
+    log_ln(LOG_JOYSTICK, "%d Button %d Single Pressed - Partner", pros::millis(), button);
     return true;
   }
   else return false;

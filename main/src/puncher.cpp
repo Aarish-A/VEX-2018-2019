@@ -101,7 +101,7 @@ void pun_handle() {
 
 				double cur_err = (PUN_OFFSET + (pun_shots * PUN_TPR) + PUN_HOLD) - puncherLeft.get_position();
 				double targ = (4.0 * PUN_RATIO);
-				//log_ln(LOG_PUNCHER, "%d PUNLOADING, CUR: %f, T: %f, E: %f, ETarg:%f", pros::millis(), puncherLeft.get_position(), (PUN_OFFSET + (pun_shots * PUN_TPR) + PUN_HOLD), cur_err, (4.0 * PUN_RATIO));
+				log_ln(LOG_PUNCHER, "%d PUNLOADING, CUR: %f, T: %f, E: %f, ETarg:%f", pros::millis(), puncherLeft.get_position(), (PUN_OFFSET + (pun_shots * PUN_TPR) + PUN_HOLD), cur_err, (4.0 * PUN_RATIO));
 				if (cur_err <= targ) {
 					pun_set(PUN_HOLD_PWR);
 					log_ln(LOG_PUNCHER, "%d PunLoading. PunPos: %f", pros::millis(), puncherLeft.get_position());
@@ -128,7 +128,8 @@ void pun_handle() {
 						pun_target = PUN_OFFSET + (pun_shots * PUN_TPR) - PUN_NO_RETURN;
 						pun_target_two = PUN_OFFSET + (pun_shots * PUN_TPR) - PUN_BALL_CHK_START[shot_req_handled_num];
 						pun_target_three = (PUN_OFFSET + (pun_shots * PUN_TPR)-(15*PUN_RATIO));
-						log_ln(LOG_PUNCHER, "%d Shot start (from ShotLoaded first condition)", pros::millis());
+						log_ln(LOG_PUNCHER, "%d Shot start (from ShotLoaded first condition) | shot_req_num: %d | drive_turn_handled: %d | anglrOffs: %f | anglerTO: %f ", pros::millis(), shot_req_num, shot_req[shot_req_handled_num].drive_turn_handled, fabs(angler.get_position()-shot_req[shot_req_handled_num].angle_targ), shot_req[shot_req_handled_num].angler_to);
+
 
 						pun_state_change(PunState::Pull_Back);
 					}

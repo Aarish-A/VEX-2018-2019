@@ -7,15 +7,15 @@
 #include "controls.hpp"
 
 enum class PunState {
-  Loaded,
-  Loading,
-  Pull_Back,
-  Bolt_Wait,
-  FatalError
+  Loaded, //0
+  Loading, //1
+  Pull_Back, //2
+  Bolt_Wait, //3
+  FatalError //4
 };
 
 constexpr double PUN_RATIO = 5.0/3.0;
-constexpr double PUN_OFFSET = 57 * PUN_RATIO;
+constexpr double PUN_OFFSET = 50 * PUN_RATIO;
 constexpr double PUN_HOLD = 180 * PUN_RATIO; // Relative to the slip point
 constexpr double PUN_TPR = 360 * PUN_RATIO; // Relative to the slip point
 constexpr double PUN_NO_RETURN = 50 * PUN_RATIO; // Back from the slip point
