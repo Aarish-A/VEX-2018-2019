@@ -78,6 +78,7 @@ void set_field_pos(FieldPos field_pos);
 void set_angle_targ(bool top);
 void set_turn_dir(Dir turn_dir);
 void set_handled_vars();
+void set_handled_vars_all();
 
 void set_shot_req(bool top, Dir turn_dir) ;
 

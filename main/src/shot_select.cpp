@@ -150,6 +150,15 @@ void set_handled_vars() {
 	else log_ln(LOG_SHOTS, "	>>>> %d SET_HANDLED_VARS TRIED TO ACCESS OUT OF BOUNDS. SHOT_REQ_NUM = %d", pros::millis(), shot_req_num);
 }
 
+void set_handled_vars_all() {
+	shot_req[0].drive_turn_handled = false;
+	shot_req[0].shot_handled = false;
+	shot_req[0].angler_to = 0;
+	shot_req[1].drive_turn_handled = false;
+	shot_req[1].shot_handled = false;
+	shot_req[1].angler_to = 0;
+}
+
 void set_shot_req(bool top, Dir turn_dir) {
 	inc_shot_req_num();
 	if(turn_dir == Dir_Right) set_angle_targ_right(top);
