@@ -47,9 +47,7 @@ void pun_cal() {
 		delay(10);
 	}
   if (!success) {
-		log_ln(LOG_PUNCHER, "disableA");
-    pun_fatal_disable();
-    return;
+		log_ln(LOG_PUNCHER, "disableA - TO - don't kill pun_cal");
   }
   timeout_time = millis() + 2500; // + 1300;
   while (fabs(puncherLeft.get_actual_velocity()) > 10 && (success = (millis() < timeout_time)))
