@@ -15,6 +15,8 @@ float pun_target_three = 0.0;
 bool auto_set_shot = false;
 double auto_angler_target = 0;
 
+bool cancelled = false;
+
 void pun_state_change(PunState state) {
 		pun_state_lst = pun_state;
 		pun_state = state;
@@ -103,10 +105,18 @@ void pun_handle() {
 				double cur_err =  targ - puncherLeft.get_position();
 				double e_targ = (4.0 * PUN_RATIO);
 				log_ln(LOG_PUNCHER, "%d PUNLOADING, CUR: %f, T: %f, E: %f, ETarg:%f", pros::millis(), puncherLeft.get_position(), targ, cur_err, e_targ);
-				if (cur_err <= e_targ) {
+				if (cur_err <= e_targ && !cancelled) {
 					pun_set(PUN_HOLD_PWR);
 					log_ln(LOG_PUNCHER, "%d PunLoading. PunPos: %f", pros::millis(), puncherLeft.get_position());
 					last_number = PUN_OFFSET + (pun_shots * PUN_TPR) + PUN_HOLD;
+					pun_state_change(PunState::Loaded);
+				}
+				else if(cur_err >= e_targ && cancelled)
+				{
+					pun_set(PUN_HOLD_PWR);
+					log_ln(LOG_PUNCHER, "%d Made it to prev position: %f", pros::millis(), puncherLeft.get_position());
+					last_number = PUN_OFFSET + (pun_shots * PUN_TPR) + PUN_HOLD;
+					cancelled = false;
 					pun_state_change(PunState::Loaded);
 				}
 				if (millis() > pun_state_change_time+1000) { //Takes 300 ms
@@ -158,6 +168,7 @@ void pun_handle() {
 					auto_set_shot = false;
 					shot_req[shot_req_handled_num].shot_handled = true;
 					shot_req_handled_num = 0;
+					cancelled = true;
 					log_ln(LOG_PUNCHER, "%d Shot Req: %d Shot ReqH: %d Shot Handled: %d", millis(), shot_req_num, shot_req_handled_num, shot_req[shot_req_handled_num].shot_handled = true);
 					pun_state_change(PunState::Loading);
 				}
