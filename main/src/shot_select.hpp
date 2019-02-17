@@ -94,6 +94,8 @@ extern int shot_req_handled_num;
 
 extern bool shot_cancel_pressed;
 
+extern bool shot_pun_go;
+
 /* Task Handle */
 void shot_req_handle_stop_task();
 void shot_req_handle_start_task();

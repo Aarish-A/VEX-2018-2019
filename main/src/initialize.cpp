@@ -24,7 +24,7 @@ void initialize() {
   side_initialize();
   auto_routine_initialize();
 
-	log_init();
+	//log_init();
   printf("log init completed\n");
   // pros::delay(1000);
 	gui_init();

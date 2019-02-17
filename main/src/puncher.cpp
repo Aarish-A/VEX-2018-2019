@@ -32,6 +32,7 @@ void pun_set(int power) {
 
 void pun_move(double position, int32_t velocity) {
   puncherLeft.move_absolute(position, velocity);
+	log_ln(LOG_PUNCHER, "%d T:%f V:%d | P:f", millis(), position, velocity, puncherLeft.get_position());
 }
 
 void pun_cal() {
@@ -117,7 +118,7 @@ void pun_handle() {
 			}
 			case PunState::Loaded:
 			{
-				if (( shot_req_num > 0 && shot_req[shot_req_handled_num].drive_turn_handled && //For Driver control - shot request must have been made, drive must have been handled & angler must have reached or timed out
+				if (( shot_pun_go && shot_req[shot_req_handled_num].drive_turn_handled && //For Driver control - shot request must have been made, drive must have been handled & angler must have reached or timed out
 						(fabs(angler.get_position()-shot_req[shot_req_handled_num].angle_targ) < 5 || (shot_req[shot_req_handled_num].angler_to && pros::millis() > shot_req[shot_req_handled_num].angler_to) ) )
 						|| (auto_set_shot && fabs(angler.get_position()-auto_angler_target) < 5)) //For auto - auto_set_shot flag set to true
 					{
@@ -128,7 +129,7 @@ void pun_handle() {
 						pun_target = PUN_OFFSET + (pun_shots * PUN_TPR) - PUN_NO_RETURN;
 						pun_target_two = PUN_OFFSET + (pun_shots * PUN_TPR) - PUN_BALL_CHK_START[shot_req_handled_num];
 						pun_target_three = (PUN_OFFSET + (pun_shots * PUN_TPR)-(15*PUN_RATIO));
-						log_ln(LOG_PUNCHER, "%d Shot start (from ShotLoaded first condition) | shot_req_num: %d | drive_turn_handled: %d | anglrOffs: %f | anglerTO: %f ", pros::millis(), shot_req_num, shot_req[shot_req_handled_num].drive_turn_handled, fabs(angler.get_position()-shot_req[shot_req_handled_num].angle_targ), shot_req[shot_req_handled_num].angler_to);
+						log_ln(LOG_PUNCHER, "%d Shot start (from ShotLoaded first condition) | pos : %f | shot_req_num: %d | shot_req_handled_num: %d | drive_turn_handled: %d | anglrOffs: %f | anglerTO: %f ", pros::millis(), puncherLeft.get_position(), shot_req_num, shot_req_handled_num, shot_req[shot_req_handled_num].drive_turn_handled, fabs(angler.get_position()-shot_req[shot_req_handled_num].angle_targ), shot_req[shot_req_handled_num].angler_to);
 
 						pun_state_change(PunState::Pull_Back);
 					}

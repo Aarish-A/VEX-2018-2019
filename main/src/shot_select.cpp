@@ -2,6 +2,8 @@
 
 pros::Task* shot_req_handle_task = nullptr;
 
+bool shot_pun_go = false;
+
 /* Shot Positions */
 ShotPos front_SP (FieldPos_Front, 98, 0);
 ShotPos auto_SP (FieldPos_Front, 88, 0);
@@ -287,9 +289,12 @@ void shot_req_handle(void *param) {
 		if (is_disabled) printf(" >>> %d IN SHOT_REQ_HANDLE IN DISABLED S_R_N:\n", pros::millis());
 		while(!check_single_press(BTN_SHOT_R_T) && (shot_req[0].field_pos == FieldPos_PF_Back_Red || shot_req[0].field_pos == FieldPos_PF_Back_Blue)) {
 			pros::delay(10);
-			//printf("Drive thing: %d\n", shot_req[shot_req_num-1].drive_turn_handled);
+			printf("%d Wait: for Zain press %d\n", pros::millis(), shot_req[shot_req_num-1].drive_turn_handled);
 		}
+
+		printf("	>>>> %d DONE WAIT for Zain press %d\n", pros::millis(), shot_req[shot_req_num-1].drive_turn_handled);
 		if (shot_req_num > 0) {
+			shot_pun_go = true;
 			if (!SHOT_DRIVE_BRAKE) setDrive(0); //Set drive pow to 0
 
 			if (shot_req[0].field_pos == FieldPos_PF_Back_Red || shot_req[0].field_pos == FieldPos_PF_Back_Blue) {
@@ -299,7 +304,7 @@ void shot_req_handle(void *param) {
 
 			log_ln(LOG_SHOTS, "%d Start handling first shot request ", pros::millis());
 			printf("I am here aarish\n");
-			set_handled_vars(); //Make sure all handled vars are reset to false
+			set_handled_vars_all(); //Make sure all handled vars are reset to false
 			shot_req_handled_num = 0; //Make sure we start handling shot requests from index 0
 
 			if (shot_req[0].field_pos == FieldPos_Back || shot_req[0].field_pos == FieldPos_PF_Back_Red || shot_req[0].field_pos == FieldPos_PF_Back_Blue)  {
@@ -368,7 +373,7 @@ void shot_req_handle(void *param) {
 				//Shooter Handle 2
 				angler.move_absolute(shot_req[shot_req_handled_num].angle_targ, 200);
 				while (!shot_req[shot_req_handled_num].shot_handled) {
-					log_ln(LOG_PUNCHER, "%d In shot request wait while shot_req_num > 1", pros::millis());
+					//log_ln(LOG_PUNCHER, "%d In shot request wait while shot_req_num > 1", pros::millis());
 					pros::delay(10);
 				}
 				shot_req_handled_num++;
@@ -382,7 +387,7 @@ void shot_req_handle(void *param) {
 			log_ln(LOG_SHOTS, ">>> %d Done shot requests - move angler pos:%f", pros::millis(), angler.get_position());
 
 			//if (angler.get_position() < ANGLER_BOT_LIM_POS) angler.move_absolute(ANGLER_PU_POS, 200);
-
+			shot_pun_go = false;
 			shot_req_num = 0;
 			shot_req_handled_num = 0;
 		}
