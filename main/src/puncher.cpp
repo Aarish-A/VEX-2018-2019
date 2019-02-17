@@ -118,7 +118,7 @@ void pun_handle() {
 			}
 			case PunState::Loaded:
 			{
-				if (( shot_req_num && shot_req[shot_req_handled_num].drive_turn_handled && //For Driver control - shot request must have been made, drive must have been handled & angler must have reached or timed out
+				if (( shot_pun_go && shot_req[shot_req_handled_num].drive_turn_handled && //For Driver control - shot request must have been made, drive must have been handled & angler must have reached or timed out
 						(fabs(angler.get_position()-shot_req[shot_req_handled_num].angle_targ) < 5 || (shot_req[shot_req_handled_num].angler_to && pros::millis() > shot_req[shot_req_handled_num].angler_to) ) )
 						|| (auto_set_shot && fabs(angler.get_position()-auto_angler_target) < 5)) //For auto - auto_set_shot flag set to true
 					{
