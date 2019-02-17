@@ -55,11 +55,11 @@ struct ShotPos {
   ShotPos(FieldPos field_pos, int top, int mid) : field_pos(field_pos), top(top), mid(mid) {}
 };
 
-extern ShotPos front_SP;
-extern ShotPos pf_SP;
-extern ShotPos auto_SP;
-extern ShotPos pf_back_SP;
-extern ShotPos back_SP;
+extern volatile ShotPos front_SP;
+extern volatile ShotPos pf_SP;
+extern volatile ShotPos auto_SP;
+extern volatile ShotPos pf_back_SP;
+extern volatile ShotPos back_SP;
 
 struct ShotSelect {
   int angle_targ;
