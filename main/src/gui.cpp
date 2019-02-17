@@ -64,6 +64,7 @@ void gui_init() {
   // pros::delay(50);
   int read_return = 0;
   int temp = 0;
+
   for(int i = 0; i < 6; i++) {
     FILE* log = NULL;
     printf("file pointer\n");
@@ -76,10 +77,9 @@ void gui_init() {
           log_ln(LOG_IO, "%d pf_back_SP.mid var set (init) | Read_Return: %d | Temp: %d | pf_back_SP.mid: %d", pros::millis(), read_return, temp, pf_back_SP.mid);
       }
       else log_ln(LOG_IO, "%d pf_back_SP.mid var set failed (init) | Read_Return: %d | Temp: %d | pf_back_SP.mid: %d", pros::millis(), read_return, temp, pf_back_SP.mid);
-
     } else if (i == 1) {
       log = fopen("/usd/back_top_shot_position.txt", "r");
-      if(log != NULL) read_return = fscanf(log, "%d", &temp);
+      //if(log != NULL) read_return = fscanf(log, "%d", &temp);
       if (read_return == 1)
       {
           pf_back_SP.top = temp;
@@ -88,7 +88,7 @@ void gui_init() {
       else log_ln(LOG_IO, "%d pf_back_SP.top var set failed (init) | Read_Return: %d | Temp: %d | pf_back_SP.top: %d", pros::millis(), read_return, temp, pf_back_SP.top);
     } else if (i == 2) {
       log = fopen("/usd/front_mid_shot_position.txt", "r");
-      if(log != NULL) read_return = fscanf(log, "%d", &temp);
+      //if(log != NULL) read_return = fscanf(log, "%d", &temp);
       if (read_return == 1)
       {
           front_SP.mid = temp;
@@ -97,7 +97,7 @@ void gui_init() {
       else log_ln(LOG_IO, "%d front_SP.mid var set failed (init) | Read_Return: %d | Temp: %d | front_SP.mid: %d", pros::millis(), read_return, temp, front_SP.mid);
     } else if (i == 3) {
       log = fopen("/usd/front_top_shot_position.txt", "r");
-      if(log != NULL) read_return = fscanf(log, "%d", &temp);
+      //if(log != NULL) read_return = fscanf(log, "%d", &temp);
       if (read_return == 1)
       {
           front_SP.top = temp;
@@ -106,7 +106,7 @@ void gui_init() {
       else log_ln(LOG_IO, "%d front_SP.top var set failed (init) | Read_Return: %d | Temp: %d | front_SP.top: %d", pros::millis(), read_return, temp, front_SP.top);
     } else if (i == 4) {
       log = fopen("/usd/front_top_auto_position.txt", "r");
-      if(log != NULL) read_return = fscanf(log, "%d", &temp);
+      //if(log != NULL) read_return = fscanf(log, "%d", &temp);
       if (read_return == 1)
       {
           auto_SP.top = temp;
@@ -115,7 +115,7 @@ void gui_init() {
       else log_ln(LOG_IO, "%d auto_SP.top var set failed (init) | Read_Return: %d | Temp: %d | auto_SP.top: %d", pros::millis(), read_return, temp, auto_SP.top);
     } else if (i == 5) {
       log = fopen("/usd/front_mid_auto_position.txt", "r");
-      if(log != NULL) read_return = fscanf(log, "%d", &temp);
+      //if(log != NULL) read_return = fscanf(log, "%d", &temp);
       if (read_return == 1)
       {
           auto_SP.mid = temp;
@@ -133,8 +133,9 @@ void gui_init() {
     }
     pros::delay(50);
     printf("%d\n", shot_slider_value[i]);
-    fclose(log);
+    if(log!=NULL) fclose(log);
   }
+
 
   //
   // // Main Screen

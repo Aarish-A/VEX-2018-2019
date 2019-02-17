@@ -79,13 +79,6 @@ void log(bool system, const char * format, ...) {
 }
 
 void log_ln(bool system, const char * format, ...) {
-  va_list args;
-  va_start(args, format);
-  // if (log_file == NULL) log_file = fopen(log_file_name, log_mode);
-  vprintf(format, args);
-  printf("\n");
-  va_end (args);
-  /*
   if (system) {
     mutex.take(LOG_MUTEX_TO);
 
@@ -111,5 +104,5 @@ void log_ln(bool system, const char * format, ...) {
     va_end (args);
     mutex.give();
   }
-  */
+
 }
