@@ -7,8 +7,8 @@
 #include "controls.hpp"
 
 enum class PunState {
-  Loaded, //0
-  Loading, //1
+  Loading, //0
+  Loaded, //1
   Pull_Back, //2
   Bolt_Wait, //3
   FatalError //4
@@ -19,7 +19,7 @@ constexpr double PUN_OFFSET = 50 * PUN_RATIO;
 constexpr double PUN_HOLD = 180 * PUN_RATIO; // Relative to the slip point
 constexpr double PUN_TPR = 360 * PUN_RATIO; // Relative to the slip point
 constexpr double PUN_NO_RETURN = 50 * PUN_RATIO; // Back from the slip point
-constexpr double PUN_BALL_CHK_START[2] = {PUN_TPR - (PUN_HOLD + 5), PUN_TPR - (PUN_HOLD + 150)}; // Back from the slip point
+constexpr double PUN_BALL_CHK_START[2] = {PUN_TPR - (PUN_HOLD + 150), PUN_TPR - (PUN_HOLD + 150)}; // Back from the slip point
 constexpr uint32_t PUN_WAIT_TIME = 100;
 constexpr int PUN_BALL_THRESH = 2700;
 constexpr uint32_t PUN_BALL_OFF_TIME = 100;
@@ -33,6 +33,7 @@ extern int pun_state_change_time;
 
 extern int pun_shots;
 extern bool pun_ball;
+extern bool cancelled;
 
 extern bool auto_set_shot;
 extern double auto_angler_target;

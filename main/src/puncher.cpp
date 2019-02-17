@@ -109,12 +109,13 @@ void pun_handle() {
 					last_number = PUN_OFFSET + (pun_shots * PUN_TPR) + PUN_HOLD;
 					pun_state_change(PunState::Loaded);
 				}
-				else if(cur_err >= e_targ && cancelled)
+				else if(cur_err >= -e_targ && cancelled)
 				{
 					pun_set(PUN_HOLD_PWR);
 					log_ln(LOG_PUNCHER, "%d Made it to prev position: %f", pros::millis(), puncherLeft.get_position());
 					last_number = PUN_OFFSET + (pun_shots * PUN_TPR) + PUN_HOLD;
 					cancelled = false;
+					shot_req_num = 0;
 					pun_state_change(PunState::Loaded);
 				}
 				if (millis() > pun_state_change_time+1000 && !cancelled) { //Takes 300 ms
@@ -131,9 +132,7 @@ void pun_handle() {
 			}
 			case PunState::Loaded:
 			{
-				if (( shot_pun_go && shot_req[shot_req_handled_num].drive_turn_handled && //For Driver control - shot request must have been made, drive must have been handled & angler must have reached or timed out
-						(fabs(angler.get_position()-shot_req[shot_req_handled_num].angle_targ) < 5 || (shot_req[shot_req_handled_num].angler_to && pros::millis() > shot_req[shot_req_handled_num].angler_to) ) )
-						|| (auto_set_shot && fabs(angler.get_position()-auto_angler_target) < 5)) //For auto - auto_set_shot flag set to true
+				if (shot_pun_go || (auto_set_shot && fabs(angler.get_position()-auto_angler_target) < 5)) //For auto - auto_set_shot flag set to true
 					{
 						//pun_move(PUN_OFFSET + (++pun_shots * PUN_TPR));
 						uint32_t shot_timeout = pros::millis() + 4000;
@@ -168,6 +167,8 @@ void pun_handle() {
 					pun_move(PUN_OFFSET + (--pun_shots * PUN_TPR) + PUN_HOLD);
 					ctrler.rumble(" .");
 					partner.rumble(" .");
+					shot_req_handle_stop_task();
+
 					auto_set_shot = false;
 					shot_req[shot_req_handled_num].shot_handled = true;
 					shot_req_handled_num = 0;
@@ -178,7 +179,7 @@ void pun_handle() {
 				else if (shot_cancel_pressed && puncherLeft.get_position() < pun_target) {
 					pun_move(PUN_OFFSET + (--pun_shots * PUN_TPR) + PUN_HOLD);
 					log_ln(LOG_PUNCHER, "%d Shot failure, canceled. Enter PunLoad", millis());
-
+					shot_req_handle_stop_task();
 					auto_set_shot = false;
 					/*
 					shot_req[0].shot_handled = true;
@@ -187,6 +188,7 @@ void pun_handle() {
 					shot_req[shot_req_handled_num].shot_handled = true;
 					shot_req_handled_num = 0;
 					shot_cancel_pressed = false;
+					shot_req_num = 0;
 					cancelled = true;
 					log_ln(LOG_PUNCHER, "%d shot_handled0: %d shot_handled1: %d", millis(), shot_req[0].shot_handled, shot_req[1].shot_handled);
 					pun_state_change(PunState::Loading);
@@ -200,6 +202,8 @@ void pun_handle() {
 					log_ln(LOG_PUNCHER, "%d Shot end Pos:%f. A:%f", millis(), puncherLeft.get_position(), RAD_TO_DEG(pos.a));
 					//printf(" >>> %d ANGLE TARGET CREATE - PUN_PULL_BACK \n", pros::millis());
 
+					shot_pun_go = false;
+					shot_req_num = 0;
 					auto_set_shot = false;
 					pun_state_change(PunState::Bolt_Wait);
 				}
