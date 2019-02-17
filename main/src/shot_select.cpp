@@ -4,7 +4,7 @@ bool shot_pun_go = false;
 
 pros::Task* shot_req_handle_task = nullptr;
 
-/* Shot Positions */	
+/* Shot Positions */
 volatile ShotPos front_SP (FieldPos_Front, 98, 0);
 volatile ShotPos auto_SP (FieldPos_Front, 88, 0);
 volatile ShotPos pf_SP (FieldPos_PF, 90, 70);
@@ -158,7 +158,7 @@ void set_handled_vars_all() {
 	shot_req[1].drive_turn_handled = false;
 	shot_req[1].shot_handled = false;
 	shot_req[1].angler_to = 0;
-	log_ln(LOG_SHOTS, "	>>>> %d SET_HANDLED_VARS TRIED TO ACCESS OUT OF BOUNDS. SHOT_REQ_NUM = %d", pros::millis(), shot_req_num);
+	//log_ln(LOG_SHOTS, "	>>>> %d SET_HANDLED_VARS TRIED TO ACCESS OUT OF BOUNDS. SHOT_REQ_NUM = %d", pros::millis(), shot_req_num);
 }
 
 void set_shot_req(bool top, Dir turn_dir) {
@@ -287,12 +287,14 @@ void shot_req_handle(void *param) {
 	//shot_req_num = 0; //DELETE
 	while (true) {
 		if (is_disabled) printf(" >>> %d IN SHOT_REQ_HANDLE IN DISABLED S_R_N:\n", pros::millis());
-		while(!check_single_press(BTN_SHOT_R_T) && (shot_req[0].field_pos == FieldPos_PF_Back_Red || shot_req[0].field_pos == FieldPos_PF_Back_Blue)) {
-			pros::delay(10);
-			//printf("Drive thing: %d\n", shot_req[shot_req_num-1].drive_turn_handled);
-		}
 		if (shot_req_num > 0) {
+			while(!check_single_press(BTN_SHOT_R_T) && (shot_req[0].field_pos == FieldPos_PF_Back_Red || shot_req[0].field_pos == FieldPos_PF_Back_Blue)) {
+				pros::delay(10);
+				//printf("Drive thing: %d\n", shot_req[shot_req_num-1].drive_turn_handled);
+			}
+			log_ln(LOG_SHOTS, "%d Zain has pressed / pos = front. (shot_pun_go: %d)", pros::millis(), shot_pun_go);
 			shot_pun_go = true;
+			log_ln(LOG_SHOTS, "%d shot_pun_go true (%d)", pros::millis(), shot_pun_go);
 			if (!SHOT_DRIVE_BRAKE) setDrive(0); //Set drive pow to 0
 
 			if (shot_req[0].field_pos == FieldPos_PF_Back_Red || shot_req[0].field_pos == FieldPos_PF_Back_Blue) {
@@ -385,6 +387,7 @@ void shot_req_handle(void *param) {
 			log_ln(LOG_SHOTS, ">>> %d Done shot requests - move angler pos:%f", pros::millis(), angler.get_position());
 
 			//if (angler.get_position() < ANGLER_BOT_LIM_POS) angler.move_absolute(ANGLER_PU_POS, 200);
+			set_field_pos(FieldPos_Front);
 			shot_pun_go = false;
 			shot_req_num = 0;
 			shot_req_handled_num = 0;
