@@ -202,12 +202,17 @@ void shot_req_make() {
 		//printf("%d IF 4: %d %d\n \n", pros::millis(), pf_back_SP.top, pf_back_SP.mid);
 		//printf("%d IF 5: %d %d\n \n", pros::millis(), pf_back_SP.top, pf_back_SP.mid);
 		//printf("%d IF 6: %d %d\n \n", pros::millis(), pf_back_SP.top, pf_back_SP.mid);
-		set_handled_vars();
+		set_handled_vars_all();
+		shot_req[0].shot_handled = true;
+		shot_req[1].shot_handled = true;
+		shot_req[0].drive_turn_handled = true;
+		shot_req[1].drive_turn_handled = true;
 		//printf("%d IF 7: %d %d\n \n", pros::millis(), pf_back_SP.top, pf_back_SP.mid);
 		shot_req_handle_start_task();
 		//printf("%d IF 8: %d %d\n \n", pros::millis(), pf_back_SP.top, pf_back_SP.mid);
 		shot_req_num = 0;
 		shot_req_handled_num = 0;
+		shot_pun_go = false;
 		//printf("%d IF 9: %d %d\n \n", pros::millis(), pf_back_SP.top, pf_back_SP.mid);
 		log_ln(LOG_SHOTS, "  >>> %d Shot Req Handle Task  - Resume | TaskPtr %d | shot_req_num = %d, shot_req_handled_num = %d ", pros::millis(), shot_req_handle_task, shot_req_num, shot_req_handled_num);
 	}
@@ -350,6 +355,7 @@ void shot_req_handle(void *param) {
 			printf("angler shot target: %f\n", angler.get_target_position());
 			while (!shot_req[shot_req_handled_num].shot_handled) {
 				log_ln(LOG_PUNCHER, "%d In shot request wait while shot_req_num > 0", pros::millis());
+				log_ln(LOG_PUNCHER, "%d shot_handled0: %d shot_handled1: %d", pros::millis(), shot_req[0].shot_handled, shot_req[1].shot_handled);
 				pros::delay(10);
 			}
 			shot_req_handled_num++;
@@ -374,6 +380,7 @@ void shot_req_handle(void *param) {
 				angler.move_absolute(shot_req[shot_req_handled_num].angle_targ, 200);
 				while (!shot_req[shot_req_handled_num].shot_handled) {
 					log_ln(LOG_PUNCHER, "%d In shot request wait while shot_req_num > 1", pros::millis());
+					log_ln(LOG_PUNCHER, "%d shot_handled0: %d shot_handled1: %d", pros::millis(), shot_req[0].shot_handled, shot_req[1].shot_handled);
 					pros::delay(10);
 				}
 				shot_req_handled_num++;

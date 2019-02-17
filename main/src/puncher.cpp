@@ -117,7 +117,12 @@ void pun_handle() {
 					cancelled = false;
 					pun_state_change(PunState::Loaded);
 				}
-				if (millis() > pun_state_change_time+1000) { //Takes 300 ms
+				if (millis() > pun_state_change_time+1000 && !cancelled) { //Takes 300 ms
+					pun_set(0);
+					log_ln(LOG_PUNCHER, " >>> %d PUN FATAL ERROR (from Loading) - T_O | Pos: %f | Cur_Err(%f) needs to be <= to %f", millis(), puncherLeft.get_position(), cur_err, e_targ);
+					pun_state_change(PunState::FatalError);
+				}
+				if (millis() > pun_state_change_time+3000 && cancelled) { //Takes 300 ms
 					pun_set(0);
 					log_ln(LOG_PUNCHER, " >>> %d PUN FATAL ERROR (from Loading) - T_O | Pos: %f | Cur_Err(%f) needs to be <= to %f", millis(), puncherLeft.get_position(), cur_err, e_targ);
 					pun_state_change(PunState::FatalError);
@@ -175,9 +180,15 @@ void pun_handle() {
 					log_ln(LOG_PUNCHER, "%d Shot failure, canceled. Enter PunLoad", millis());
 
 					auto_set_shot = false;
+					/*
+					shot_req[0].shot_handled = true;
+					shot_req[1].shot_handled = true;
+					*/
 					shot_req[shot_req_handled_num].shot_handled = true;
 					shot_req_handled_num = 0;
 					shot_cancel_pressed = false;
+					cancelled = true;
+					log_ln(LOG_PUNCHER, "%d shot_handled0: %d shot_handled1: %d", millis(), shot_req[0].shot_handled, shot_req[1].shot_handled);
 					pun_state_change(PunState::Loading);
 
 				}
