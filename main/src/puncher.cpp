@@ -148,17 +148,17 @@ void pun_handle() {
 			{
 				//log_ln(LOG_PUNCHER, "%d PULLBACK, CUR: %f T: %d", pros::millis(), puncherLeft.get_position(), (PUN_OFFSET + (pun_shots * PUN_TPR) - PUN_NO_RETURN));
 				double puncher_position = puncherLeft.get_position();
-				//log_ln(LOG_PUNCHER, "%d Pullback: Puncher at %f, trying to get to between %f and %f, ball: %d", pros::millis(), puncher_position, pun_target, pun_target_two, (int)pun_ball);
+				log_ln(LOG_PUNCHER, "%d Pullback: Puncher at %f, trying to get to between %f and %f, ball: %d", pros::millis(), puncher_position, pun_target, pun_target_two, (int)pun_ball);
 				if (puncher_position < (pun_target) && !pun_ball
 				 	&& puncher_position > (pun_target_two)) {
 					log_ln(LOG_PUNCHER, "%d Shot failure, no ball pos:%f (b/w:%f & %f). BallSen:%d", millis(), puncherLeft.get_position(), (PUN_OFFSET + (pun_shots * PUN_TPR) - PUN_BALL_CHK_START[shot_req_handled_num]), (PUN_OFFSET + (pun_shots * PUN_TPR) - PUN_NO_RETURN), ball_sensor.get_value());
 					pun_move(PUN_OFFSET + (--pun_shots * PUN_TPR) + PUN_HOLD);
 					ctrler.rumble(" .");
 					partner.rumble(" .");
-
 					auto_set_shot = false;
 					shot_req[shot_req_handled_num].shot_handled = true;
 					shot_req_handled_num = 0;
+					log_ln(LOG_PUNCHER, "%d Shot Req: %d Shot ReqH: %d Shot Handled: %d", millis(), shot_req_num, shot_req_handled_num, shot_req[shot_req_handled_num].shot_handled = true);
 					pun_state_change(PunState::Loading);
 				}
 				else if (shot_cancel_pressed && puncherLeft.get_position() < pun_target) {
