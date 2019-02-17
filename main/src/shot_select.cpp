@@ -1,8 +1,10 @@
 #include "shot_select.hpp"
 
+bool shot_pun_go = false;
+
 pros::Task* shot_req_handle_task = nullptr;
 
-/* Shot Positions */
+/* Shot Positions */	
 volatile ShotPos front_SP (FieldPos_Front, 98, 0);
 volatile ShotPos auto_SP (FieldPos_Front, 88, 0);
 volatile ShotPos pf_SP (FieldPos_PF, 90, 70);
@@ -149,6 +151,15 @@ void set_handled_vars() {
 	}
 	else log_ln(LOG_SHOTS, "	>>>> %d SET_HANDLED_VARS TRIED TO ACCESS OUT OF BOUNDS. SHOT_REQ_NUM = %d", pros::millis(), shot_req_num);
 }
+void set_handled_vars_all() {
+	shot_req[0].drive_turn_handled = false;
+	shot_req[0].shot_handled = false;
+	shot_req[0].angler_to = 0;
+	shot_req[1].drive_turn_handled = false;
+	shot_req[1].shot_handled = false;
+	shot_req[1].angler_to = 0;
+	log_ln(LOG_SHOTS, "	>>>> %d SET_HANDLED_VARS TRIED TO ACCESS OUT OF BOUNDS. SHOT_REQ_NUM = %d", pros::millis(), shot_req_num);
+}
 
 void set_shot_req(bool top, Dir turn_dir) {
 	inc_shot_req_num();
@@ -176,7 +187,7 @@ void shot_req_make() {
 			set_field_pos(FieldPos_PF_Back_Blue);
 		}
 		//else if (btn[BTN_SHOOT_CANCEL-6].pressed) set_field_pos(FieldPos_PF_Back);
-    else if (check_single_press(BTN_FIELD_BACK, true)) set_field_pos(FieldPos_Back);
+    //else if (check_single_press(BTN_FIELD_BACK, true)) set_field_pos(FieldPos_Back);
   }
 	else if (check_single_press(BTN_SHOOT_CANCEL) || check_single_press(BTN_SHOOT_CANCEL, true)) {
 		shot_cancel_pressed = true;
@@ -281,6 +292,7 @@ void shot_req_handle(void *param) {
 			//printf("Drive thing: %d\n", shot_req[shot_req_num-1].drive_turn_handled);
 		}
 		if (shot_req_num > 0) {
+			shot_pun_go = true;
 			if (!SHOT_DRIVE_BRAKE) setDrive(0); //Set drive pow to 0
 
 			if (shot_req[0].field_pos == FieldPos_PF_Back_Red || shot_req[0].field_pos == FieldPos_PF_Back_Blue) {
@@ -290,7 +302,7 @@ void shot_req_handle(void *param) {
 
 			log_ln(LOG_SHOTS, "%d Start handling first shot request ", pros::millis());
 			printf("I am here aarish\n");
-			set_handled_vars(); //Make sure all handled vars are reset to false
+			set_handled_vars_all(); //Make sure all handled vars are reset to false
 			shot_req_handled_num = 0; //Make sure we start handling shot requests from index 0
 
 			if (shot_req[0].field_pos == FieldPos_Back || shot_req[0].field_pos == FieldPos_PF_Back_Red || shot_req[0].field_pos == FieldPos_PF_Back_Blue)  {
@@ -373,7 +385,7 @@ void shot_req_handle(void *param) {
 			log_ln(LOG_SHOTS, ">>> %d Done shot requests - move angler pos:%f", pros::millis(), angler.get_position());
 
 			//if (angler.get_position() < ANGLER_BOT_LIM_POS) angler.move_absolute(ANGLER_PU_POS, 200);
-
+			shot_pun_go = false;
 			shot_req_num = 0;
 			shot_req_handled_num = 0;
 		}
