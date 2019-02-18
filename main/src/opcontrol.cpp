@@ -40,7 +40,7 @@ void opcontrol() {
 			drive_handle();
 			intake_handle();
 			angler_handle();
-			//decapper_handle();
+			decapper_handle();
 			update_controller_lcd();
 		} else {
 			gui_handle();

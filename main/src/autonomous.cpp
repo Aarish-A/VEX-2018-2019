@@ -293,8 +293,6 @@ void auto_red_front_park() {
 }
 
 void auto_red_back_mid_first() {
-
-
     //1 PU
     log_ln(LOG_AUTO, "%d Angler Start move: %d", millis(), angler.get_position());
     angler_move(ANGLER_PU_POS, 100);
@@ -691,7 +689,7 @@ void autonomous() {
   log_ln(LOG_AUTO, "%d Drive Angle:%f", millis(), RAD_TO_DEG(getGlobalAngle()));
   autoStartTime = millis();
   setDriveVel(0);
-    delay(10);
+  delay(10);
   log_ln(LOG_AUTO, "   --- %d START AUTO --- \n", pros::millis());
   log_ln(LOG_AUTO, " >>> %d PUN TEMP: %f", pros::millis(), puncherLeft.get_temperature());
   pos.reset();
