@@ -34,7 +34,7 @@ void initialize() {
   angler_init();
   intake_init();
 	angler_cal();
-  //decapper_cal();
+  decapper_cal();
   log_ln(LOG_DRIVE, "%d Finished Init ", pros::millis());
 }
 
