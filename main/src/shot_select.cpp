@@ -300,7 +300,7 @@ void shot_req_handle(void *param) {
 		if (shot_req_num > 1) {
 			ShotSelect tempShot = shot_req[1];
 			angler.move_absolute(tempShot.angle_targ, 200);
-			if (tempShot.field_pos == FieldPos_PF_Back_Red || tempShot.field_pos == FieldPos_PF_Back_Red) {
+			if (tempShot.field_pos == FieldPos_PF_Back_Blue || tempShot.field_pos == FieldPos_PF_Back_Red) {
 				log_ln(LOG_SHOTS, "%d S1 Turn to face %f, %f ", pros::millis(), tempShot.flag_pos.x, tempShot.flag_pos.y);
 				turn_vel(PointAngleTarget({tempShot.flag_pos.x, tempShot.flag_pos.y}), (200/80_deg), 0);
 			}
