@@ -502,7 +502,7 @@ void shot_tuning_save() {
       printf("Created shot positions file! %d\n", i);
       fprintf(log, "%d", lv_slider_get_value(shot_slider[i]));
       printf("%d\n", lv_slider_get_value(shot_slider[i]));
-      printf("shot save NOT NULL");
+      printf("shot save SUCCESS\n");
       fclose(log);
     }
   }
@@ -539,7 +539,7 @@ lv_res_t shot_tuning_save_button_action(lv_obj_t* button) {
       printf("Created shot positions file! %d\n", i);
       fprintf(log, "%d", lv_slider_get_value(shot_slider[i]));
       printf("%d\n", lv_slider_get_value(shot_slider[i]));
-      printf("shot save NOT NULL");
+      printf("shot save SUCCESS \n");
       fclose(log);
     }
   }

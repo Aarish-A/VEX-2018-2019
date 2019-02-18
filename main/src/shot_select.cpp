@@ -78,7 +78,7 @@ void set_angle_targ_right(bool top) {
       break;
 
     case FieldPos_PF_Back_Red:
-      shot_req[shot_req_num-1].angle_targ = top? pf_back_SP.top+18 : pf_back_SP.mid+18;
+      shot_req[shot_req_num-1].angle_targ = top? pf_back_SP.top+11 : pf_back_SP.mid+18;
       break;
 		case FieldPos_PF_Back_Blue:
 	      shot_req[shot_req_num-1].angle_targ = top? pf_back_SP.top : pf_back_SP.mid;

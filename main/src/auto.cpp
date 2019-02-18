@@ -400,7 +400,7 @@ void turn_vel_side(const AngleTarget& target, double kP, double offset, bool f_w
 			dA = target.getTarget() - getGlobalAngle() + offset;
 			//log("%d Pos:%f DeltaA:%f Pow:%f \n", pros::millis(), RAD_TO_DEG(pos.a), RAD_TO_DEG(dA), kP*fabs(dA));
       double full_pow = -50;//-kP*fabs(dA);
-      double frac_pow = (full_pow * 0.25)*127/200;
+      double frac_pow = (full_pow * 0.5)*127/200;
       //printf("global angle: %f\n",RAD_TO_DEG(getGlobalAngle()));
       //printf("target angle: %f\n",RAD_TO_DEG(target.getTarget()));
       if (dA > 0) {
