@@ -33,7 +33,7 @@ void set_decapper_state(Decapper_States state) {
     case Decapper_States::Top: set_decapper_targ_state(state, DECAPPER_TOP_POS); break;
     case Decapper_States::Idle: set_decapper_pow_state(state, 0); break;
   }
-  log_ln(LOG_DECAPPER, "%d Change Decapper State to %d", millis(), state);
+  log_ln(LOG_DECAPPER, "%d Change Decapper State to %d from %d | Time: %d | Targ: %d", millis(), state, decapper_state_last, decapper_state_change_time, decapper_targ);
 }
 
 void decapper_set(int power)
@@ -110,7 +110,7 @@ void decapper_handle()
         set_decapper_state(Decapper_States::Mid);
       }
       else if (decapper.get_position() < (DECAPPER_BOT_POS + (2*DECAPPER_RATIO))) decapper_set(DECAPPER_BOT_HOLD_POW);
-      printf("%d Bot vel:%f StateCT:%d pos:%f t:%f \n", millis(), decapper.get_actual_velocity(), decapper_state_change_time, decapper.get_position(), decapper_targ);
+      //printf("%d Bot vel:%f StateCT:%d pos:%f t:%f \n", millis(), decapper.get_actual_velocity(), decapper_state_change_time, decapper.get_position(), decapper_targ);
       //else if (decapper.get_actual_velocity() > -1 && millis() > (decapper_state_change_time+200))
       break;
     }
@@ -125,7 +125,7 @@ void decapper_handle()
         set_decapper_state(Decapper_States::Bot);
       }
       else if (fabs(decapper.get_position() - DECAPPER_MID_POS) < (4*DECAPPER_RATIO)) decapper.move_relative(0, 200);
-      printf("%d Mid vel:%f StateCT:%d pos:%f t:%f \n", millis(), decapper.get_actual_velocity(), decapper_state_change_time, decapper.get_position(), decapper_targ);
+      //printf("%d Mid vel:%f StateCT:%d pos:%f t:%f \n", millis(), decapper.get_actual_velocity(), decapper_state_change_time, decapper.get_position(), decapper_targ);
       break;
     }
     case Decapper_States::Top:
@@ -134,17 +134,22 @@ void decapper_handle()
       {
           set_decapper_state(Decapper_States::Mid);
       }
-      printf("%d Top vel:%f StateCT:%d pos:%f t:%f \n", millis(), decapper.get_actual_velocity(), decapper_state_change_time, decapper.get_position(), decapper_targ);
+      //printf("%d Top vel:%f StateCT:%d pos:%f t:%f \n", millis(), decapper.get_actual_velocity(), decapper_state_change_time, decapper.get_position(), decapper_targ);
     }
-    if (pros::millis() > decapper_state_change_time+200 && fabs(decapper.get_actual_velocity()) < 20 && fabs(decapper_targ-decapper.get_position()) > 50)
-      set_decapper_state(Decapper_States::Idle);
     case Decapper_States::Idle:
     {
       if (check_single_press(BTN_DECAPPER_DOWN))
       {
         set_decapper_state(Decapper_States::Bot);
       }
+      if (check_single_press(BTN_DECAPPER_UP))
+      {
+        if (decapper.get_position() < DECAPPER_MID_POS) set_decapper_state(Decapper_States::Mid);
+        else set_decapper_state(Decapper_States::Top);
+      }
       break;
     }
   }
+  if (pros::millis() > decapper_state_change_time+100 && fabs(decapper.get_actual_velocity()) < 20 && fabs(decapper_targ-decapper.get_position()) > 20)
+    set_decapper_state(Decapper_States::Idle);
 }
