@@ -2,10 +2,11 @@
 #include "main.h"
 #include "util.hpp"
 #include "config.hpp"
-#include "shot_select.hpp"
 #include "intake.hpp"
 #include "logs.hpp"
 #include "controls.hpp"
+#include "shot_select.hpp"
+
 
 void angler_init();
 void angler_set(int power);

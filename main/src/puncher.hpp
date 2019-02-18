@@ -9,9 +9,10 @@
 enum class PunState {
   Loading, //0
   Loaded, //1
-  Pull_Back, //2
-  Bolt_Wait, //3
-  FatalError //4
+  Cancel, //2
+  Pull_Back, //3
+  Bolt_Wait, //4
+  FatalError //5
 };
 
 constexpr double PUN_RATIO = 5.0/3.0;
@@ -33,7 +34,6 @@ extern int pun_state_change_time;
 
 extern int pun_shots;
 extern bool pun_ball;
-extern bool cancelled;
 
 extern bool auto_set_shot;
 extern double auto_angler_target;

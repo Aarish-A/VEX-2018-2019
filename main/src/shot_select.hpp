@@ -1,17 +1,15 @@
 #pragma once
-
 #include "main.h"
 #include "config.hpp"
 #include "util.hpp"
 #include "auto.hpp"
 #include "angle_target.hpp"
 #include "button.hpp"
-#include "angler.hpp"
 #include "controls.hpp"
-#include "intake.hpp"
-#include "vision.hpp"
 
 /* Flags */
+extern bool angler_enabled;
+extern bool drive_enabled;
 constexpr bool SHOT_DRIVE_BRAKE = false;
 
 /* Constants */
@@ -73,6 +71,9 @@ struct ShotSelect {
 
 extern bool angler_pu_flag;
 
+void shot_cleanup();
+void cancel_shot_cleanup();
+
 /* Helper Functions */
 void set_field_pos(FieldPos field_pos);
 void set_angle_targ(bool top);
@@ -93,6 +94,7 @@ extern int shot_req_num;
 extern int shot_req_handled_num;
 
 extern bool shot_cancel_pressed;
+extern bool shot_task_running;
 
 extern bool shot_pun_go;
 

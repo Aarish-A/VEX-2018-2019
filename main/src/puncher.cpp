@@ -15,8 +15,6 @@ float pun_target_three = 0.0;
 bool auto_set_shot = false;
 double auto_angler_target = 0;
 
-bool cancelled = false;
-
 void pun_state_change(PunState state) {
 		pun_state_lst = pun_state;
 		pun_state = state;
@@ -90,7 +88,6 @@ void pun_handle() {
 
 		if (millis() >= ball_on_time + PUN_BALL_OFF_TIME) {
 			//printf(" >>> %d ANGLE TARGET CREATE - BALL_OFF \n", pros::millis());
-			//AngleTarget* a_targ = PointAngleTarget({shot_req[shot_req_handled_num].flag_pos.x, shot_req[shot_req_handled_num].flag_pos.y});
 			if (pun_ball) log_ln(LOG_PUNCHER, "	> %d Ball Off. Anglr:%f Pos:%f BallSen:%d. A:%f", pros::millis(), angler.get_position(), puncherLeft.get_position(), ball_sensor.get_value(), RAD_TO_DEG(getGlobalAngle()));//, RAD_TO_DEG(a_targ->getTarget()-pos.a));//, angler.get_target_position(), angler.get_position(), pos.x, pos.y, RAD_TO_DEG(pos.a));
 			//if (pun_ball) printf("	> %d Ball Off.Pos:%f BallSen:%d | AnglrTarg:%f Anglr:%f | Pos (%f, %f, %f) \n", pros::millis(), puncherLeft.get_position(), ball_sensor.get_value(), angler.get_target_position(), angler.get_position(), pos.x, pos.y, RAD_TO_DEG(pos.a));
 			pun_ball = false;
@@ -103,29 +100,16 @@ void pun_handle() {
 				double cur_err =  targ - puncherLeft.get_position();
 				double e_targ = (4.0 * PUN_RATIO);
 				log_ln(LOG_PUNCHER, "%d PUNLOADING, CUR: %f, T: %f, E: %f, ETarg:%f", pros::millis(), puncherLeft.get_position(), targ, cur_err, e_targ);
-				if (cur_err <= e_targ && !cancelled) {
+				if (cur_err <= e_targ) {
 					pun_set(PUN_HOLD_PWR);
 					log_ln(LOG_PUNCHER, "%d PunLoading. PunPos: %f", pros::millis(), puncherLeft.get_position());
 					last_number = PUN_OFFSET + (pun_shots * PUN_TPR) + PUN_HOLD;
 					pun_state_change(PunState::Loaded);
 				}
-				else if(cur_err >= -e_targ && cancelled)
-				{
-					pun_set(PUN_HOLD_PWR);
-					log_ln(LOG_PUNCHER, "%d Made it to prev position: %f", pros::millis(), puncherLeft.get_position());
-					last_number = PUN_OFFSET + (pun_shots * PUN_TPR) + PUN_HOLD;
-					cancelled = false;
-					shot_req_num = 0;
-					pun_state_change(PunState::Loaded);
-				}
-				if (millis() > pun_state_change_time+1000 && !cancelled) { //Takes 300 ms
+				if (millis() > pun_state_change_time+1000) { //Takes 300 ms
 					pun_set(0);
 					log_ln(LOG_PUNCHER, " >>> %d PUN FATAL ERROR (from Loading) - T_O | Pos: %f | Cur_Err(%f) needs to be <= to %f", millis(), puncherLeft.get_position(), cur_err, e_targ);
-					pun_state_change(PunState::FatalError);
-				}
-				if (millis() > pun_state_change_time+3000 && cancelled) { //Takes 300 ms
-					pun_set(0);
-					log_ln(LOG_PUNCHER, " >>> %d PUN FATAL ERROR (from Loading) - T_O | Pos: %f | Cur_Err(%f) needs to be <= to %f", millis(), puncherLeft.get_position(), cur_err, e_targ);
+					cancel_shot_cleanup();
 					pun_state_change(PunState::FatalError);
 				}
 				break;
@@ -139,9 +123,9 @@ void pun_handle() {
 						++pun_shots;
 						pun_set(127);
 						pun_target = PUN_OFFSET + (pun_shots * PUN_TPR) - PUN_NO_RETURN;
-						pun_target_two = PUN_OFFSET + (pun_shots * PUN_TPR) - PUN_BALL_CHK_START[shot_req_handled_num];
+						pun_target_two = PUN_OFFSET + (pun_shots * PUN_TPR) - PUN_BALL_CHK_START[0];
 						pun_target_three = (PUN_OFFSET + (pun_shots * PUN_TPR)-(15*PUN_RATIO));
-						log_ln(LOG_PUNCHER, "%d Shot start (from ShotLoaded first condition) | shot_pun_go = %d | pos : %f | shot_req_num: %d | shot_req_handled_num: %d | drive_turn_handled: %d | anglrOffs: %f | anglerTO: %f ", pros::millis(), shot_pun_go, puncherLeft.get_position(), shot_req_num, shot_req_handled_num, shot_req[shot_req_handled_num].drive_turn_handled, fabs(angler.get_position()-shot_req[shot_req_handled_num].angle_targ), shot_req[shot_req_handled_num].angler_to);
+						printf("%d Shot start (from ShotLoaded first condition) | shot_pun_go = %d | pos : %f | shot_req_num: %d | shot_req_handled_num: %d | drive_turn_handled: %d | anglrOffs: %f | anglerTO: %d ", pros::millis(), shot_pun_go, puncherLeft.get_position(), shot_req_num, shot_req_handled_num, shot_req[shot_req_handled_num].drive_turn_handled, fabs(angler.get_position()-shot_req[shot_req_handled_num].angle_targ), shot_req[shot_req_handled_num].angler_to);
 
 						pun_state_change(PunState::Pull_Back);
 					}
@@ -155,43 +139,58 @@ void pun_handle() {
 				}*/
 				break;
 			}
-
+			case PunState::Cancel:
+			{
+				double targ = (PUN_OFFSET + (pun_shots * PUN_TPR) + PUN_HOLD);
+				double cur_err =  targ - puncherLeft.get_position();
+				double e_targ = (4.0 * PUN_RATIO);
+				if(cur_err >= -e_targ)
+				{
+					pun_set(PUN_HOLD_PWR);
+					log_ln(LOG_PUNCHER, "%d Made it to prev position: %f", pros::millis(), puncherLeft.get_position());
+					last_number = PUN_OFFSET + (pun_shots * PUN_TPR) + PUN_HOLD;
+					shot_req_num = 0;
+					angler_move(ANGLER_PU_POS);
+					pun_state_change(PunState::Loaded);
+				}
+				if (millis() > pun_state_change_time + 3000) {
+					pun_set(0);
+					log_ln(LOG_PUNCHER, " >>> %d PUN FATAL ERROR (from Loading) - T_O | Pos: %f | Cur_Err(%f) needs to be <= to %f", millis(), puncherLeft.get_position(), cur_err, e_targ);
+					cancel_shot_cleanup();
+					pun_state_change(PunState::FatalError);
+				}
+				break;
+			}
 			case PunState::Pull_Back:
 			{
 				//log_ln(LOG_PUNCHER, "%d PULLBACK, CUR: %f T: %d", pros::millis(), puncherLeft.get_position(), (PUN_OFFSET + (pun_shots * PUN_TPR) - PUN_NO_RETURN));
 				double puncher_position = puncherLeft.get_position();
-				log_ln(LOG_PUNCHER, "%d Pullback: Puncher at %f, trying to get to between %f and %f, ball: %d", pros::millis(), puncher_position, pun_target, pun_target_two, (int)pun_ball);
+				//___int16_t_definedlog_ln(LOG_PUNCHER, "%d Pullback: Puncher at %f, trying to get to between %f and %f, ball: %d", pros::millis(), puncher_position, pun_target, pun_target_two, (int)pun_ball);
 				if (puncher_position < (pun_target) && !pun_ball
 				 	&& puncher_position > (pun_target_two)) {
 					log_ln(LOG_PUNCHER, "%d Shot failure, no ball pos:%f (b/w:%f & %f). BallSen:%d", millis(), puncherLeft.get_position(), (PUN_OFFSET + (pun_shots * PUN_TPR) - PUN_BALL_CHK_START[shot_req_handled_num]), (PUN_OFFSET + (pun_shots * PUN_TPR) - PUN_NO_RETURN), ball_sensor.get_value());
 					pun_move(PUN_OFFSET + (--pun_shots * PUN_TPR) + PUN_HOLD);
 					ctrler.rumble(" .");
 					partner.rumble(" .");
-					shot_req_handle_stop_task();
+					cancel_shot_cleanup();
 
 					auto_set_shot = false;
-					shot_req[shot_req_handled_num].shot_handled = true;
-					shot_req_handled_num = 0;
-					cancelled = true;
 					log_ln(LOG_PUNCHER, "%d Shot Req: %d Shot ReqH: %d Shot Handled: %d", millis(), shot_req_num, shot_req_handled_num, shot_req[shot_req_handled_num].shot_handled = true);
-					pun_state_change(PunState::Loading);
+					pun_state_change(PunState::Cancel);
 				}
 				else if (shot_cancel_pressed && puncherLeft.get_position() < pun_target) {
 					pun_move(PUN_OFFSET + (--pun_shots * PUN_TPR) + PUN_HOLD);
 					log_ln(LOG_PUNCHER, "%d Shot failure, canceled. Enter PunLoad", millis());
-					shot_req_handle_stop_task();
+					cancel_shot_cleanup();
 					auto_set_shot = false;
 					/*
 					shot_req[0].shot_handled = true;
 					shot_req[1].shot_handled = true;
 					*/
-					shot_req[shot_req_handled_num].shot_handled = true;
-					shot_req_handled_num = 0;
 					shot_cancel_pressed = false;
 					shot_req_num = 0;
-					cancelled = true;
 					log_ln(LOG_PUNCHER, "%d shot_handled0: %d shot_handled1: %d", millis(), shot_req[0].shot_handled, shot_req[1].shot_handled);
-					pun_state_change(PunState::Loading);
+					pun_state_change(PunState::Cancel);
 
 				}
 				else if (pun_target_three < puncherLeft.get_position()) { //15 deg before slip position
@@ -203,7 +202,6 @@ void pun_handle() {
 					//printf(" >>> %d ANGLE TARGET CREATE - PUN_PULL_BACK \n", pros::millis());
 
 					shot_pun_go = false;
-					shot_req_num = 0;
 					auto_set_shot = false;
 					pun_state_change(PunState::Bolt_Wait);
 				}
@@ -211,6 +209,7 @@ void pun_handle() {
 				{
 					pun_set(0);
 					log_ln(LOG_PUNCHER, "%d Time exceeded in PullBack State, going into Fatal Error", millis());
+					cancel_shot_cleanup();
 					pun_state_change(PunState::FatalError);
 				}
 				break;
@@ -223,7 +222,6 @@ void pun_handle() {
 					pun_set(127);
 					log_ln(LOG_PUNCHER, "%d Done shot wait move to %f T:%f", millis(), (PUN_OFFSET + (pun_shots * PUN_TPR) + PUN_HOLD), puncherLeft.get_target_position());
 
-					shot_req[shot_req_handled_num].shot_handled = true;
 
 					pun_state_change(PunState::Loading);
 				}

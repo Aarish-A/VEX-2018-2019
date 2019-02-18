@@ -2,8 +2,6 @@
 
 using namespace pros;
 
-//anglerState angler_state;
-
 void angler_init() {
 	angler.set_brake_mode(E_MOTOR_BRAKE_HOLD);
 }
@@ -50,37 +48,33 @@ void angler_handle() {
 	}
 	else
 	*/
-	if (shot_req_num == 0) {
-		if (shot_req[0].field_pos != FieldPos_Back && shot_req[0].field_pos != FieldPos_PF_Back_Blue && shot_req[0].field_pos != FieldPos_PF_Back_Red)
+	if (angler_enabled) {
+		if (check_double_press(BTN_SHOT_L_T, BTN_SHOT_L_M))
 		{
+			angler_move(ANGLER_CAP_FLIP_POS, 100);
+			intake_state_set(-80, IntakeState::Back);
+			log_ln(LOG_ANGLER, "%d Angler Cap Flip. Pos:%f TPos:%f", pros::millis(), angler.get_position(), angler.get_target_position());
+		}
+		else if (check_single_press(BTN_SHOT_L_M)) {
+			angler_move(ANGLER_PU_POS, 100);
+			intake_state_set(127, IntakeState::Forw);
+			log_ln(LOG_ANGLER, "%d Angler PU. Pos:%f TPos:%f", pros::millis(), angler.get_position(), angler.get_target_position());
+		}
+		else if (check_single_press(BTN_SHOT_L_T)) {
+			angler_move(ANGLER_CAP_PU_POS, 100);
+			intake_state_set(127, IntakeState::Forw);
+			log_ln(LOG_ANGLER, "%d Angler Cap PU. Pos:%f TPos:%f", pros::millis(), angler.get_position(), angler.get_target_position());
+		}
+	}
 
-				if (check_double_press(BTN_SHOT_L_T, BTN_SHOT_L_M))
-				{
-					angler_move(ANGLER_CAP_FLIP_POS, 100);
-					intake_state_set(-80, IntakeState::Back);
-					log_ln(LOG_ANGLER, "%d Angler Cap Flip. Pos:%f TPos:%f", pros::millis(), angler.get_position(), angler.get_target_position());
-				}
-				else if (check_single_press(BTN_SHOT_L_M)) {
-					angler_move(ANGLER_PU_POS, 100);
-					intake_state_set(127, IntakeState::Forw);
-					log_ln(LOG_ANGLER, "%d Angler PU. Pos:%f TPos:%f", pros::millis(), angler.get_position(), angler.get_target_position());
-				}
-				else if (check_single_press(BTN_SHOT_L_T)) {
-					angler_move(ANGLER_CAP_PU_POS, 100);
-					intake_state_set(127, IntakeState::Forw);
-					log_ln(LOG_ANGLER, "%d Angler Cap PU. Pos:%f TPos:%f", pros::millis(), angler.get_position(), angler.get_target_position());
-				}
-		}
-
-		if (anglerPow) {
-			angler_set(anglerPow);
-			log_ln(LOG_ANGLER, "%d Angler Set %d. Pos:%f", pros::millis(), anglerPow, angler.get_position());
-		}
-		else if (!anglerPow && anglerPowLst) {
-			angler_set(0);
-			angler.move_relative(0, 100);
-			log_ln(LOG_ANGLER, "%d Angler Set 0. Pos:%f", pros::millis(), angler.get_position());
-		}
+	if (anglerPow) {
+		angler_set(anglerPow);
+		log_ln(LOG_ANGLER, "%d Angler Set %d. Pos:%f", pros::millis(), anglerPow, angler.get_position());
+	}
+	else if (!anglerPow && anglerPowLst) {
+		angler_set(0);
+		angler.move_relative(0, 100);
+		log_ln(LOG_ANGLER, "%d Angler Set 0. Pos:%f", pros::millis(), angler.get_position());
 	}
 
 	anglerPowLst = anglerPow;

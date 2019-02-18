@@ -39,7 +39,7 @@ void drive_handle() {
 	static int drive_pow_lst = 0;
 	static int drive_brake_timer = 0;
 
-	if ((shot_req_num == 0 || shot_req[shot_req_handled_num].drive_turn_handled) ) {
+	if (drive_enabled) {
 		//log_ln("%d Drive update", pros::millis());
 	  int y = set_dz(ctrler.get_analog(JOY_DRIVE_FW), DRIVE_DZ);
 		int x = set_dz(ctrler.get_analog(JOY_DRIVE_STRAFE), DRIVE_DZ);

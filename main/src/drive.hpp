@@ -3,10 +3,10 @@
 #include "config.hpp"
 #include "util.hpp"
 #include "auto.hpp"
-#include "shot_select.hpp"
 #include "logs.hpp"
 #include "controls.hpp"
 #include "decapper.hpp"
+#include "shot_select.hpp"
 
 constexpr int DRIVE_TURN_DZ = 30;
 constexpr int DRIVE_DZ = 10;
@@ -22,6 +22,7 @@ void drive_shot_turn();
 
 const int drive_brake_pow = 0;
 
+extern bool drive_enabled;
 static bool handling_shot_req = false;
 
 constexpr int DRIVE_BRAKE_TIME = 300;
