@@ -52,17 +52,17 @@ void angler_handle() {
 		if (check_double_press(BTN_SHOT_L_T, BTN_SHOT_L_M))
 		{
 			angler_move(ANGLER_CAP_FLIP_POS, 100);
-			intake_state_set(-80, IntakeState::Back);
+			intake_state_set(IntakeState::Back);
 			log_ln(LOG_ANGLER, "%d Angler Cap Flip. Pos:%f TPos:%f", pros::millis(), angler.get_position(), angler.get_target_position());
 		}
 		else if (check_single_press(BTN_SHOT_L_M)) {
 			angler_move(ANGLER_PU_POS, 100);
-			intake_state_set(127, IntakeState::Forw);
+			intake_state_set(IntakeState::Forw);
 			log_ln(LOG_ANGLER, "%d Angler PU. Pos:%f TPos:%f", pros::millis(), angler.get_position(), angler.get_target_position());
 		}
 		else if (check_single_press(BTN_SHOT_L_T)) {
 			angler_move(ANGLER_CAP_PU_POS, 100);
-			intake_state_set(127, IntakeState::Forw);
+			intake_state_set(IntakeState::Forw);
 			log_ln(LOG_ANGLER, "%d Angler Cap PU. Pos:%f TPos:%f", pros::millis(), angler.get_position(), angler.get_target_position());
 		}
 	}

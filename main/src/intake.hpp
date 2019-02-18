@@ -11,7 +11,8 @@ enum class IntakeState { Forw, Back, Off, Jam };
 extern IntakeState intake_state;
 
 void intake_init();
-void intake_state_set(int power, IntakeState state);
+void intake_power_state_set(int power, IntakeState state);
+void intake_state_set(IntakeState state);
 void intake_set(int power);
 void intake_handle();
 

@@ -6,6 +6,7 @@
 #include <stdio.h>
 
 constexpr bool LOG_DRIVE = 1;
+constexpr bool LOG_INTAKE = 1;
 constexpr bool LOG_PUNCHER = 1;
 constexpr bool LOG_ANGLER = 1;
 constexpr bool LOG_DECAPPER = 0;

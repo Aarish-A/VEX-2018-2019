@@ -234,7 +234,7 @@ void shot_cleanup() {
 	shot_req_num = 0;
 	angler.move_absolute(ANGLER_PU_POS, 200);
 	set_field_pos(FieldPos_Front);
-	intake.move(127);
+	intake_state_set(IntakeState::Forw);
 }
 
 void cancel_shot_cleanup() {

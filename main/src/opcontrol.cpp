@@ -22,7 +22,6 @@ void opcontrol() {
 	is_disabled = false;
 	auto_update_stop_task();
 	drive_set(0);
-	shot_req_handle_start_task(); //Start shot req handle task
 	//Task log_drive_efficency_task(log_drive_efficency); //Start logging drive efficency
 	log_ln(LOG_AUTO, "   --- %d START OPCONTROL --- \n", pros::millis());
 	// ctrler.print(2, 0, "RUNNING");

@@ -99,7 +99,7 @@ void pun_handle() {
 				double targ = (PUN_OFFSET + (pun_shots * PUN_TPR) + PUN_HOLD);
 				double cur_err =  targ - puncherLeft.get_position();
 				double e_targ = (4.0 * PUN_RATIO);
-				log_ln(LOG_PUNCHER, "%d PUNLOADING, CUR: %f, T: %f, E: %f, ETarg:%f", pros::millis(), puncherLeft.get_position(), targ, cur_err, e_targ);
+				//log_ln(LOG_PUNCHER, "%d PUNLOADING, CUR: %f, T: %f, E: %f, ETarg:%f", pros::millis(), puncherLeft.get_position(), targ, cur_err, e_targ);
 				if (cur_err <= e_targ) {
 					pun_set(PUN_HOLD_PWR);
 					log_ln(LOG_PUNCHER, "%d PunLoading. PunPos: %f", pros::millis(), puncherLeft.get_position());

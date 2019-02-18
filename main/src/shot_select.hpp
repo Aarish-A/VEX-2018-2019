@@ -6,6 +6,7 @@
 #include "angle_target.hpp"
 #include "button.hpp"
 #include "controls.hpp"
+#include "intake.hpp"
 
 /* Flags */
 extern bool angler_enabled;
