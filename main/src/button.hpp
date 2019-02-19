@@ -2,6 +2,7 @@
 #include "main.h"
 #include "config.hpp"
 #include "controls.hpp"
+#include "logs.hpp"
 
 constexpr uint32_t BTN_PRESS_TIME = 50;
 

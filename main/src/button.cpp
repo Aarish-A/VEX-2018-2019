@@ -14,10 +14,13 @@ void update_buttons() {
     buttons[i].pressed = ctrler.get_digital((pros::controller_digital_e_t)(i + pros::E_CONTROLLER_DIGITAL_L1));
     if (check_rising(i)) buttons[i].last_pressed_time = pros::millis();
     else if (check_falling(i)) buttons[i].last_pressed_time = 0;
-    partner_joy[i].last_pressed = partner_joy[i].pressed;
-    partner_joy[i].pressed = partner.get_digital((pros::controller_digital_e_t)(i + pros::E_CONTROLLER_DIGITAL_L1));
-    if (check_rising_partner(i)) partner_joy[i].last_pressed_time = pros::millis();
-    else if (check_falling_partner(i)) partner_joy[i].last_pressed_time = 0;
+
+    if (partner_connected) {
+      partner_joy[i].last_pressed = partner_joy[i].pressed;
+      partner_joy[i].pressed = partner.get_digital((pros::controller_digital_e_t)(i + pros::E_CONTROLLER_DIGITAL_L1));
+      if (check_rising_partner(i)) partner_joy[i].last_pressed_time = pros::millis();
+      else if (check_falling_partner(i)) partner_joy[i].last_pressed_time = 0;
+    }
   }
 }
 
@@ -39,25 +42,19 @@ bool check_falling_partner(int button) {
 
 
 bool check_single_press(int button, bool partner) {
-if(!partner)
-{
-
-  if (buttons[button].last_pressed_time && (pros::millis() - buttons[button].last_pressed_time) >= buttons[button].button_press_time) {
-    buttons[button].last_pressed_time = 0;
-    log_ln(LOG_JOYSTICK, "%d Button %d Single Pressed - Main", pros::millis(), button);
-    return true;
+  if(!partner || !partner_connected) {
+    if (buttons[button].last_pressed_time && (pros::millis() - buttons[button].last_pressed_time) >= buttons[button].button_press_time) {
+      buttons[button].last_pressed_time = 0;
+      log_ln(LOG_JOYSTICK, "%d Button %d Single Pressed - Main", pros::millis(), button);
+      return true;
+    } else return false;
+  } else {
+    if (partner_joy[button].last_pressed_time && (pros::millis() - partner_joy[button].last_pressed_time) >= partner_joy[button].button_press_time) {
+      partner_joy[button].last_pressed_time = 0;
+      log_ln(LOG_JOYSTICK, "%d Button %d Single Pressed - Partner", pros::millis(), button);
+      return true;
+    } else return false;
   }
-  else return false;
-}
-else
-{
-  if (partner_joy[button].last_pressed_time && (pros::millis() - partner_joy[button].last_pressed_time) >= partner_joy[button].button_press_time) {
-    partner_joy[button].last_pressed_time = 0;
-    log_ln(LOG_JOYSTICK, "%d Button %d Single Pressed - Partner", pros::millis(), button);
-    return true;
-  }
-  else return false;
-}
 }
 
 bool check_double_press(int button1, int button2) {

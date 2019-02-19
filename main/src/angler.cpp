@@ -35,19 +35,19 @@ void angler_cal() {
 }
 
 void angler_handle() {
+	static int anglerJoystickDZ = 0;
+	static int anglerJoystickDZLast = 0;
 	static int anglerPow = 0;
-	static int anglerPowLst = 0;
 
-	anglerPow = set_dz(ctrler.get_analog(JOY_ANGLER), ANGLER_DZ);
+	// if (abs(ctrler.get_analog(JOY_DRIVE_STRAFE)) > 10) anglerJoystickDZ = set_dz(ctrler.get_analog(JOY_ANGLER), ANGLER_DZ);
+	// printf("%d\n", abs(ctrler.get_analog(JOY_DRIVE_STRAFE)));
 
-	if (angler.get_position() < ANGLER_BOT_LIM_POS && anglerPow < 0) anglerPow = 0;
-	else if (angler.get_position() > ANGLER_TOP_LIM_POS && anglerPow > 0) anglerPow = 0;
-/*
-	if (shot_req_num > 0) { //(shot_req[shot_req_handled_num].drive_turn_handled) {
-		angler.move_absolute(shot_req[shot_req_handled_num].angle_targ, 200);
-	}
-	else
-	*/
+	if (angler.get_position() < ANGLER_BOT_LIM_POS && anglerJoystickDZ < 0) anglerJoystickDZ = 0;
+	else if (angler.get_position() > ANGLER_TOP_LIM_POS && anglerJoystickDZ > 0) anglerJoystickDZ = 0;
+
+	if (anglerJoystickDZ) anglerPow = (int)((abs(anglerJoystickDZ) - ANGLER_DZ) * (127.0 - ANGLER_MIN_VAL) / (127.0 - ANGLER_DZ) + ANGLER_MIN_VAL) * sgn(anglerJoystickDZ);
+	else anglerPow = 0;
+
 	if (angler_enabled) {
 		if (check_double_press(BTN_SHOT_L_T, BTN_SHOT_L_M))
 		{
@@ -69,13 +69,13 @@ void angler_handle() {
 
 	if (anglerPow) {
 		angler_set(anglerPow);
-		log_ln(LOG_ANGLER, "%d Angler Set %d. Pos:%f", pros::millis(), anglerPow, angler.get_position());
+		// log_ln(LOG_ANGLER, "%d Angler Set %d. Pos:%f", pros::millis(), anglerPow, angler.get_position());
 	}
-	else if (!anglerPow && anglerPowLst) {
+	else if (!anglerJoystickDZ && anglerJoystickDZLast) {
 		angler_set(0);
 		angler.move_relative(0, 100);
 		log_ln(LOG_ANGLER, "%d Angler Set 0. Pos:%f", pros::millis(), angler.get_position());
 	}
 
-	anglerPowLst = anglerPow;
+	anglerJoystickDZLast = anglerJoystickDZ;
 }

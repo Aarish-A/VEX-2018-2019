@@ -47,14 +47,6 @@ void opcontrol() {
 		}
 		pun_handle();
 		vision_handle();
-		printf("LSL: %d, LSR: %d\n", left_platform_sensor.get_value(), right_platform_sensor.get_value());
-		//printf("%d %d %d \n", pros::millis(), enc_l.get_value(), enc_r.get_value());
-		// printf("%d\n",autoPoti.get_value());
-		// printf("%d\n", autoPoti.get_value());
-		//printf("%d\n", (int)decapper.get_position());
-		//log_ln(LOG_SHOTS, "  >>> %d PF BACK: %d %d | l_counter:%d", pros::millis(), pf_back_SP.top, pf_back_SP.mid, loop_counter);
-		//printf("  >>> %d PRINT - PF BACK: %d %d | l_counter:%d \n", pros::millis(), pf_back_SP.top, pf_back_SP.mid, loop_counter);
-		//printf("%d, %f to %f \n", pros::millis(), puncherLeft.get_position(), PUN_OFFSET + (1 * PUN_TPR) - PUN_BALL_CHK_START[1]);
 		loop_counter++;
 		delay(10);
 	}
@@ -85,11 +77,12 @@ void update_controller_lcd() {
 			*/
 
 		// ctrler.print(2, 0, "%d,%d,%d,%d", (int)drive_bl.get_temperature(), (int)drive_br.get_temperature(), (int)drive_fl.get_temperature(), (int)drive_fr.get_temperature());
-		partner.print(2, 0, "%s    ", field_pos_s);
+		if (partner_connected) partner.print(2, 0, "%c %s    ", game_side, field_pos_s);
+		else ctrler.print(2, 0, "%c %s    ", game_side, field_pos_s);
 		//ctrler.print(2, 0, "%s %s %d %d %d      ", field_pos_s, team_s, (int)intake.get_temperature(), (int)puncherLeft.get_temperature(), (int)puncherRight.get_temperature());
 		// ctrler.print(2, 0, "%d  ", (int)current_auto_routine);
 		//ctrler.print(2, 0, "a: %.1f       ", RAD_TO_DEG(getGlobalAngle()));
-		ctrler.print(2, 0, "%.1f %d %d    ", RAD_TO_DEG(getGlobalAngle()), enc_l.get_value(), enc_r.get_value());
+		// ctrler.print(2, 0, "%.1f %d %d    ", RAD_TO_DEG(getGlobalAngle()), enc_l.get_value(), enc_r.get_value());
 		//ctrler.print(2, 0, "%f          ", ((enc_l.get_value() * SPN_TO_IN_L) - (enc_r.get_value() * SPN_TO_IN_R)) / 3600_deg);
 
 	}

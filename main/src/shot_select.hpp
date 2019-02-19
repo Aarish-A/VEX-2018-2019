@@ -17,7 +17,8 @@ constexpr bool SHOT_DRIVE_BRAKE = false;
 constexpr double FLAG_WIDTH = 16.50;
 
 constexpr double ANGLER_BALL = 13;
-constexpr int ANGLER_DZ = 30;
+constexpr int ANGLER_DZ = 50;
+constexpr int ANGLER_MIN_VAL = 25;
 
 constexpr double ANGLER_PU_POS = 85;//ANGLER_BALL * 7;
 

@@ -1,6 +1,5 @@
 #pragma once
 #include "main.h"
-#include "tracking.hpp"
 
 enum class auto_routines {
   FRONT,
@@ -35,7 +34,6 @@ extern pros::ADILineSensor left_platform_sensor;
 extern pros::ADILineSensor right_platform_sensor;
 extern pros::Vision vision_sensor;
 
-extern Tracking pos;
 extern char game_side;
 extern auto_routines current_auto_routine;
 

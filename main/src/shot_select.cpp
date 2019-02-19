@@ -190,8 +190,8 @@ void shot_req_make() {
 	RM_P = check_single_press(BTN_SHOT_R_M, true);
 
 	if (check_single_press(BTN_FIELD_FRONT_P, true) || check_single_press(BTN_FIELD_FRONT_M)) set_field_pos(FieldPos_Front);
-	else if (check_single_press(BTN_FIELD_PF_BACK_RED_P, true)) set_field_pos(FieldPos_PF_Back_Red);
-	else if (check_single_press(BTN_FIELD_PF_BACK_BLUE_P, true)) set_field_pos(FieldPos_PF_Back_Blue);
+	else if (check_single_press(BTN_FIELD_PF_BACK_RED, true)) set_field_pos(FieldPos_PF_Back_Red);
+	else if (check_single_press(BTN_FIELD_PF_BACK_BLUE, true)) set_field_pos(FieldPos_PF_Back_Blue);
 
 	if (check_single_press(BTN_SHOOT_CANCEL) || check_single_press(BTN_SHOOT_CANCEL, true)) {
 		cancel_shot_cleanup();
@@ -222,7 +222,13 @@ void shot_req_make() {
 		else if (RM_M) set_shot_req(false, Dir_Centre);
 	}
 
-	if ((RT_M || RM_M) && (shot_req_num == 1 || shot_req[0].field_pos != FieldPos_Front)) {
+	// This is added in to allow shots to be triggered with any button when there is no partner controller connected...
+	// The two ifs are separated only for clarity (when partner controller is connected vs when its not)
+	bool shot_button_triggered = false;
+	if (partner_connected && (RT_M || RM_M)) shot_button_triggered = true;
+	else if (!partner_connected && (RT_M || RM_M || LT_P || RM_P)) shot_button_triggered = true;
+
+	if (shot_button_triggered && (shot_req_num == 1 || shot_req[0].field_pos != FieldPos_Front)) {
 		log_ln(LOG_PUNCHER, "%d Attempted to Start task", pros::millis());
 		shot_req_handle_start_task();
 	}

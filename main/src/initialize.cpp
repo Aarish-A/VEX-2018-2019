@@ -27,6 +27,7 @@ void initialize() {
 	log_init();
   printf("log init completed\n");
   // pros::delay(1000);
+  controls_init();
 	gui_init();
 	pun_init();
 	pun_cal();

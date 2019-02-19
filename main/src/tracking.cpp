@@ -1,5 +1,7 @@
 #include "tracking.hpp"
 
+  Tracking pos(enc_l, enc_r, enc_s);
+  
 //namespace pilons::tracking {
   double operator "" _in(long double val) {
     return val;

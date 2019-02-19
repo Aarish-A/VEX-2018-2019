@@ -64,4 +64,6 @@
     vector position() const;
     vector velocity() const;
   };
+
+  extern Tracking pos;
 //}
