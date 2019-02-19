@@ -259,7 +259,7 @@ void move_drive_rel_simple(double dis, int vel, bool stop) {
   setDrive(0);
 }
 
-void turn_vel(const AngleTarget& target, double kP, double offset, float drive_turn_handled_offset, short req_handled_num)
+void turn_vel(const AngleTarget& target, double kP, double offset, float drive_turn_handled_offset, short req_handled_num,  double max_vel)
 {
 	kP = fabs(kP);
 	double dA = target.getTarget() - getGlobalAngle() + offset;
@@ -271,7 +271,9 @@ void turn_vel(const AngleTarget& target, double kP, double offset, float drive_t
 			shot_req[req_handled_num].drive_turn_handled = true;
 			// log_ln(LOG_AUTO, "%d REACHED DRIVE TURN HANDLED OFFSET THRESHOLD", pros::millis());
 		}
-		setDriveVel(0, 0, (dA * kP));
+    float velocity = dA * kP;
+    if (velocity > max_vel) velocity = max_vel;
+		setDriveVel(0, 0, velocity);
 		delay(2);
 	}
   log_ln(LOG_AUTO, "%d Turned to %f | FL: %f, BL: %f, FR: %f, BR %f", millis(), RAD_TO_DEG(getGlobalAngle()), drive_fl.get_position(), drive_bl.get_position(), drive_fr.get_position(), drive_br.get_position());
@@ -490,10 +492,10 @@ void turn_vel_side_simple(const AngleTarget& target, double kP, double offset, b
 	drive_brake();
 }
 
-void flatten_against_wall(bool f_w, bool hold) {
+void flatten_against_wall(bool f_w, bool hold, int hold_power) {
 	//pos.reset(0,0,0);
 	//int pow = 40;
-	int hold_pow = 15;
+	int hold_pow = hold_power;
 	if (f_w) {
 		//log_ln("%d FW Start", pros::millis());
 		setDrive(0,40, 0);

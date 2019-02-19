@@ -198,11 +198,9 @@ void pun_handle() {
 					pun_set(0);
 					pun_move(PUN_OFFSET + (pun_shots * PUN_TPR));
 
-					log_ln(LOG_PUNCHER, "%d Shot end Pos:%f. A:%f", millis(), puncherLeft.get_position(), RAD_TO_DEG(pos.a));
+					log_ln(LOG_PUNCHER, "%d Shot end Pos:%f. Angler At: %f A:%f", millis(), puncherLeft.get_position(), angler.get_position(), RAD_TO_DEG(pos.a));
 					//printf(" >>> %d ANGLE TARGET CREATE - PUN_PULL_BACK \n", pros::millis());
 
-					shot_pun_go = false;
-					auto_set_shot = false;
 					pun_state_change(PunState::Bolt_Wait);
 				}
 				else if(millis() > pun_state_change_time+800)
@@ -220,9 +218,10 @@ void pun_handle() {
 				if (millis() >= wait_slip_end) {
 					//pun_move(PUN_OFFSET + (pun_shots * PUN_TPR) + PUN_HOLD);
 					pun_set(127);
-					log_ln(LOG_PUNCHER, "%d Done shot wait move to %f T:%f", millis(), (PUN_OFFSET + (pun_shots * PUN_TPR) + PUN_HOLD), puncherLeft.get_target_position());
+					log_ln(LOG_PUNCHER, "%d Done shot wait move to %f T:%f, Angler at %f", millis(), (PUN_OFFSET + (pun_shots * PUN_TPR) + PUN_HOLD), puncherLeft.get_target_position(), angler.get_position());
 
-
+					shot_pun_go = false;
+					auto_set_shot = false;
 					pun_state_change(PunState::Loading);
 				}
 				break;

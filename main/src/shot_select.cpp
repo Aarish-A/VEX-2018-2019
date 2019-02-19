@@ -12,6 +12,9 @@ volatile ShotPos auto_SP (FieldPos_Front, 88, 0);
 volatile ShotPos pf_SP (FieldPos_PF, 90, 70);
 volatile ShotPos pf_back_SP (FieldPos_PF_Back_Red, 88, 0);
 volatile ShotPos back_SP (FieldPos_Back, 90, 10);
+volatile ShotPos skills_front_SP (FieldPos_Front, 112, 41);
+volatile ShotPos skills_corner_SP (FieldPos_Back, 130, 61);
+volatile ShotPos skills_back_SP (FieldPos_Back, 163, 67, 36);
 
 ShotSelect shot_req[2];
 bool angler_pu_flag = false;
