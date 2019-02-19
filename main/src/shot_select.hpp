@@ -50,8 +50,10 @@ struct ShotPos {
   FieldPos field_pos;
   int top;
   int mid;
+  int bot;
 
   ShotPos(FieldPos field_pos, int top, int mid) : field_pos(field_pos), top(top), mid(mid) {}
+  ShotPos(FieldPos field_pos, int top, int mid, int bot) : field_pos(field_pos), top(top), mid(mid), bot(bot) {}
 };
 
 extern volatile ShotPos front_SP;
@@ -59,6 +61,9 @@ extern volatile ShotPos pf_SP;
 extern volatile ShotPos auto_SP;
 extern volatile ShotPos pf_back_SP;
 extern volatile ShotPos back_SP;
+extern volatile ShotPos skills_front_SP;
+extern volatile ShotPos skills_corner_SP;
+extern volatile ShotPos skills_back_SP;
 
 struct ShotSelect {
   int angle_targ;

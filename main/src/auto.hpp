@@ -53,13 +53,13 @@ void move_drive_rel(double targ, int vel = 200, bool stop = true);
 void move_drive_rel_simple(double dis, int vel, bool stop = true);
 
 //void turnDrive(double targ, int vel);
-void turn_vel(const AngleTarget& target, double kP, double offset = 0, float drive_turn_handled_time = 0, short req_handled_num = 0);
+void turn_vel(const AngleTarget& target, double kP, double offset = 0, float drive_turn_handled_time = 0, short req_handled_num = 0,  double max_vel = 200);
 void turn_vel_fast(const AngleTarget& target, double kP, double offset = 0, double correct_amount = 0, bool correct_left = 0);
 void turn_vel_auto(const AngleTarget& target, double kP, double offset = 0, float drive_turn_handled_time = 0, double angler_target = 0);
 void turn_vel_side(const AngleTarget& target, double kP, double offset, bool f_w);
 void turn_vel_side_simple(const AngleTarget& target, double kP, double offset, bool f_w);
 
-void flatten_against_wall(bool f_w, bool hold);
+void flatten_against_wall(bool f_w, bool hold, int hold_power = 15);
 void flatten_angle(bool left, bool right, bool hold);
 
 double operator "" _tk(long double val);

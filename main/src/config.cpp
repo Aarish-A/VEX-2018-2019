@@ -15,6 +15,8 @@ pros::ADIEncoder enc_r(7, 8, false);
 pros::ADIEncoder enc_l(1, 2, false);
 pros::ADIEncoder enc_s(5, 6, true);
 pros::ADILineSensor ball_sensor(5);
+pros::ADILineSensor left_platform_sensor(6);
+pros::ADILineSensor right_platform_sensor(4);
 pros::Vision vision_sensor(6);
 
 Tracking pos(enc_l, enc_r, enc_s);

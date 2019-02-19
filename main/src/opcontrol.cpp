@@ -47,6 +47,7 @@ void opcontrol() {
 		}
 		pun_handle();
 		vision_handle();
+		printf("LSL: %d, LSR: %d\n", left_platform_sensor.get_value(), right_platform_sensor.get_value());
 		//printf("%d %d %d \n", pros::millis(), enc_l.get_value(), enc_r.get_value());
 		// printf("%d\n",autoPoti.get_value());
 		// printf("%d\n", autoPoti.get_value());
