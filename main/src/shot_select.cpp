@@ -186,9 +186,9 @@ void shot_req_make() {
 	RT_P = check_single_press(BTN_SHOT_R_T, true);
 	RM_P = check_single_press(BTN_SHOT_R_M, true);
 
-	if (check_single_press(BTN_FIELD_FRONT, true) || check_single_press(BTN_FIELD_FRONT)) set_field_pos(FieldPos_Front);
-	else if (check_single_press(BTN_FIELD_PF_BACK_RED, true)) set_field_pos(FieldPos_PF_Back_Red);
-	else if (check_single_press(BTN_FIELD_PF_BACK_BLUE, true)) set_field_pos(FieldPos_PF_Back_Blue);
+	if (check_single_press(BTN_FIELD_FRONT_P, true) || check_single_press(BTN_FIELD_FRONT_M)) set_field_pos(FieldPos_Front);
+	else if (check_single_press(BTN_FIELD_PF_BACK_RED_P, true)) set_field_pos(FieldPos_PF_Back_Red);
+	else if (check_single_press(BTN_FIELD_PF_BACK_BLUE_P, true)) set_field_pos(FieldPos_PF_Back_Blue);
 
 	if (check_single_press(BTN_SHOOT_CANCEL) || check_single_press(BTN_SHOOT_CANCEL, true)) {
 		cancel_shot_cleanup();
