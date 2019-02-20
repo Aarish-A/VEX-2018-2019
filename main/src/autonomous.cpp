@@ -997,6 +997,7 @@ void autonomous() {
   setDrive(0);
   */
 
+  /*
   resetGlobalAngle();
 
   double left_per = -1;
@@ -1036,9 +1037,10 @@ void autonomous() {
   printf("%f\n", RAD_TO_DEG(getGlobalAngle()));
 
   return;
+  */
 
-  game_side = 'B';
-  current_auto_routine = auto_routines::BACK_MID_FIRST;
+  game_side = 'R';
+  current_auto_routine = auto_routines::FRONT;
 
   if (game_side == 'R')
   {

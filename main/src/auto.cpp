@@ -398,50 +398,80 @@ void turn_vel_side(const AngleTarget& target, double kP, double offset, bool f_w
 		}
 	}
 	else {
-		while (fabs(dA) > 0.8_deg) {
-			dA = target.getTarget() - getGlobalAngle() + offset;
-			//log("%d Pos:%f DeltaA:%f Pow:%f \n", pros::millis(), RAD_TO_DEG(pos.a), RAD_TO_DEG(dA), kP*fabs(dA));
-      double full_pow = -50;//-kP*fabs(dA);
-      double frac_pow = (full_pow * 0.5)*127/200;
-      //printf("global angle: %f\n",RAD_TO_DEG(getGlobalAngle()));
-      //printf("target angle: %f\n",RAD_TO_DEG(target.getTarget()));
-      if (dA > 0) {
-        if (dA < 1.8_deg)
-        {
-          drive_br.move_absolute(ticks_targ,35);
-  				drive_fr.move_absolute(ticks_targ,35);
-  				drive_bl.move_relative(0,200);
-  				drive_fl.move_relative(0,200);
-        }
-        else
-        {
-  				drive_br.move_velocity(full_pow);
-  				drive_fr.move_velocity(full_pow);
-  				drive_bl.move(frac_pow);
-  				drive_fl.move(frac_pow);
-        }
-			} else {
-        if(dA>-1.8_deg)
-        {
-          drive_bl.move_absolute(ticks_targ,35);
-  				drive_fl.move_absolute(ticks_targ,35);
-  				drive_br.move_relative(0,200);
-  				drive_fr.move_relative(0,200);
-        }
-        else
-        {
-          drive_bl.move_velocity(full_pow);
-  				drive_fl.move_velocity(full_pow);
-  				drive_br.move(frac_pow);
-  				drive_fr.move(frac_pow);
-        }
-			}
-			delay(5);
-		}
-	}
+  if(dA<0)
+  {
+    double left_per = -1;
+    double right_per = -0.1;
+    double kP = 350;
+    double error;
+
+    do {
+      dA = target.getTarget() - getGlobalAngle() + offset;
+      error = fabs(dA);
+      double base_pow = error * kP + 10;
+      if (base_pow > 60) base_pow = 60;
+      int left_pow = round(base_pow * left_per);
+      int right_pow = round(base_pow * right_per);
+
+      drive_fl.move(left_pow);
+      drive_bl.move(left_pow);
+      drive_fr.move(right_pow);
+      drive_br.move(right_pow);
+
+      printf("%f %f\n", RAD_TO_DEG(error), base_pow);
+
+      delay(1);
+    } while (fabs(error) > 0.6_deg);
+
+    double left = -15 * left_per;
+    if (fabs(left) < 5) left = 5 * sgn(left);
+    double right = -15 * right_per;
+    if (fabs(right) < 5) right = 5 * sgn(right);
+    drive_fl.move(left);
+    drive_bl.move(left);
+    drive_fr.move(right);
+    drive_br.move(right);
+    delay(100);
+  }
+  else
+  {
+    double left_per = -0.1;
+    double right_per = -1;
+    double kP = 350;
+    double error;
+
+    do {
+      dA = target.getTarget() - getGlobalAngle() + offset;
+      error = fabs(dA);
+      double base_pow = error * kP + 10;
+      if (base_pow > 60) base_pow = 60;
+      int left_pow = round(base_pow * left_per);
+      int right_pow = round(base_pow * right_per);
+
+      drive_fl.move(left_pow);
+      drive_bl.move(left_pow);
+      drive_fr.move(right_pow);
+      drive_br.move(right_pow);
+
+      printf("%f %f\n", RAD_TO_DEG(error), base_pow);
+
+      delay(1);
+    } while (fabs(error) > 0.6_deg);
+
+    double left = -15 * left_per;
+    if (fabs(left) < 5) left = 5 * sgn(left);
+    double right = -15 * right_per;
+    if (fabs(right) < 5) right = 5 * sgn(right);
+    drive_fl.move(left);
+    drive_bl.move(left);
+    drive_fr.move(right);
+    drive_br.move(right);
+    delay(100);
+  }
   setDrive(0);
 	drive_brake();
   log_ln(LOG_AUTO, "%d Turned to %f in %d Vel:%f | FL: %f, BL: %f, FR: %f, BR %f", millis(), RAD_TO_DEG(getGlobalAngle()), millis()-t_start, pos.aVel, drive_fl.get_position(), drive_bl.get_position(), drive_fr.get_position(), drive_br.get_position());
+}
 
 }
 
