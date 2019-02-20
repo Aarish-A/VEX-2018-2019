@@ -42,16 +42,15 @@ void opcontrol() {
 		// printf("Right Tracking %d\n", enc_r.get_value());
 		// printf("Global angle: %f\n", RAD_TO_DEG(getGlobalAngle()));
 		update_buttons();
-		if (current_gui_tab == gui_tab_states::diagnostics_tab) {
+		gui_handle();
+		if (menu_screen == menu_screens::game_screen) {
 			shot_req_make();
-			drive_handle();
 			intake_handle();
 			angler_handle();
 			decapper_handle();
 			update_controller_lcd();
-		} else {
-			gui_handle();
 		}
+		drive_handle();
 		pun_handle();
 		vision_handle();
 
@@ -79,16 +78,7 @@ void opcontrol() {
 void update_controller_lcd() {
 	if (millis() - print_time > 60) {
 		print_time = millis();
-		std::string field_pos_s = "def";
-		FieldPos field_pos= shot_req[0].field_pos;
 
-		if (field_pos== FieldPos_Front) field_pos_s = "Fr ";
-		else if (field_pos== FieldPos_Back) field_pos_s = "Bck";
-		else if (field_pos== FieldPos_PF) field_pos_s = "PF ";
-		else if (field_pos== FieldPos_PF_Back_Red) field_pos_s = "PfR";
-		else if (field_pos== FieldPos_PF_Back_Blue) field_pos_s = "PfB";
-
-		std::string team_s = blue_team? "b" : "r";
 		//ctrler.print(2, 0, "%d %d%d%d%d%d%d      ", field_pos_s, team_s, (int)angler.get_temperature(), (int)puncherLeft.get_temperature(), (int)puncherRight.get_temperature(), (int)drive_fl.get_temperature(), (int)drive_fr.get_temperature(), (int)drive_bl.get_temperature(), (int)drive_br.get_temperature());
 		//ctrler.print(2, 0, "BD: %d   ", ball_sensor.get_value());
 		// eff_fl = drive_fl.get_efficiency();
@@ -101,8 +91,6 @@ void update_controller_lcd() {
 			*/
 
 		// ctrler.print(2, 0, "%d,%d,%d,%d", (int)drive_bl.get_temperature(), (int)drive_br.get_temperature(), (int)drive_fl.get_temperature(), (int)drive_fr.get_temperature());
-		if (partner_connected) partner.print(2, 0, "%c %s    ", game_side, field_pos_s);
-		else ctrler.print(2, 0, "%c %s    ", game_side, field_pos_s);
 		//ctrler.print(2, 0, "%s %s %d %d %d      ", field_pos_s, team_s, (int)intake.get_temperature(), (int)puncherLeft.get_temperature(), (int)puncherRight.get_temperature());
 		// ctrler.print(2, 0, "%d  ", (int)current_auto_routine);
 		//ctrler.print(2, 0, "a: %.1f       ", RAD_TO_DEG(getGlobalAngle()));
