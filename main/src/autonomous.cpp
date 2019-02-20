@@ -997,6 +997,46 @@ void autonomous() {
   setDrive(0);
   */
 
+  resetGlobalAngle();
+
+  double left_per = -1;
+  double right_per = -0.1;
+  double target = -20_deg;
+  double kP = 350;
+  double error;
+
+  do {
+    error = fabs(target - getGlobalAngle());
+    double base_pow = error * kP + 10;
+    if (base_pow > 60) base_pow = 60;
+    int left_pow = round(base_pow * left_per);
+    int right_pow = round(base_pow * right_per);
+
+    drive_fl.move(left_pow);
+    drive_bl.move(left_pow);
+    drive_fr.move(right_pow);
+    drive_br.move(right_pow);
+
+    printf("%f %f\n", RAD_TO_DEG(error), base_pow);
+
+    delay(1);
+  } while (fabs(error) > 0.6_deg);
+
+  double left = -15 * left_per;
+  if (fabs(left) < 5) left = 5 * sgn(left);
+  double right = -15 * right_per;
+  if (fabs(right) < 5) right = 5 * sgn(right);
+  drive_fl.move(left);
+  drive_bl.move(left);
+  drive_fr.move(right);
+  drive_br.move(right);
+  delay(100);
+  drive_set(0);
+  delay(1000);
+  printf("%f\n", RAD_TO_DEG(getGlobalAngle()));
+
+  return;
+
   game_side = 'B';
   current_auto_routine = auto_routines::BACK_MID_FIRST;
 
