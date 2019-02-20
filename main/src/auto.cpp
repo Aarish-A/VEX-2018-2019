@@ -23,7 +23,8 @@ void auto_update_stop_task() {
 	{
 		log_ln(LOG_SHOTS, "  >>> %d Stop Auto Update Task", pros::millis());
     pun_set(PUN_HOLD_PWR);
-		auto_update_task->remove();
+    if(auto_update_task->get_state() != pros::E_TASK_STATE_DELETED)
+      auto_update_task->remove();
 		delete auto_update_task;
 		auto_update_task = nullptr;
 	}

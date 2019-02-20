@@ -257,7 +257,8 @@ void shot_req_handle_stop_task() {
 	{
 		shot_task_running = false;
 		log_ln(LOG_SHOTS, "  >>> %d Stop Shot Req Handle Task", pros::millis());
-		shot_req_handle_task->remove();
+		if (shot_req_handle_task->get_state() != pros::E_TASK_STATE_DELETED)
+			shot_req_handle_task->remove();
 		delete shot_req_handle_task;
 		shot_req_handle_task = nullptr;
 	}
