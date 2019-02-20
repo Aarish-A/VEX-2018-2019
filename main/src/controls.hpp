@@ -48,6 +48,7 @@ constexpr int BTN_SHOT_R_M = GET_BTN_INDEX(pros::E_CONTROLLER_DIGITAL_R2);
 /* Decapper */
 extern int BTN_DECAPPER_UP;
 extern int BTN_DECAPPER_DOWN;
+extern int BTN_CHANGE_GAME_SIDE;
 
 /* Shooter */
 extern int BTN_FIELD_FRONT_M;

@@ -60,7 +60,7 @@ void set_angle_targ(bool top) {
       shot_req[shot_req_num-1].angle_targ = top? pf_back_SP.top : pf_back_SP.mid;
       break;
 		case FieldPos_PF_Back_Blue:
-	      shot_req[shot_req_num-1].angle_targ = top? pf_back_SP.top+18 : pf_back_SP.mid+18;
+	      shot_req[shot_req_num-1].angle_targ = top? pf_back_SP.top : pf_back_SP.mid;
 	      break;
   }
 	log_ln(LOG_SHOTS, "%d Set Angle Targ: %d at i:%d | front_SP t:%d m:%d | back_SP t:%d m:%d | pf_SP t:%d m:%d", pros::millis(), shot_req[shot_req_num-1].angle_targ, shot_req_num-1, front_SP.top, front_SP.mid, back_SP.top, back_SP.mid, pf_back_SP.top, pf_back_SP.mid);
@@ -81,7 +81,7 @@ void set_angle_targ_right(bool top) {
       break;
 
     case FieldPos_PF_Back_Red:
-      shot_req[shot_req_num-1].angle_targ = top? pf_back_SP.top+11 : pf_back_SP.mid+18;
+      shot_req[shot_req_num-1].angle_targ = top? pf_back_SP.top : pf_back_SP.mid;
       break;
 		case FieldPos_PF_Back_Blue:
 	      shot_req[shot_req_num-1].angle_targ = top? pf_back_SP.top : pf_back_SP.mid;
@@ -171,6 +171,7 @@ void set_shot_req(bool top, Dir turn_dir) {
 	inc_shot_req_num();
 	if(turn_dir == Dir_Right) set_angle_targ_right(top);
 	else set_angle_targ(top);
+	//set_angle_targ(top);
 	top ? log_ln(LOG_SHOTS, "TOP PRESSED") : log_ln(LOG_SHOTS, "MID PRESSED");
 	set_turn_dir(turn_dir);
 	set_handled_vars();
@@ -242,7 +243,6 @@ void shot_cleanup() {
 	angler_enabled = true;
 	shot_req_num = 0;
 	angler.move_absolute(ANGLER_PU_POS, 200);
-	set_field_pos(FieldPos_Front);
 	intake_state_set(IntakeState::Forw);
 }
 
@@ -279,7 +279,6 @@ void shot_req_handle(void *param) {
 	//shot_req_num = 0; //DELETE
 	if(shot_req_num > 0) {
 		ShotSelect tempShot = shot_req[0];
-		angler.move_absolute(tempShot.angle_targ, 200);
 		if (tempShot.field_pos == FieldPos_PF_Back_Red || tempShot.field_pos == FieldPos_PF_Back_Blue) {
 			drive_enabled = false;
 			angler_enabled = false;
@@ -293,6 +292,7 @@ void shot_req_handle(void *param) {
 			log_ln(LOG_SHOTS, "%d Done Back up PF (%f, %f, %f) Vel(%f, %f, %f)", pros::millis(), pos.x, pos.y, RAD_TO_DEG(pos.a), pos.velLocal.x, pos.velLocal.y, RAD_TO_DEG(pos.aVel));
 			turn_vel_side(PointAngleTarget({tempShot.flag_pos.x, tempShot.flag_pos.y}), (200/60_deg), 0, false);
 		}
+		angler.move_absolute(tempShot.angle_targ, 200);
 		log_ln(LOG_SHOTS, "%d Start Shot 1", pros::millis());
 		tempShot.angler_to = pros::millis() + ANGLER_REACH_T0;
 		while(fabs(angler.get_position() - tempShot.angle_targ) > 5 && pros::millis() < tempShot.angler_to) pros::delay(5);
@@ -305,15 +305,16 @@ void shot_req_handle(void *param) {
 		log_ln(LOG_SHOTS, "%d Started first shot: %d", pros::millis(), shot_req_num);
 		while(shot_pun_go) pros::delay(5);
 		log_ln(LOG_SHOTS, "%d Finished first shot: %d", pros::millis(), shot_req_num);
+		log_ln(LOG_SHOTS, "%d SHOT COMPLETED AT: %f, SUPPOSED TO BE AT %d", pros::millis(), angler.get_position(), tempShot.angle_targ);
 
 		if (shot_req_num > 1) {
 			ShotSelect tempShot = shot_req[1];
-			angler.move_absolute(tempShot.angle_targ, 200);
 			if (tempShot.field_pos == FieldPos_PF_Back_Blue || tempShot.field_pos == FieldPos_PF_Back_Red) {
 				log_ln(LOG_SHOTS, "%d S1 Turn to face %f, %f ", pros::millis(), tempShot.flag_pos.x, tempShot.flag_pos.y);
 				turn_vel(PointAngleTarget({tempShot.flag_pos.x, tempShot.flag_pos.y}), (200/80_deg), 0);
 			}
 			log_ln(LOG_SHOTS, "%d Start Shot 2", pros::millis());
+			angler.move_absolute(tempShot.angle_targ, 200);
 			tempShot.angler_to = pros::millis() + ANGLER_REACH_T0;
 			while(fabs(angler.get_position() - tempShot.angle_targ) > 5 && pros::millis() < tempShot.angler_to) pros::delay(5);
 			if (pros::millis() > tempShot.angler_to)
@@ -324,6 +325,7 @@ void shot_req_handle(void *param) {
 			shot_pun_go = true;
 			log_ln(LOG_SHOTS, "%d Started second shot: %d", pros::millis(), shot_req_num);
 			while(shot_pun_go) pros::delay(5);
+			log_ln(LOG_SHOTS, "%d SHOT COMPLETED AT: %f, SUPPOSED TO BE AT %d", pros::millis(), angler.get_position(), tempShot.angle_targ);
 			log_ln(LOG_SHOTS, "%d Finished second shot: %d", pros::millis(), shot_req_num);
 		}
 		shot_req_num = 0;
