@@ -47,13 +47,30 @@ void opcontrol() {
 		}
 		pun_handle();
 		vision_handle();
+
+
+		if (partner_connected && check_single_press(BTN_CHANGE_GAME_SIDE, true)) {
+			printf("SAVINGGGG");
+			if (game_side == 'R') game_side = 'B';
+			else if (game_side == 'B') game_side = 'R';
+			FILE* log = NULL;
+		  log = fopen("/usd/game_side.txt", "w");
+		  if (log == NULL) {
+		    printf("Couldn't create game side file\n");
+		  } else {
+		    fprintf(log, "%c", game_side);
+		    partner.rumble("..");
+		    fclose(log);
+		  }
+		}
+
 		loop_counter++;
 		delay(10);
 	}
 }
 
 void update_controller_lcd() {
-	if (millis() - print_time > 30) {
+	if (millis() - print_time > 60) {
 		print_time = millis();
 		std::string field_pos_s = "def";
 		FieldPos field_pos= shot_req[0].field_pos;
