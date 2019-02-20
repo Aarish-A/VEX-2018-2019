@@ -7,7 +7,7 @@ int update_line = 0;
 uint32_t update_time = 0;
 
 menu_shot_positions menu_shot_position = front_top;
-int shot_positions[num_shot_positions];
+int shot_positions[num_shot_positions] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
 const char* menu_shot_strings[num_shot_positions] = {"FrontTop", "FrontMid", "BackTop", "BackMid", "AutoTop", "AutoMid", "SkillFrTop", "SkillFrMid",
                                      "SkillCorTop", "SkillCorMid", "SkillBackTop", "SkillBackMid", "SkillsBackBot" };
 
@@ -27,43 +27,53 @@ void gui_init() {
 }
 
 void gui_handle() {
-  if (pros::millis() > update_time) {
+  if (pros::millis() >= update_time) {
     partner.print(update_line, 0, partner_screen_lines[update_line]);
+    printf("%d Screen is on: %d\n", pros::millis(), (int)menu_screen);
     update_time = pros::millis() + UPDATE_INTERVAL;
     if (update_line < 2) update_line++;
     else update_line = 0;
 
     // Update Line 0
     strcpy(partner_screen_lines[0], menu_screen_titles[(int)menu_screen]);
+    printf("%d shotpos: %d\n", pros::millis(), (int)menu_shot_position);
 
     // Update Line 2
-    std::string field_pos_s = "default";
-    FieldPos field_pos= shot_req[0].field_pos;
-    if (field_pos== FieldPos_Front) field_pos_s = "Fr ";
-    else if (field_pos== FieldPos_Back) field_pos_s = "Bck";
-    else if (field_pos== FieldPos_PF) field_pos_s = "PF ";
-    else if (field_pos== FieldPos_PF_Back_Red) field_pos_s = "PfR";
-    else if (field_pos== FieldPos_PF_Back_Blue) field_pos_s = "PfB";
-    std::string team_s = blue_team ? "B" : "R";
-    sprintf(partner_screen_lines[2], "%c %s", game_side, field_pos_s.c_str());
+
   }
 
   switch(menu_screen) {
-    case menu_screens::game_screen:
+    case menu_screens::game_screen: {
       if (check_single_press(BTN_ENTER_SHOT_TUNING, true)) {
+        printf("got here\n");
         menu_screen = menu_screens::shot_tuning;
         strcpy(partner_screen_lines[0], menu_screen_titles[(int)menu_screen]);
+        strcpy(partner_screen_lines[1], menu_shot_strings[(int)menu_shot_position]);
+        char num[10];
+        sprintf(num, "  %d", shot_positions[(int)menu_shot_position]);
+        strcpy(partner_screen_lines[2], num);
       }
-      break;
 
-    case menu_screens::shot_tuning:
+      std::string field_pos_s = "default";
+      FieldPos field_pos= shot_req[0].field_pos;
+      if (field_pos== FieldPos_Front) field_pos_s = "Fr ";
+      else if (field_pos== FieldPos_Back) field_pos_s = "Bck";
+      else if (field_pos== FieldPos_PF) field_pos_s = "PF ";
+      else if (field_pos== FieldPos_PF_Back_Red) field_pos_s = "PfR";
+      else if (field_pos== FieldPos_PF_Back_Blue) field_pos_s = "PfB";
+      std::string team_s = blue_team ? "B" : "R";
+      sprintf(partner_screen_lines[2], "%c %s", game_side, field_pos_s.c_str());
+      break;
+    }
+
+    case menu_screens::shot_tuning: {
       if (check_single_press(BTN_PREVIOUS_SHOT_SLIDER, true) && menu_shot_position != front_top) {
         int temp = (int)menu_shot_position;
         temp--;
         menu_shot_position = (menu_shot_positions)temp;
         strcpy(partner_screen_lines[1], menu_shot_strings[(int)menu_shot_position]);
       }
-      else if (check_single_press(BTN_PREVIOUS_SHOT_SLIDER, true) && menu_shot_position != skills_back_bot) {
+      else if (check_single_press(BTN_NEXT_SHOT_SLIDER, true) && menu_shot_position != skills_back_bot) {
         int temp = (int)menu_shot_position;
         temp++;
         menu_shot_position = (menu_shot_positions)temp;
@@ -93,7 +103,7 @@ void gui_handle() {
         strcpy(partner_screen_lines[0], menu_screen_titles[(int)menu_screen]);
       }
       break;
-
+    }
     case menu_screens::number_of_menu_screens:
       break;
   }
