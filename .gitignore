@@ -3,3 +3,4 @@
 **/*.bin
 **/*.elf
 main/compile_commands.json
+main/temp.log
