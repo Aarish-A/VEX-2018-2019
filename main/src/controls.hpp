@@ -17,7 +17,6 @@ E_CONTROLLER_DIGITAL_L1 = 6 -- btn = 0
   */
 
 constexpr int GET_BTN_INDEX(pros::controller_digital_e_t btn) { return (btn - pros::E_CONTROLLER_DIGITAL_L1); }
-
 void controls_init();
 extern bool partner_connected;
 
@@ -64,5 +63,4 @@ constexpr int BTN_PREVIOUS_SHOT_SLIDER = GET_BTN_INDEX(pros::E_CONTROLLER_DIGITA
 constexpr int BTN_NEXT_SHOT_SLIDER = GET_BTN_INDEX(pros::E_CONTROLLER_DIGITAL_DOWN); //5
 constexpr int BTN_SAVE_SHOT_POSITIONS = GET_BTN_INDEX(pros::E_CONTROLLER_DIGITAL_A);
 constexpr int BTN_TEST_SHOT_POSITION = GET_BTN_INDEX(pros::E_CONTROLLER_DIGITAL_R1); //2
-constexpr int BTN_ENTER_SHOT_TUNING = GET_BTN_INDEX(pros::E_CONTROLLER_DIGITAL_A);
-constexpr int BTN_EXIT_SHOT_TUNING = GET_BTN_INDEX(pros::E_CONTROLLER_DIGITAL_L1);
+constexpr int BTN_EXIT_GUI = GET_BTN_INDEX(pros::E_CONTROLLER_DIGITAL_L1);

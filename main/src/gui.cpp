@@ -1,142 +1,554 @@
 #include "gui.hpp"
 
-menu_screens menu_screen = menu_screens::game_screen;
-const char* menu_screen_titles[num_menu_screens] = {"Game Screen", "Shot Tuning"};
-char partner_screen_lines[3][16] = {"               ", "               ", "               "};
-int update_line = 0;
-uint32_t update_time = 0;
+// Main Screen
+lv_obj_t* screen;
+lv_obj_t* menu;
 
-menu_shot_positions menu_shot_position = front_top;
-int shot_positions[num_shot_positions];
-const char* menu_shot_strings[num_shot_positions] = {"FrontTop", "FrontMid", "BackTop", "BackMid", "AutoTop", "AutoMid", "SkillFrTop", "SkillFrMid",
-                                     "SkillCorTop", "SkillCorMid", "SkillBackTop", "SkillBackMid", "SkillsBackBot" };
+// Tabs
+lv_obj_t* diagnostics_tab;
+lv_obj_t* shot_tuning_tab;
+lv_obj_t* auto_select_tab;
+lv_obj_t* shot_test_tab;
+gui_tab_states current_gui_tab = gui_tab_states::diagnostics_tab;
+
+// Diagnostics Tab
+lv_obj_t* diagnostics_tab_title;
+lv_obj_t* battery_bar;
+lv_obj_t* battery_bar_text;
+char battery_bar_string[4];
+
+// Shot Tuning Tab
+lv_obj_t* shot_tuning_title;
+lv_obj_t* shot_slider[6];
+lv_obj_t* shot_slider_text[6];
+lv_obj_t* shot_slider_label[6];
+int shot_slider_value[] = { 0, 0, 0, 0, 0, 0};
+lv_obj_t* shot_tuning_save_button;
+lv_obj_t* shot_tuning_save_button_label;
+int selected_shot_slider = 0;
+
+// Diagnostics Tab
+lv_obj_t* auto_select_tab_title;
+lv_obj_t* red_side_button;
+lv_obj_t* red_side_button_label;
+lv_obj_t* blue_side_button;
+lv_obj_t* blue_side_button_label;
+
+// Shot Testing Tab
+lv_obj_t* shot_testing_title;
+lv_obj_t* top_flag_auto_shot;
+lv_obj_t* top_flag_auto_shot_label;
+lv_obj_t* mid_flag_auto_shot;
+lv_obj_t* mid_flag_auto_shot_label;
+lv_obj_t* mid_flag_turn_shot;
+lv_obj_t* mid_flag_turn_shot_label;
+lv_obj_t* top_flag_turn_shot;
+lv_obj_t* top_flag_turn_shot_label;
 
 
+lv_obj_t* auto_buttons[8];
+lv_obj_t* auto_buttons_label[8];
+std::string auto_routines[8] = {
+  "FRONT",
+  "FRONT PARK",
+  "BACK MID FIRST",
+  "BACK FAR FIRST",
+  "UNUSED4",
+  "UNUSED5",
+  "UNUSED6",
+  "UNUSED7"
+};
 
 void gui_init() {
-  if (partner_connected) {
-    partner.print(0, 0, "               ");
-    pros::delay(60);
-    partner.print(1, 0, "               ");
-    pros::delay(60);
-    partner.print(2, 0, "               ");
+  printf("Log Program done\n");
+  // pros::delay(50);
+  int read_return = 0;
+  int temp = 0;
+  for(int i = 0; i < 6; i++) {
+    FILE* log = NULL;
+    printf("file pointer\n");
+    if (i == 0) {
+      log = fopen("/usd/back_mid_shot_position.txt", "r");
+      if(log != NULL) read_return = fscanf(log, "%d", &temp);
+      if (read_return == 1)
+      {
+          pf_back_SP.mid = temp;
+          log_ln(LOG_IO, "%d pf_back_SP.mid var set (init) | Read_Return: %d | Temp: %d | pf_back_SP.mid: %d", pros::millis(), read_return, temp, pf_back_SP.mid);
+      }
+      else log_ln(LOG_IO, "%d pf_back_SP.mid var set failed (init) | Read_Return: %d | Temp: %d | pf_back_SP.mid: %d", pros::millis(), read_return, temp, pf_back_SP.mid);
+
+    } else if (i == 1) {
+      log = fopen("/usd/back_top_shot_position.txt", "r");
+      if(log != NULL) read_return = fscanf(log, "%d", &temp);
+      if (read_return == 1)
+      {
+          pf_back_SP.top = temp;
+          log_ln(LOG_IO, "%d pf_back_SP.top var set (init) | Read_Return: %d | Temp: %d | pf_back_SP.top: %d", pros::millis(), read_return, temp, pf_back_SP.top);
+      }
+      else log_ln(LOG_IO, "%d pf_back_SP.top var set failed (init) | Read_Return: %d | Temp: %d | pf_back_SP.top: %d", pros::millis(), read_return, temp, pf_back_SP.top);
+    } else if (i == 2) {
+      log = fopen("/usd/front_mid_shot_position.txt", "r");
+      if(log != NULL) read_return = fscanf(log, "%d", &temp);
+      if (read_return == 1)
+      {
+          front_SP.mid = temp;
+          log_ln(LOG_IO, "%d front_SP.mid var set (init) | Read_Return: %d | Temp: %d | front_SP.mid: %d", pros::millis(), read_return, temp, front_SP.mid);
+      }
+      else log_ln(LOG_IO, "%d front_SP.mid var set failed (init) | Read_Return: %d | Temp: %d | front_SP.mid: %d", pros::millis(), read_return, temp, front_SP.mid);
+    } else if (i == 3) {
+      log = fopen("/usd/front_top_shot_position.txt", "r");
+      if(log != NULL) read_return = fscanf(log, "%d", &temp);
+      if (read_return == 1)
+      {
+          front_SP.top = temp;
+          log_ln(LOG_IO, "%d front_SP.top var set (init) | Read_Return: %d | Temp: %d | front_SP.top: %d", pros::millis(), read_return, temp, front_SP.top);
+      }
+      else log_ln(LOG_IO, "%d front_SP.top var set failed (init) | Read_Return: %d | Temp: %d | front_SP.top: %d", pros::millis(), read_return, temp, front_SP.top);
+    } else if (i == 4) {
+      log = fopen("/usd/front_top_auto_position.txt", "r");
+      if(log != NULL) read_return = fscanf(log, "%d", &temp);
+      if (read_return == 1)
+      {
+          auto_SP.top = temp;
+          log_ln(LOG_IO, "%d auto_SP.top var set (init) | Read_Return: %d | Temp: %d | auto_SP.top: %d", pros::millis(), read_return, temp, auto_SP.top);
+      }
+      else log_ln(LOG_IO, "%d auto_SP.top var set failed (init) | Read_Return: %d | Temp: %d | auto_SP.top: %d", pros::millis(), read_return, temp, auto_SP.top);
+    } else if (i == 5) {
+      log = fopen("/usd/front_mid_auto_position.txt", "r");
+      if(log != NULL) read_return = fscanf(log, "%d", &temp);
+      if (read_return == 1)
+      {
+          auto_SP.mid = temp;
+          log_ln(LOG_IO, "%d auto_SP.mid var set (init) | Read_Return: %d | Temp: %d | auto_SP.mid: %d", pros::millis(), read_return, temp, auto_SP.mid);
+      }
+      else log_ln(LOG_IO, "%d auto_SP.mid var set failed (init) | Read_Return: %d | Temp: %d | auto_SP.mid: %d", pros::millis(), read_return, temp, auto_SP.mid);
+    }
+
+  //   printf("for loop exited");
+  //   pros::delay(50);
+    if (log == NULL) {
+      printf("Failed to read shot positions file %d\n", i);
+    } else {
+      printf("Created shot positions file! %d", i);
+    }
+    pros::delay(50);
+    printf("%d\n", shot_slider_value[i]);
+    fclose(log);
   }
 
-  read_shot_positions_from_file();
-  update_time = pros::millis();
+  //
+  // // Main Screen
+  screen = lv_obj_create(NULL, NULL);
+  lv_scr_load(screen);
+	menu = lv_tabview_create(lv_scr_act(), NULL);
+  lv_tabview_set_sliding(menu, false);
+  lv_tabview_set_tab_load_action(menu, tab_switch_callback);
+
+  // Tabs
+	diagnostics_tab = lv_tabview_add_tab(menu, "Diagnostics");
+	shot_tuning_tab = lv_tabview_add_tab(menu, "Shot Tuning");
+	auto_select_tab = lv_tabview_add_tab(menu, "Auto Select");
+  shot_test_tab = lv_tabview_add_tab(menu, "Test Shots");
+
+	// // Diagnostics Tab
+	diagnostics_tab_title = lv_label_create(diagnostics_tab, NULL);
+	lv_label_set_text(diagnostics_tab_title, "Diagnostics");
+	lv_obj_align(diagnostics_tab_title, NULL, LV_ALIGN_IN_TOP_MID, 0, 5);
+
+	// battery_bar_text = lv_bar_create(diagnostics_tab, NULL);
+	// lv_obj_set_size(battery_bar, 200, 30);
+	// lv_bar_set_value(battery_bar, pros::battery::get_capacity());
+	// lv_obj_align(battery_bar, diagnostics_tab_title, LV_ALIGN_OUT_BOTTOM_MID, -120, 10);
+	// battery_bar_text = lv_label_create(diagnostics_tab, NULL);
+	// lv_obj_align(battery_bar_text, battery_bar, LV_ALIGN_OUT_RIGHT_MID, 5, 0);
+  // sprintf(battery_bar_string, "%.1f p/c", pros::battery::get_capacity());
+  // lv_label_set_text(battery_bar_text, battery_bar_string);
+
+  // Shot Testing Tab
+  shot_testing_title = lv_label_create(shot_test_tab, NULL);
+	lv_label_set_text(shot_testing_title, "Shot Testing");
+	lv_obj_align(shot_testing_title, NULL, LV_ALIGN_IN_TOP_MID, 0, 5);
+
+  top_flag_auto_shot = lv_btn_create(shot_test_tab, NULL);
+  lv_obj_set_free_num(top_flag_auto_shot, 1);
+  lv_btn_set_action(top_flag_auto_shot, LV_BTN_ACTION_LONG_PR, shot_test_top_auto_action);
+  lv_obj_align(top_flag_auto_shot, NULL, LV_ALIGN_OUT_BOTTOM_MID, -20, 15);
+  lv_obj_set_width(top_flag_auto_shot, 250);
+  top_flag_auto_shot_label = lv_label_create(top_flag_auto_shot, NULL);
+  lv_label_set_text(top_flag_auto_shot_label, "Top Auto");
+
+  mid_flag_auto_shot = lv_btn_create(shot_test_tab, NULL);
+  lv_obj_set_free_num(mid_flag_auto_shot, 1);
+  lv_btn_set_action(mid_flag_auto_shot, LV_BTN_ACTION_LONG_PR, shot_test_mid_auto_action);
+  lv_obj_align(mid_flag_auto_shot, top_flag_auto_shot, LV_ALIGN_OUT_BOTTOM_MID, 0, 15);
+  lv_obj_set_width(mid_flag_auto_shot, 250);
+  mid_flag_auto_shot_label = lv_label_create(mid_flag_auto_shot, NULL);
+  lv_label_set_text(mid_flag_auto_shot_label, "Mid Auto");
+
+  mid_flag_turn_shot = lv_btn_create(shot_test_tab, NULL);
+  lv_obj_set_free_num(mid_flag_turn_shot, 1);
+  lv_btn_set_action(mid_flag_turn_shot, LV_BTN_ACTION_LONG_PR, shot_test_mid_turn_action);
+  lv_obj_align(mid_flag_turn_shot, mid_flag_auto_shot, LV_ALIGN_OUT_BOTTOM_MID, 0, 15);
+  lv_obj_set_width(mid_flag_turn_shot, 250);
+  mid_flag_turn_shot_label = lv_label_create(mid_flag_turn_shot, NULL);
+  lv_label_set_text(mid_flag_turn_shot_label, "Mid Turn");
+
+  top_flag_turn_shot = lv_btn_create(shot_test_tab, NULL);
+  lv_obj_set_free_num(top_flag_turn_shot, 1);
+  lv_btn_set_action(top_flag_turn_shot, LV_BTN_ACTION_LONG_PR, shot_test_top_turn_action);
+  lv_obj_align(top_flag_turn_shot, mid_flag_turn_shot, LV_ALIGN_OUT_BOTTOM_MID, 0, 15);
+  lv_obj_set_width(top_flag_turn_shot, 250);
+  top_flag_turn_shot_label = lv_label_create(top_flag_turn_shot, NULL);
+  lv_label_set_text(top_flag_turn_shot_label, "Top Turn");
+
+	// Shot Tuning Tab
+	shot_tuning_title = lv_label_create(shot_tuning_tab, NULL);
+	lv_label_set_text(shot_tuning_title, "Shot Tuning");
+	lv_obj_align(shot_tuning_title, NULL, LV_ALIGN_IN_TOP_MID, 0, 5);
+
+  for(int i = 0; i < 6; i++) {
+    shot_slider[i] = lv_slider_create(shot_tuning_tab, NULL);
+    lv_obj_set_size(shot_slider[i], 300, 30);
+    lv_slider_set_range(shot_slider[i], 0, 250);
+    lv_slider_set_action(shot_slider[i], shot_tuning_slider_action);
+    if (i == 0) lv_obj_align(shot_slider[i], shot_tuning_title, LV_ALIGN_OUT_BOTTOM_MID, 5, 10);
+    else lv_obj_align(shot_slider[i], shot_slider[i - 1], LV_ALIGN_OUT_BOTTOM_RIGHT, 0, 10);
+
+    shot_slider_label[i] = lv_label_create(shot_tuning_tab, NULL);
+    lv_obj_align(shot_slider_label[i], shot_slider[i], LV_ALIGN_OUT_LEFT_MID, -35, 0);
+
+    if (i == 0) {
+      lv_label_set_text(shot_slider_label[i], "Back Mid");
+      lv_bar_set_value(shot_slider[i], pf_back_SP.mid);
+    } else if (i == 1) {
+      lv_label_set_text(shot_slider_label[i], "Back Top");
+      lv_bar_set_value(shot_slider[i], pf_back_SP.top);
+    } else if (i == 2) {
+      lv_label_set_text(shot_slider_label[i], "Front Mid");
+      lv_bar_set_value(shot_slider[i], front_SP.mid);
+    } else if (i == 3) {
+      lv_label_set_text(shot_slider_label[i], "Front Top");
+      lv_bar_set_value(shot_slider[i], front_SP.top);
+    } else if (i == 4) {
+      lv_label_set_text(shot_slider_label[i], "Auto Top");
+      lv_bar_set_value(shot_slider[i], auto_SP.top);
+    } else if (i == 5) {
+      lv_label_set_text(shot_slider_label[i], "Auto Mid");
+      lv_bar_set_value(shot_slider[i], auto_SP.mid);
+    }
+
+    shot_slider_text[i] = lv_label_create(shot_tuning_tab, NULL);
+    lv_obj_align(shot_slider_text[i], shot_slider[i], LV_ALIGN_OUT_RIGHT_MID, 5, 0);
+
+    char shot_slider_string[3];
+    sprintf(shot_slider_string, "%d", lv_slider_get_value(shot_slider[i]));
+  	lv_label_set_text(shot_slider_text[i], shot_slider_string);
+  }
+
+  shot_tuning_save_button = lv_btn_create(shot_tuning_tab, NULL);
+  lv_obj_set_free_num(shot_tuning_save_button, 1);
+  lv_btn_set_action(shot_tuning_save_button, LV_BTN_ACTION_LONG_PR, shot_tuning_save_button_action);
+  lv_obj_align(shot_tuning_save_button, shot_slider[3], LV_ALIGN_OUT_BOTTOM_MID, -20, 100);
+  lv_obj_set_width(shot_tuning_save_button, 250);
+  shot_tuning_save_button_label = lv_label_create(shot_tuning_save_button, NULL);
+  lv_label_set_text(shot_tuning_save_button_label, "Save?");
+
+  // Auto Tab
+  auto_select_tab_title = lv_label_create(auto_select_tab, NULL);
+  lv_label_set_text(auto_select_tab_title, "Auto Select");
+  lv_obj_align(auto_select_tab_title, NULL, LV_ALIGN_IN_TOP_MID, 0, 5);
+
+  red_side_button = lv_btn_create(auto_select_tab, NULL);
+  lv_obj_set_free_num(red_side_button, 1);
+  lv_btn_set_action(red_side_button, LV_BTN_ACTION_LONG_PR, red_side_button_action);
+  lv_obj_set_width(red_side_button, 200);
+  lv_obj_align(red_side_button, auto_select_tab_title, LV_ALIGN_OUT_BOTTOM_MID, -100, 10);
+  lv_obj_t* red_side_button_label = lv_label_create(red_side_button, NULL);
+  lv_label_set_text(red_side_button_label, "Red");
+
+
+  blue_side_button = lv_btn_create(auto_select_tab, NULL);
+  lv_obj_set_free_num(blue_side_button, 1);
+  lv_btn_set_action(blue_side_button, LV_BTN_ACTION_LONG_PR, blue_side_button_action);
+  lv_obj_set_width(blue_side_button, 200);
+  lv_obj_align(blue_side_button, auto_select_tab_title, LV_ALIGN_OUT_BOTTOM_MID, 100, 10);
+  blue_side_button_label = lv_label_create(blue_side_button, NULL);
+  lv_label_set_text(blue_side_button_label, "Blue");
+
+  int heightOffset = 120;
+  for (int i = 0; i < static_cast<int>(auto_routines::K_AUTO_ROUTINE_NUM); i++) {
+    auto_buttons[i] = lv_btn_create(auto_select_tab, NULL);
+    lv_obj_set_free_num(auto_buttons[i], 1);
+    if (i == (int)auto_routines::FRONT) lv_btn_set_action(auto_buttons[i], LV_BTN_ACTION_LONG_PR, auto_button_action_front);
+    else if (i == (int)auto_routines::FRONT_PARK) lv_btn_set_action(auto_buttons[i], LV_BTN_ACTION_LONG_PR, auto_button_action_front_park);
+    else if (i == (int)auto_routines::BACK_MID_FIRST) lv_btn_set_action(auto_buttons[i], LV_BTN_ACTION_LONG_PR, auto_button_action_back_mid_first);
+    else if (i == (int)auto_routines::BACK_FAR_FIRST) lv_btn_set_action(auto_buttons[i], LV_BTN_ACTION_LONG_PR, auto_button_action_back_far_first);
+    // lv_obj_set_width(auto_buttons[i], 200);
+    lv_obj_set_size(auto_buttons[i], 200, 50);
+    if (((i + 1) % 2) == 0) heightOffset += 80;
+    lv_obj_align(auto_buttons[i], auto_select_tab_title, LV_ALIGN_OUT_BOTTOM_MID, (((i + 1) % 2) == 1 ? -100 : 100), heightOffset);
+    auto_buttons_label[i] = lv_label_create(auto_buttons[i], NULL);
+    std::string str = auto_routines[i];
+    const char* cstr = str.c_str();;
+    lv_label_set_text(auto_buttons_label[i], cstr);
+  }
 }
 
 void gui_handle() {
-  if (pros::millis() > update_time) {
-    partner.print(update_line, 0, partner_screen_lines[update_line]);
-    update_time = pros::millis() + UPDATE_INTERVAL;
-    if (update_line < 2) update_line++;
-    else update_line = 0;
+  if (current_gui_tab == gui_tab_states::shot_tuning_tab) {
+    std::string slider = "";
+    if (selected_shot_slider == 0) slider = "BackMid";
+    else if (selected_shot_slider == 1) slider = "BackTop";
+    else if (selected_shot_slider == 2) slider = "FrontMid";
+    else if (selected_shot_slider == 3) slider = "FrontTop";
+    else if (selected_shot_slider == 4) slider = "AutoTop";
+    else if (selected_shot_slider == 5) slider = "AutoMid";
+    ctrler.print(2, 0, "%s at %d  ", slider, lv_slider_get_value(shot_slider[selected_shot_slider]));
 
-    // Update Line 0
-    strcpy(partner_screen_lines[0], menu_screen_titles[(int)menu_screen]);
-
-    // Update Line 2
-    std::string field_pos_s = "default";
-    FieldPos field_pos= shot_req[0].field_pos;
-    if (field_pos== FieldPos_Front) field_pos_s = "Fr ";
-    else if (field_pos== FieldPos_Back) field_pos_s = "Bck";
-    else if (field_pos== FieldPos_PF) field_pos_s = "PF ";
-    else if (field_pos== FieldPos_PF_Back_Red) field_pos_s = "PfR";
-    else if (field_pos== FieldPos_PF_Back_Blue) field_pos_s = "PfB";
-    std::string team_s = blue_team ? "B" : "R";
-    sprintf(partner_screen_lines[2], "%c %s", game_side, field_pos_s.c_str());
-  }
-
-  switch(menu_screen) {
-    case menu_screens::game_screen:
-      if (check_single_press(BTN_ENTER_SHOT_TUNING, true)) {
-        menu_screen = menu_screens::shot_tuning;
-        strcpy(partner_screen_lines[0], menu_screen_titles[(int)menu_screen]);
-      }
-      break;
-
-    case menu_screens::shot_tuning:
-      if (check_single_press(BTN_PREVIOUS_SHOT_SLIDER, true) && menu_shot_position != front_top) {
-        int temp = (int)menu_shot_position;
-        temp--;
-        menu_shot_position = (menu_shot_positions)temp;
-        strcpy(partner_screen_lines[1], menu_shot_strings[(int)menu_shot_position]);
-      }
-      else if (check_single_press(BTN_PREVIOUS_SHOT_SLIDER, true) && menu_shot_position != skills_back_bot) {
-        int temp = (int)menu_shot_position;
-        temp++;
-        menu_shot_position = (menu_shot_positions)temp;
-        strcpy(partner_screen_lines[1], menu_shot_strings[(int)menu_shot_position]);
-      }
-
-      if (check_single_press(BTN_INCREMENT_SHOT_SLIDER, true)) {
-        char num[10];
-        shot_positions[(int)menu_shot_position] += 5;
-        sprintf(num, "%d", shot_positions[(int)menu_shot_position]);
-        strcpy(partner_screen_lines[2], num);
-      } else if (check_single_press(BTN_DECREMENT_SHOT_SLIDER, true)) {
-        char num[10];
-        shot_positions[(int)menu_shot_position] -= 5;
-        sprintf(num, "%d", shot_positions[(int)menu_shot_position]);
-        strcpy(partner_screen_lines[2], num);
-      }
-
-      if (check_single_press(BTN_TEST_SHOT_POSITION, true)) {
-        pros::delay(1000);
-        auto_set_first_shot(shot_positions[(int)menu_shot_position]);
-        write_shot_positions_to_file();
-      }
-
-      if (check_single_press(BTN_EXIT_SHOT_TUNING, true)) {
-        menu_screen = menu_screens::game_screen;
-        strcpy(partner_screen_lines[0], menu_screen_titles[(int)menu_screen]);
-      }
-      break;
-
-    case menu_screens::number_of_menu_screens:
-      break;
+    if (check_single_press(BTN_NEXT_SHOT_SLIDER) && selected_shot_slider < 5) selected_shot_slider++;
+    else if (check_single_press(BTN_PREVIOUS_SHOT_SLIDER) && selected_shot_slider > 0) selected_shot_slider--;
+    else if (check_single_press(BTN_INCREMENT_SHOT_SLIDER)) {
+      lv_bar_set_value(shot_slider[selected_shot_slider], lv_slider_get_value(shot_slider[selected_shot_slider]) + 2);
+      char shot_slider_string[4];
+      sprintf(shot_slider_string, "%d", lv_slider_get_value(shot_slider[selected_shot_slider]));
+      lv_label_set_text(shot_slider_text[selected_shot_slider], shot_slider_string);
+    } else if (check_single_press(BTN_DECREMENT_SHOT_SLIDER)) {
+      lv_bar_set_value(shot_slider[selected_shot_slider], lv_slider_get_value(shot_slider[selected_shot_slider]) - 2);
+      char shot_slider_string[4];
+      sprintf(shot_slider_string, "%d", lv_slider_get_value(shot_slider[selected_shot_slider]));
+      lv_label_set_text(shot_slider_text[selected_shot_slider], shot_slider_string);
+    }
+    else if (check_single_press(BTN_TEST_SHOT_POSITION)) {
+      shot_tuning_save();
+      pros::delay(1000);
+      if (selected_shot_slider == 0) auto_set_first_shot(pf_back_SP.mid);
+      else if (selected_shot_slider == 1) auto_set_first_shot(pf_back_SP.top);
+      else if (selected_shot_slider == 2) auto_set_first_shot(front_SP.mid);
+      else if (selected_shot_slider == 3) auto_set_first_shot(front_SP.top);
+      else if (selected_shot_slider == 4) auto_set_first_shot(auto_SP.top);
+      else if (selected_shot_slider == 5) auto_set_first_shot(auto_SP.mid);
+    } else if (check_single_press(BTN_EXIT_GUI)) current_gui_tab = gui_tab_states::diagnostics_tab;
   }
 }
 
-void read_shot_positions_from_file() {
-  FILE* shot_positions_file = NULL;
-  shot_positions_file = fopen("/usd/shot_positions.txt", "r");
-  if (shot_positions_file != NULL) {
-    for(int i = 0; i < num_shot_positions; i++) {
-      char line[30];
-      fgets(line, 30, shot_positions_file);
-      int temp = atoi(line);
-      switch(i) {
-        case 0: front_SP.top = temp; break;
-        case 1: front_SP.mid = temp; break;
-        case 2: pf_SP.top = temp; break;
-        case 3: pf_SP.mid = temp; break;
-        case 4: auto_SP.top = temp; break;
-        case 5: auto_SP.mid = temp; break;
-        case 6: skills_front_SP.top = temp; break;
-        case 7: skills_front_SP.mid = temp; break;
-        case 8: skills_corner_SP.top = temp; break;
-        case 9: skills_corner_SP.mid = temp; break;
-        case 10: skills_back_SP.top = temp; break;
-        case 11: skills_back_SP.mid = temp; break;
-        case 12: skills_back_SP.bot = temp; break;
-      }
-      log_ln(LOG_SHOTS, "%d Sucessfully read %s shot position file, position is %d", pros::millis(), menu_shot_strings[i], temp);
-    }
-  } else log_ln(LOG_SHOTS, "%d Could not read from shot positions files...", pros::millis());
+lv_res_t auto_button_action_front(lv_obj_t* button) {
+  FILE* log = NULL;
+  while ((log = fopen("/usd/auto_routine.txt", "w")) == NULL) {
+    pros::delay(2);
+    printf("yeyee");
+  }
+  if (log == NULL) {
+    printf("Couldn't create auton routine file\n");
+  } else {
+    fprintf(log, "%d", auto_routines::FRONT);
+    current_auto_routine = auto_routines::FRONT;
+    printf("%d Set Auto: %d \n", pros::millis(), current_auto_routine);
+    ctrler.rumble(". . .");
+    fclose(log);
+  }
+  return LV_RES_OK;
 }
 
-void write_shot_positions_to_file() {
-  FILE* shot_positions_file = NULL;
-  shot_positions_file = fopen("/usd/shot_positions.txt", "w");
-  if (shot_positions_file != NULL) {
-    for(int i = 0; i < num_shot_positions; i++) {
-      fprintf(shot_positions_file, "%d\n", shot_positions[(int)menu_shot_position]);
-      log_ln(LOG_SHOTS, "%d Sucessfully wrote %s to shot position file, position is %d", pros::millis(), menu_shot_strings[i], shot_positions[(int)menu_shot_position]);
+lv_res_t auto_button_action_front_park(lv_obj_t* button) {
+  FILE* log = NULL;
+  while ((log = fopen("/usd/auto_routine.txt", "w")) == NULL) {
+    pros::delay(2);
+    printf("yeyee");
+  }
+  if (log == NULL) {
+    printf("Couldn't create auton routine file\n");
+  } else {
+    fprintf(log, "%d", auto_routines::FRONT_PARK);
+    current_auto_routine = auto_routines::FRONT_PARK;
+    printf("%d Set Auto: %d \n", pros::millis(), current_auto_routine);
+    ctrler.rumble(". . .");
+    fclose(log);
+  }
+  return LV_RES_OK;
+}
+
+lv_res_t auto_button_action_back_mid_first(lv_obj_t* button) {
+  FILE* log = NULL;
+  while ((log = fopen("/usd/auto_routine.txt", "w")) == NULL) pros::delay(2);
+  if (log == NULL) {
+    printf("Couldn't create auto routine file\n");
+  } else {
+    fprintf(log, "%d", auto_routines::BACK_MID_FIRST);
+    current_auto_routine = auto_routines::BACK_MID_FIRST;
+    ctrler.rumble(". . .");
+    fclose(log);
+  }
+  return LV_RES_OK;
+}
+
+lv_res_t auto_button_action_back_far_first(lv_obj_t* button) {
+  FILE* log = NULL;
+  while ((log = fopen("/usd/auto_routine.txt", "w")) == NULL) pros::delay(2);
+  if (log == NULL) {
+    printf("Couldn't create auto routine file\n");
+  } else {
+    fprintf(log, "%d", auto_routines::BACK_FAR_FIRST);
+    current_auto_routine =  auto_routines::BACK_FAR_FIRST;
+    ctrler.rumble(". . .");
+    fclose(log);
+  }
+  return LV_RES_OK;
+}
+
+lv_res_t red_side_button_action(lv_obj_t* button) {
+  FILE* log = NULL;
+  while ((log = fopen("/usd/game_side.txt", "w")) == NULL) pros::delay(2);
+  if (log == NULL) {
+    printf("Couldn't create game side file\n");
+  } else {
+    fprintf(log, "R");
+    game_side = 'R';
+    ctrler.rumble(". . .");
+    fclose(log);
+  }
+  return LV_RES_OK;
+}
+
+lv_res_t blue_side_button_action(lv_obj_t* button) {
+  FILE* log = NULL;
+  while ((log = fopen("/usd/game_side.txt", "w")) == NULL) pros::delay(2);
+  if (log == NULL) {
+    printf("Couldn't create game side file\n");
+  } else {
+    fprintf(log, "B");
+    game_side = 'B';
+    ctrler.rumble(". . .");
+    fclose(log);
+  }
+  return LV_RES_OK;
+}
+
+lv_res_t shot_tuning_slider_action(lv_obj_t* slider) {
+  for (int i = 0; i < 6; i++) {
+    char shot_slider_string[4];
+    sprintf(shot_slider_string, "%d", lv_slider_get_value(shot_slider[i]));
+    lv_label_set_text(shot_slider_text[i], shot_slider_string);
+    shot_slider_value[i] = lv_slider_get_value(slider);
+  }
+  return LV_RES_OK;
+}
+lv_res_t shot_test_top_auto_action(lv_obj_t* button)
+{
+  ctrler.rumble(". . .");
+  pros::delay(2000);
+  printf("position is %d",auto_SP.top);
+  auto_set_first_shot(auto_SP.top);
+
+  return LV_RES_OK;
+}
+
+lv_res_t shot_test_mid_auto_action(lv_obj_t* button)
+{
+  ctrler.rumble(". . .");
+  pros::delay(2000);
+  printf("position is %d",auto_SP.mid);
+  auto_set_first_shot(auto_SP.mid);
+
+  return LV_RES_OK;
+}
+
+lv_res_t shot_test_mid_turn_action(lv_obj_t* button)
+{
+  ctrler.rumble(". . .");
+  pros::delay(2000);
+  printf("position is %d",pf_back_SP.mid);
+  auto_set_first_shot(pf_back_SP.mid);
+
+  return LV_RES_OK;
+}
+lv_res_t shot_test_top_turn_action(lv_obj_t* button)
+{
+  ctrler.rumble(". . .");
+  pros::delay(2000);
+  printf("position is %d",pf_back_SP.top);
+  auto_set_first_shot(pf_back_SP.top);
+
+  return LV_RES_OK;
+}
+
+void shot_tuning_save() {
+  ctrler.rumble(". . .");
+  for(int i = 0; i < 6; i++) {
+    FILE* log = NULL;
+    if (i == 0) {
+      log = fopen("/usd/back_mid_shot_position.txt", "w");
+      pf_back_SP.mid = lv_slider_get_value(shot_slider[0]);
+    } else if (i == 1) {
+      log = fopen("/usd/back_top_shot_position.txt", "w");
+      pf_back_SP.top = lv_slider_get_value(shot_slider[1]);
+    } else if (i == 2) {
+      log = fopen("/usd/front_mid_shot_position.txt", "w");
+      front_SP.mid = lv_slider_get_value(shot_slider[2]);
+    } else if (i == 3) {
+      log = fopen("/usd/front_top_shot_position.txt", "w");
+      front_SP.top = lv_slider_get_value(shot_slider[3]);
+    } else if (i == 4) {
+      log = fopen("/usd/front_top_auto_position.txt", "w");
+      auto_SP.top = lv_slider_get_value(shot_slider[4]);
+    } else if (i == 5) {
+      log = fopen("/usd/front_mid_auto_position.txt", "w");
+      auto_SP.mid = lv_slider_get_value(shot_slider[5]);
     }
-    ctrler.rumble("- -");
-    pros::delay(500);
-    read_shot_positions_from_file();
-  } else log_ln(LOG_SHOTS, "%d Could not create shot positions files...", pros::millis());
+
+    if (log == NULL) {
+      printf("Failed to create shot positions file %d\n", i);
+      printf("shot save NULL");
+    } else {
+      printf("Created shot positions file! %d\n", i);
+      fprintf(log, "%d", lv_slider_get_value(shot_slider[i]));
+      printf("%d\n", lv_slider_get_value(shot_slider[i]));
+      printf("shot save SUCCESS\n");
+      fclose(log);
+    }
+  }
+}
+
+lv_res_t shot_tuning_save_button_action(lv_obj_t* button) {
+  ctrler.rumble(". . .");
+  for(int i = 0; i < 6; i++) {
+    FILE* log = NULL;
+    if (i == 0) {
+      log = fopen("/usd/back_mid_shot_position.txt", "w");
+      pf_back_SP.mid = lv_slider_get_value(shot_slider[0]);
+    } else if (i == 1) {
+      log = fopen("/usd/back_top_shot_position.txt", "w");
+      pf_back_SP.top = lv_slider_get_value(shot_slider[1]);
+    } else if (i == 2) {
+      log = fopen("/usd/front_mid_shot_position.txt", "w");
+      front_SP.mid = lv_slider_get_value(shot_slider[2]);
+    } else if (i == 3) {
+      log = fopen("/usd/front_top_shot_position.txt", "w");
+      front_SP.top = lv_slider_get_value(shot_slider[3]);
+    } else if (i == 4) {
+      log = fopen("/usd/front_top_auto_position.txt", "w");
+      auto_SP.top = lv_slider_get_value(shot_slider[4]);
+    } else if (i == 5) {
+      log = fopen("/usd/front_mid_auto_position.txt", "w");
+      auto_SP.mid = lv_slider_get_value(shot_slider[5]);
+    }
+
+    if (log == NULL) {
+      printf("Failed to create shot positions file %d\n", i);
+      printf("shot save NULL");
+    } else {
+      printf("Created shot positions file! %d\n", i);
+      fprintf(log, "%d", lv_slider_get_value(shot_slider[i]));
+      printf("%d\n", lv_slider_get_value(shot_slider[i]));
+      printf("shot save SUCCESS \n");
+      fclose(log);
+    }
+  }
+  return LV_RES_OK; /*Return OK if the message box is not deleted*/
+}
+
+void tab_switch_callback(lv_obj_t * tabview, uint16_t act_id) {
+  if (act_id == 0) current_gui_tab = gui_tab_states::diagnostics_tab;
+  if (act_id == 1) current_gui_tab = gui_tab_states::shot_tuning_tab;
+  if (act_id == 2) current_gui_tab = gui_tab_states::auto_select_tab;
+  if (act_id == 3) current_gui_tab = gui_tab_states::shot_test_tab;
 }

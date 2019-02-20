@@ -5,46 +5,67 @@
 #include "auto.hpp"
 #include "puncher.hpp"
 #include "button.hpp"
-#include <string.h>
+#include <string>
 
-extern bool inMenu;
-enum class menu_screens : int {
-  game_screen,
-  shot_tuning,
-  number_of_menu_screens
+// Main Screen
+extern lv_obj_t* screen;
+extern lv_obj_t* menu;
+
+// Tabs
+extern lv_obj_t* diagnostics_tab;
+extern lv_obj_t* shot_tuning_tab;
+extern lv_obj_t* auto_select_tab;
+extern lv_obj_t* shot_test_tab;
+enum class gui_tab_states {
+  diagnostics_tab,
+  shot_tuning_tab,
+  auto_select_tab,
+  shot_test_tab
 };
-constexpr int num_menu_screens = (int)menu_screens::number_of_menu_screens;
+extern gui_tab_states current_gui_tab;
 
+// Diagnostics Tab
+extern lv_obj_t* diagnostics_tab_title;
+extern lv_obj_t* battery_bar;
+extern lv_obj_t* battery_bar_text;
+extern char battery_bar_string[4];
 
-enum menu_shot_positions {
-  front_top,
-  front_mid,
-  back_top,
-  back_mid,
-  auto_top,
-  auto_mid,
-  skills_front_top,
-  skills_front_mid,
-  skills_corner_top,
-  skills_corner_mid,
-  skills_back_top,
-  skills_back_mid,
-  skills_back_bot,
-  number_of_shot_positions
-};
-constexpr int num_shot_positions = (int)number_of_shot_positions;
-extern menu_shot_positions menu_shot_position;
-extern const char* menu_shot_strings[num_shot_positions];
-extern int shot_positions[num_shot_positions];
+// Shot Tuning Tab
+extern lv_obj_t* shot_tuning_title;
+extern lv_obj_t* shot_slider[6];
+extern lv_obj_t* shot_slider_text[6];
+extern int shot_slider_value[6];
+extern lv_obj_t* shot_slider_label[6];
+extern lv_obj_t* shot_tuning_save_button;
+extern lv_obj_t* shot_tuning_save_button_label;
+extern int selected_shot_slider;
 
-extern menu_screens menu_screen;
-extern const char* menu_screen_titles[num_menu_screens];
-extern char partner_screen_lines[3][16];
-extern int update_line;
-extern uint32_t update_time;
-constexpr uint32_t UPDATE_INTERVAL = 60;
+// Auto Select Tab
+extern lv_obj_t* auto_select_tab_title;
+extern lv_obj_t* red_side_button;
+extern lv_obj_t* red_side_button_label;
+
+extern lv_obj_t* blue_side_button;
+extern lv_obj_t* blue_side_button_label;
+
+extern lv_obj_t* auto_buttons[8];
+extern lv_obj_t* auto_buttons_label[8];
+
+extern std::string auto_routines[8];
 
 void gui_init();
 void gui_handle();
-void read_shot_positions_from_file();
-void write_shot_positions_to_file();
+lv_res_t shot_tuning_slider_action(lv_obj_t * slider);
+lv_res_t auto_button_action_front(lv_obj_t* button);
+lv_res_t auto_button_action_front_park(lv_obj_t* button);
+lv_res_t auto_button_action_back_mid_first(lv_obj_t* button);
+lv_res_t auto_button_action_back_far_first(lv_obj_t* button);
+lv_res_t red_side_button_action(lv_obj_t* button);
+lv_res_t blue_side_button_action(lv_obj_t* button);
+void shot_tuning_save();
+lv_res_t shot_tuning_save_button_action(lv_obj_t* button);
+lv_res_t shot_test_top_auto_action(lv_obj_t* button);
+lv_res_t shot_test_mid_auto_action(lv_obj_t* button);
+lv_res_t shot_test_mid_turn_action(lv_obj_t* button);
+lv_res_t shot_test_top_turn_action(lv_obj_t* button);
+void tab_switch_callback(lv_obj_t * tabview, uint16_t act_id);
