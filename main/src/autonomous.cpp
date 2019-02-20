@@ -1039,9 +1039,6 @@ void autonomous() {
   return;
   */
 
-  game_side = 'R';
-  current_auto_routine = auto_routines::FRONT;
-
   if (game_side == 'R')
   {
     switch(current_auto_routine)
