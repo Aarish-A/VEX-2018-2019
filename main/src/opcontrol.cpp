@@ -26,7 +26,14 @@ void opcontrol() {
 	log_ln(LOG_AUTO, "   --- %d START OPCONTROL --- \n", pros::millis());
 	// ctrler.print(2, 0, "RUNNING");
 
-	//pun_state_change(PunState::Loading);
+	pun_state_change(PunState::Loading);
+	if (pun_state != PunState::FatalError) {
+		pun_set(127);
+		shot_pun_go = false;
+		auto_set_shot = false;
+	}
+
+	intake_state_set(IntakeState::Off);
 
 	u_int32_t loop_counter = 0;
 	while (true) {

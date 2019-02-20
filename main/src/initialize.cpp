@@ -26,6 +26,15 @@ void initialize() {
 
 	log_init();
   printf("log init completed\n");
+
+  ctrler.set_text(0, 0, "               ");
+  pros::delay(60);
+  ctrler.set_text(1, 0, "               ");
+  pros::delay(60);
+  partner.set_text(0, 0, "               ");
+  pros::delay(60);
+  partner.set_text(1, 0, "               ");
+
   // pros::delay(1000);
   controls_init();
 	gui_init();

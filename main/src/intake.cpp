@@ -60,6 +60,7 @@ void intake_handle() {
 
     case IntakeState::Jam:
       if (millis() >= intake_jam_time + 250) {
+        log_ln(LOG_INTAKE, "here2");
         intake_state_set(IntakeState::Forw);
         intake_on_time = millis();
       }

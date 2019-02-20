@@ -16,10 +16,15 @@ bool auto_set_shot = false;
 double auto_angler_target = 0;
 
 void pun_state_change(PunState state) {
+	if (pun_state == PunState::FatalError) {
+		log_ln(LOG_PUNCHER, "  >> %d Move from fatal -> %d ignored", pros::millis(), state);
+	}
+	else {
 		pun_state_lst = pun_state;
 		pun_state = state;
 		pun_state_change_time = pros::millis();
 		log_ln(LOG_PUNCHER, "  >> %d Moved from state %d -> %d. ShotN:%d", pros::millis(), pun_state_lst, pun_state, pun_shots);
+	}
 }
 
 void pun_init() {
