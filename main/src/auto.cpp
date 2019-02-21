@@ -402,7 +402,7 @@ void turn_vel_side(const AngleTarget& target, double kP, double offset, bool f_w
   if(dA<0)
   {
     double left_per = -1;
-    double right_per = -0.1;
+    double right_per = -0.3;
     double kP = 350;
     double error;
 
@@ -436,7 +436,7 @@ void turn_vel_side(const AngleTarget& target, double kP, double offset, bool f_w
   }
   else
   {
-    double left_per = -0.1;
+    double left_per = -0.3;
     double right_per = -1;
     double kP = 350;
     double error;
