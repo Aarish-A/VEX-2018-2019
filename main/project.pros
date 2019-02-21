@@ -1,7 +1,7 @@
 {
     "py/object": "pros.conductor.project.Project",
     "py/state": {
-        "project_name": "pilons",
+        "project_name": "dskills",
         "target": "v5",
         "templates": {
             "kernel": {
