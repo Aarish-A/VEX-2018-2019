@@ -22,16 +22,14 @@ void opcontrol() {
 	auto_update_stop_task();
 	drive_set(0);
 	log_ln(LOG_AUTO, "   --- %d START OPCONTROL --- \n", pros::millis());
-
+	while(pros::competition::is_disabled() || !pros::competition::is_connected()) delay(10);
+	autonomous();
 	pun_state_change(PunState::Loading);
 	if (pun_state != PunState::FatalError) {
 		pun_set(127);
 		shot_pun_go = false;
 		auto_set_shot = false;
 	}
-
-	intake_state_set(IntakeState::Off);
-
 	while (true) {
 		pos.update();
 		update_buttons();
