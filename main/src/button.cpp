@@ -41,8 +41,8 @@ bool check_falling_partner(int button) {
 }
 
 
-bool check_single_press(int button, bool partner) {
-  if(!partner || !partner_connected) {
+bool check_single_press(int button, bool partner, bool overridable) {
+  if(!partner || (!partner_connected && overridable)) {
     if (buttons[button].last_pressed_time && (pros::millis() - buttons[button].last_pressed_time) >= buttons[button].button_press_time) {
       buttons[button].last_pressed_time = 0;
       log_ln(LOG_JOYSTICK, "%d Button %d Single Pressed - Main", pros::millis(), button);

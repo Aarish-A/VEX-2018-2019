@@ -11,7 +11,6 @@
 #include "vision.hpp"
 #include "config.hpp"
 #include "auto.hpp"
-//#include "autonomous.cpp"
 using namespace pros;
 
 uint32_t print_time = 0;
@@ -19,13 +18,10 @@ void update_controller_lcd();
 void update_game_side();
 
 void opcontrol() {
-	//resetGlobalAngle();
 	is_disabled = false;
 	auto_update_stop_task();
 	drive_set(0);
-	//Task log_drive_efficency_task(log_drive_efficency); //Start logging drive efficency
 	log_ln(LOG_AUTO, "   --- %d START OPCONTROL --- \n", pros::millis());
-	// ctrler.print(2, 0, "RUNNING");
 
 	pun_state_change(PunState::Loading);
 	if (pun_state != PunState::FatalError) {
@@ -36,30 +32,22 @@ void opcontrol() {
 
 	intake_state_set(IntakeState::Off);
 
-	u_int32_t loop_counter = 0;
 	while (true) {
 		pos.update();
-		// printf("Left Tracking %d\n", enc_l.get_value());
-		// printf("Right Tracking %d\n", enc_r.get_value());
-		// printf("Global angle: %f\n", RAD_TO_DEG(getGlobalAngle()));
 		update_buttons();
-		gui_handle();
+		pun_handle();
+		angler_handle();
+		drive_handle();
+		intake_handle();
+		decapper_handle();
+
+		if (partner_connected) gui_handle();
 		if (menu_screen == menu_screens::game_screen) {
 			shot_req_make();
-			intake_handle();
-			angler_handle();
-			decapper_handle();
 			update_controller_lcd();
 			update_game_side();
 		}
-		drive_handle();
-		pun_handle();
-		vision_handle();
 
-
-
-
-		loop_counter++;
 		delay(10);
 	}
 }

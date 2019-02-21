@@ -185,14 +185,14 @@ void shot_req_make() {
 
 	RT_M = check_single_press(BTN_SHOT_R_T);
 	RM_M = check_single_press(BTN_SHOT_R_M);
-	LT_P = check_single_press(BTN_SHOT_L_T, true);
-	LM_P = check_single_press(BTN_SHOT_L_M, true);
-	RT_P = check_single_press(BTN_SHOT_R_T, true);
-	RM_P = check_single_press(BTN_SHOT_R_M, true);
+	LT_P = check_single_press(BTN_SHOT_L_T, true, true);
+	LM_P = check_single_press(BTN_SHOT_L_M, true, true);
+	RT_P = check_single_press(BTN_SHOT_R_T, true, true);
+	RM_P = check_single_press(BTN_SHOT_R_M, true, true);
 
 	if (check_single_press(BTN_FIELD_FRONT_P, true) || check_single_press(BTN_FIELD_FRONT_M)) set_field_pos(FieldPos_Front);
-	else if (check_single_press(BTN_FIELD_PF_BACK_RED, true)) set_field_pos(FieldPos_PF_Back_Red);
-	else if (check_single_press(BTN_FIELD_PF_BACK_BLUE, true)) set_field_pos(FieldPos_PF_Back_Blue);
+	else if (check_single_press(BTN_FIELD_PF_BACK_RED, true, true)) set_field_pos(FieldPos_PF_Back_Red);
+	else if (check_single_press(BTN_FIELD_PF_BACK_BLUE, true, true)) set_field_pos(FieldPos_PF_Back_Blue);
 
 	if (check_single_press(BTN_SHOOT_CANCEL) || check_single_press(BTN_SHOOT_CANCEL, true)) {
 		cancel_shot_cleanup();
@@ -222,6 +222,9 @@ void shot_req_make() {
 		if (RT_M) set_shot_req(true, Dir_Centre);
 		else if (RM_M) set_shot_req(false, Dir_Centre);
 	}
+
+	if (!partner_connected && shot_req[0].field_pos != FieldPos_Front) angler_enabled = false;
+	else angler_enabled = true;
 
 	// This is added in to allow shots to be triggered with any button when there is no partner controller connected...
 	// The two ifs are separated only for clarity (when partner controller is connected vs when its not)
