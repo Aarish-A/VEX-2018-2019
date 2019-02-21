@@ -7,11 +7,11 @@ int update_line = 0;
 uint32_t update_time = 0;
 
 menu_shot_positions menu_shot_position = front_top;
-int shot_positions[num_shot_positions] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+int shot_positions[num_shot_positions] = { front_SP.top, front_SP.mid, pf_SP.top, pf_SP.mid, auto_SP.top, auto_SP.mid,
+                                           skills_front_SP.top, skills_front_SP.mid, skills_corner_SP.top, skills_corner_SP.mid,
+                                           skills_back_SP.top, skills_back_SP.mid, skills_back_SP.bot };
 const char* menu_shot_strings[num_shot_positions] = {"FrontTop", "FrontMid", "BackTop", "BackMid", "AutoTop", "AutoMid", "SkillFrTop", "SkillFrMid",
-                                     "SkillCorTop", "SkillCorMid", "SkillBackTop", "SkillBackMid", "SkillsBackBot" };
-
-
+                                                     "SkillCorTop", "SkillCorMid", "SkillBackTop", "SkillBackMid", "SkillsBackBot" };
 
 void gui_init() {
   if (partner_connected) {
@@ -34,7 +34,7 @@ void gui_handle() {
     else update_line = 0;
 
     // Update Line 0
-    strcpy(partner_screen_lines[0], menu_screen_titles[(int)menu_screen]);
+    write_line(0, menu_screen_titles[(int)menu_screen]);
 
     // Update Line 2
 
@@ -49,7 +49,7 @@ void gui_handle() {
         strcpy(partner_screen_lines[1], menu_shot_strings[(int)menu_shot_position]);
         char num[10];
         sprintf(num, "  %d", shot_positions[(int)menu_shot_position]);
-        strcpy(partner_screen_lines[2], num);
+        write_line(2, num);
       }
 
       std::string field_pos_s = "default";
@@ -60,34 +60,34 @@ void gui_handle() {
       else if (field_pos== FieldPos_PF_Back_Red) field_pos_s = "PfR";
       else if (field_pos== FieldPos_PF_Back_Blue) field_pos_s = "PfB";
       std::string team_s = blue_team ? "B" : "R";
-      sprintf(partner_screen_lines[2], "%c %s", game_side, field_pos_s.c_str());
+      // sprintf(partner_screen_lines[2], "%c %s", game_side, field_pos_s.c_str());
+      write_line(2, field_pos_s);
       break;
     }
 
     case menu_screens::shot_tuning: {
+      write_line(1, menu_shot_strings[(int)menu_shot_position]);
+
+      char num[10];
+      sprintf(num, "%d", shot_positions[(int)menu_shot_position]);
+      std::string num_str = num;
+      write_line(2, num_str);
+
       if (check_single_press(BTN_PREVIOUS_SHOT_SLIDER, true) && menu_shot_position != front_top) {
         int temp = (int)menu_shot_position;
         temp--;
         menu_shot_position = (menu_shot_positions)temp;
-        strcpy(partner_screen_lines[1], menu_shot_strings[(int)menu_shot_position]);
       }
       else if (check_single_press(BTN_NEXT_SHOT_SLIDER, true) && menu_shot_position != skills_back_bot) {
         int temp = (int)menu_shot_position;
         temp++;
         menu_shot_position = (menu_shot_positions)temp;
-        strcpy(partner_screen_lines[1], menu_shot_strings[(int)menu_shot_position]);
       }
 
       if (check_single_press(BTN_INCREMENT_SHOT_SLIDER, true)) {
-        char num[10];
         shot_positions[(int)menu_shot_position] += 5;
-        sprintf(num, "%d", shot_positions[(int)menu_shot_position]);
-        strcpy(partner_screen_lines[2], num);
       } else if (check_single_press(BTN_DECREMENT_SHOT_SLIDER, true)) {
-        char num[10];
         shot_positions[(int)menu_shot_position] -= 5;
-        sprintf(num, "%d", shot_positions[(int)menu_shot_position]);
-        strcpy(partner_screen_lines[2], num);
       }
 
       if (check_single_press(BTN_TEST_SHOT_POSITION, true)) {
@@ -98,8 +98,8 @@ void gui_handle() {
 
       if (check_single_press(BTN_EXIT_SHOT_TUNING, true)) {
         menu_screen = menu_screens::game_screen;
-        strcpy(partner_screen_lines[0], menu_screen_titles[(int)menu_screen]);
-        strcpy(partner_screen_lines[1], "               ");
+        write_line(1, " ");
+        write_line(2, " ");
       }
       break;
     }
@@ -114,7 +114,8 @@ void read_shot_positions_from_file() {
   if (shot_positions_file != NULL) {
     for(int i = 0; i < num_shot_positions; i++) {
       int temp;
-      fscanf(shot_positions_file, "%d", &temp);
+      fscanf(shot_positions_file, "%d ", &temp);
+      printf("i: %d temp: %d\n", i, temp);
       switch(i) {
         case 0: front_SP.top = temp; break;
         case 1: front_SP.mid = temp; break;
@@ -141,7 +142,7 @@ void write_shot_positions_to_file() {
   shot_positions_file = fopen("/usd/shot_positions.txt", "w");
   if (shot_positions_file != NULL) {
     for(int i = 0; i < num_shot_positions; i++) {
-      fprintf(shot_positions_file, "%d\n", shot_positions[i]);
+      fprintf(shot_positions_file, "%d ", shot_positions[i]);
       log_ln(LOG_SHOTS, "%d Sucessfully wrote %s to shot position file, position is %d", pros::millis(), menu_shot_strings[i], shot_positions[i]);
     }
     ctrler.rumble("- -");
@@ -149,4 +150,11 @@ void write_shot_positions_to_file() {
     fclose(shot_positions_file);
     read_shot_positions_from_file();
   } else log_ln(LOG_SHOTS, "%d Could not create shot positions files...", pros::millis());
+}
+
+void write_line(int line_num, std::string line) {
+  while(line.size() < 15) {
+    line += " ";
+  }
+  strcpy(partner_screen_lines[line_num], line.c_str());
 }

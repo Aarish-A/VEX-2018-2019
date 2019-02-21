@@ -48,3 +48,4 @@ void gui_init();
 void gui_handle();
 void read_shot_positions_from_file();
 void write_shot_positions_to_file();
+void write_line(int line_num, std::string line);
