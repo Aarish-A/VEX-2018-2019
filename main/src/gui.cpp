@@ -114,7 +114,7 @@ void read_shot_positions_from_file() {
   if (shot_positions_file != NULL) {
     for(int i = 0; i < num_shot_positions; i++) {
       int temp;
-      fscanf(shot_positions_file, "%d ", &temp);
+      fscanf(shot_positions_file, "%d", &temp);
       printf("i: %d temp: %d\n", i, temp);
       switch(i) {
         case 0: front_SP.top = temp; break;
@@ -132,8 +132,8 @@ void read_shot_positions_from_file() {
         case 12: skills_back_SP.bot = temp; break;
       }
       log_ln(LOG_SHOTS, "%d Sucessfully read %s shot position file, position is %d", pros::millis(), menu_shot_strings[i], temp);
-      fclose(shot_positions_file);
     }
+    fclose(shot_positions_file);
   } else log_ln(LOG_SHOTS, "%d Could not read from shot positions files...", pros::millis());
 }
 
