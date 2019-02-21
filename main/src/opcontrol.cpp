@@ -37,7 +37,7 @@ void opcontrol() {
 
 	u_int32_t loop_counter = 0;
 	// pun_cal();
-	while(!ctrler.get_digital_new_press(E_CONTROLLER_DIGITAL_A)) delay(10);
+	while(pros::competition::is_disabled() || !pros::competition::is_connected()) delay(10);
 	autonomous();
 	pun_state_change(PunState::Loading);
 	if (pun_state != PunState::FatalError) {
