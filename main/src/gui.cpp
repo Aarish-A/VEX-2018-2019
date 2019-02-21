@@ -29,14 +29,12 @@ void gui_init() {
 void gui_handle() {
   if (pros::millis() >= update_time) {
     partner.print(update_line, 0, partner_screen_lines[update_line]);
-    printf("%d Screen is on: %d\n", pros::millis(), (int)menu_screen);
     update_time = pros::millis() + UPDATE_INTERVAL;
     if (update_line < 2) update_line++;
     else update_line = 0;
 
     // Update Line 0
     strcpy(partner_screen_lines[0], menu_screen_titles[(int)menu_screen]);
-    printf("%d shotpos: %d\n", pros::millis(), (int)menu_shot_position);
 
     // Update Line 2
 
@@ -101,6 +99,7 @@ void gui_handle() {
       if (check_single_press(BTN_EXIT_SHOT_TUNING, true)) {
         menu_screen = menu_screens::game_screen;
         strcpy(partner_screen_lines[0], menu_screen_titles[(int)menu_screen]);
+        strcpy(partner_screen_lines[1], "               ");
       }
       break;
     }
@@ -114,9 +113,8 @@ void read_shot_positions_from_file() {
   shot_positions_file = fopen("/usd/shot_positions.txt", "r");
   if (shot_positions_file != NULL) {
     for(int i = 0; i < num_shot_positions; i++) {
-      char line[30];
-      fgets(line, 30, shot_positions_file);
-      int temp = atoi(line);
+      int temp;
+      fscanf(shot_positions_file, "%d", &temp);
       switch(i) {
         case 0: front_SP.top = temp; break;
         case 1: front_SP.mid = temp; break;
@@ -133,6 +131,7 @@ void read_shot_positions_from_file() {
         case 12: skills_back_SP.bot = temp; break;
       }
       log_ln(LOG_SHOTS, "%d Sucessfully read %s shot position file, position is %d", pros::millis(), menu_shot_strings[i], temp);
+      fclose(shot_positions_file);
     }
   } else log_ln(LOG_SHOTS, "%d Could not read from shot positions files...", pros::millis());
 }
@@ -142,11 +141,12 @@ void write_shot_positions_to_file() {
   shot_positions_file = fopen("/usd/shot_positions.txt", "w");
   if (shot_positions_file != NULL) {
     for(int i = 0; i < num_shot_positions; i++) {
-      fprintf(shot_positions_file, "%d\n", shot_positions[(int)menu_shot_position]);
-      log_ln(LOG_SHOTS, "%d Sucessfully wrote %s to shot position file, position is %d", pros::millis(), menu_shot_strings[i], shot_positions[(int)menu_shot_position]);
+      fprintf(shot_positions_file, "%d\n", shot_positions[i]);
+      log_ln(LOG_SHOTS, "%d Sucessfully wrote %s to shot position file, position is %d", pros::millis(), menu_shot_strings[i], shot_positions[i]);
     }
     ctrler.rumble("- -");
     pros::delay(500);
+    fclose(shot_positions_file);
     read_shot_positions_from_file();
   } else log_ln(LOG_SHOTS, "%d Could not create shot positions files...", pros::millis());
 }
