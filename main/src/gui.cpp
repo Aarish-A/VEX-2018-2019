@@ -120,6 +120,7 @@ void read_shot_positions_from_file() {
       log_ln(LOG_SHOTS, "%d Sucessfully read shot positions from file!", pros::millis());
       fclose(shot_positions_file);
     }
+    fclose(shot_positions_file);
   } else log_ln(LOG_SHOTS, "%d Could not read from shot positions files...", pros::millis());
 }
 
