@@ -1,19 +1,6 @@
 #pragma once
 #include "main.h"
 
-enum class auto_routines {
-  FRONT,
-  FRONT_PARK,
-  BACK_MID_FIRST,
-  BACK_FAR_FIRST,
-  UNUSED4,
-  UNUSED5,
-  UNUSED6,
-  UNUSED7,
-
-  K_AUTO_ROUTINE_NUM
-};
-
 extern pros::Controller ctrler;
 extern pros::Controller partner;
 extern pros::Motor drive_fl;
@@ -33,8 +20,5 @@ extern pros::ADILineSensor ball_sensor;
 extern pros::ADILineSensor left_platform_sensor;
 extern pros::ADILineSensor right_platform_sensor;
 extern pros::Vision vision_sensor;
-
-extern char game_side;
-extern auto_routines current_auto_routine;
 
 extern bool is_disabled;

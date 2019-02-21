@@ -42,7 +42,7 @@ void opcontrol() {
 		decapper_handle();
 
 		if (partner_connected) gui_handle();
-		if (menu_screen == menu_screens::game_screen) {
+		if (!in_menu) {
 			shot_req_make();
 			update_controller_lcd();
 			update_game_side();
@@ -86,7 +86,6 @@ void update_controller_lcd() {
 
 		// ctrler.print(2, 0, "%d,%d,%d,%d", (int)drive_bl.get_temperature(), (int)drive_br.get_temperature(), (int)drive_fl.get_temperature(), (int)drive_fr.get_temperature());
 		//ctrler.print(2, 0, "%s %s %d %d %d      ", field_pos_s, team_s, (int)intake.get_temperature(), (int)puncherLeft.get_temperature(), (int)puncherRight.get_temperature());
-		// ctrler.print(2, 0, "%d  ", (int)current_auto_routine);
 		//ctrler.print(2, 0, "a: %.1f       ", RAD_TO_DEG(getGlobalAngle()));
 		// ctrler.print(2, 0, "%.1f %d %d    ", RAD_TO_DEG(getGlobalAngle()), enc_l.get_value(), enc_r.get_value());
 		//ctrler.print(2, 0, "%f          ", ((enc_l.get_value() * SPN_TO_IN_L) - (enc_r.get_value() * SPN_TO_IN_R)) / 3600_deg);

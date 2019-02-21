@@ -5,6 +5,7 @@
 #include "shot_select.hpp"
 #include "angler.hpp"
 #include "drive.hpp"
+#include "gui.hpp"
 
 /**
  * Runs the user autonomous code. This function will be started in its own task
@@ -1039,61 +1040,17 @@ void autonomous() {
   return;
   */
 
-  game_side = 'R';
-  current_auto_routine = auto_routines::FRONT;
-
-  if (game_side == 'R')
-  {
-    switch(current_auto_routine)
-    {
-      case auto_routines::FRONT:
-      {
-        auto_red_front();
-        break;
-      }
-      case auto_routines::FRONT_PARK:
-      {
-        auto_red_front_park();
-        break;
-      }
-      case auto_routines::BACK_MID_FIRST:
-      {
-        auto_red_back_mid_first();
-        break;
-      }
-      case auto_routines::BACK_FAR_FIRST:
-      {
-        auto_red_back_far_first();
-        break;
-      }
-      default: break;
+  if (game_side == 'R') {
+    switch(menu_auto_route) {
+      case auto_front: auto_red_front(); break;
+      case auto_back: auto_red_back_mid_first(); break;
+      case auto_skills: auto_red_front_park(); break;
     }
-  }
-  else if (game_side == 'B')
-  {
-    switch(current_auto_routine)
-    {
-      case auto_routines::FRONT:
-      {
-        auto_blue_front();
-        break;
-      }
-      case auto_routines::FRONT_PARK:
-      {
-        auto_blue_front_park();
-        break;
-      }
-      case auto_routines::BACK_MID_FIRST:
-      {
-        auto_blue_back_mid_first();
-        break;
-      }
-      case auto_routines::BACK_FAR_FIRST:
-      {
-        auto_blue_back_far_first();
-        break;
-      }
-      default: break;
+  } else if (game_side == 'B') {
+    switch(menu_auto_route) {
+      case auto_front: auto_blue_front(); break;
+      case auto_back: auto_blue_front_park(); break;
+      case auto_skills: auto_red_front_park(); break;
     }
   }
 

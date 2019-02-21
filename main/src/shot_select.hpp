@@ -7,6 +7,7 @@
 #include "button.hpp"
 #include "controls.hpp"
 #include "intake.hpp"
+#include "gui.hpp"
 
 /* Flags */
 extern bool angler_enabled;

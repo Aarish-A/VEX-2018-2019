@@ -19,7 +19,4 @@ pros::ADILineSensor left_platform_sensor(6);
 pros::ADILineSensor right_platform_sensor(4);
 pros::Vision vision_sensor(6);
 
-char game_side = 'R';
-auto_routines current_auto_routine = auto_routines::FRONT_PARK;
-
 bool is_disabled = false;
