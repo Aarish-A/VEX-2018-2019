@@ -116,10 +116,10 @@ void auto_red_front() {
   intake.move(127);
   move_drive_rel(16_in,200);
   // //pros::delay(30000); //delete
-  pros::delay(500);
+  pros::delay(250);
   move_drive_rel(-12_in,200,true);
   intake.move(0);
-  turn_vel( FixedAngleTarget(49.0_deg), (200/40_deg),0);
+  turn_vel( FixedAngleTarget(51.0_deg), (200/50_deg),0);
   auto_set_first_shot(front_SP.top);
   while (auto_set_shot) pros::delay(10);
   pros::delay(250);
@@ -153,10 +153,10 @@ void auto_red_back() {
     move_drive_rel(cap_dis, 200, true);
 
     //2 Turn and shoot
-    move_drive_rel(-7.5_in,200);
+    move_drive_rel(-8.5_in,200);
     double first_flag_pos = auto_mid_flag_SP.top;
     auto_set_angler_target(first_flag_pos);
-    turn_vel(FixedAngleTarget(-72.0_deg), 127/60_deg, -6.2_deg, 7_deg, false);//-69.2_deg hits the flag. Turn range is -68.2-70
+    turn_vel(FixedAngleTarget(-70.0_deg), 127/60_deg, -6.2_deg, 7_deg, false);//-69.2_deg hits the flag. Turn range is -68.2-70
     auto_set_first_shot(first_flag_pos);
     while (auto_set_shot) pros::delay(10);
     pros::delay(150);
@@ -172,7 +172,7 @@ void auto_red_back() {
     while(fabs(drive_fl.get_position()) < 45) pros::delay(5);
     drive_set(0, 0, 0);
     angler_move(ANGLER_CAP_PU_POS, 100);
-    move_drive_rel(5.0_in, 200);
+    move_drive_rel(6.0_in, 200);
 
     pros::delay(250);
 
@@ -192,9 +192,10 @@ void auto_red_back() {
     delay(50);
     log_ln(LOG_AUTO, ">>%d Strafe Done Rest LoopFL: %f, BL: %f, FR: %f, BR %f | Angle: %f", millis(), drive_fl.get_position(), drive_bl.get_position(), drive_fr.get_position(), drive_br.get_position(), RAD_TO_DEG(getGlobalAngle()));
     //6 shoot
-    turn_vel( FixedAngleTarget(-59.5_deg), (200/90_deg));
+    turn_vel( FixedAngleTarget(-58.5_deg), (200/90_deg));
 
     first_flag_pos = auto_far_flag_SP.top;
+    auto_set_angler_target(first_flag_pos);
     while(pros::millis() - autoStartTime < 13500) pros::delay(5);
     auto_set_first_shot(first_flag_pos);
     while (auto_set_shot) pros::delay(10);
@@ -217,7 +218,7 @@ void auto_blue_front() {
   //2 Back up turn and shoot
   double first_flag_pos = front_SP.top;
   auto_set_angler_target(first_flag_pos);
-  move_drive_rel(-(cap_dis-6), 200);
+  move_drive_rel(-(cap_dis-3), 200);
   log_ln(LOG_AUTO, "%d BACK UP: L:%d, R:%d, Drive Angle:%f", millis(), enc_l.get_value(), enc_r.get_value(), RAD_TO_DEG(getGlobalAngle()));
   log_ln(LOG_AUTO, "%d Drive Angle:%f", millis(), RAD_TO_DEG(getGlobalAngle()));
   ////pros::delay(30000); //deletes
@@ -249,16 +250,17 @@ void auto_blue_front() {
   //
   //
   //
+  intake.move(127);
   turn_vel_side(FixedAngleTarget(-45_deg), (200/60_deg),0,true);
   //
   angler_move(ANGLER_CAP_PU_POS,100);
   intake.move(127);
-  move_drive_rel(16_in,200);
+  move_drive_rel(13_in,200);
   // //pros::delay(30000); //delete
   pros::delay(500);
   move_drive_rel(-12_in,200,true);
   intake.move(0);
-  turn_vel( FixedAngleTarget(-49.0_deg), (200/40_deg),0);
+  turn_vel( FixedAngleTarget(-48.0_deg), (200/60_deg),0);
   auto_set_first_shot(front_SP.top);
   while (auto_set_shot) pros::delay(10);
   pros::delay(250);
@@ -333,6 +335,7 @@ void auto_blue_back() {
     //6 shoot
     turn_vel( FixedAngleTarget(59.5_deg), (200/90_deg));
     first_flag_pos = auto_far_flag_SP.top;
+    auto_set_angler_target(first_flag_pos);
     while(pros::millis() - autoStartTime < 13500) pros::delay(5);
     auto_set_first_shot(first_flag_pos);
     while (auto_set_shot) pros::delay(10);
@@ -399,7 +402,7 @@ void programming_skills() {
   turn_vel(FixedAngleTarget(90.0_deg), 200/90_deg, 0_deg, true);
   drive_fl.tare_position();
   drive_set(-70, 0, 0);
-  printf("I am here aarish");
+  printf("I am hfere aarish");
   while(fabs(drive_fl.get_position()) < 65) pros::delay(5); // GERE
   drive_set(0, 0, 0);
   flatten_against_wall(true, true);
