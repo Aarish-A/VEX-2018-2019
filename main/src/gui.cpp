@@ -12,10 +12,11 @@ const char* menu_screen_titles[num_menu_screens] = {"Shot Tuning", "Auto Select"
 
 // Shot Tuning
 menu_shot_positions menu_shot_position = front_top;
-int shot_positions[num_shot_positions] = { front_SP.top, front_SP.mid, pf_SP.top, pf_SP.mid, auto_SP.top, auto_SP.mid,
-                                           skills_front_SP.top, skills_front_SP.mid, skills_corner_SP.top, skills_corner_SP.mid,
-                                           skills_back_SP.top, skills_back_SP.mid, skills_back_SP.bot };
-const char* menu_shot_strings[num_shot_positions] = {"FrontTop", "FrontMid", "BackTop", "BackMid", "AutoTop", "AutoMid", "SkillFrTop", "SkillFrMid",
+int shot_positions[num_shot_positions] = { pf_SP.top, pf_SP.mid, front_SP.top, front_SP.mid, auto_front_SP.top, auto_front_SP.mid, auto_mid_flag_SP.top,
+                                           auto_mid_flag_SP.mid, auto_far_flag_SP.top, auto_far_flag_SP.mid, skills_front_SP.top, skills_front_SP.mid,
+                                           skills_corner_SP.top, skills_corner_SP.mid, skills_back_SP.top, skills_back_SP.mid, skills_back_SP.bot };
+const char* menu_shot_strings[num_shot_positions] = {"BackTop <<<<", "BackMid <<<<", "FrontTop", "FrontMid", "AutoFrontTop", "AutoFrontMid",
+                                                     "AutoMidFlagTop", "AutoMidFlagMid", "AutoFarFlagTop", "AutoFarFlapMid", "SkillFrTop", "SkillFrMid",
                                                      "SkillCorTop", "SkillCorMid", "SkillBackTop", "SkillBackMid", "SkillsBackBot" };
 
 // Auto Select
@@ -61,7 +62,11 @@ void gui_handle() {
   }
 
   if (!in_menu) {
-    if (check_single_press(BTN_ENTER_MENU, true)) in_menu = true;
+    if (check_single_press(BTN_ENTER_MENU, true)) {
+      in_menu = true;
+      menu_screen = menu_screens::shot_tuning;
+      menu_shot_position = back_top;
+    }
 
     std::string field_pos_s = "default";
     FieldPos field_pos = shot_req[0].field_pos;
@@ -69,7 +74,8 @@ void gui_handle() {
     else if (field_pos == FieldPos_Back) field_pos_s = "Back";
     else if (field_pos == FieldPos_PF_Back_Red) field_pos_s = "PF Red";
     else if (field_pos == FieldPos_PF_Back_Blue) field_pos_s = "PF Blue";
-    std::string team_s = blue_team ? "B" : "R";
+    std::string team_s = "";
+    team_s += game_side;
     write_line(1, " ");
     write_line(2, team_s + " " + field_pos_s);
   } else {
@@ -149,19 +155,23 @@ void read_shot_positions_from_file() {
       log_ln(LOG_SHOTS, "%d Reading shot position... %s is %d", pros::millis(), menu_shot_strings[i], temp);
       shot_positions[i] = temp;
       switch(i) {
-        case 0: front_SP.top = temp; break;
-        case 1: front_SP.mid = temp; break;
-        case 2: pf_SP.top = temp; break;
-        case 3: pf_SP.mid = temp; break;
-        case 4: auto_SP.top = temp; break;
-        case 5: auto_SP.mid = temp; break;
-        case 6: skills_front_SP.top = temp; break;
-        case 7: skills_front_SP.mid = temp; break;
-        case 8: skills_corner_SP.top = temp; break;
-        case 9: skills_corner_SP.mid = temp; break;
-        case 10: skills_back_SP.top = temp; break;
-        case 11: skills_back_SP.mid = temp; break;
-        case 12: skills_back_SP.bot = temp; break;
+        case 0: pf_SP.top = temp; break;
+        case 1: pf_SP.mid = temp; break;
+        case 2: front_SP.top = temp; break;
+        case 3: front_SP.mid = temp; break;
+        case 4: auto_front_SP.top = temp; break;
+        case 5: auto_front_SP.mid = temp; break;
+        case 6: auto_mid_flag_SP.top = temp; break;
+        case 7: auto_mid_flag_SP.mid = temp; break;
+        case 8: auto_far_flag_SP.top = temp; break;
+        case 9: auto_far_flag_SP.mid = temp; break;
+        case 10: skills_front_SP.top = temp; break;
+        case 11: skills_front_SP.mid = temp; break;
+        case 12: skills_corner_SP.top = temp; break;
+        case 13: skills_corner_SP.mid = temp; break;
+        case 14: skills_back_SP.top = temp; break;
+        case 15: skills_back_SP.mid = temp; break;
+        case 16: skills_back_SP.bot = temp; break;
       }
       log_ln(LOG_SHOTS, "%d Sucessfully read shot positions from file!", pros::millis());
     }

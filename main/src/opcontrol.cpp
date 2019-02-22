@@ -71,6 +71,15 @@ void update_controller_lcd() {
 	if (millis() - print_time > 60) {
 		print_time = millis();
 
+		std::string field_pos_s = "default";
+    FieldPos field_pos = shot_req[0].field_pos;
+    if (field_pos == FieldPos_Front) field_pos_s = "Front";
+    else if (field_pos == FieldPos_Back) field_pos_s = "Back";
+    else if (field_pos == FieldPos_PF_Back_Red) field_pos_s = "PF Red";
+    else if (field_pos == FieldPos_PF_Back_Blue) field_pos_s = "PF Blue";
+    std::string team_s = blue_team ? "B" : "R";
+		ctrler.print(2, 0, "%s %s    ", team_s, field_pos_s);
+
 		//ctrler.print(2, 0, "%d %d%d%d%d%d%d      ", field_pos_s, team_s, (int)angler.get_temperature(), (int)puncherLeft.get_temperature(), (int)puncherRight.get_temperature(), (int)drive_fl.get_temperature(), (int)drive_fr.get_temperature(), (int)drive_bl.get_temperature(), (int)drive_br.get_temperature());
 		//ctrler.print(2, 0, "BD: %d   ", ball_sensor.get_value());
 		// eff_fl = drive_fl.get_efficiency();

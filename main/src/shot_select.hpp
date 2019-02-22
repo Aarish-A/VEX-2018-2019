@@ -43,7 +43,6 @@ enum Dir {
 enum FieldPos {
   FieldPos_Front,
   FieldPos_Back,
-  FieldPos_PF,
   FieldPos_PF_Back_Red,
   FieldPos_PF_Back_Blue
 };
@@ -60,8 +59,10 @@ struct ShotPos {
 
 extern volatile ShotPos front_SP;
 extern volatile ShotPos pf_SP;
-extern volatile ShotPos auto_SP;
-extern volatile ShotPos pf_back_SP;
+extern volatile ShotPos auto_front_SP;
+extern volatile ShotPos auto_mid_flag_SP;
+extern volatile ShotPos auto_mid_flag_SP;
+extern volatile ShotPos auto_far_flag_SP;
 extern volatile ShotPos back_SP;
 extern volatile ShotPos skills_front_SP;
 extern volatile ShotPos skills_corner_SP;
