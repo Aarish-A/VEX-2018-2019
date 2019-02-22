@@ -390,7 +390,7 @@ void auto_red_back_mid_first() {
     //6 shoot
     turn_vel( FixedAngleTarget(-59.5_deg), (200/90_deg));
 
-    while(pros::millis() - autoStartTime < 13600) pros::delay(5);
+    //while(pros::millis() - autoStartTime < 13600) pros::delay(5);
     auto_set_first_shot(first_flag_pos);
     while (auto_set_shot) pros::delay(10);
     pros::delay(250);
