@@ -12,11 +12,12 @@ const char* menu_screen_titles[num_menu_screens] = {"Shot Tuning", "Auto Select"
 
 // Shot Tuning
 menu_shot_positions menu_shot_position = front_top;
-int shot_positions[num_shot_positions] = { front_SP.top, front_SP.mid, pf_SP.top, pf_SP.mid, auto_SP.top, auto_SP.mid,
-                                           skills_front_SP.top, skills_front_SP.mid, skills_corner_SP.top, skills_corner_SP.mid,
-                                           skills_back_SP.top, skills_back_SP.mid, skills_back_SP.bot };
-const char* menu_shot_strings[num_shot_positions] = {"FrontTop", "FrontMid", "BackTop", "BackMid", "AutoTop", "AutoMid", "SkillFrTop", "SkillFrMid",
-                                                     "SkillCorTop", "SkillCorMid", "SkillBackTop", "SkillBackMid", "SkillsBackBot" };
+int shot_positions[num_shot_positions] = { front_SP.top, front_SP.mid, pf_SP.top, pf_SP.mid, auto_mid_flag_SP.top, auto_mid_flag_SP.mid,
+                                           auto_far_flag_SP.top, auto_far_flag_SP.mid, skills_front_SP.top, skills_front_SP.mid, skills_corner_SP.top,
+                                           skills_corner_SP.mid, skills_back_SP.top, skills_back_SP.mid, skills_back_SP.bot };
+const char* menu_shot_strings[num_shot_positions] = {"FrontTop", "FrontMid", "BackTop", "BackMid", "AutoMidFlagTop", "AutoMidFlagMid",
+                                                     "AutoFarFlagTop", "AutoFarFlapMid", "SkillFrTop", "SkillFrMid", "SkillCorTop",
+                                                     "SkillCorMid", "SkillBackTop", "SkillBackMid", "SkillsBackBot" };
 
 // Auto Select
 auto_routines menu_auto_route = auto_front;
@@ -153,15 +154,17 @@ void read_shot_positions_from_file() {
         case 1: front_SP.mid = temp; break;
         case 2: pf_SP.top = temp; break;
         case 3: pf_SP.mid = temp; break;
-        case 4: auto_SP.top = temp; break;
-        case 5: auto_SP.mid = temp; break;
-        case 6: skills_front_SP.top = temp; break;
-        case 7: skills_front_SP.mid = temp; break;
-        case 8: skills_corner_SP.top = temp; break;
-        case 9: skills_corner_SP.mid = temp; break;
-        case 10: skills_back_SP.top = temp; break;
-        case 11: skills_back_SP.mid = temp; break;
-        case 12: skills_back_SP.bot = temp; break;
+        case 4: auto_mid_flag_SP.top = temp; break;
+        case 5: auto_mid_flag_SP.mid = temp; break;
+        case 6: auto_far_flag_SP.top = temp; break;
+        case 7: auto_far_flag_SP.mid = temp; break;
+        case 8: skills_front_SP.top = temp; break;
+        case 9: skills_front_SP.mid = temp; break;
+        case 10: skills_corner_SP.top = temp; break;
+        case 11: skills_corner_SP.mid = temp; break;
+        case 12: skills_back_SP.top = temp; break;
+        case 13: skills_back_SP.mid = temp; break;
+        case 14: skills_back_SP.bot = temp; break;
       }
       log_ln(LOG_SHOTS, "%d Sucessfully read shot positions from file!", pros::millis());
     }
