@@ -120,10 +120,10 @@ void auto_red_front() {
   move_drive_rel(-12_in,200,true);
   intake.move(0);
   turn_vel( FixedAngleTarget(51.0_deg), (200/50_deg),0);
-  auto_set_first_shot(front_SP.top);
+  auto_set_first_shot(auto_front_SP.top);
   while (auto_set_shot) pros::delay(10);
   pros::delay(250);
-  auto_set_second_shot(front_SP.mid+4);
+  auto_set_second_shot(auto_front_SP.mid);
   while (auto_set_shot) pros::delay(10);
   intake.move(-127);
   auto_set_angler_target(ANGLER_CAP_FLIP_POS);
@@ -261,10 +261,10 @@ void auto_blue_front() {
   move_drive_rel(-12_in,200,true);
   intake.move(0);
   turn_vel( FixedAngleTarget(-48.0_deg), (200/60_deg),0);
-  auto_set_first_shot(front_SP.top);
+  auto_set_first_shot(auto_front_SP.top);
   while (auto_set_shot) pros::delay(10);
   pros::delay(250);
-  auto_set_second_shot(front_SP.mid+4);
+  auto_set_second_shot(auto_front_SP.mid);
   while (auto_set_shot) pros::delay(10);
   intake.move(-127);
   auto_set_angler_target(ANGLER_CAP_FLIP_POS);

@@ -59,6 +59,8 @@ struct ShotPos {
 
 extern volatile ShotPos front_SP;
 extern volatile ShotPos pf_SP;
+extern volatile ShotPos auto_front_SP;
+extern volatile ShotPos auto_mid_flag_SP;
 extern volatile ShotPos auto_mid_flag_SP;
 extern volatile ShotPos auto_far_flag_SP;
 extern volatile ShotPos back_SP;

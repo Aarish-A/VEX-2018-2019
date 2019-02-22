@@ -28,6 +28,8 @@ enum menu_shot_positions {
   back_mid,
   front_top,
   front_mid,
+  auto_front_top,
+  auto_front_mid,
   auto_mid_flag_top,
   auto_mid_flag_mid,
   auto_far_flag_top,

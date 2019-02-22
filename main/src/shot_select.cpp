@@ -8,7 +8,7 @@ pros::Task* shot_req_handle_task = nullptr;
 
 /* Shot Positions */
 volatile ShotPos front_SP (FieldPos_Front, 98, 0);
-volatile ShotPos auto_SP (FieldPos_Front, 88, 0);
+volatile ShotPos auto_front_SP (FieldPos_Front, 88, 0);
 volatile ShotPos auto_mid_flag_SP (FieldPos_Front, 88, 0);
 volatile ShotPos auto_far_flag_SP (FieldPos_Front, 118, 30);
 volatile ShotPos pf_SP (FieldPos_PF_Back_Red, 90, 70);
