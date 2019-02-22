@@ -165,6 +165,7 @@ void auto_red_back() {
     turn_vel(FixedAngleTarget(0_deg), 200/120_deg, 0_deg);
     angler_move(ANGLER_CAP_PU_POS + 50, 100);
     drive_set(80, 0, 0);
+    delay(100);
     while(fabs(drive_fl.get_actual_velocity()) > 1) pros::delay(5);
     resetGlobalAngle();
     drive_fl.tare_position();
@@ -196,7 +197,7 @@ void auto_red_back() {
 
     first_flag_pos = auto_far_flag_SP.top;
     auto_set_angler_target(first_flag_pos);
-    while(pros::millis() - autoStartTime < 13500) pros::delay(5);
+    //while(pros::millis() - autoStartTime < 13500) pros::delay(5);
     auto_set_first_shot(first_flag_pos);
     while (auto_set_shot) pros::delay(10);
     pros::delay(250);
@@ -261,7 +262,7 @@ void auto_blue_front() {
   move_drive_rel(-12_in,200,true);
   intake.move(0);
   turn_vel( FixedAngleTarget(-47.5_deg), (200/60_deg),0);
-  auto_set_first_shot(front_SP.top);
+  auto_set_first_shot(auto_front_SP.top);
   while (auto_set_shot) pros::delay(10);
   pros::delay(250);
   auto_set_second_shot(auto_front_SP.mid);
@@ -306,7 +307,10 @@ void auto_blue_back() {
     turn_vel(FixedAngleTarget(0_deg), 200/120_deg, 0_deg);
     angler_move(ANGLER_CAP_PU_POS + 50, 100);
     drive_set(-80, 0, 0);
+    delay(100);
+    log_ln(LOG_AUTO, "%d before velocity move",pros::millis());
     while(fabs(drive_fl.get_actual_velocity()) > 1) pros::delay(5);
+    log_ln(LOG_AUTO, "%d after velocity move",pros::millis());
     resetGlobalAngle();
     drive_fl.tare_position();
     drive_set(80, 0, 0);
@@ -333,13 +337,12 @@ void auto_blue_back() {
     delay(50);
     log_ln(LOG_AUTO, ">>%d Strafe Done Rest LoopFL: %f, BL: %f, FR: %f, BR %f | Angle: %f", millis(), drive_fl.get_position(), drive_bl.get_position(), drive_fr.get_position(), drive_br.get_position(), RAD_TO_DEG(getGlobalAngle()));
     //6 shoot
-    turn_vel( FixedAngleTarget(62_deg), (200/90_deg));
+    turn_vel( FixedAngleTarget(61_deg), (200/90_deg));
     first_flag_pos = auto_far_flag_SP.top;
-    auto_set_angler_target(first_flag_pos);
-    while(pros::millis() - autoStartTime < 13500) pros::delay(5);
+    //while(pros::millis() - autoStartTime < 13100) pros::delay(5);
     auto_set_first_shot(first_flag_pos);
     while (auto_set_shot) pros::delay(10);
-    pros::delay(250);
+    pros::delay(1000);
     auto_set_second_shot(auto_far_flag_SP.mid);
     while (auto_set_shot) pros::delay(10);
 }
