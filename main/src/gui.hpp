@@ -24,10 +24,10 @@ extern const char* menu_screen_titles[num_menu_screens];
 
 // Shot Tuning
 enum menu_shot_positions {
-  front_top,
-  front_mid,
   back_top,
   back_mid,
+  front_top,
+  front_mid,
   auto_mid_flag_top,
   auto_mid_flag_mid,
   auto_far_flag_top,

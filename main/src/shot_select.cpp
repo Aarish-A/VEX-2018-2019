@@ -11,8 +11,7 @@ volatile ShotPos front_SP (FieldPos_Front, 98, 0);
 volatile ShotPos auto_SP (FieldPos_Front, 88, 0);
 volatile ShotPos auto_mid_flag_SP (FieldPos_Front, 88, 0);
 volatile ShotPos auto_far_flag_SP (FieldPos_Front, 118, 30);
-volatile ShotPos pf_SP (FieldPos_PF, 90, 70);
-volatile ShotPos pf_back_SP (FieldPos_PF_Back_Red, 88, 0);
+volatile ShotPos pf_SP (FieldPos_PF_Back_Red, 90, 70);
 volatile ShotPos back_SP (FieldPos_Back, 90, 10);
 volatile ShotPos skills_front_SP (FieldPos_Front, 112, 41);
 volatile ShotPos skills_corner_SP (FieldPos_Back, 130, 61);
@@ -54,42 +53,14 @@ void set_angle_targ(bool top) {
       shot_req[shot_req_num-1].angle_targ = top? back_SP.top : back_SP.mid;
       break;
 
-    case FieldPos_PF:
+    case FieldPos_PF_Back_Red:
       shot_req[shot_req_num-1].angle_targ = top? pf_SP.top : pf_SP.mid;
       break;
-
-    case FieldPos_PF_Back_Red:
-      shot_req[shot_req_num-1].angle_targ = top? pf_back_SP.top : pf_back_SP.mid;
-      break;
 		case FieldPos_PF_Back_Blue:
-	      shot_req[shot_req_num-1].angle_targ = top? pf_back_SP.top : pf_back_SP.mid;
+	      shot_req[shot_req_num-1].angle_targ = top? pf_SP.top : pf_SP.mid;
 	      break;
   }
-	log_ln(LOG_SHOTS, "%d Set Angle Targ: %d at i:%d | front_SP t:%d m:%d | back_SP t:%d m:%d | pf_SP t:%d m:%d", pros::millis(), shot_req[shot_req_num-1].angle_targ, shot_req_num-1, front_SP.top, front_SP.mid, back_SP.top, back_SP.mid, pf_back_SP.top, pf_back_SP.mid);
-}
-
-void set_angle_targ_right(bool top) {
-  switch (shot_req[shot_req_num-1].field_pos) {
-    case FieldPos_Front:
-      shot_req[shot_req_num-1].angle_targ = top? front_SP.top : front_SP.mid;
-      break;
-
-    case FieldPos_Back:
-      shot_req[shot_req_num-1].angle_targ = top? back_SP.top : back_SP.mid;
-      break;
-
-    case FieldPos_PF:
-      shot_req[shot_req_num-1].angle_targ = top? pf_SP.top : pf_SP.mid;
-      break;
-
-    case FieldPos_PF_Back_Red:
-      shot_req[shot_req_num-1].angle_targ = top? pf_back_SP.top : pf_back_SP.mid;
-      break;
-		case FieldPos_PF_Back_Blue:
-	      shot_req[shot_req_num-1].angle_targ = top? pf_back_SP.top : pf_back_SP.mid;
-	      break;
-  }
-	log_ln(LOG_SHOTS, "%d Set Angle Targ: %d at i:%d | front_SP t:%d m:%d | back_SP t:%d m:%d | pf_SP t:%d m:%d", pros::millis(), shot_req[shot_req_num-1].angle_targ, shot_req_num-1, front_SP.top, front_SP.mid, back_SP.top, back_SP.mid, pf_back_SP.top, pf_back_SP.mid);
+	log_ln(LOG_SHOTS, "%d Set Angle Targ: %d at i:%d | front_SP t:%d m:%d | back_SP t:%d m:%d | pf_SP t:%d m:%d", pros::millis(), shot_req[shot_req_num-1].angle_targ, shot_req_num-1, front_SP.top, front_SP.mid, back_SP.top, back_SP.mid, pf_SP.top, pf_SP.mid);
 }
 
 void set_turn_dir(Dir turn_dir) {
@@ -171,8 +142,7 @@ void set_handled_vars_all() {
 
 void set_shot_req(bool top, Dir turn_dir) {
 	inc_shot_req_num();
-	if(turn_dir == Dir_Right) set_angle_targ_right(top);
-	else set_angle_targ(top);
+	set_angle_targ(top);
 	//set_angle_targ(top);
 	top ? log_ln(LOG_SHOTS, "TOP PRESSED") : log_ln(LOG_SHOTS, "MID PRESSED");
 	set_turn_dir(turn_dir);
@@ -199,9 +169,13 @@ void shot_req_make() {
 		LM_M = check_single_press(BTN_SHOT_L_M);
 	}
 
-	if (check_single_press(BTN_FIELD_FRONT_P, true) || check_single_press(BTN_FIELD_FRONT_M)) set_field_pos(FieldPos_Front);
-	else if (check_single_press(BTN_FIELD_PF_BACK_RED, true, true)) set_field_pos(FieldPos_PF_Back_Red);
+	if (check_single_press(BTN_FIELD_PF_BACK_RED, true, true)) set_field_pos(FieldPos_PF_Back_Red);
 	else if (check_single_press(BTN_FIELD_PF_BACK_BLUE, true, true)) set_field_pos(FieldPos_PF_Back_Blue);
+	else if (check_single_press(BTN_FIELD_FRONT_P, true) || check_single_press(BTN_FIELD_FRONT_M)) {
+		set_field_pos(FieldPos_Front);
+		shot_req_num = 0;
+	}
+
 
 	if (check_single_press(BTN_SHOOT_CANCEL) || check_single_press(BTN_SHOOT_CANCEL, true)) {
 		cancel_shot_cleanup();
@@ -239,10 +213,10 @@ void shot_req_make() {
 	// This is added in to allow shots to be triggered with any button when there is no partner controller connected...
 	// The two ifs are separated only for clarity (when partner controller is connected vs when its not)
 	bool shot_button_triggered = false;
-	if (partner_connected && (RT_M || RM_M)) shot_button_triggered = true;
+	if (partner_connected && (RT_M || RM_M) ) shot_button_triggered = true;
 	else if (!partner_connected && (RT_M || RM_M || LT_M || RM_M)) shot_button_triggered = true;
 
-	if (shot_button_triggered && (shot_req_num == 1 || shot_req[0].field_pos != FieldPos_Front)) {
+	if (shot_button_triggered && !shot_task_running) {
 		log_ln(LOG_PUNCHER, "%d Attempted to Start task", pros::millis());
 		shot_req_handle_start_task();
 	}
