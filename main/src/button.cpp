@@ -2,7 +2,7 @@
 
 button buttons[12];
 button partner_joy[12];
-
+const char* button_names[12] = {"L1", "L2", "R1", "R2", "UP", "DOWN", "LEFT", "RIGHT", "X", "B", "Y", "A"};
 
 void init_buttons() {
   // button_
@@ -45,13 +45,13 @@ bool check_single_press(int button, bool partner, bool overridable) {
   if(!partner || (!partner_connected && overridable)) {
     if (buttons[button].last_pressed_time && (pros::millis() - buttons[button].last_pressed_time) >= buttons[button].button_press_time) {
       buttons[button].last_pressed_time = 0;
-      log_ln(LOG_JOYSTICK, "%d Button %d Single Pressed - Main", pros::millis(), button);
+      log_ln(LOG_JOYSTICK, "%d Button %s Single Pressed - Main", pros::millis(), button_names[button]);
       return true;
     } else return false;
   } else {
     if (partner_joy[button].last_pressed_time && (pros::millis() - partner_joy[button].last_pressed_time) >= partner_joy[button].button_press_time) {
       partner_joy[button].last_pressed_time = 0;
-      log_ln(LOG_JOYSTICK, "%d Button %d Single Pressed - Partner", pros::millis(), button);
+      log_ln(LOG_JOYSTICK, "%d Button %s Single Pressed - Partner", pros::millis(), button_names[button]);
       return true;
     } else return false;
   }

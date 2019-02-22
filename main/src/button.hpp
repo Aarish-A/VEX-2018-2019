@@ -15,6 +15,7 @@ struct button {
 
 extern button buttons[12];
 extern button partner_joy[12];
+extern const char* button_names[12];
 
 void init_buttons();
 void update_buttons();
