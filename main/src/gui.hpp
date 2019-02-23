@@ -54,6 +54,7 @@ extern const char* menu_shot_strings[num_shot_positions];
 enum auto_routines {
   auto_front,
   auto_back,
+  auto_back_no_second_shot,
   auto_skills,
   number_of_auto_routes
 };

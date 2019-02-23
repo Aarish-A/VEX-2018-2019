@@ -22,7 +22,7 @@ const char* menu_shot_strings[num_shot_positions] = {"BackTop <<<<", "BackMid <<
 // Auto Select
 auto_routines menu_auto_route = auto_front;
 char game_side = 'R';
-const char* menu_auto_strings[num_auto_routes] = {"Front Auto", "Back Auto", "Auto Skills"};
+const char* menu_auto_strings[num_auto_routes] = {"Front Auto", "Back Auto", "Back Auto No 2nd Shot", "Auto Skills"};
 
 void write_line(int line_num, std::string line) {
   while(line.size() < 15) {
@@ -110,7 +110,7 @@ void gui_handle() {
           menu_shot_position = (menu_shot_positions)temp;
         }
 
-        if (check_single_press(BTN_INCREMENT_SHOT_SLIDER, true) && shot_positions[(int)menu_shot_position] + 5 < 200) shot_positions[(int)menu_shot_position] += 5;
+        if (check_single_press(BTN_INCREMENT_SHOT_SLIDER, true) && shot_positions[(int)menu_shot_position] + 5 < 220) shot_positions[(int)menu_shot_position] += 5;
         else if (check_single_press(BTN_DECREMENT_SHOT_SLIDER, true) && shot_positions[(int)menu_shot_position] - 5 > 0) shot_positions[(int)menu_shot_position] -= 5;
 
         if (check_single_press(BTN_TEST_SHOT_POSITION, true)) {
