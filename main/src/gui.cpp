@@ -22,7 +22,7 @@ const char* menu_shot_strings[num_shot_positions] = {"BackTop <<<<", "BackMid <<
 // Auto Select
 auto_routines menu_auto_route = auto_front;
 char game_side = 'R';
-const char* menu_auto_strings[num_auto_routes] = {"Front Auto", "Back Auto", "Auto Skills"};
+const char* menu_auto_strings[num_auto_routes] = {"Front Auto", "Back Auto", "Back Auto No 2nd Shot", "Auto Skills"};
 
 void write_line(int line_num, std::string line) {
   while(line.size() < 15) {
