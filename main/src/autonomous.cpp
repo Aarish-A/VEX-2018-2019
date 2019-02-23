@@ -614,10 +614,9 @@ void programming_skills() {
   auto_set_first_shot(skills_back_SP.mid);
   while (auto_set_shot) pros::delay(10);
   pros::delay(250);
-  turn_vel(FixedAngleTarget(-90_deg), 200/90_deg, 0_deg, true);
-
   intake.move(0);
   angler_move(ANGLER_CAP_PU_POS);
+  turn_vel(FixedAngleTarget(-90_deg), 200/90_deg, 0_deg, true);
   pros::delay(250);
   flatten_against_wall(true, false);
   resetGlobalAngle();
@@ -630,19 +629,19 @@ void programming_skills() {
     drive_set(-50, 10, 0);
     while(right_platform_sensor.get_value() > 1750) pros::delay(5);
     drive_br.tare_position();
-    while(drive_br.get_position() > -40) pros::delay(5);
+    while(drive_br.get_position() > -30) pros::delay(5);
     drive_set(10, 10, 0);
   } else if (right_platform_sensor.get_value() < 1750 && left_platform_sensor.get_value() < 1750) {
     drive_br.tare_position();
     drive_set(-50, 10, 0);
-    while(drive_br.get_position() > -40) pros::delay(5);
+    while(drive_br.get_position() > -30) pros::delay(5);
     drive_set(10, 10, 0);
   }
   pros::delay(100);
   drive_set(0);
 
   drive_br.tare_position();
-  for(int i = 40; i < 100; i++) {
+  for(int i = 40; i < 120; i++) {
     setDrive(0, i, 0);
     pros::delay(3);
   }
