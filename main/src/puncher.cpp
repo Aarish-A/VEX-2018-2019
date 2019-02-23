@@ -235,6 +235,7 @@ void pun_handle() {
       case PunState::FatalError:
 			{
 				pun_set(0);
+				ctrler.print(2, 0, "FATAL ERROR");
 				//log_ln(LOG_PUNCHER,"puncher power was just set to 0 in state: Fatal Error");
 				//log_ln(LOG_PUNCHER, "In fatal error puncher power: %d", puncherLeft.get_power());
         break;

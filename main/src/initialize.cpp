@@ -54,6 +54,8 @@ void initialize() {
 void disabled() {
   is_disabled = true;
   shot_req_handle_stop_task();
+  auto_update_stop_task();
+  pun_set(PUN_HOLD_PWR);
   log_ln(LOG_AUTO, "   --- %d START DISABLED --- \n", pros::millis());
   setDrive(0);
   angler.move(0);
