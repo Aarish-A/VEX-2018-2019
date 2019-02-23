@@ -72,13 +72,13 @@ void set_turn_dir(Dir turn_dir) {
 		shot_req[shot_req_num-1].flag_pos.y = 94;
 		if (turn_dir == Dir_Left) {
 			// ctrler.print(2, 0, "Red  Left");
-			if (game_side == 'R') shot_req[shot_req_num-1].flag_pos.x = -30 - FLAG_WIDTH;
-			else if (game_side == 'B') shot_req[shot_req_num-1].flag_pos.x = -33;
+			if (game_side == 'R') shot_req[shot_req_num-1].flag_pos.x = -30 - FLAG_WIDTH + 2;
+			else if (game_side == 'B') shot_req[shot_req_num-1].flag_pos.x = -33 + 2;
 		}
 		else if (turn_dir == Dir_Right) {
 			// ctrler.print(2, 0, "Red  Right");
-			if (game_side == 'R') shot_req[shot_req_num-1].flag_pos.x = 20  - FLAG_WIDTH;
-			else if (game_side == 'B') shot_req[shot_req_num-1].flag_pos.x = 16;
+			if (game_side == 'R') shot_req[shot_req_num-1].flag_pos.x = 20  - FLAG_WIDTH + 2;
+			else if (game_side == 'B') shot_req[shot_req_num-1].flag_pos.x = 16 + 2;
 		}
 		else shot_req[shot_req_num-1].flag_pos.x = 0;
 	}
@@ -88,13 +88,13 @@ void set_turn_dir(Dir turn_dir) {
 		shot_req[shot_req_num-1].flag_pos.y = 94;
 		if (turn_dir == Dir_Left) {
 			// ctrler.print(2, 0, "Blue  Left");
-			if (game_side == 'R') shot_req[shot_req_num-1].flag_pos.x = -26 - FLAG_WIDTH;
-			else if (game_side == 'B') shot_req[shot_req_num-1].flag_pos.x = -29;
+			if (game_side == 'R') shot_req[shot_req_num-1].flag_pos.x = -26 - FLAG_WIDTH + 2;
+			else if (game_side == 'B') shot_req[shot_req_num-1].flag_pos.x = -29 + 2;
 		}
 		else if (turn_dir == Dir_Right) {
 			// ctrler.print(2, 0, "Blue  Right");
-			if (game_side == 'R') shot_req[shot_req_num-1].flag_pos.x = 23 - FLAG_WIDTH;
-			else if (game_side == 'B') shot_req[shot_req_num-1].flag_pos.x = 20;
+			if (game_side == 'R') shot_req[shot_req_num-1].flag_pos.x = 23 - FLAG_WIDTH + 2;
+			else if (game_side == 'B') shot_req[shot_req_num-1].flag_pos.x = 20 + 2;
 		}
 		else {
 			shot_req[shot_req_num-1].flag_pos.x = 0;
