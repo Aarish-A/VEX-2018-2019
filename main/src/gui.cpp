@@ -110,7 +110,7 @@ void gui_handle() {
           menu_shot_position = (menu_shot_positions)temp;
         }
 
-        if (check_single_press(BTN_INCREMENT_SHOT_SLIDER, true) && shot_positions[(int)menu_shot_position] + 5 < 200) shot_positions[(int)menu_shot_position] += 5;
+        if (check_single_press(BTN_INCREMENT_SHOT_SLIDER, true) && shot_positions[(int)menu_shot_position] + 5 < 220) shot_positions[(int)menu_shot_position] += 5;
         else if (check_single_press(BTN_DECREMENT_SHOT_SLIDER, true) && shot_positions[(int)menu_shot_position] - 5 > 0) shot_positions[(int)menu_shot_position] -= 5;
 
         if (check_single_press(BTN_TEST_SHOT_POSITION, true)) {

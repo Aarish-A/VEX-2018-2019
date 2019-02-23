@@ -525,7 +525,7 @@ void programming_skills() {
   flatten_against_wall(true, true);
   resetGlobalAngle();
   move_drive_rel(-8_in,200);
-  turn_vel(FixedAngleTarget(90.0_deg), 200/90_deg, 0_deg, true);
+  turn_vel(FixedAngleTarget(92.0_deg), 200/90_deg, 0_deg, true);
   auto_set_first_shot(skills_corner_SP.top);
   while (auto_set_shot) pros::delay(10);
   pros::delay(400);
@@ -577,7 +577,7 @@ void programming_skills() {
   log_ln(LOG_AUTO, ">>%d Strafe Done Rest LoopFL: %f, BL: %f, FR: %f, BR %f | Angle: %f", millis(), drive_fl.get_position(), drive_bl.get_position(), drive_fr.get_position(), drive_br.get_position(), RAD_TO_DEG(getGlobalAngle()));
   //6 shoot
 
-  turn_vel( FixedAngleTarget(-59.5_deg), (200/90_deg));
+  turn_vel( FixedAngleTarget(-58.0_deg), (200/90_deg));
   auto_set_first_shot(skills_back_SP.top);
   while (auto_set_shot) pros::delay(10);
   pros::delay(400);
@@ -585,10 +585,15 @@ void programming_skills() {
   while (auto_set_shot) pros::delay(10);
   pros::delay(250);
   turn_vel(FixedAngleTarget(-90.0_deg), 200/90_deg, 0_deg, true);
-
+  drive_fl.tare_position();
+  drive_set(-75,0,0);
+  log_ln(LOG_AUTO, ">>%d Start Strafe FL: %f, BL: %f, FR: %f, BR %f | Angle: %f", millis(), drive_fl.get_position(), drive_bl.get_position(), drive_fr.get_position(), drive_br.get_position(), RAD_TO_DEG(getGlobalAngle()));
+  while(fabs(drive_fl.get_position())<90){delay(10);}
+  log_ln(LOG_AUTO, ">>%d Strafe Done Main LoopFL: %f, BL: %f, FR: %f, BR %f | Angle: %f", millis(), drive_fl.get_position(), drive_bl.get_position(), drive_fr.get_position(), drive_br.get_position(), RAD_TO_DEG(getGlobalAngle()));
+  drive_set(0, 0, 0);
   angler_move(ANGLER_CAP_PU_POS);
   intake.move(-80);
-  move_drive_rel(20_in,200);
+  move_drive_rel(22_in,200);
   turn_vel(FixedAngleTarget(0_deg), 200/90_deg, 0_deg, true);
   move_drive_rel(7.0_in,200);
   move_drive_rel(-2.0_in,200);
@@ -645,6 +650,8 @@ void programming_skills() {
   setDrive(0, -20, 0);
   pros::delay(150);
   setDrive(0, 0, 0);
+  pros::delay(100);
+  resetGlobalAngle();
   turn_vel(FixedAngleTarget(85.0_deg), 200/80_deg, 0, 0, 0, 100);
 
   flatten_against_wall(true, true, 17);
