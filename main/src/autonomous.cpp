@@ -82,11 +82,18 @@ void auto_red_front() {
   //2 Back up turn and shoot
   double first_flag_pos = front_SP.top;
   auto_set_angler_target(first_flag_pos);
-  move_drive_rel(-(cap_dis-6), 200);
+  move_drive_rel(-(cap_dis-4), 200, false);
+  flatten_against_wall(false, true);
+  resetGlobalAngle();
+  move_drive_rel(11_in, 200);
   log_ln(LOG_AUTO, "%d BACK UP: L:%d, R:%d, Drive Angle:%f", millis(), enc_l.get_value(), enc_r.get_value(), RAD_TO_DEG(getGlobalAngle()));
   log_ln(LOG_AUTO, "%d Drive Angle:%f", millis(), RAD_TO_DEG(getGlobalAngle()));
   ////pros::delay(30000); //deletes
-  turn_vel( FixedAngleTarget(-87.0_deg), (200/90_deg),0);
+  turn_vel( FixedAngleTarget(-90.0_deg), (200/90_deg),0);
+  intake.move(0);
+  log_ln(LOG_AUTO, "%d BACK UP: L:%d, R:%d, Drive Angle:%f", millis(), enc_l.get_value(), enc_r.get_value(), RAD_TO_DEG(getGlobalAngle()));
+  log_ln(LOG_AUTO, "%d Drive Angle:%f", millis(), RAD_TO_DEG(getGlobalAngle()));
+  ////pros::delay(30000); //deletes
   //pros::delay(200);
   intake.move(0);
 
@@ -98,34 +105,36 @@ void auto_red_front() {
   auto_set_second_shot(front_SP.mid);
   while (auto_set_shot) pros::delay(10);
   printf("Done second shot");
-  angler_move(ANGLER_PU_POS,100);
-
-  drive_set(-80, 0, 0);
-  pros::delay(750);
-  resetGlobalAngle(); //HElLO ANJALEE, 0 IS NOW FACING THE FLAGS
-  drive_fl.tare_position();
-  delay(100);
-  drive_set(65, 0, 0);
-  while(fabs(drive_fl.get_position()) < 175) pros::delay(5);
-  drive_set(0, 0, 0);
-
-  // move_drive_rel(1.5_in,200);
-  //
-  // //pros::delay(30000); //delete
-  //
-  //
-  //
-  turn_vel_side(FixedAngleTarget(45_deg), (200/60_deg),0,true);
-  //
   angler_move(ANGLER_CAP_PU_POS,100);
+  turn_vel_side(FixedAngleTarget(-46_deg), (200/60_deg),0,true);
+
+  // drive_set(-80, 0, 0);
+  // pros::delay(750);
+  // resetGlobalAngle(); //HElLO ANJALEE, 0 IS NOW FACING THE FLAGS
+  // drive_fl.tare_position();
+  // delay(100);
+  // drive_set(65, 0, 0);
+  // while(fabs(drive_fl.get_position()) < 175) pros::delay(5);
+  // drive_set(0, 0, 0);
+  //
+  // // move_drive_rel(1.5_in,200);
+  // //
+  // // //pros::delay(30000); //delete
+  // //
+  // //
+  // //
+  // turn_vel_side(FixedAngleTarget(45_deg), (200/60_deg),0,true);
+  // //
+  // angler_move(ANGLER_CAP_PU_POS,100);
   intake.move(127);
-  move_drive_rel(16_in,200);
+  move_drive_rel(14_in,200);
   // //pros::delay(30000); //delete
   pros::delay(250);
   move_drive_rel(-12_in,200,true);
   //intake.move(0);
   auto_set_angler_target(auto_front_SP.top);
-  turn_vel( FixedAngleTarget(51.0_deg), (200/50_deg),0);
+  // turn_vel( FixedAngleTarget(51.0_deg), (200/50_deg),0);
+  turn_vel_side(FixedAngleTarget(-41.5_deg), (200/70_deg),0,true);
   pros::delay(200);
   auto_set_first_shot(auto_front_SP.top);
   //pros::delay(200);
@@ -162,58 +171,113 @@ void auto_red_back() {
 
     //2 Turn and shoot
     move_drive_rel(-8.5_in,200);
-    double first_flag_pos = auto_mid_flag_SP.top;
+    // double first_flag_pos = auto_mid_flag_SP.top;
+    double first_flag_pos = skills_back_SP.top;
     auto_set_angler_target(first_flag_pos);
-    turn_vel(FixedAngleTarget(-70.0_deg), 127/60_deg, -6.2_deg, 7_deg, false);//-69.2_deg hits the flag. Turn range is -68.2-70
+    turn_vel(FixedAngleTarget(-52.5_deg), 200/90_deg, 0_deg);//-69.2_deg hits the flag. Turn range is -68.2-70
+    while(pros::millis() - autoStartTime < 12500) pros::delay(2);
     auto_set_first_shot(first_flag_pos);
     while (auto_set_shot) pros::delay(10);
     pros::delay(150);
-    auto_set_second_shot(auto_mid_flag_SP.mid);
+    // auto_set_second_shot(auto_mid_flag_SP.mid);
+    auto_set_second_shot(skills_back_SP.mid);
     while (auto_set_shot) pros::delay(10);
     log_ln(LOG_AUTO, "%d First finished at: %d", pros::millis(), pros::millis() - autoStartTime);
-    turn_vel(FixedAngleTarget(0_deg), 200/120_deg, 0_deg);
-    angler_move(ANGLER_CAP_PU_POS + 50, 100);
-    drive_set(65, 0, 0);
-    delay(100);
-    while(fabs(drive_fl.get_actual_velocity()) > 1) pros::delay(5);
-    resetGlobalAngle();
-    drive_fl.tare_position();
-    drive_set(-80, 0, 0);
-    while(fabs(drive_fl.get_position()) < 45) pros::delay(5);
-    drive_set(0, 0, 0);
-    angler_move(ANGLER_CAP_PU_POS, 100);
-    move_drive_rel(6.0_in, 200);
-
-    pros::delay(250);
-
-    move_drive_rel(-10_in,200);
-
-    log_ln(LOG_AUTO, "%d Before Strafe - A:%f \n", millis(), RAD_TO_DEG(getGlobalAngle()));
-    auto_set_angler_target(first_flag_pos);
-    delay(100);
-    drive_fl.tare_position();
-    drive_set(-75,0,0);
-    log_ln(LOG_AUTO, ">>%d Start Strafe FL: %f, BL: %f, FR: %f, BR %f | Angle: %f", millis(), drive_fl.get_position(), drive_bl.get_position(), drive_fr.get_position(), drive_br.get_position(), RAD_TO_DEG(getGlobalAngle()));
-    while(fabs(drive_fl.get_position())<70){delay(10);}
-    log_ln(LOG_AUTO, ">>%d Strafe Done Main LoopFL: %f, BL: %f, FR: %f, BR %f | Angle: %f", millis(), drive_fl.get_position(), drive_bl.get_position(), drive_fr.get_position(), drive_br.get_position(), RAD_TO_DEG(getGlobalAngle()));
-    drive_set(0, 0, 0);
-    drive_set(0);
-    log_ln(LOG_AUTO, ">>%d Strafe Done Break LoopFL: %f, BL: %f, FR: %f, BR %f | Angle: %f", millis(), drive_fl.get_position(), drive_bl.get_position(), drive_fr.get_position(), drive_br.get_position(), RAD_TO_DEG(getGlobalAngle()));
-    delay(50);
-    log_ln(LOG_AUTO, ">>%d Strafe Done Rest LoopFL: %f, BL: %f, FR: %f, BR %f | Angle: %f", millis(), drive_fl.get_position(), drive_bl.get_position(), drive_fr.get_position(), drive_br.get_position(), RAD_TO_DEG(getGlobalAngle()));
-    //6 shoot
-    turn_vel( FixedAngleTarget(-57.5_deg), (200/90_deg));
-
-    first_flag_pos = auto_far_flag_SP.top;
-    auto_set_angler_target(first_flag_pos);
-    // while(pros::millis() - autoStartTime < 13500) pros::delay(5);
-    auto_set_first_shot(first_flag_pos);
-    while (auto_set_shot) pros::delay(10);
-    pros::delay(500);
-    auto_set_second_shot(auto_far_flag_SP.mid);
-    while (auto_set_shot) pros::delay(10);
+    move_drive_rel(-1_in, 150);
+    auto_set_angler_target(ANGLER_CAP_PU_POS);
+    intake.move(0);
+    // ctrler.print(2, 0, "%d", autoStartTime);
+    // turn_vel(FixedAngleTarget(-92.0_deg), 200/60_deg, 0_deg);
+    //
+    // // Platform
+    // flatten_against_wall(true, false);
+    // resetGlobalAngle();
+    //
+    // if (left_platform_sensor.get_value() > 1750) {
+    //   drive_set(70, 10, 0);
+    //   while(left_platform_sensor.get_value() > 1750) pros::delay(5);
+    //   drive_set(-15, 10, 0);
+    //   pros::delay(50);
+    //   drive_set(-50, 5, 0);
+    //   drive_br.tare_position();
+    //   uint32_t timeout = pros::millis();
+    //   while(drive_br.get_position() > -20 && pros::millis() - timeout < 750) pros::delay(5);
+    //   drive_set(10, 10, 0);
+    // } else if (right_platform_sensor.get_value() > 1750) {
+    //   drive_set(-70, 10, 0);
+    //   while(right_platform_sensor.get_value() > 1750) pros::delay(5);
+    //   drive_br.tare_position();
+    //   while(drive_br.get_position() > -45) pros::delay(5);
+    //   drive_set(10, 10, 0);
+    // } else if (right_platform_sensor.get_value() < 1750 && left_platform_sensor.get_value() < 1750) {
+    //   drive_br.tare_position();
+    //   drive_set(-70, 10, 0);
+    //   while(drive_br.get_position() > -45) pros::delay(5);
+    //   drive_set(10, 10, 0);
+    // }
+    // pros::delay(100);
+    // drive_set(0);
+    //
+    // drive_br.tare_position();
+    // for(int i = 40; i < 115; i++) {
+    //   setDrive(0, i, 0);
+    //   pros::delay(3);
+    // }
+    // while(drive_br.get_position() < 410) pros::delay(5);
+    // setDrive(0, -20, 0);
+    // pros::delay(150);
+    // setDrive(0, 0, 0);
+    // pros::delay(100);
+//     turn_vel(FixedAngleTarget(-70.0_deg), 127/60_deg, -6.2_deg, 7_deg, false);//-69.2_deg hits the flag. Turn range is -68.2-70
+//     auto_set_first_shot(first_flag_pos);
+//     while (auto_set_shot) pros::delay(10);
+//     pros::delay(150);
+//     auto_set_second_shot(auto_mid_flag_SP.mid);
+//     while (auto_set_shot) pros::delay(10);
+//     log_ln(LOG_AUTO, "%d First finished at: %d", pros::millis(), pros::millis() - autoStartTime);
+//     turn_vel(FixedAngleTarget(0_deg), 200/120_deg, 0_deg);
+//     angler_move(ANGLER_CAP_PU_POS + 50, 100);
+//     drive_set(65, 0, 0);
+//     delay(100);
+//     while(fabs(drive_fl.get_actual_velocity()) > 1) pros::delay(5);
+//     resetGlobalAngle();
+//     drive_fl.tare_position();
+//     drive_set(-80, 0, 0);
+//     while(fabs(drive_fl.get_position()) < 45) pros::delay(5);
+//     drive_set(0, 0, 0);
+//     angler_move(ANGLER_CAP_PU_POS, 100);
+//     move_drive_rel(6.0_in, 200);
+//
+//     pros::delay(250);
+//
+//     move_drive_rel(-10_in,200);
+//
+//     log_ln(LOG_AUTO, "%d Before Strafe - A:%f \n", millis(), RAD_TO_DEG(getGlobalAngle()));
+//     auto_set_angler_target(first_flag_pos);
+//     delay(100);
+//     drive_fl.tare_position();
+//     drive_set(-75,0,0);
+//     log_ln(LOG_AUTO, ">>%d Start Strafe FL: %f, BL: %f, FR: %f, BR %f | Angle: %f", millis(), drive_fl.get_position(), drive_bl.get_position(), drive_fr.get_position(), drive_br.get_position(), RAD_TO_DEG(getGlobalAngle()));
+//     while(fabs(drive_fl.get_position())<70){delay(10);}
+//     log_ln(LOG_AUTO, ">>%d Strafe Done Main LoopFL: %f, BL: %f, FR: %f, BR %f | Angle: %f", millis(), drive_fl.get_position(), drive_bl.get_position(), drive_fr.get_position(), drive_br.get_position(), RAD_TO_DEG(getGlobalAngle()));
+//     drive_set(0, 0, 0);
+//     drive_set(0);
+//     log_ln(LOG_AUTO, ">>%d Strafe Done Break LoopFL: %f, BL: %f, FR: %f, BR %f | Angle: %f", millis(), drive_fl.get_position(), drive_bl.get_position(), drive_fr.get_position(), drive_br.get_position(), RAD_TO_DEG(getGlobalAngle()));
+//     delay(50);
+//     log_ln(LOG_AUTO, ">>%d Strafe Done Rest LoopFL: %f, BL: %f, FR: %f, BR %f | Angle: %f", millis(), drive_fl.get_position(), drive_bl.get_position(), drive_fr.get_position(), drive_br.get_position(), RAD_TO_DEG(getGlobalAngle()));
+//     //6 shoot
+//     turn_vel( FixedAngleTarget(-57.5_deg), (200/90_deg));
+//
+//     first_flag_pos = auto_far_flag_SP.top;
+//     auto_set_angler_target(first_flag_pos);
+//     // while(pros::millis() - autoStartTime < 13500) pros::delay(5);
+//     auto_set_first_shot(first_flag_pos);
+//     while (auto_set_shot) pros::delay(10);
+//     pros::delay(500);
+//     auto_set_second_shot(auto_far_flag_SP.mid);
+//     while (auto_set_shot) pros::delay(10);
 }
-
+//
 void auto_red_back_no_second_shot() {
   //1 PU
   log_ln(LOG_AUTO, "%d Angler Start move: %d", millis(), angler.get_position());
@@ -227,44 +291,44 @@ void auto_red_back_no_second_shot() {
   double first_flag_pos = auto_mid_flag_SP.top;
   auto_set_angler_target(first_flag_pos);
   turn_vel(FixedAngleTarget(-70.0_deg), 127/60_deg, -6.2_deg, 7_deg, false);//-69.2_deg hits the flag. Turn range is -68.2-70
-  while(pros::millis() - autoStartTime < 10000) pros::delay(5);
+  // while(pros::millis() - autoStartTime < 8000) pros::delay(5);
   auto_set_first_shot(first_flag_pos);
   while (auto_set_shot) pros::delay(10);
   pros::delay(150);
   auto_set_second_shot(auto_mid_flag_SP.mid);
   while (auto_set_shot) pros::delay(10);
   turn_vel(FixedAngleTarget(0_deg), 200/120_deg, 0_deg);
-  angler_move(ANGLER_CAP_PU_POS + 50, 100);
-  drive_set(80, 0, 0);
-  delay(100);
-  while(fabs(drive_fl.get_actual_velocity()) > 1) pros::delay(5);
-  resetGlobalAngle();
-  drive_fl.tare_position();
-  drive_set(-80, 0, 0);
-  while(fabs(drive_fl.get_position()) < 45) pros::delay(5);
-  drive_set(0, 0, 0);
-  angler_move(ANGLER_CAP_PU_POS, 100);
-  move_drive_rel(6.0_in, 200);
-
-  pros::delay(250);
-
-  move_drive_rel(-10_in,200);
-
-  log_ln(LOG_AUTO, "%d Before Strafe - A:%f \n", millis(), RAD_TO_DEG(getGlobalAngle()));
-  auto_set_angler_target(first_flag_pos);
-  delay(100);
-  drive_fl.tare_position();
-  drive_set(-75,0,0);
-  log_ln(LOG_AUTO, ">>%d Start Strafe FL: %f, BL: %f, FR: %f, BR %f | Angle: %f", millis(), drive_fl.get_position(), drive_bl.get_position(), drive_fr.get_position(), drive_br.get_position(), RAD_TO_DEG(getGlobalAngle()));
-  while(fabs(drive_fl.get_position())<70){delay(10);}
-  log_ln(LOG_AUTO, ">>%d Strafe Done Main LoopFL: %f, BL: %f, FR: %f, BR %f | Angle: %f", millis(), drive_fl.get_position(), drive_bl.get_position(), drive_fr.get_position(), drive_br.get_position(), RAD_TO_DEG(getGlobalAngle()));
-  drive_set(0, 0, 0);
-  drive_set(0);
-  log_ln(LOG_AUTO, ">>%d Strafe Done Break LoopFL: %f, BL: %f, FR: %f, BR %f | Angle: %f", millis(), drive_fl.get_position(), drive_bl.get_position(), drive_fr.get_position(), drive_br.get_position(), RAD_TO_DEG(getGlobalAngle()));
-  delay(50);
-  log_ln(LOG_AUTO, ">>%d Strafe Done Rest LoopFL: %f, BL: %f, FR: %f, BR %f | Angle: %f", millis(), drive_fl.get_position(), drive_bl.get_position(), drive_fr.get_position(), drive_br.get_position(), RAD_TO_DEG(getGlobalAngle()));
-  //6 shoot
-  turn_vel( FixedAngleTarget(-58.5_deg), (200/90_deg));
+  // angler_move(ANGLER_CAP_PU_POS + 50, 100);
+  // drive_set(80, 0, 0);
+  // delay(100);
+  // while(fabs(drive_fl.get_actual_velocity()) > 1) pros::delay(5);
+  // resetGlobalAngle();
+  // drive_fl.tare_position();
+  // drive_set(-80, 0, 0);
+  // while(fabs(drive_fl.get_position()) < 45) pros::delay(5);
+  // drive_set(0, 0, 0);
+  // angler_move(ANGLER_CAP_PU_POS, 100);
+  // move_drive_rel(6.0_in, 200);
+  //
+  // pros::delay(250);
+  //
+  // move_drive_rel(-10_in,200);
+  //
+  // log_ln(LOG_AUTO, "%d Before Strafe - A:%f \n", millis(), RAD_TO_DEG(getGlobalAngle()));
+  // auto_set_angler_target(first_flag_pos);
+  // delay(100);
+  // drive_fl.tare_position();
+  // drive_set(-75,0,0);
+  // log_ln(LOG_AUTO, ">>%d Start Strafe FL: %f, BL: %f, FR: %f, BR %f | Angle: %f", millis(), drive_fl.get_position(), drive_bl.get_position(), drive_fr.get_position(), drive_br.get_position(), RAD_TO_DEG(getGlobalAngle()));
+  // while(fabs(drive_fl.get_position())<70){delay(10);}
+  // log_ln(LOG_AUTO, ">>%d Strafe Done Main LoopFL: %f, BL: %f, FR: %f, BR %f | Angle: %f", millis(), drive_fl.get_position(), drive_bl.get_position(), drive_fr.get_position(), drive_br.get_position(), RAD_TO_DEG(getGlobalAngle()));
+  // drive_set(0, 0, 0);
+  // drive_set(0);
+  // log_ln(LOG_AUTO, ">>%d Strafe Done Break LoopFL: %f, BL: %f, FR: %f, BR %f | Angle: %f", millis(), drive_fl.get_position(), drive_bl.get_position(), drive_fr.get_position(), drive_br.get_position(), RAD_TO_DEG(getGlobalAngle()));
+  // delay(50);
+  // log_ln(LOG_AUTO, ">>%d Strafe Done Rest LoopFL: %f, BL: %f, FR: %f, BR %f | Angle: %f", millis(), drive_fl.get_position(), drive_bl.get_position(), drive_fr.get_position(), drive_br.get_position(), RAD_TO_DEG(getGlobalAngle()));
+  // //6 shoot
+  // turn_vel( FixedAngleTarget(-58.5_deg), (200/90_deg));
 }
 
 void auto_blue_front() {
@@ -364,54 +428,55 @@ void auto_blue_back() {
     move_drive_rel(-6.5_in,200);
     double first_flag_pos = auto_mid_flag_SP.top;
     auto_set_angler_target(first_flag_pos);
-    turn_vel(FixedAngleTarget(76.5_deg), 127/60_deg, 6.2_deg, 7_deg, false);//-69.2_deg hits the flag. Turn range is -68.2-70
+    turn_vel(FixedAngleTarget(57.5_deg), 200/90_deg, 0_deg);//-69.2_deg hits the flag. Turn range is -68.2-70
+    while(pros::millis() - autoStartTime < 13000) pros::delay(2);
     auto_set_first_shot(first_flag_pos);
     while (auto_set_shot) pros::delay(10);
     pros::delay(150);
     auto_set_second_shot(auto_mid_flag_SP.mid);
     while (auto_set_shot) pros::delay(10);
     log_ln(LOG_AUTO, "%d First finished at: %d", pros::millis(), pros::millis() - autoStartTime);
-    turn_vel(FixedAngleTarget(0_deg), 200/120_deg, 0_deg);
-    angler_move(ANGLER_CAP_PU_POS + 50, 100);
-    drive_set(-65, 0, 0);
-    delay(100);
-    log_ln(LOG_AUTO, "%d before velocity move",pros::millis());
-    while(fabs(drive_fl.get_actual_velocity()) > 1) pros::delay(5);
-    log_ln(LOG_AUTO, "%d after velocity move",pros::millis());
-    resetGlobalAngle();
-    drive_fl.tare_position();
-    drive_set(80, 0, 0);
-    while(fabs(drive_fl.get_position()) < 45) pros::delay(5);
-    drive_set(0, 0, 0);
-    angler_move(ANGLER_CAP_PU_POS, 100);
-    move_drive_rel(4.0_in, 200);
-
-    pros::delay(250);
-
-    move_drive_rel(-10_in,200);
-
-    log_ln(LOG_AUTO, "%d Before Strafe - A:%f \n", millis(), RAD_TO_DEG(getGlobalAngle()));
-    auto_set_angler_target(first_flag_pos);
-    delay(100);
-    drive_fl.tare_position();
-    drive_set(75,0,0);
-    log_ln(LOG_AUTO, ">>%d Start Strafe FL: %f, BL: %f, FR: %f, BR %f | Angle: %f", millis(), drive_fl.get_position(), drive_bl.get_position(), drive_fr.get_position(), drive_br.get_position(), RAD_TO_DEG(getGlobalAngle()));
-    while(fabs(drive_fl.get_position())<70){delay(10);}
-    log_ln(LOG_AUTO, ">>%d Strafe Done Main LoopFL: %f, BL: %f, FR: %f, BR %f | Angle: %f", millis(), drive_fl.get_position(), drive_bl.get_position(), drive_fr.get_position(), drive_br.get_position(), RAD_TO_DEG(getGlobalAngle()));
-    drive_set(0, 0, 0);
-    drive_set(0);
-    log_ln(LOG_AUTO, ">>%d Strafe Done Break LoopFL: %f, BL: %f, FR: %f, BR %f | Angle: %f", millis(), drive_fl.get_position(), drive_bl.get_position(), drive_fr.get_position(), drive_br.get_position(), RAD_TO_DEG(getGlobalAngle()));
-    delay(50);
-    log_ln(LOG_AUTO, ">>%d Strafe Done Rest LoopFL: %f, BL: %f, FR: %f, BR %f | Angle: %f", millis(), drive_fl.get_position(), drive_bl.get_position(), drive_fr.get_position(), drive_br.get_position(), RAD_TO_DEG(getGlobalAngle()));
-    //6 shoot
-    turn_vel( FixedAngleTarget(63_deg), (200/90_deg));
-    first_flag_pos = auto_far_flag_SP.top-5;
-    // while(pros::millis() - autoStartTime < 13500) pros::delay(5);
-    auto_set_first_shot(first_flag_pos);
-    while (auto_set_shot) pros::delay(10);
-    pros::delay(500);
-    auto_set_second_shot(auto_far_flag_SP.mid-5);
-    while (auto_set_shot) pros::delay(10);
+    // turn_vel(FixedAngleTarget(0_deg), 200/120_deg, 0_deg);
+    // angler_move(ANGLER_CAP_PU_POS + 50, 100);
+    // drive_set(-65, 0, 0);
+    // delay(100);
+    // log_ln(LOG_AUTO, "%d before velocity move",pros::millis());
+    // while(fabs(drive_fl.get_actual_velocity()) > 1) pros::delay(5);
+    // log_ln(LOG_AUTO, "%d after velocity move",pros::millis());
+    // resetGlobalAngle();
+    // drive_fl.tare_position();
+    // drive_set(80, 0, 0);
+    // while(fabs(drive_fl.get_position()) < 45) pros::delay(5);
+    // drive_set(0, 0, 0);
+    // angler_move(ANGLER_CAP_PU_POS, 100);
+    // move_drive_rel(4.0_in, 200);
+    //
+    // pros::delay(250);
+    //
+    // move_drive_rel(-10_in,200);
+    //
+    // log_ln(LOG_AUTO, "%d Before Strafe - A:%f \n", millis(), RAD_TO_DEG(getGlobalAngle()));
+    // auto_set_angler_target(first_flag_pos);
+    // delay(100);
+    // drive_fl.tare_position();
+    // drive_set(75,0,0);
+    // log_ln(LOG_AUTO, ">>%d Start Strafe FL: %f, BL: %f, FR: %f, BR %f | Angle: %f", millis(), drive_fl.get_position(), drive_bl.get_position(), drive_fr.get_position(), drive_br.get_position(), RAD_TO_DEG(getGlobalAngle()));
+    // while(fabs(drive_fl.get_position())<70){delay(10);}
+    // log_ln(LOG_AUTO, ">>%d Strafe Done Main LoopFL: %f, BL: %f, FR: %f, BR %f | Angle: %f", millis(), drive_fl.get_position(), drive_bl.get_position(), drive_fr.get_position(), drive_br.get_position(), RAD_TO_DEG(getGlobalAngle()));
+    // drive_set(0, 0, 0);
+    // drive_set(0);
+    // log_ln(LOG_AUTO, ">>%d Strafe Done Break LoopFL: %f, BL: %f, FR: %f, BR %f | Angle: %f", millis(), drive_fl.get_position(), drive_bl.get_position(), drive_fr.get_position(), drive_br.get_position(), RAD_TO_DEG(getGlobalAngle()));
+    // delay(50);
+    // log_ln(LOG_AUTO, ">>%d Strafe Done Rest LoopFL: %f, BL: %f, FR: %f, BR %f | Angle: %f", millis(), drive_fl.get_position(), drive_bl.get_position(), drive_fr.get_position(), drive_br.get_position(), RAD_TO_DEG(getGlobalAngle()));
+    // //6 shoot
+    // turn_vel( FixedAngleTarget(63_deg), (200/90_deg));
+    // first_flag_pos = auto_far_flag_SP.top-5;
+    // // while(pros::millis() - autoStartTime < 13500) pros::delay(5);
+    // auto_set_first_shot(first_flag_pos);
+    // while (auto_set_shot) pros::delay(10);
+    // pros::delay(500);
+    // auto_set_second_shot(auto_far_flag_SP.mid-5);
+    // while (auto_set_shot) pros::delay(10);
 }
 
 void auto_blue_back_no_second_shot() {
