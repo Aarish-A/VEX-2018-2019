@@ -121,24 +121,85 @@ void move_drive_new(double distance, int max_vel, bool brake) {
   int start_time = pros::millis();
 
   // double kP = 200.0 / 30.0;
-  double kP = 127.0 / 30.0;
+  double kP = 127.0 / 24.0_in;
+  double kD = 20.0;
+  double kI = 0.01;
+  double p_val = 0;
+  double d_val = 0;
+  double i_val = 0;
   double current_pos;
+  double delta_enc_l;
+  double delta_enc_r;
   double error;
+  double last_error = 0;
   double target_vel;
+  double right_side = 0;
+  double left_side = 0;
+  double start_angle = getGlobalAngle();
+  double angle_error;
+  bool correcting = false;
+
+  double ramp_voltage = 0;
+  do {
+    delta_enc_l = (enc_l.get_value() - enc_l_start);
+    delta_enc_r = (enc_r.get_value() - enc_r_start);
+    current_pos = (delta_enc_l * SPN_TO_IN_L + delta_enc_r * SPN_TO_IN_R) / 2.0;
+    ramp_voltage += 0.5 * sgn(distance);
+    setDrive(0, ramp_voltage, 0);
+    log_ln(LOG_AUTO, "%d Ramping up at %f volts, Current Position: %f", pros::millis(), ramp_voltage, current_pos);
+    pros::delay(1);
+  } while(abs(current_pos) < abs(distance) * 0.15);
 
   do {
-    double delta_enc_l = (enc_l.get_value() - enc_l_start);
-    double delta_enc_r = (enc_r.get_value() - enc_r_start);
+    delta_enc_l = (enc_l.get_value() - enc_l_start);
+    delta_enc_r = (enc_r.get_value() - enc_r_start);
     current_pos = (delta_enc_l * SPN_TO_IN_L + delta_enc_r * SPN_TO_IN_R) / 2.0;
     error = distance - current_pos;
-    target_vel = (error * kP);
+    angle_error = RAD_TO_DEG(getGlobalAngle() - start_angle);
+
+    p_val = error * kP;
+    if (last_error && abs(error) < abs(distance * 0.25) && (error - last_error) < 2.0_in) d_val = (error - last_error) * kD;
+    else d_val = 0;
+
+    if (abs(error) < 4.0_in) i_val += error * kI;
+    else i_val = 0;
+
+    target_vel = p_val + d_val + i_val;
     if (abs(target_vel) > max_vel) target_vel = sgn(target_vel) * max_vel;
-    else if (abs(target_vel) < 25) target_vel = sgn(target_vel) * 25;
-    log_ln(LOG_AUTO, "%d Delta Left: %f, Delta Right: %f", pros::millis(), delta_enc_l, delta_enc_r);
-    log_ln(LOG_AUTO, "%d Moving to %f, Cur: %f, Error: %f, Target Vel: %f", pros::millis(), distance, current_pos, error, target_vel);
+
+    double angle_kP = 1.05 / 3.0;
+    if (angle_error > (1 / angle_kP)) {
+      if (distance > 0) {
+        right_side = target_vel * abs(angle_error) * angle_kP;
+        left_side = target_vel;
+      } else if (distance < 0) {
+        left_side = target_vel * abs(angle_error) * angle_kP;
+        right_side = target_vel;
+      }
+      correcting = true;
+    } else if (angle_error < -(1 / angle_kP)) {
+      if (distance > 0) {
+        right_side = target_vel;
+        left_side = target_vel * abs(angle_error) * angle_kP;
+      } else if (distance < 0) {
+        left_side = target_vel;
+        right_side = target_vel * abs(angle_error) * angle_kP;
+      }
+
+      correcting = true;
+    } else correcting = false;
+
+    log_ln(LOG_AUTO, "%d Left Side: %f, Right Side: %f", pros::millis(), left_side, right_side);
+    log_ln(LOG_AUTO, "%d Moving to %f, Cur: %f, Error: %f, Target Vel: %f, P: %f, I: %f, D: %f", pros::millis(), distance, current_pos, error, target_vel, p_val, i_val, d_val);
     log_ln(LOG_AUTO, "%d Actual Velocities are: FR: %f, FL: %f, BL: %f, BR: %f", pros::millis(), drive_fr.get_actual_velocity(), drive_fl.get_actual_velocity(), drive_bl.get_actual_velocity(), drive_br.get_actual_velocity());
+    log_ln(LOG_AUTO, "%d Start Angle: %f, Current Angle: %f, Delta Angle: %f", pros::millis(), RAD_TO_DEG(start_angle), RAD_TO_DEG(getGlobalAngle()), RAD_TO_DEG(getGlobalAngle() - start_angle));
+    if (correcting) log_ln(LOG_AUTO, "%d CORRECTING", pros::millis());
     log_ln(LOG_AUTO, "----------------------------------------------------------------");
-    setDrive(0, target_vel, 0);
+
+    if (correcting) setDriveTurn(left_side, right_side);
+    else setDrive(0, target_vel, 0);
+
+    last_error = error;
     pros::delay(1);
   } while(abs(error) > 0.5_in);
 
@@ -158,7 +219,7 @@ void move_drive_new(double distance, int max_vel, bool brake) {
 	} else setDriveVel(0, 0, 0);
   current_pos = ((enc_l.get_value() - enc_l_start) * SPN_TO_IN_L + (enc_r.get_value() - enc_r_start) * SPN_TO_IN_R) / 2.0;
   error = distance - current_pos;
-  log_ln(LOG_AUTO, "%d FINISHED TURN >>>> Took %d ms, Ended At: %f, Error: %f", pros::millis(), pros::millis() - start_time, current_pos, error);
+  log_ln(LOG_AUTO, "%d FINISHED TURN >>>> Took %d ms, Ended At: %f, Error: %f, Change in Angle %f", pros::millis(), pros::millis() - start_time, current_pos, error, RAD_TO_DEG(getGlobalAngle() - start_angle));
 }
 
 

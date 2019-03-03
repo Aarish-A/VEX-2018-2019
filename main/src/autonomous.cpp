@@ -35,8 +35,11 @@ void autonomous() {
   shot_req_handle_stop_task();
   auto_update_start_task();
   autoStartTime = millis();
+  resetGlobalAngle();
 
-  move_drive_new(40.0_in, 200, true);
+  move_drive_new(10.0_in);
+  pros::delay(200);
+  move_drive_new(-10.0_in);
   // move_drive_rel(40.0_in, 200, true);
 
 
