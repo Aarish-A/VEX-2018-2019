@@ -121,6 +121,11 @@ void pun_handle() {
 			case PunState::CalWait:
 			{
 				if (millis() >= pun_state_change_time + 100) {
+					log_ln(LOG_PUNCHER, "%d Pun Cal Before Tare (*PUN_RATIO). LeftPos:%f, RightPos:%f", pros::millis(), puncherLeft.get_position()/PUN_RATIO, puncherRight.get_position()/PUN_RATIO);
+				  puncherLeft.tare_position();
+				  puncherRight.tare_position();
+					log_ln(LOG_PUNCHER, "%d Pun Cal Done Tare. LeftPos:%f, RightPos:%f", pros::millis(), puncherLeft.get_position(), puncherRight.get_position());
+
 					pun_set(127);
 					pun_state_change(PunState::Loading);
 				}
