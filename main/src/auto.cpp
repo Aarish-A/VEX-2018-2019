@@ -116,24 +116,29 @@ void drive_brake() {
 
 void move_drive_new(double distance, int max_vel, bool brake) {
   log_ln(LOG_AUTO, "%d Started moving %f inches straight", pros::millis(), distance);
-  int enc_l_start = enc_l.get_value();
-  int enc_r_start = enc_r.get_value();
+  double enc_l_start = enc_l.get_value();
+  double enc_r_start = enc_r.get_value();
   int start_time = pros::millis();
 
-  float kP = 200 / 25;
-
-  float current_pos;
-  float error;
-  float target_vel;
+  // double kP = 200.0 / 30.0;
+  double kP = 127.0 / 30.0;
+  double current_pos;
+  double error;
+  double target_vel;
 
   do {
-    current_pos = ((enc_l.get_value() - enc_l_start) * SPN_TO_IN_L + (enc_r.get_value() - enc_r_start) * SPN_TO_IN_R) / 2.0;
+    double delta_enc_l = (enc_l.get_value() - enc_l_start);
+    double delta_enc_r = (enc_r.get_value() - enc_r_start);
+    current_pos = (delta_enc_l * SPN_TO_IN_L + delta_enc_r * SPN_TO_IN_R) / 2.0;
     error = distance - current_pos;
     target_vel = (error * kP);
     if (abs(target_vel) > max_vel) target_vel = sgn(target_vel) * max_vel;
-    setDriveVel(0, target_vel, 0);
+    else if (abs(target_vel) < 25) target_vel = sgn(target_vel) * 25;
+    log_ln(LOG_AUTO, "%d Delta Left: %f, Delta Right: %f", pros::millis(), delta_enc_l, delta_enc_r);
     log_ln(LOG_AUTO, "%d Moving to %f, Cur: %f, Error: %f, Target Vel: %f", pros::millis(), distance, current_pos, error, target_vel);
     log_ln(LOG_AUTO, "%d Actual Velocities are: FR: %f, FL: %f, BL: %f, BR: %f", pros::millis(), drive_fr.get_actual_velocity(), drive_fl.get_actual_velocity(), drive_bl.get_actual_velocity(), drive_br.get_actual_velocity());
+    log_ln(LOG_AUTO, "----------------------------------------------------------------");
+    setDrive(0, target_vel, 0);
     pros::delay(1);
   } while(abs(error) > 0.5_in);
 
@@ -150,10 +155,10 @@ void move_drive_new(double distance, int max_vel, bool brake) {
 	  log_ln(LOG_AUTO, "%d Stopping from FL: %f, BL: %f, FR: %f, BR %f", millis(), drive_fl.get_position(), drive_bl.get_position(), drive_fr.get_position(), drive_br.get_position());
 	  while (fabs(drive_fl.get_position() - targetFL) > 3 || fabs(drive_bl.get_position() - targetBL) > 3 || fabs(drive_fr.get_position() - targetFR) > 3 || fabs(drive_br.get_position() - targetBR) > 3) delay(1);
 	  delay(100);
-	}
+	} else setDriveVel(0, 0, 0);
   current_pos = ((enc_l.get_value() - enc_l_start) * SPN_TO_IN_L + (enc_r.get_value() - enc_r_start) * SPN_TO_IN_R) / 2.0;
   error = distance - current_pos;
-  log_ln(LOG_AUTO, "%d Took %d ms, Ended At: %f, Error: %f", pros::millis(), pros::millis() - start_time, current_pos, error);
+  log_ln(LOG_AUTO, "%d FINISHED TURN >>>> Took %d ms, Ended At: %f, Error: %f", pros::millis(), pros::millis() - start_time, current_pos, error);
 }
 
 
@@ -264,6 +269,7 @@ void move_drive_rel(double dis, int vel, bool stop) {
 	  delay(100);
 	}
   log_ln(LOG_AUTO, "%d Moved to FL: %f, BL: %f, FR: %f, BR %f |  Angle %f ", millis(), drive_fl.get_position(), drive_bl.get_position(), drive_fr.get_position(), drive_br.get_position(), RAD_TO_DEG(getGlobalAngle()));
+  log_ln(LOG_AUTO, "%d FINISHED TURN >>>> Error: %f", pros::millis(), dis - posCur);
   //log_ln("%f %f", (enc_L.get_value() - enc_LStart) / 360.0 * 2.75 * M_PI, (enc_R.get_value() - enc_RStart) / 360.0 * 2.75 * M_PI);
   setDrive(0);
 }

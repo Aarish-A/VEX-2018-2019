@@ -1,0 +1,9 @@
+make: Nothing to be done for 'quick'.
+Uploading program "pilons" (hot.package.bin) to V5 slot 1 on COM25 (compressed)
+Compressing library
+Library is already onboard V5
+Uploading slot_1.ini
+Compressing binary
+Uploading slot_1.bin (hot.package.bin)
+Finished uploading "pilons" (hot.package.bin) to V5
+‡HWARNING - pros.serial.terminal.terminal:stop - Stopping terminal
