@@ -33,7 +33,7 @@ constexpr int PUN_LOAD_WAIT_TIME = 150;
 
 extern PunState pun_state;
 extern PunState pun_state_last;
-extern int pun_state_change_time;
+extern int pun_state_set_time;
 
 extern int pun_shots;
 extern bool pun_ball;
@@ -44,10 +44,11 @@ extern double auto_angler_target;
 void pun_init();
 void pun_set(int power);
 void pun_move(double position, int32_t velocity = 200);
-void pun_cal();
 void pun_handle();
 void pun_fatal_disable();
 
-void pun_state_change(PunState state);
+void pun_power_state_set(int power, PunState state);
+void pun_move_state_set(double position, PunState state);
+void pun_state_set(PunState state);
 
 //extern int shot_num; //Either 0, 1 or 2; Used to keep track of completed shot requests

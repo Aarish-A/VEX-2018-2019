@@ -284,9 +284,10 @@ void shot_req_handle(void *param) {
 		log_ln(LOG_SHOTS, "%d Start Shot 1", pros::millis());
 		tempShot.angler_to = pros::millis() + ANGLER_REACH_T0;
 		while(fabs(angler.get_position() - tempShot.angle_targ) > 5 && pros::millis() < tempShot.angler_to) pros::delay(5);
-		if (pros::millis() > tempShot.angler_to)
+		if (pros::millis() >= tempShot.angler_to)
 		{
 			log_ln(LOG_SHOTS, "%d SHOT 1 - ANGLER TO", pros::millis());
+			shot_cleanup();
 			return;
 		}
 		shot_pun_go = true;
@@ -305,9 +306,10 @@ void shot_req_handle(void *param) {
 			angler.move_absolute(tempShot.angle_targ, 200);
 			tempShot.angler_to = pros::millis() + ANGLER_REACH_T0;
 			while(fabs(angler.get_position() - tempShot.angle_targ) > 5 && pros::millis() < tempShot.angler_to) pros::delay(5);
-			if (pros::millis() > tempShot.angler_to)
+			if (pros::millis() >= tempShot.angler_to)
 			{
 				log_ln(LOG_SHOTS, "%d SHOT 2 - ANGLER TO", pros::millis());
+				shot_cleanup();
 				return;
 			}
 			shot_pun_go = true;

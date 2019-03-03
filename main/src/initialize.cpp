@@ -39,8 +39,7 @@ void initialize() {
 	gui_init();
 	pun_init();
   printf("%d start reset \n", pros::millis());
-  pun_set(-20);
-  pun_state_change(PunState::CalA);
+  pun_state_set(PunState::CalA);
   while (pun_state != PunState::Loaded && pun_state != PunState::FatalError) {
     pun_handle();
     pros::delay(10);

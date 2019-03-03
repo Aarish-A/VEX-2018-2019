@@ -8,7 +8,7 @@ bool blue_team = true;
 pros::Task* auto_update_task = nullptr;
 void auto_update(void* param) {
   pos.reset();
-  //if (pun_state != PunState::Loaded) pun_state_change(PunState::Loading);
+  //if (pun_state != PunState::Loaded) pun_state_set(PunState::Loading);
   while (true)
   {
     //if (is_disabled) printf(" >>> %d IN AUTO_UPDATE IN DISABLED\n", millis());
