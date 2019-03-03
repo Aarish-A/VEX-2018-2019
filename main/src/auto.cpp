@@ -114,6 +114,48 @@ void drive_brake() {
 	*/
 }
 
+void move_drive_new(double distance, int max_vel, bool brake) {
+  log_ln(LOG_AUTO, "%d Started moving %f inches straight", pros::millis(), distance);
+  int enc_l_start = enc_l.get_value();
+  int enc_r_start = enc_r.get_value();
+  int start_time = pros::millis();
+
+  float kP = 200 / 25;
+
+  float current_pos;
+  float error;
+  float target_vel;
+
+  do {
+    current_pos = ((enc_l.get_value() - enc_l_start) * SPN_TO_IN_L + (enc_r.get_value() - enc_r_start) * SPN_TO_IN_R) / 2.0;
+    error = distance - current_pos;
+    target_vel = (error * kP);
+    if (abs(target_vel) > max_vel) target_vel = sgn(target_vel) * max_vel;
+    setDriveVel(0, target_vel, 0);
+    log_ln(LOG_AUTO, "%d Moving to %f, Cur: %f, Error: %f, Target Vel: %f", pros::millis(), distance, current_pos, error, target_vel);
+    log_ln(LOG_AUTO, "%d Actual Velocities are: FR: %f, FL: %f, BL: %f, BR: %f", pros::millis(), drive_fr.get_actual_velocity(), drive_fl.get_actual_velocity(), drive_bl.get_actual_velocity(), drive_br.get_actual_velocity());
+    pros::delay(1);
+  } while(abs(error) > 0.5_in);
+
+  if (brake) {
+		double targetFL = drive_fl.get_position() + (error) * (DRIVE_TPR / (DRIVE_DIA * M_PI));
+	  double targetBL = drive_bl.get_position() + (error) * (DRIVE_TPR / (DRIVE_DIA * M_PI));
+	  double targetFR = drive_fr.get_position() + (error) * (DRIVE_TPR / (DRIVE_DIA * M_PI));
+	  double targetBR = drive_br.get_position() + (error) * (DRIVE_TPR / (DRIVE_DIA * M_PI));
+
+	  drive_fl.move_absolute(targetFL, 25);
+	  drive_bl.move_absolute(targetBL, 25);
+	  drive_fr.move_absolute(targetFR, 25);
+	  drive_br.move_absolute(targetBR, 25);
+	  log_ln(LOG_AUTO, "%d Stopping from FL: %f, BL: %f, FR: %f, BR %f", millis(), drive_fl.get_position(), drive_bl.get_position(), drive_fr.get_position(), drive_br.get_position());
+	  while (fabs(drive_fl.get_position() - targetFL) > 3 || fabs(drive_bl.get_position() - targetBL) > 3 || fabs(drive_fr.get_position() - targetFR) > 3 || fabs(drive_br.get_position() - targetBR) > 3) delay(1);
+	  delay(100);
+	}
+  current_pos = ((enc_l.get_value() - enc_l_start) * SPN_TO_IN_L + (enc_r.get_value() - enc_r_start) * SPN_TO_IN_R) / 2.0;
+  error = distance - current_pos;
+  log_ln(LOG_AUTO, "%d Took %d ms, Ended At: %f, Error: %f", pros::millis(), pros::millis() - start_time, current_pos, error);
+}
+
 
 void move_drive(vector targ, int vel, bool stop) {
 	double offset = (targ-pos.position()).magnitude();
@@ -145,6 +187,8 @@ void move_drive(vector targ, int vel, bool stop) {
       }
     }
     setDriveVel(0, i * sgn(offset), 0);
+    printf("%d VELOCITIES ARE: FR: %f, FL: %f, BL: %f, BR: %f", pros::millis(), drive_fr.get_actual_velocity(), drive_fl.get_actual_velocity(),
+                                                                drive_bl.get_actual_velocity(), drive_br.get_actual_velocity());
     delay(1);
   }
 	log_ln(LOG_AUTO, "%d Done move to (%f, %f) at (%f, %f, %f) Offs: %f", millis(), targ.x, targ.y, pos.x, pos.y, RAD_TO_DEG(pos.a), offset);

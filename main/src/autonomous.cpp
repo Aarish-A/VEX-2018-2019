@@ -34,38 +34,53 @@ void autonomous() {
   is_disabled = false;
   shot_req_handle_stop_task();
   auto_update_start_task();
-  log_ln(LOG_AUTO, "%d Drive Angle:%f", millis(), RAD_TO_DEG(getGlobalAngle()));
   autoStartTime = millis();
-  setDriveVel(0);
-  delay(10);
-  log_ln(LOG_AUTO, "   --- %d START AUTO --- \n", pros::millis());
-  log_ln(LOG_AUTO, " >>> %d PUN TEMP: %f", pros::millis(), puncherLeft.get_temperature());
-  pos.reset();
-  resetGlobalAngle();
-  log_ln(LOG_AUTO, "%d L:%d, R:%d, Drive Angle:%f", millis(), enc_l.get_value(), enc_r.get_value(), RAD_TO_DEG(getGlobalAngle()));
-  printf("%d RAISE ANGLER \n", pros::millis());
 
-  if (game_side == 'R') {
-    switch(menu_auto_route) {
-      case auto_front: auto_red_front(); break;
-      case auto_back: auto_red_back(); break;
-      case auto_back_no_second_shot: auto_red_back_no_second_shot(); break;
-      case auto_skills: programming_skills(); break;
-      case number_of_auto_routes: break;
-    }
-  } else if (game_side == 'B') {
-    switch(menu_auto_route) {
-      case auto_front: auto_blue_front(); break;
-      case auto_back: auto_blue_back(); break;
-      case auto_back_no_second_shot: auto_blue_back_no_second_shot(); break;
-      case auto_skills: programming_skills(); break;
-      case number_of_auto_routes: break;
-    }
-  }
+  move_drive_new(40.0_in, 200, true);
+
+
+
 
   ctrler.print(2,0,"Auto T: %d   ",millis()-autoStartTime);
   log_ln(LOG_AUTO, "%d Auto Done in %dms", pros::millis(), pros::millis()-autoStartTime);
   auto_update_stop_task();
+
+
+  // is_disabled = false;
+  // shot_req_handle_stop_task();
+  // auto_update_start_task();
+  // log_ln(LOG_AUTO, "%d Drive Angle:%f", millis(), RAD_TO_DEG(getGlobalAngle()));
+  // autoStartTime = millis();
+  // setDriveVel(0);
+  // delay(10);
+  // log_ln(LOG_AUTO, "   --- %d START AUTO --- \n", pros::millis());
+  // log_ln(LOG_AUTO, " >>> %d PUN TEMP: %f", pros::millis(), puncherLeft.get_temperature());
+  // pos.reset();
+  // resetGlobalAngle();
+  // log_ln(LOG_AUTO, "%d L:%d, R:%d, Drive Angle:%f", millis(), enc_l.get_value(), enc_r.get_value(), RAD_TO_DEG(getGlobalAngle()));
+  // printf("%d RAISE ANGLER \n", pros::millis());
+  //
+  // if (game_side == 'R') {
+  //   switch(menu_auto_route) {
+  //     case auto_front: auto_red_front(); break;
+  //     case auto_back: auto_red_back(); break;
+  //     case auto_back_no_second_shot: auto_red_back_no_second_shot(); break;
+  //     case auto_skills: programming_skills(); break;
+  //     case number_of_auto_routes: break;
+  //   }
+  // } else if (game_side == 'B') {
+  //   switch(menu_auto_route) {
+  //     case auto_front: auto_blue_front(); break;
+  //     case auto_back: auto_blue_back(); break;
+  //     case auto_back_no_second_shot: auto_blue_back_no_second_shot(); break;
+  //     case auto_skills: programming_skills(); break;
+  //     case number_of_auto_routes: break;
+  //   }
+  // }
+  //
+  // ctrler.print(2,0,"Auto T: %d   ",millis()-autoStartTime);
+  // log_ln(LOG_AUTO, "%d Auto Done in %dms", pros::millis(), pros::millis()-autoStartTime);
+  // auto_update_stop_task();
 }
 
 void auto_red_front() {
