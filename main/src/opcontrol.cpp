@@ -33,7 +33,7 @@ void opcontrol() {
 	intake_state_set(IntakeState::Off);
 
 	while (true) {
-		printf("Ball ls %d\n",ball_sensor.get_value());
+		//printf("Ball ls %d\n",ball_sensor.get_value());
 		pos.update();
 		update_buttons();
 		pun_handle();

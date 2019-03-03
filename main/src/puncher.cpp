@@ -81,9 +81,6 @@ void pun_cal() {
 void pun_handle() {
   static uint32_t ball_on_time = 0;
   static uint32_t wait_slip_end = 0;
-	//log_ln(LOG_PUNCHER, "%d LN: %f", pros::millis(), last_number);
-	// log_ln(LOG_PUNCHER, "%d Ball Detector is at %d", pros::millis(), ball_sensor.get_value());
-	// log_ln(LOG_PUNCHER, "%d The ball is %d", pros::millis(), (int)pun_ball);
 
   if (ball_sensor.get_value() < PUN_BALL_THRESH) {
 			ball_on_time = millis();
@@ -99,6 +96,41 @@ void pun_handle() {
 		}
 
 		switch (pun_state) {
+			case PunState::CalA:
+			{
+				if (fabs(puncherLeft.get_actual_velocity()) > 12) {
+					pun_state_change(PunState::CalB);
+				}
+				else if (millis() >= pun_state_change_time + 500) {
+					log_ln(LOG_PUNCHER, "disableA - TO - don't kill pun_cal");
+					pun_state_change(PunState::CalB);
+				}
+				break;
+			}
+			case PunState::CalB:
+			{
+				if (fabs(puncherLeft.get_actual_velocity()) < 10) {
+					pun_state_change(PunState::CalWait);
+				}
+				else if (millis() >= pun_state_change_time + 1500)	{
+					log_ln(LOG_PUNCHER, "disableB");
+			    pun_fatal_disable();
+				}
+				break;
+			}
+			case PunState::CalWait:
+			{
+				if (millis() >= pun_state_change_time + 100) {
+					log_ln(LOG_PUNCHER, "%d Pun Cal Before Tare (*PUN_RATIO). LeftPos:%f, RightPos:%f", pros::millis(), puncherLeft.get_position()/PUN_RATIO, puncherRight.get_position()/PUN_RATIO);
+				  puncherLeft.tare_position();
+				  puncherRight.tare_position();
+					log_ln(LOG_PUNCHER, "%d Pun Cal Done Tare. LeftPos:%f, RightPos:%f", pros::millis(), puncherLeft.get_position(), puncherRight.get_position());
+
+					pun_set(127);
+					pun_state_change(PunState::Loading);
+				}
+				break;
+			}
 			case PunState::Loading:
 			{
 				double targ = (PUN_OFFSET + (pun_shots * PUN_TPR) + PUN_HOLD);

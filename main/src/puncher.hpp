@@ -7,12 +7,15 @@
 #include "controls.hpp"
 
 enum class PunState {
-  Loading, //0
-  Loaded, //1
-  Cancel, //2
-  Pull_Back, //3
-  Bolt_Wait, //4
-  FatalError //5
+  CalA, //0
+  CalB, //1
+  CalWait, //2
+  Loading, //3
+  Loaded, //4
+  Cancel, //5
+  Pull_Back, //6
+  Bolt_Wait, //7
+  FatalError //8
 };
 
 constexpr double PUN_RATIO = 5.0/3.0;
