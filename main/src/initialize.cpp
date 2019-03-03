@@ -14,6 +14,7 @@ void side_initialize();
 void auto_routine_initialize();
 
 void initialize() {
+  printf("%d PRINT - START INIT \n", pros::millis());
   log_ln(LOG_AUTO, "   --- %d START INITIALIZE --- \n", pros::millis());
   buttons[BTN_SHOT_L_T].button_press_time = BTN_PRESS_TIME;
 	buttons[BTN_SHOT_L_M].button_press_time = BTN_PRESS_TIME;
@@ -37,12 +38,21 @@ void initialize() {
   controls_init();
 	gui_init();
 	pun_init();
+  printf("%d start reset \n", pros::millis());
+  pun_set(-20);
+  pun_state_change(PunState::CalA);
+  while (pun_state != PunState::Loaded && pun_state != PunState::FatalError) {
+    pun_handle();
+    pros::delay(10);
+  }
+  /*
 	pun_cal();
   drive_init();
   angler_init();
   intake_init();
 	angler_cal();
   decapper_cal();
+  */
   log_ln(LOG_DRIVE, "%d Finished Init ", pros::millis());
 }
 
