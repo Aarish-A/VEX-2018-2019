@@ -370,7 +370,26 @@ void move_drive_rel_simple(double dis, int vel, bool stop) {
   //log_ln("%f %f", (enc_L.get_value() - enc_LStart) / 360.0 * 2.75 * M_PI, (enc_R.get_value() - enc_RStart) / 360.0 * 2.75 * M_PI);
   setDrive(0);
 }
-
+void turn_vel_new(const AngleTarget& target)
+{
+  double dA = target.getTarget() - getGlobalAngle();
+  double fixeddA = dA;
+  double drive_volt = 0;
+  double kP = 200/60;
+  while(fabs(dA)> (0.4*fixeddA))
+  {
+    dA = target.getTarget() - getGlobalAngle();
+    drive_volt = RAD_TO_DEG(dA) * kP;
+    setDrive(0,0,drive_volt);
+    //printf("hello world %f and %f\n", target.getTarget(), getGlobalAngle());
+  }
+  setDrive(0,0,35);
+  while(fabs(dA)>1.3_deg) dA = target.getTarget() - getGlobalAngle();
+  setDrive(0);
+  drive_brake();
+  delay(1000);
+  printf("End angle is %f\n", RAD_TO_DEG(getGlobalAngle()));
+}
 void turn_vel(const AngleTarget& target, double kP, double offset, float drive_turn_handled_offset, short req_handled_num,  double max_vel)
 {
 	kP = fabs(kP);
