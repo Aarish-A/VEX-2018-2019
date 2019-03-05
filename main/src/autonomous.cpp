@@ -37,7 +37,28 @@ void autonomous() {
   autoStartTime = millis();
   resetGlobalAngle();
 
-  sweep_turn(FixedAngleTarget(90_deg), 10_in);
+  log_ln(LOG_AUTO, "%d Angler Start move: %d", millis(), angler.get_position());
+  angler_move(ANGLER_PU_POS, 100);
+  intake.move(127);
+  double cap_dis = 43.0_in;
+  move_drive_new(cap_dis, 200, true);
+
+  //2 Turn and shoot
+  move_drive_new(-8.5_in,200);
+  // double first_flag_pos = auto_mid_flag_SP.top;
+  double first_flag_pos = skills_back_SP.top;
+  auto_set_angler_target(first_flag_pos);
+  turn_vel_new(FixedAngleTarget(-52.5_deg));//-69.2_deg hits the flag. Turn range is -68.2-70
+  auto_set_first_shot(first_flag_pos);
+  while (auto_set_shot) pros::delay(10);
+  pros::delay(150);
+  // auto_set_second_shot(auto_mid_flag_SP.mid);
+  auto_set_second_shot(skills_back_SP.mid);
+  while (auto_set_shot) pros::delay(10);
+  log_ln(LOG_AUTO, "%d First finished at: %d", pros::millis(), pros::millis() - autoStartTime);
+  move_drive_new(-1_in, 150);
+  auto_set_angler_target(ANGLER_CAP_PU_POS);
+  intake.move(0);
   // move_drive_rel(40.0_in, 200, true);
 
 
@@ -46,44 +67,11 @@ void autonomous() {
   ctrler.print(2,0,"Auto T: %d   ",millis()-autoStartTime);
   log_ln(LOG_AUTO, "%d Auto Done in %dms", pros::millis(), pros::millis()-autoStartTime);
   auto_update_stop_task();
+  //flatten_against_wall(true, true);
 
-
-  // is_disabled = false;
-  // shot_req_handle_stop_task();
-  // auto_update_start_task();
-  // log_ln(LOG_AUTO, "%d Drive Angle:%f", millis(), RAD_TO_DEG(getGlobalAngle()));
-  // autoStartTime = millis();
-  // setDriveVel(0);
-  // delay(10);
-  // log_ln(LOG_AUTO, "   --- %d START AUTO --- \n", pros::millis());
-  // log_ln(LOG_AUTO, " >>> %d PUN TEMP: %f", pros::millis(), puncherLeft.get_temperature());
-  // pos.reset();
-  // resetGlobalAngle();
-  // log_ln(LOG_AUTO, "%d L:%d, R:%d, Drive Angle:%f", millis(), enc_l.get_value(), enc_r.get_value(), RAD_TO_DEG(getGlobalAngle()));
-  // printf("%d RAISE ANGLER \n", pros::millis());
-  //
-  // if (game_side == 'R') {
-  //   switch(menu_auto_route) {
-  //     case auto_front: auto_red_front(); break;
-  //     case auto_back: auto_red_back(); break;
-  //     case auto_back_no_second_shot: auto_red_back_no_second_shot(); break;
-  //     case auto_skills: programming_skills(); break;
-  //     case number_of_auto_routes: break;
-  //   }
-  // } else if (game_side == 'B') {
-  //   switch(menu_auto_route) {
-  //     case auto_front: auto_blue_front(); break;
-  //     case auto_back: auto_blue_back(); break;
-  //     case auto_back_no_second_shot: auto_blue_back_no_second_shot(); break;
-  //     case auto_skills: programming_skills(); break;
-  //     case number_of_auto_routes: break;
-  //   }
-  // }
-  //
-  // ctrler.print(2,0,"Auto T: %d   ",millis()-autoStartTime);
-  // log_ln(LOG_AUTO, "%d Auto Done in %dms", pros::millis(), pros::millis()-autoStartTime);
-  // auto_update_stop_task();
+  shot_req_handled_num = 0;
 }
+
 
 void auto_red_front() {
   //1 Pick up balls
