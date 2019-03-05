@@ -36,6 +36,9 @@ constexpr double CM_TO_IN(long double val) { return val  * 2.54; }
 constexpr double DEG_TO_RAD(long double val) { return val * M_PI / 180.0; }
 constexpr double RAD_TO_DEG(long double val) { return val * 180.0 / M_PI; }
 
+constexpr double MECANUM_DRIVE_WIDTH = 13.25;
+constexpr double EDGE_TO_TRACKING_WHEEL = 1.25;
+
 
 double getGlobalAngle();
 void resetGlobalAngle();
@@ -46,13 +49,14 @@ void setDriveVel(int x, int y, int a);
 void setDriveVel(int vel);
 
 void drive_brake();
-void move_drive_new(double distance, int max_vel = 200, bool stop = true);
+void move_drive_new(double distance, int max_power = 200, bool stop = true);
 void move_drive(vector targ, int vel = 200, bool stop = true);
 
 void move_drive_rel(double targ, int vel = 200, bool brake = true);
 void move_drive_rel_simple(double dis, int vel, bool stop = true);
 
 //void turnDrive(double targ, int vel);
+void sweep_turn(const AngleTarget& target, float radius, bool cw = true, bool brake = true, int max_power = 200);
 void turn_vel(const AngleTarget& target, double kP, double offset = 0, float drive_turn_handled_time = 0, short req_handled_num = 0,  double max_vel = 200);
 void turn_vel_fast(const AngleTarget& target, double kP, double offset = 0, double correct_amount = 0, bool correct_left = 0);
 void turn_vel_auto(const AngleTarget& target, double kP, double offset = 0, float drive_turn_handled_time = 0, double angler_target = 0);

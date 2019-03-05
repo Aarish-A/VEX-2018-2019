@@ -37,9 +37,7 @@ void autonomous() {
   autoStartTime = millis();
   resetGlobalAngle();
 
-  move_drive_new(10.0_in);
-  pros::delay(200);
-  move_drive_new(-10.0_in);
+  sweep_turn(FixedAngleTarget(90_deg), 10_in);
   // move_drive_rel(40.0_in, 200, true);
 
 
