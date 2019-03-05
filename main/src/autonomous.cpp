@@ -41,10 +41,10 @@ void autonomous() {
   angler_move(ANGLER_PU_POS, 100);
   intake.move(127);
   double cap_dis = 43.0_in;
-  move_drive_new(cap_dis, 200, true);
+  move_drive_new(cap_dis, 200, true, 0);
 
   //2 Turn and shoot
-  move_drive_new(-8.5_in,200);
+  move_drive_new(-8.5_in, 200, true, 0);
   // double first_flag_pos = auto_mid_flag_SP.top;
   double first_flag_pos = skills_back_SP.top;
   auto_set_angler_target(first_flag_pos);

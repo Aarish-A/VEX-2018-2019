@@ -114,13 +114,13 @@ void drive_brake() {
 	*/
 }
 
-void move_drive_new(double distance, int max_power, bool brake) {
+void move_drive_new(double distance, int max_power, bool brake, double correct_angle) {
   log_ln(LOG_AUTO, "%d Started moving %f inches straight", pros::millis(), distance);
 
-  double angle_kP = 1.05 / 3.0;
+  double angle_kP = 1.05 / 3;
   double kP = 127.0 / 24.0_in;
-  double kD = 20.0;
-  double kI = 0.01;
+  double kD = 48;
+  double kI = 0.012;
   double p_val = 0;
   double d_val = 0;
   double i_val = 0;
@@ -135,7 +135,10 @@ void move_drive_new(double distance, int max_power, bool brake) {
   double error = 0;
   double last_error = 0;
 
-  double start_angle = getGlobalAngle();
+  double start_angle;
+  if (correct_angle == 1000) start_angle = getGlobalAngle();
+  else start_angle = correct_angle;
+
   double angle_error;
   bool correcting = false;
 
@@ -147,11 +150,13 @@ void move_drive_new(double distance, int max_power, bool brake) {
     delta_enc_l = (enc_l.get_value() - enc_l_start);
     delta_enc_r = (enc_r.get_value() - enc_r_start);
     current_pos = (delta_enc_l * SPN_TO_IN_L + delta_enc_r * SPN_TO_IN_R) / 2.0;
-    power += 0.5 * sgn(distance);
+    error = distance - current_pos;
+    power += 0.30 * sgn(distance);
     setDrive(0, power, 0);
     log_ln(LOG_AUTO, "%d Ramping up at %f volts, Current Position: %f", pros::millis(), power, current_pos);
     pros::delay(1);
-  } while(abs(current_pos) < abs(distance) * 0.15);
+  // } while(abs(current_pos) < abs(distance) * 0.20);
+  } while(abs(current_pos) < 8_in && error > 2);
 
   do {
     delta_enc_l = (enc_l.get_value() - enc_l_start);
@@ -161,7 +166,7 @@ void move_drive_new(double distance, int max_power, bool brake) {
     angle_error = RAD_TO_DEG(getGlobalAngle() - start_angle);
 
     p_val = error * kP;
-    if (last_error && abs(error) < abs(distance * 0.25) && (error - last_error) < 2.0_in) d_val = (error - last_error) * kD;
+    if (last_error && abs(error) < abs(distance * 0.30) && (error - last_error) < 2.0_in) d_val = (error - last_error) * kD;
     else d_val = 0;
 
     if (abs(error) < 4.0_in) i_val += error * kI;
@@ -170,25 +175,25 @@ void move_drive_new(double distance, int max_power, bool brake) {
     power = p_val + d_val + i_val;
     if (abs(power) > max_power) power = sgn(power) * max_power;
 
-    // if (angle_error > (1 / angle_kP)) {
-    //   if (distance > 0) {
-    //     right_power = power * abs(angle_error) * angle_kP;
-    //     left_power = power;
-    //   } else if (distance < 0) {
-    //     left_power = power * abs(angle_error) * angle_kP;
-    //     right_power = power;
-    //   }
-    //   correcting = true;
-    // } else if (angle_error < -(1 / angle_kP)) {
-    //   if (distance > 0) {
-    //     right_power = power;
-    //     left_power = power * abs(angle_error) * angle_kP;
-    //   } else if (distance < 0) {
-    //     left_power = power;
-    //     right_power = power * abs(angle_error) * angle_kP;
-    //   }
-    //   correcting = true;
-    // } else correcting = false;
+    if (angle_error > (1 / angle_kP)) {
+      if (distance > 0) {
+        right_power = power * abs(angle_error) * angle_kP;
+        left_power = power;
+      } else if (distance < 0) {
+        left_power = power * abs(angle_error) * angle_kP;
+        right_power = power;
+      }
+      correcting = true;
+    } else if (angle_error < -(1 / angle_kP)) {
+      if (distance > 0) {
+        right_power = power;
+        left_power = power * abs(angle_error) * angle_kP;
+      } else if (distance < 0) {
+        left_power = power;
+        right_power = power * abs(angle_error) * angle_kP;
+      }
+      correcting = true;
+    } else correcting = false;
 
     log_ln(LOG_AUTO, "%d Moving to %f, Cur: %f, Error: %f, Target Vel: %f, P: %f, I: %f, D: %f", pros::millis(), distance, current_pos, error, power, p_val, i_val, d_val);
     log_ln(LOG_AUTO, "%d Actual Velocities are: FR: %f, FL: %f, BL: %f, BR: %f", pros::millis(), drive_fr.get_actual_velocity(), drive_fl.get_actual_velocity(), drive_bl.get_actual_velocity(), drive_br.get_actual_velocity());
@@ -196,9 +201,8 @@ void move_drive_new(double distance, int max_power, bool brake) {
     if (correcting) log_ln(LOG_AUTO, "%d CORRECTING ANGLE - Left Power: %f, Right Power: %f", pros::millis(), left_power, right_power);
     log_ln(LOG_AUTO, "----------------------------------------------------------------");
 
-    // if (correcting) setDriveTurn(left_power, right_power);
-    // else
-    setDrive(0, power, 0);
+    if (correcting) setDriveTurn(left_power, right_power);
+    else setDrive(0, power, 0);
 
     last_error = error;
     pros::delay(1);

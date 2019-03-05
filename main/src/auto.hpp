@@ -49,7 +49,7 @@ void setDriveVel(int x, int y, int a);
 void setDriveVel(int vel);
 
 void drive_brake();
-void move_drive_new(double distance, int max_power = 200, bool stop = true);
+void move_drive_new(double distance, int max_power = 200, bool stop = true, double correct_angle = 1000);
 void move_drive(vector targ, int vel = 200, bool stop = true);
 
 void move_drive_rel(double targ, int vel = 200, bool brake = true);
