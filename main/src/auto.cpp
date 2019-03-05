@@ -103,10 +103,10 @@ void setDriveVel(int vel) {
 
 void drive_brake() {
 	setDrive(0);
-	drive_fl.move_relative(0, 100);
-	drive_bl.move_relative(0, 100);
-	drive_fr.move_relative(0, 100);
-	drive_br.move_relative(0, 100);
+	drive_fl.move_relative(0, 20);
+	drive_bl.move_relative(0, 20);
+	drive_fr.move_relative(0, 20);
+	drive_br.move_relative(0, 20);
 	/*
 	pros::delay(150);
 	log_ln(LOG_AUTO, "%d Done turn brake Pos:(%f, %f, %f), Vel:(%f, %f, %f)", millis(), pos.x, pos.y, RAD_TO_DEG(pos.a), pos.xVel, pos.yVel, RAD_TO_DEG(pos.aVel));
@@ -170,25 +170,25 @@ void move_drive_new(double distance, int max_power, bool brake) {
     power = p_val + d_val + i_val;
     if (abs(power) > max_power) power = sgn(power) * max_power;
 
-    if (angle_error > (1 / angle_kP)) {
-      if (distance > 0) {
-        right_power = power * abs(angle_error) * angle_kP;
-        left_power = power;
-      } else if (distance < 0) {
-        left_power = power * abs(angle_error) * angle_kP;
-        right_power = power;
-      }
-      correcting = true;
-    } else if (angle_error < -(1 / angle_kP)) {
-      if (distance > 0) {
-        right_power = power;
-        left_power = power * abs(angle_error) * angle_kP;
-      } else if (distance < 0) {
-        left_power = power;
-        right_power = power * abs(angle_error) * angle_kP;
-      }
-      correcting = true;
-    } else correcting = false;
+    // if (angle_error > (1 / angle_kP)) {
+    //   if (distance > 0) {
+    //     right_power = power * abs(angle_error) * angle_kP;
+    //     left_power = power;
+    //   } else if (distance < 0) {
+    //     left_power = power * abs(angle_error) * angle_kP;
+    //     right_power = power;
+    //   }
+    //   correcting = true;
+    // } else if (angle_error < -(1 / angle_kP)) {
+    //   if (distance > 0) {
+    //     right_power = power;
+    //     left_power = power * abs(angle_error) * angle_kP;
+    //   } else if (distance < 0) {
+    //     left_power = power;
+    //     right_power = power * abs(angle_error) * angle_kP;
+    //   }
+    //   correcting = true;
+    // } else correcting = false;
 
     log_ln(LOG_AUTO, "%d Moving to %f, Cur: %f, Error: %f, Target Vel: %f, P: %f, I: %f, D: %f", pros::millis(), distance, current_pos, error, power, p_val, i_val, d_val);
     log_ln(LOG_AUTO, "%d Actual Velocities are: FR: %f, FL: %f, BL: %f, BR: %f", pros::millis(), drive_fr.get_actual_velocity(), drive_fl.get_actual_velocity(), drive_bl.get_actual_velocity(), drive_br.get_actual_velocity());
@@ -196,8 +196,9 @@ void move_drive_new(double distance, int max_power, bool brake) {
     if (correcting) log_ln(LOG_AUTO, "%d CORRECTING ANGLE - Left Power: %f, Right Power: %f", pros::millis(), left_power, right_power);
     log_ln(LOG_AUTO, "----------------------------------------------------------------");
 
-    if (correcting) setDriveTurn(left_power, right_power);
-    else setDrive(0, power, 0);
+    // if (correcting) setDriveTurn(left_power, right_power);
+    // else
+    setDrive(0, power, 0);
 
     last_error = error;
     pros::delay(1);
@@ -375,16 +376,37 @@ void turn_vel_new(const AngleTarget& target)
   double dA = target.getTarget() - getGlobalAngle();
   double fixeddA = dA;
   double drive_volt = 0;
-  double kP = 200/60;
-  while(fabs(dA)> (0.4*fixeddA))
+  double kP = 200/50;
+  double kI = 0.02;
+  double kD = 70;
+  double iVal = 0;
+  double last_error = 0;
+  double dVal = 0;
+  while(fabs(dA)> fabs((0.4*fixeddA)))
   {
     dA = target.getTarget() - getGlobalAngle();
     drive_volt = RAD_TO_DEG(dA) * kP;
     setDrive(0,0,drive_volt);
+    delay(1);
     //printf("hello world %f and %f\n", target.getTarget(), getGlobalAngle());
   }
-  setDrive(0,0,35);
-  while(fabs(dA)>1.3_deg) dA = target.getTarget() - getGlobalAngle();
+  kP = 200/100;
+  while(fabs(dA)>0.5_deg)
+  {
+    if(fabs(dA)<5_deg)
+    {
+      iVal += RAD_TO_DEG(dA)*kI;
+    }
+    else
+    {
+      iVal = 0;
+    }
+    dA = target.getTarget() - getGlobalAngle();
+    drive_volt = RAD_TO_DEG(dA) * kP + iVal;
+    setDrive(0,0,drive_volt);
+    printf("%d Drive voltage is: %f and iVal is %f dA is %f\n", pros::millis(),drive_volt, iVal, RAD_TO_DEG(dA));
+    delay(1);
+  }
   setDrive(0);
   drive_brake();
   delay(1000);
