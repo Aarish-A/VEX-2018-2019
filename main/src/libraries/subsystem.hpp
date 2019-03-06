@@ -17,9 +17,9 @@ private:
 
 
 public:
-  void change_state(State state); // Changes the state and sets the state variables
-  void reset(); // Resets subsystem through state machine
+  virtual void change_state(State new_state); // Changes the state and sets the state variables
   virtual void update() = 0; // Updates state machine, should be run in main loop
+  virtual void reset(); // Resets subsystem through state machine
 
   virtual void enable() = 0; // Puts subsystem in the state where it should be when enabled
   virtual void disable() = 0; // Puts subsystem into the state where it should be when disabled
@@ -31,32 +31,5 @@ public:
   virtual void set_target(double target) = 0; // Sets the target and moves into the required state
   virtual void set_power(double power) = 0; // Sets the power and moves into the required state
   virtual void set_velocity(double velocity) = 0; // Sets the velocity and moves into the required state
-  void operator= (State state); // Sets the state by doing Subsystem = Subsystem::State
-};
-
-class Tracking {
-private:
-  pros::ADIEncoder &encL, &encR, &encS;
-  int encLLst, encRLst, encSLst;
-  double aRst;
-
-  double xLst, yLst, aLst;
-  uint32_t velLstTime;
-/*
-protected:
-  void taskImpl() override;
-*/
-public:
-  double x, y, a = 0;
-  double xVel = 0, yVel = 0, aVel = 0;
-  vector velLocal;
-
-  Tracking(pros::ADIEncoder &encL, pros::ADIEncoder &encR, pros::ADIEncoder &encS, double x = 0, double y = 0, double a = 0);
-
-  void task();
-
-  void update();
-  void reset(double x = 0, double y = 0, double a = 0);
-  vector position() const;
-  vector velocity() const;
+  void operator= (State new_state); // Sets the state by doing Subsystem = Subsystem::State
 };
