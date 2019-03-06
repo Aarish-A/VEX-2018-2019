@@ -114,117 +114,146 @@ void drive_brake() {
 	*/
 }
 
-void move_drive_new(double distance, int max_power, bool brake, double correct_angle) {
-  log_ln(LOG_AUTO, "%d Started moving %f inches straight", pros::millis(), distance);
-
-  double angle_kP = 1.05 / 3;
-  double kP = 127.0 / 24.0_in;
-  double kD = 48;
-  double kI = 0.012;
-  double p_val = 0;
-  double d_val = 0;
-  double i_val = 0;
+void move_drive_new(double dist_target, int max_power, bool brake, double angle_target) {
+  // If the correct angle is default, the correct angle should be the starting angle
+  double angle_start = getGlobalAngle();
+  if (angle_target == 1000) angle_target = angle_start;
 
   uint32_t start_time = pros::millis();
+  log_ln(LOG_AUTO, "%d Started moving %f inches straight, Starting angle is %f deg, Correcting to %f deg", pros::millis(), dist_target, RAD_TO_DEG(angle_start), RAD_TO_DEG(angle_target));
 
+  // Distance correction PID Values
+  double dist_kP = 127 / 25.0_in;
+  double dist_kD = 53.0;
+  double dist_kI = 0.015;
+  double dist_p_val = 0;
+  double dist_i_val = 0;
+  double dist_d_val = 0;
+
+  // Angle Correction PID Values
+  double angle_kP = 5.0 / 1.8_deg;
+  double angle_kD = 60.00;
+  double angle_kI = 0.0375;
+  double angle_p_val = 0;
+  double angle_i_val = 0;
+  double angle_d_val = 0;
+
+  // Tracking wheel variables
   double enc_l_start = enc_l.get_value();
   double enc_r_start = enc_r.get_value();
   double delta_enc_l = 0;
   double delta_enc_r = 0;
-  double current_pos = 0;
-  double error = 0;
-  double last_error = 0;
 
-  double start_angle;
-  if (correct_angle == 1000) start_angle = getGlobalAngle();
-  else start_angle = correct_angle;
+  // Distance Variables
+  double dist_current = 0;
+  double dist_error = 0;
+  double dist_last_error = 0;
 
-  double angle_error;
-  bool correcting = false;
+  // Angle variables
+  double angle_current = 0;
+  double angle_error = 0;
+  double angle_last_error = 0;
+  bool angle_correcting = false;
 
+  // Power variables
   double power = 0;
-  double right_power = 0;
-  double left_power = 0;
+  double angle_power = 0;
+  // double power_ratio = 0;
+  // double right_power = 0;
+  // double left_power = 0;
 
   do {
+    // Calculate how far the robot has moved and get current angle
     delta_enc_l = (enc_l.get_value() - enc_l_start);
     delta_enc_r = (enc_r.get_value() - enc_r_start);
-    current_pos = (delta_enc_l * SPN_TO_IN_L + delta_enc_r * SPN_TO_IN_R) / 2.0;
-    error = distance - current_pos;
-    power += 0.30 * sgn(distance);
-    setDrive(0, power, 0);
-    log_ln(LOG_AUTO, "%d Ramping up at %f volts, Current Position: %f", pros::millis(), power, current_pos);
-    pros::delay(1);
-  // } while(abs(current_pos) < abs(distance) * 0.20);
-  } while(abs(current_pos) < 8_in && error > 2);
+    dist_current = (delta_enc_l * SPN_TO_IN_L + delta_enc_r * SPN_TO_IN_R) / 2.0;
+    angle_current = getGlobalAngle();
 
-  do {
-    delta_enc_l = (enc_l.get_value() - enc_l_start);
-    delta_enc_r = (enc_r.get_value() - enc_r_start);
-    current_pos = (delta_enc_l * SPN_TO_IN_L + delta_enc_r * SPN_TO_IN_R) / 2.0;
-    error = distance - current_pos;
-    angle_error = RAD_TO_DEG(getGlobalAngle() - start_angle);
+    // Calculate distance and angle errors
+    dist_error = dist_target - dist_current;
+    angle_error = angle_target - angle_current;
 
-    p_val = error * kP;
-    if (last_error && abs(error) < abs(distance * 0.30) && (error - last_error) < 2.0_in) d_val = (error - last_error) * kD;
-    else d_val = 0;
+    // Ramp up while the robot hasn't moved 8 inches and is not within 2 inches of it's target
+    if (abs(dist_current) < 8_in && dist_error > 2_in) {
+      power += 0.40 * sgn(dist_target);
+      log_ln(LOG_AUTO, "%d Ramping up...", pros::millis(), power, dist_current, dist_error, angle_current, angle_error);
+    } else {
+      // Calculate PID values for distance
+      dist_p_val = dist_error * dist_kP;
 
-    if (abs(error) < 4.0_in) i_val += error * kI;
-    else i_val = 0;
+      if (abs(dist_error) < 5.5_in) dist_i_val += dist_error * dist_kI;
+      else dist_i_val = 0;
 
-    power = p_val + d_val + i_val;
-    if (abs(power) > max_power) power = sgn(power) * max_power;
+      if (abs(dist_error) < abs(dist_target * 0.30) && (dist_error - dist_last_error) < 2.0_in) dist_d_val = (dist_error - dist_last_error) * dist_kD;
+      else dist_d_val = 0;
 
-    if (angle_error > (1 / angle_kP)) {
-      if (distance > 0) {
-        right_power = power * abs(angle_error) * angle_kP;
-        left_power = power;
-      } else if (distance < 0) {
-        left_power = power * abs(angle_error) * angle_kP;
-        right_power = power;
-      }
-      correcting = true;
-    } else if (angle_error < -(1 / angle_kP)) {
-      if (distance > 0) {
-        right_power = power;
-        left_power = power * abs(angle_error) * angle_kP;
-      } else if (distance < 0) {
-        left_power = power;
-        right_power = power * abs(angle_error) * angle_kP;
-      }
-      correcting = true;
-    } else correcting = false;
+      // Calculate PID Values for angle_error
+      angle_p_val = angle_error * angle_kP;
 
-    log_ln(LOG_AUTO, "%d Moving to %f, Cur: %f, Error: %f, Target Vel: %f, P: %f, I: %f, D: %f", pros::millis(), distance, current_pos, error, power, p_val, i_val, d_val);
-    log_ln(LOG_AUTO, "%d Actual Velocities are: FR: %f, FL: %f, BL: %f, BR: %f", pros::millis(), drive_fr.get_actual_velocity(), drive_fl.get_actual_velocity(), drive_bl.get_actual_velocity(), drive_br.get_actual_velocity());
-    log_ln(LOG_AUTO, "%d Start Angle: %f, Current Angle: %f, Delta Angle: %f", pros::millis(), RAD_TO_DEG(start_angle), RAD_TO_DEG(getGlobalAngle()), RAD_TO_DEG(getGlobalAngle() - start_angle));
-    if (correcting) log_ln(LOG_AUTO, "%d CORRECTING ANGLE - Left Power: %f, Right Power: %f", pros::millis(), left_power, right_power);
+      angle_i_val += angle_error * angle_kI;
+      // if (abs(angle_error) < 1.5_deg) angle_i_val += angle_error * angle_kI;
+      // else angle_i_val = 0;
+      if (sgn(angle_error) != sgn(angle_last_error)) angle_i_val = 0;
+
+      if (abs(angle_error) < 2.0_deg) angle_d_val = (angle_error - angle_last_error) * angle_kD;
+      else angle_d_val = 0;
+
+      // Calculate powers
+      power = dist_p_val + dist_i_val + dist_d_val;
+      angle_power = angle_p_val + angle_i_val + angle_d_val;
+
+      // if () {
+      //   if (dist_target > 0) {
+      //     right_power = power * abs(angle_error) * angle_kP;
+      //     left_power = power;
+      //   } else if (dist_target < 0) {
+      //     left_power = power * abs(angle_error) * angle_kP;
+      //     right_power = power;
+      //   }
+      // } else if (angle_error < -(1 / angle_kP)) {
+      //   if (dist_target > 0) {
+      //     right_power = power;
+      //     left_power = power * abs(angle_error) * angle_kP;
+      //   } else if (dist_target < 0) {
+      //     left_power = power;
+      //     right_power = power * abs(angle_error) * angle_kP;
+      //   }
+      // }
+      log_ln(LOG_AUTO, "%d In PID...", pros::millis());
+    }
+    log_ln(LOG_AUTO, "%d Distance | Current: %f in, Error: %f in, Power: %f, P: %f, I: %f, D: %f", pros::millis(), dist_current, dist_error, power, dist_p_val, dist_i_val, dist_d_val);
+    log_ln(LOG_AUTO, "%d Angle    | Current: %f deg, Error: %f deg, Angle Power: %f, P: %f, I: %f, D: %f", pros::millis(), RAD_TO_DEG(angle_current), RAD_TO_DEG(angle_error), angle_power, angle_p_val, angle_i_val, angle_d_val);
     log_ln(LOG_AUTO, "----------------------------------------------------------------");
 
-    if (correcting) setDriveTurn(left_power, right_power);
-    else setDrive(0, power, 0);
+    setDrive(0, power, angle_power);
 
-    last_error = error;
+    dist_last_error = dist_error;
+    angle_last_error = angle_error;
     pros::delay(1);
-  } while(abs(error) > 0.5_in);
+  } while (abs(dist_error) > 0.3_in && sgn(dist_error) == sgn(dist_last_error));
 
   if (brake) {
-		double targetFL = drive_fl.get_position() + (error) * (DRIVE_TPR / (DRIVE_DIA * M_PI));
-	  double targetBL = drive_bl.get_position() + (error) * (DRIVE_TPR / (DRIVE_DIA * M_PI));
-	  double targetFR = drive_fr.get_position() + (error) * (DRIVE_TPR / (DRIVE_DIA * M_PI));
-	  double targetBR = drive_br.get_position() + (error) * (DRIVE_TPR / (DRIVE_DIA * M_PI));
+    double targetFL = drive_fl.get_position() + (dist_error) * (DRIVE_TPR / (DRIVE_DIA * M_PI));
+    double targetBL = drive_bl.get_position() + (dist_error) * (DRIVE_TPR / (DRIVE_DIA * M_PI));
+    double targetFR = drive_fr.get_position() + (dist_error) * (DRIVE_TPR / (DRIVE_DIA * M_PI));
+    double targetBR = drive_br.get_position() + (dist_error) * (DRIVE_TPR / (DRIVE_DIA * M_PI));
 
-	  drive_fl.move_absolute(targetFL, 25);
-	  drive_bl.move_absolute(targetBL, 25);
-	  drive_fr.move_absolute(targetFR, 25);
-	  drive_br.move_absolute(targetBR, 25);
-	  log_ln(LOG_AUTO, "%d Stopping from FL: %f, BL: %f, FR: %f, BR %f", millis(), drive_fl.get_position(), drive_bl.get_position(), drive_fr.get_position(), drive_br.get_position());
-	  while (fabs(drive_fl.get_position() - targetFL) > 3 || fabs(drive_bl.get_position() - targetBL) > 3 || fabs(drive_fr.get_position() - targetFR) > 3 || fabs(drive_br.get_position() - targetBR) > 3) delay(1);
-	  delay(100);
-	} else setDriveVel(0, 0, 0);
-  current_pos = ((enc_l.get_value() - enc_l_start) * SPN_TO_IN_L + (enc_r.get_value() - enc_r_start) * SPN_TO_IN_R) / 2.0;
-  error = distance - current_pos;
-  log_ln(LOG_AUTO, "%d FINISHED TURN >>>> Took %d ms, Ended At: %f, Error: %f, Change in Angle %f", pros::millis(), pros::millis() - start_time, current_pos, error, RAD_TO_DEG(getGlobalAngle() - start_angle));
+    drive_fl.move_absolute(targetFL, 25);
+    drive_bl.move_absolute(targetBL, 25);
+    drive_fr.move_absolute(targetFR, 25);
+    drive_br.move_absolute(targetBR, 25);
+    log_ln(LOG_AUTO, "%d Stopping from FL: %f, BL: %f, FR: %f, BR %f", millis(), drive_fl.get_position(), drive_bl.get_position(), drive_fr.get_position(), drive_br.get_position());
+    while (fabs(drive_fl.get_position() - targetFL) > 3 || fabs(drive_bl.get_position() - targetBL) > 3 || fabs(drive_fr.get_position() - targetFR) > 3 || fabs(drive_br.get_position() - targetBR) > 3) delay(1);
+    delay(100);
+  } else setDriveVel(0, 0, 0);
+
+  dist_current = ((enc_l.get_value() - enc_l_start) * SPN_TO_IN_L + (enc_r.get_value() - enc_r_start) * SPN_TO_IN_R) / 2.0;
+  angle_current = getGlobalAngle();
+
+  dist_error = dist_target - dist_current;
+  angle_error = angle_target - angle_current;
+
+  log_ln(LOG_AUTO, "%d FINISHED MOVE >>>> Took %d ms, Ended At: %f, Distance Error: %f, Angle Error: %f", pros::millis(), pros::millis() - start_time, dist_current, dist_error, RAD_TO_DEG(angle_error));
 }
 
 
