@@ -131,9 +131,9 @@ void move_drive_new(double dist_target, int max_power, bool brake, double angle_
   double dist_d_val = 0;
 
   // Angle Correction PID Values
-  double angle_kP = 5.0 / 1.8_deg;
-  double angle_kD = 60.00;
-  double angle_kI = 0.0375;
+  double angle_kP = 5.0 / 1.7_deg;
+  double angle_kD = 65.00;
+  double angle_kI = 0.0275;
   double angle_p_val = 0;
   double angle_i_val = 0;
   double angle_d_val = 0;
