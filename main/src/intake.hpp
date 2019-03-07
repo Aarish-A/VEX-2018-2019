@@ -1,21 +1,30 @@
 #pragma once
 #include "main.h"
-#include "config.hpp"
-#include "button.hpp"
-#include "util.hpp"
 #include "logs.hpp"
+#include "subsystem.hpp"
+#include "button.hpp"
 #include "controls.hpp"
 
-enum class IntakeState { Forw, Back, Off, Jam };
+class Intake final : public Subsystem {
+public:
+  static const uint8_t STATE_PICKUP = 0x10;
+  static const uint8_t STATE_CAP_FLIP = 0x11;
+  static const uint8_t STATE_JAM = 0x12;
 
-extern IntakeState intake_state;
+protected:
+  std::string subsystem_name = "Intake";
+  pros::Motor& intake_motor;
 
-void intake_init();
-void intake_power_state_set(int power, IntakeState state);
-void intake_state_set(IntakeState state);
-void intake_set(int power);
-void intake_handle();
+public:
+  Intake(pros::Motor& intake_motor);
 
-extern bool intake_up_flag;
-extern bool intake_down_flag;
-extern bool intake_off_flag;
+  void change_state(uint8_t new_state) override;
+  void update() override;
+
+  void enable() override;
+  void disable() override;
+
+  void set_target(double target) override;
+  void set_power(double power) override;
+  void set_velocity(double velocity) override;
+};
