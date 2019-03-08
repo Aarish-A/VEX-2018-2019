@@ -67,8 +67,17 @@ void Subsystem::disable() {
   set_state(STATE_DISABLED);
 }
 
-void Subsystem::set_state_target(uint8_t new_state,  double target) {}
+void Subsystem::set_state_target(uint8_t new_state, double target) {
+  set_state(new_state);
+  this->target = target;
+}
 
-void Subsystem::set_state_power(uint8_t new_state, double power) {}
+void Subsystem::set_state_power(uint8_t new_state, double power) {
+  set_state(new_state);
+  this->power = power;
+}
 
-void Subsystem::set_state_velocity(uint8_t new_state, double velocity) {}
+void Subsystem::set_state_velocity(uint8_t new_state, double velocity) {
+  set_state(new_state);
+  this->velocity = velocity;
+}
