@@ -36,8 +36,9 @@ constexpr double CM_TO_IN(long double val) { return val  * 2.54; }
 constexpr double DEG_TO_RAD(long double val) { return val * M_PI / 180.0; }
 constexpr double RAD_TO_DEG(long double val) { return val * 180.0 / M_PI; }
 
-constexpr double MECANUM_DRIVE_WIDTH = 13.25;
+constexpr double MECANUM_DRIVE_WIDTH = 13.20;
 constexpr double EDGE_TO_TRACKING_WHEEL = 1.25;
+constexpr double DRIVE_EDGE_TO_MECANUM = 2.50;
 
 
 double getGlobalAngle();

@@ -37,30 +37,7 @@ void autonomous() {
   autoStartTime = millis();
   resetGlobalAngle();
 
-  log_ln(LOG_AUTO, "%d Angler Start move: %d", millis(), angler.get_position());
-  angler_move(ANGLER_PU_POS, 100);
-  intake.move(127);
-  double cap_dis = 43.0_in;
-  move_drive_new(cap_dis, 200, true, 0);
-
-  //2 Turn and shoot
-  move_drive_new(-8.5_in, 200, true, 0);
-  // double first_flag_pos = auto_mid_flag_SP.top;
-  double first_flag_pos = skills_back_SP.top;
-  auto_set_angler_target(first_flag_pos);
-  turn_vel_new(FixedAngleTarget(-52.5_deg));//-69.2_deg hits the flag. Turn range is -68.2-70
-  auto_set_first_shot(first_flag_pos);
-  while (auto_set_shot) pros::delay(10);
-  pros::delay(150);
-  // auto_set_second_shot(auto_mid_flag_SP.mid);
-  auto_set_second_shot(skills_back_SP.mid);
-  while (auto_set_shot) pros::delay(10);
-  log_ln(LOG_AUTO, "%d First finished at: %d", pros::millis(), pros::millis() - autoStartTime);
-  move_drive_new(-1_in, 150);
-  auto_set_angler_target(ANGLER_CAP_PU_POS);
-  intake.move(0);
-  // move_drive_rel(40.0_in, 200, true);
-
+  sweep_turn(FixedAngleTarget(90.0_deg), 12_in, true);
 
 
 
