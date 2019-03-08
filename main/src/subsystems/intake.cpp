@@ -9,6 +9,9 @@ Intake::Intake(std::string subsystem_name, pros::Motor& intake_motor) : intake_m
 }
 
 /* Private Functions */
+
+
+/* Public Functions */
 void Intake::set_state(uint8_t new_state) {
   Subsystem::set_state(new_state);
   switch(new_state) {
@@ -37,13 +40,12 @@ void Intake::set_state(uint8_t new_state) {
       set_timeouts(350);
       break;
   }
-  intake_motor.move(power);
 }
 
-/* Public Functions */
 void Intake::update() {
   this->velocity = intake_motor.get_actual_velocity();
   this->position = intake_motor.get_position();
+  intake_motor.move(this->power);
 
   switch(this->state) {
     case STATE_IDLE:
