@@ -41,8 +41,8 @@ public:
 
   void operator= (uint8_t new_state); // Sets the state by doing Subsystem = Subsystem::State
 
-  void disable(); // Puts subsystem into the state where it should be when disabled
-  void reset(); // Resets subsystem through state machine
+  void disable(); // Puts subsystem disabled state
+  void reset(); // Resets subsystem through state machine (calibrate)
 
   // Pure-Virtual Functions
   virtual void update() = 0; // Updates state machine, should be run in main loop
