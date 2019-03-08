@@ -14,24 +14,27 @@ void Intake::change_state(uint8_t new_state) {
   switch(new_state) {
     case STATE_IDLE:
       this->power = 0;
+      set_timeouts();
       break;
     case STATE_RESET:
       this->power = 0;
+      set_timeouts();
       break;
     case STATE_DISABLED:
       this->power = 0;
+      set_timeouts();
       break;
     case STATE_PICKUP:
       this->power = 127;
-      this->state_timeout_velocity = 10;
-      this->state_timeout_time = 250;
+      set_timeouts(250, 10);
       break;
     case STATE_CAP_FLIP:
       this->power = -80;
+      set_timeouts();
       break;
     case STATE_JAM:
       this->power = -80;
-      this->state_timeout_time = 350;
+      set_timeouts(350);
       break;
   }
   intake_motor.move(power);

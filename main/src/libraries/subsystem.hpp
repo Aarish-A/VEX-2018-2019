@@ -25,10 +25,12 @@ protected:
   double error;
   double velocity;
 
-  virtual void change_state(uint8_t new_state); // Changes the state and sets the state variables
+  void set_timeouts(uint32_t time = 0, double velocity = 0);
   bool timed_out();
   bool above_vel_threshold();
   bool below_vel_threshold();
+
+  virtual void change_state(uint8_t new_state); // Changes the state and sets the state variables
 
 public:
   Subsystem();
@@ -40,6 +42,7 @@ public:
   double get_power(); // Returns the current power of the subsystem, if applicable
   double get_velocity(); // Returns the current velocity of the subsystem
   void operator= (uint8_t new_state); // Sets the state by doing Subsystem = Subsystem::State
+  void operator= (double test);
   void reset(); // Resets subsystem through state machine
 
   // Virtual Functions

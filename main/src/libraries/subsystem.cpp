@@ -1,6 +1,11 @@
 #include "subsystem.hpp"
 
 /* Protected Non-Virtual Functions */
+void Subsystem::set_timeouts(uint32_t time, double velocity) {
+  this->state_timeout_time = time;
+  this->state_timeout_velocity = velocity;
+}
+
 bool Subsystem::timed_out() {
   return (pros::millis() - this->state_change_time > this->state_timeout_time && this->state_timeout_time != 0);
 }
@@ -51,6 +56,10 @@ double Subsystem::get_velocity() {
 
 void Subsystem::operator= (uint8_t new_state) {
   change_state(new_state);
+}
+
+void Subsystem::operator= (double test) {
+  printf("%f", test);
 }
 
 void Subsystem::reset() {

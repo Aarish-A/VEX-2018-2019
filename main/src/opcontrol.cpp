@@ -3,6 +3,8 @@
 #include "controls.hpp"
 #include "logs.hpp"
 #include "config.hpp"
+#include "subsystems/intake.hpp"
+#include "libraries/subsystem.hpp"
 
 void opcontrol() {
 	log_ln(LOG_AUTO, "   --- %d START OPCONTROL --- \n", pros::millis());
@@ -12,6 +14,9 @@ void opcontrol() {
 		intake.update();
 
 		if (check_single_press(BTN_SHOT_R_T)) log_ln(LOG_STATES, "P: %f V: %f", intake.get_power(), intake.get_velocity());
+
+		// intake = Intake::STATE_PICKUP;
+		intake.set_power(5);
 
 		pros::delay(10);
 	}
