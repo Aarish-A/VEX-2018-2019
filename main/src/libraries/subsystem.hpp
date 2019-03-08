@@ -30,8 +30,6 @@ protected:
   bool above_vel_threshold();
   bool below_vel_threshold();
 
-  virtual void set_state(uint8_t new_state); // Changes the state and sets the state variables
-
 public:
   Subsystem();
 
@@ -47,6 +45,7 @@ public:
   void reset(); // Resets subsystem through state machine (calibrate)
 
   // Virtual Functions
+  virtual void set_state(uint8_t new_state); // Changes the state and sets the state variables
   void set_state_target(uint8_t new_state, double target); // Sets the target and moves into the required state
   void set_state_power(uint8_t new_state, double power); // Sets the power and moves into the required state
   void set_state_velocity(uint8_t new_state, double velocity); // Sets the velocity and moves into the required state

@@ -14,11 +14,10 @@ public:
 private:
   pros::Motor& intake_motor;
 
-  void set_state(uint8_t new_state) override;
-
 public:
   Intake(std::string subsystem_name, pros::Motor& intake_motor);
 
+  void set_state(uint8_t new_state) override;
   void update() override;
   void enable() override;
 };

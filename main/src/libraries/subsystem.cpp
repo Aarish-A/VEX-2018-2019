@@ -19,12 +19,6 @@ bool Subsystem::below_vel_threshold() {
 }
 
 /* Protected Virtual Functions */
-void Subsystem::set_state(uint8_t new_state) {
-  this->last_state = state;
-  this->state = new_state;
-  this->state_change_time = pros::millis();
-  log_ln(LOG_STATES, "Switching %s to %s state from %s state", (this->subsystem_name).c_str(), (this->state_names[state]).c_str(), (this->state_names[last_state]).c_str());
-}
 
 /* Constructor */
 Subsystem::Subsystem() {
@@ -65,6 +59,13 @@ void Subsystem::reset() {
 /* Public Virtual Functions */
 void Subsystem::disable() {
   set_state(STATE_DISABLED);
+}
+
+void Subsystem::set_state(uint8_t new_state) {
+  this->last_state = state;
+  this->state = new_state;
+  this->state_change_time = pros::millis();
+  log_ln(LOG_STATES, "Switching %s to %s state from %s state", (this->subsystem_name).c_str(), (this->state_names[state]).c_str(), (this->state_names[last_state]).c_str());
 }
 
 void Subsystem::set_state_target(uint8_t new_state,  double target) {}
