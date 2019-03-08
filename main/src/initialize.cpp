@@ -3,12 +3,16 @@
 #include "controls.hpp"
 #include "logs.hpp"
 #include "config.hpp"
-#include "intake.hpp"
+#include "subsystems/intake.hpp"
+#include "subsystems/drive.hpp"
 
 void initialize() {
 	log_init();
   controls_init();
+
 	intake.reset();
+	drive.reset();
+
   log_ln(LOG_DRIVE, "%d Finished Init", pros::millis());
 }
 

@@ -1,6 +1,6 @@
 #pragma once
 #include "main.h"
-#include "logs.hpp"
+#include "../logs.hpp"
 
 class Subsystem {
 public:
@@ -25,9 +25,12 @@ protected:
   double error;
   double velocity;
 
-  virtual void change_state(uint8_t new_state); // Changes the state and sets the state variables
-  bool check_time_timeout();
-  bool check_velocity_timeout();
+  void set_timeouts(uint32_t time = 0, double velocity = 0);
+  bool timed_out();
+  bool above_vel_threshold();
+  bool below_vel_threshold();
+
+  virtual void set_state(uint8_t new_state); // Changes the state and sets the state variables
 
 public:
   Subsystem();
@@ -38,18 +41,17 @@ public:
   double get_error(); // Return the error between it's current position and target (if there is any)
   double get_power(); // Returns the current power of the subsystem, if applicable
   double get_velocity(); // Returns the current velocity of the subsystem
-
   void operator= (uint8_t new_state); // Sets the state by doing Subsystem = Subsystem::State
 
   void disable(); // Puts subsystem disabled state
   void reset(); // Resets subsystem through state machine (calibrate)
 
+  // Virtual Functions
+  void set_state_target(uint8_t new_state, double target); // Sets the target and moves into the required state
+  void set_state_power(uint8_t new_state, double power); // Sets the power and moves into the required state
+  void set_state_velocity(uint8_t new_state, double velocity); // Sets the velocity and moves into the required state
+
   // Pure-Virtual Functions
   virtual void update() = 0; // Updates state machine, should be run in main loop
-
   virtual void enable() = 0; // Puts subsystem in the state where it should be when enabled
-
-  virtual void set_target(double target) = 0; // Sets the target and moves into the required state
-  virtual void set_power(double power) = 0; // Sets the power and moves into the required state
-  virtual void set_velocity(double velocity) = 0; // Sets the velocity and moves into the required state
 };

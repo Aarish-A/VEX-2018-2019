@@ -1,16 +1,25 @@
 #include "subsystem.hpp"
 
 /* Protected Non-Virtual Functions */
-bool Subsystem::check_time_timeout() {
+void Subsystem::set_timeouts(uint32_t time, double velocity) {
+  this->state_timeout_time = time;
+  this->state_timeout_velocity = velocity;
+}
+
+bool Subsystem::timed_out() {
   return (pros::millis() - this->state_change_time > this->state_timeout_time && this->state_timeout_time != 0);
 }
 
-bool Subsystem::check_velocity_timeout() {
+bool Subsystem::above_vel_threshold() {
+  return (this->velocity > this->state_timeout_velocity && this->state_timeout_velocity != 0);
+}
+
+bool Subsystem::below_vel_threshold() {
   return (this->velocity < this->state_timeout_velocity && this->state_timeout_velocity != 0);
 }
 
 /* Protected Virtual Functions */
-void Subsystem::change_state(uint8_t new_state) {
+void Subsystem::set_state(uint8_t new_state) {
   this->last_state = state;
   this->state = new_state;
   this->state_change_time = pros::millis();
@@ -46,13 +55,20 @@ double Subsystem::get_velocity() {
 }
 
 void Subsystem::operator= (uint8_t new_state) {
-  change_state(new_state);
+  set_state(new_state);
 }
 
 void Subsystem::reset() {
-  change_state(STATE_RESET);
+  set_state(STATE_RESET);
 }
 
+/* Public Virtual Functions */
 void Subsystem::disable() {
-  change_state(STATE_DISABLED);
+  set_state(STATE_DISABLED);
 }
+
+void Subsystem::set_state_target(uint8_t new_state,  double target) {}
+
+void Subsystem::set_state_power(uint8_t new_state, double power) {}
+
+void Subsystem::set_state_velocity(uint8_t new_state, double velocity) {}
