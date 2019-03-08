@@ -6,6 +6,7 @@
 void initialize() {
 	log_init();
   controls_init();
+	intake.reset();
   log_ln(LOG_DRIVE, "%d Finished Init", pros::millis());
 }
 
