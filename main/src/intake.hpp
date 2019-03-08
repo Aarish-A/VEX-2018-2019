@@ -11,18 +11,17 @@ public:
   static const uint8_t STATE_CAP_FLIP = 0x11;
   static const uint8_t STATE_JAM = 0x12;
 
-protected:
-  std::string subsystem_name = "Intake";
+private:
   pros::Motor& intake_motor;
 
-public:
-  Intake(pros::Motor& intake_motor);
-
   void change_state(uint8_t new_state) override;
-  void update() override;
 
+public:
+  Intake(std::string subsystem_name, pros::Motor& intake_motor);
+
+  void update() override;
+  
   void enable() override;
-  void disable() override;
 
   void set_target(double target) override;
   void set_power(double power) override;

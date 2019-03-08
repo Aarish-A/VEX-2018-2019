@@ -1,8 +1,10 @@
 #pragma once
 #include "main.h"
-#include "config.hpp"
 #include "controls.hpp"
 #include "logs.hpp"
+
+extern pros::Controller ctrler;
+extern pros::Controller partner;
 
 constexpr uint32_t BTN_PRESS_TIME = 50;
 

@@ -6,13 +6,15 @@ class Subsystem {
 public:
   static const uint8_t STATE_IDLE = 0x00;
   static const uint8_t STATE_RESET = 0x01;
+  static const uint8_t STATE_DISABLED = 0x02;
 
 protected:
+  // std::string subsystem_name;
   std::string subsystem_name;
   std::string state_names[32];
 
   uint8_t state = STATE_IDLE;
-  uint8_t last_state = STATE_RESET;
+  uint8_t last_state = STATE_IDLE;
   uint32_t state_change_time;
   uint32_t state_timeout_time;
   double state_timeout_velocity;
@@ -22,6 +24,10 @@ protected:
   double target;
   double error;
   double velocity;
+
+  virtual void change_state(uint8_t new_state); // Changes the state and sets the state variables
+  bool check_time_timeout();
+  bool check_velocity_timeout();
 
 public:
   Subsystem();
@@ -35,12 +41,12 @@ public:
 
   void operator= (uint8_t new_state); // Sets the state by doing Subsystem = Subsystem::State
 
-  // Virtual Functions
-  virtual void change_state(uint8_t new_state); // Changes the state and sets the state variables
-  virtual void reset(); // Resets subsystem through state machine
+  void disable(); // Puts subsystem into the state where it should be when disabled
+  void reset(); // Resets subsystem through state machine
+
+  // Pure-Virtual Functions
   virtual void update() = 0; // Updates state machine, should be run in main loop
 
-  virtual void disable(); // Puts subsystem into the state where it should be when disabled
   virtual void enable() = 0; // Puts subsystem in the state where it should be when enabled
 
   virtual void set_target(double target) = 0; // Sets the target and moves into the required state

@@ -1,6 +1,6 @@
 #pragma once
 #include "main.h"
-#include "config.hpp"
+#include "button.hpp"
 /*
 E_CONTROLLER_DIGITAL_L1 = 6 -- btn = 0
   E_CONTROLLER_DIGITAL_L2, 1

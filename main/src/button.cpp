@@ -1,5 +1,8 @@
 #include "button.hpp"
 
+pros::Controller ctrler(pros::E_CONTROLLER_MASTER);
+pros::Controller partner(pros::E_CONTROLLER_PARTNER);
+
 button buttons[12];
 button partner_joy[12];
 const char* button_names[12] = {"L1", "L2", "R1", "R2", "UP", "DOWN", "LEFT", "RIGHT", "X", "B", "Y", "A"};

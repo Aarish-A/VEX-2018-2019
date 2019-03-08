@@ -1,26 +1,30 @@
 #include "subsystem.hpp"
 
-Subsystem::Subsystem() {
-  state_names[STATE_IDLE] = "Idle";
-  state_names[STATE_RESET] = "Reset";
+/* Protected Non-Virtual Functions */
+bool Subsystem::check_time_timeout() {
+  return (pros::millis() - this->state_change_time > this->state_timeout_time && this->state_timeout_time != 0);
 }
 
+bool Subsystem::check_velocity_timeout() {
+  return (this->velocity < this->state_timeout_velocity && this->state_timeout_velocity != 0);
+}
+
+/* Protected Virtual Functions */
 void Subsystem::change_state(uint8_t new_state) {
-  last_state = state;
-  state = new_state;
-  state_change_time = pros::millis();
-
-  log_ln(LOG_STATES, "Switching %s to %s state from %s state", subsystem_name.c_str(), (state_names[state]).c_str(), (state_names[last_state]).c_str());
+  this->last_state = state;
+  this->state = new_state;
+  this->state_change_time = pros::millis();
+  log_ln(LOG_STATES, "Switching %s to %s state from %s state", (this->subsystem_name).c_str(), (this->state_names[state]).c_str(), (this->state_names[last_state]).c_str());
 }
 
-void Subsystem::reset() {
-  change_state(STATE_RESET);
+/* Constructor */
+Subsystem::Subsystem() {
+  this->state_names[STATE_IDLE] = "Idle";
+  this->state_names[STATE_RESET] = "Reset";
+  this->state_names[STATE_DISABLED] = "Disabled";
 }
 
-void Subsystem::disable() {
-  change_state(STATE_IDLE);
-}
-
+/* Public Non-Virtual Functions */
 double Subsystem::get_position() {
   return this->position;
 }
@@ -43,4 +47,12 @@ double Subsystem::get_velocity() {
 
 void Subsystem::operator= (uint8_t new_state) {
   change_state(new_state);
+}
+
+void Subsystem::reset() {
+  change_state(STATE_RESET);
+}
+
+void Subsystem::disable() {
+  change_state(STATE_DISABLED);
 }
