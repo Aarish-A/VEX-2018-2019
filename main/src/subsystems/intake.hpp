@@ -1,9 +1,9 @@
 #pragma once
 #include "main.h"
-#include "logs.hpp"
-#include "subsystem.hpp"
-#include "button.hpp"
-#include "controls.hpp"
+#include "../logs.hpp"
+#include "../libraries/subsystem.hpp"
+#include "../button.hpp"
+#include "../controls.hpp"
 
 class Intake final : public Subsystem {
 public:
@@ -20,10 +20,6 @@ public:
   Intake(std::string subsystem_name, pros::Motor& intake_motor);
 
   void update() override;
-  
   void enable() override;
-
-  void set_target(double target) override;
   void set_power(double power) override;
-  void set_velocity(double velocity) override;
 };

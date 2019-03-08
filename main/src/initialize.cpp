@@ -3,7 +3,7 @@
 #include "controls.hpp"
 #include "logs.hpp"
 #include "config.hpp"
-#include "intake.hpp"
+#include "subsystems/intake.hpp"
 
 void initialize() {
 	log_init();

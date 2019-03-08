@@ -1,11 +1,15 @@
 #include "subsystem.hpp"
 
 /* Protected Non-Virtual Functions */
-bool Subsystem::check_time_timeout() {
+bool Subsystem::timed_out() {
   return (pros::millis() - this->state_change_time > this->state_timeout_time && this->state_timeout_time != 0);
 }
 
-bool Subsystem::check_velocity_timeout() {
+bool Subsystem::above_vel_threshold() {
+  return (this->velocity > this->state_timeout_velocity && this->state_timeout_velocity != 0);
+}
+
+bool Subsystem::below_vel_threshold() {
   return (this->velocity < this->state_timeout_velocity && this->state_timeout_velocity != 0);
 }
 
@@ -53,6 +57,13 @@ void Subsystem::reset() {
   change_state(STATE_RESET);
 }
 
+/* Public Virtual Functions */
 void Subsystem::disable() {
   change_state(STATE_DISABLED);
 }
+
+void Subsystem::set_target(double target) {}
+
+void Subsystem::set_power(double power) {}
+
+void Subsystem::set_velocity(double velocity) {}

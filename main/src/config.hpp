@@ -1,6 +1,6 @@
 #pragma once
 #include "main.h"
-#include "intake.hpp"
+#include "subsystems/intake.hpp"
 
 extern pros::Motor m_intake;
 
