@@ -7,6 +7,8 @@ public:
   static const uint8_t STATE_IDLE = 0x00;
   static const uint8_t STATE_RESET = 0x01;
   static const uint8_t STATE_DISABLED = 0x02;
+  static uint8_t number_of_subsystems;
+  static Subsystem* subsystems[8];
 
 protected:
   // std::string subsystem_name;
@@ -53,4 +55,8 @@ public:
   // Pure-Virtual Functions
   virtual void update() = 0; // Updates state machine, should be run in main loop
   virtual void enable() = 0; // Puts subsystem in the state where it should be when enabled
+
+  // Static Functions
+  static void disable_all();
+  static void reset_all();
 };

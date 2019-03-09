@@ -10,8 +10,7 @@ void initialize() {
 	log_init();
   controls_init();
 
-	intake.reset();
-	drive.reset();
+	Subsystem::reset_all();
 
   log_ln(LOG_DRIVE, "%d Finished Init", pros::millis());
 }

@@ -1,5 +1,8 @@
 #include "subsystem.hpp"
 
+uint8_t Subsystem::number_of_subsystems = 0;
+Subsystem* Subsystem::subsystems[8] = { nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr };
+
 /* Protected Non-Virtual Functions */
 void Subsystem::set_timeouts(uint32_t time, double velocity) {
   this->state_timeout_time = time;
@@ -25,6 +28,8 @@ Subsystem::Subsystem() {
   this->state_names[STATE_IDLE] = "Idle";
   this->state_names[STATE_RESET] = "Reset";
   this->state_names[STATE_DISABLED] = "Disabled";
+  subsystems[number_of_subsystems] = this;
+  Subsystem::number_of_subsystems++;
 }
 
 /* Public Non-Virtual Functions */
@@ -73,3 +78,24 @@ void Subsystem::set_state_target(uint8_t new_state,  double target) {}
 void Subsystem::set_state_power(uint8_t new_state, double power) {}
 
 void Subsystem::set_state_velocity(uint8_t new_state, double velocity) {}
+
+/* Static Functions */
+void Subsystem::disable_all() {
+  for(int i = 0; i < Subsystem::number_of_subsystems; i++) {
+    if (subsystems[i] != nullptr) {
+      subsystems[i]->disable();
+      log_ln(LOG_SUBSYSTEMS, "Disabled %s", (subsystems[i]->subsystem_name).c_str());
+    } else log_ln(LOG_ERROR, "Could not disable subsystem %d", i);
+  }
+  log_ln(LOG_SUBSYSTEMS, "Disabled all subsystems!");
+}
+
+void Subsystem::reset_all() {
+  for(int i = 0; i < Subsystem::number_of_subsystems; i++) {
+    if (subsystems[i] != nullptr) {
+      subsystems[i]->reset();
+      log_ln(LOG_SUBSYSTEMS, "Reset %s", (subsystems[i]->subsystem_name).c_str());
+    } else log_ln(LOG_ERROR, "Could not reset subsystem %d", i);
+  }
+  log_ln(LOG_SUBSYSTEMS, "Disabled all subsystems!");
+}

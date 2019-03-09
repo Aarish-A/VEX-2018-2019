@@ -10,11 +10,18 @@ Drive::Drive(std::string subsystem_name, pros::Motor& fl_motor, pros::Motor& fr_
 void Drive::set_state(uint8_t new_state) {
   Subsystem::set_state(new_state);
   switch(this->state) {
-    case STATE_DRIVER_CONTROL:
+    case STATE_IDLE:
+      set_timeouts();
+      break;
+    case STATE_RESET:
+      set_timeouts();
+      this->set_state(STATE_DRIVER_CONTROL);
       break;
     case STATE_DISABLED:
-      this->state_timeout_velocity = 1;
-      this->state_timeout_time = 1000;
+      set_timeouts(1000, 1);
+      break;
+    case STATE_DRIVER_CONTROL:
+      set_timeouts();
       break;
   }
 }
@@ -62,7 +69,7 @@ void Drive::update() {
       this->set(0);
       break;
     case STATE_RESET:
-      this->set_state(STATE_DRIVER_CONTROL);
+      this->set(0);
       break;
     case STATE_DISABLED:
       // NEEDS TO KILL ANY AUTO MOVEMENT TASK RUNNING AT THIS POINT HOW DO ??
