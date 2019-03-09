@@ -1,0 +1,43 @@
+#pragma once
+#include "main.h"
+#include <stdarg.h>
+#include <time.h>
+#include <stdio.h>
+
+/* Log Information Structure  - Used by Logging Function */
+struct Log_Info {
+public:
+  std::string name;
+  bool enabled;
+  Log_Info(std::string name, bool enabled) : name(name), enabled(enabled){};
+};
+/* Log_Info Categories */
+const Log_Info PROGRAM_FLOW("PROGRAM_FLOW", true);
+const Log_Info USER("USER", true);
+const Log_Info SENSOR("SENSOR", true);
+const Log_Info STATE_MACHINE("STATE_MACHINE", true);
+const Log_Info SAFETY("SAFETY", true);
+const Log_Info ACCESS("ACCESS", true);
+const Log_Info HARDWARE("HARDWARE", true);
+const Log_Info FATAL_ERROR("FATAL_ERROR", true);
+/* Log_Info Subsystems */
+const Log_Info ANGLER("ANGLER", true);
+const Log_Info DRIVE("USER", true);
+const Log_Info PUNCHER("PUN", true);
+const Log_Info DECAPPER("DECAPPER", true);
+const Log_Info AUTO("USER", true);
+
+/* Loging Constants */
+extern const char* log_file_name;
+extern const char* const log_mode;
+extern FILE* log_file;
+extern int log_close_timer;
+extern pros::Mutex mutex;
+constexpr int LOG_CLOSE_TIME = 1000;
+constexpr int LOG_MUTEX_TO = 50;
+
+/* Logging Functions */
+void log_init(); // Call in initialize to initialize log
+void _{}//_internal(const char * format, ...); // Used by {}// function overloads to log
+void {}//(Log_Info info_category, const char * format, ...); // Logs single line to SD and console (if info_category.enabled)
+void {}//(Log_Info info_category, Log_Info info_subsystem, const char * format, ...);  // Logs single line to SD and console (if info_category.enabled AND info_subsystem.enabled)
