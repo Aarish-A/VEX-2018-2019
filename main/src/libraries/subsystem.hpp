@@ -4,10 +4,10 @@
 
 class Subsystem {
 public:
-  static const uint8_t STATE_IDLE = 0x00;
-  static const uint8_t STATE_RESET = 0x01;
-  static const uint8_t STATE_DISABLED = 0x02;
-  static const uint8_t STATE_MOVE_POS = 0x03;
+  static const uint8_t STATE_IDLE = 0x00; // Sets subsystem to 0 power
+  static const uint8_t STATE_RESET = 0x01; // Calibraes subsystem
+  static const uint8_t STATE_DISABLED = 0x02; // Sets subsystem to 0 power and handles other disabled cleanup
+  static const uint8_t STATE_MOVE_POS = 0x03; // Moves subsystem to pos
   static uint8_t number_of_subsystems;
   static Subsystem* subsystems[8];
 
@@ -62,6 +62,6 @@ public:
   virtual void enable() = 0; // Puts subsystem in the state where it should be when enabled
 
   // Static Functions
-  static void disable_all();
-  static void reset_all();
+  static void disable_all(); // Disable all subsystems
+  static void reset_all(); // Reset all subsystems
 };

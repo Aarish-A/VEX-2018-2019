@@ -4,7 +4,7 @@
 Intake::Intake(std::string subsystem_name, pros::Motor& intake_motor) : intake_motor(intake_motor) {
   this->subsystem_name = subsystem_name;
   state_names[STATE_PICKUP] = "Pickup";
-  state_names[STATE_CAP_FLIP] = "Cap Flip";
+  state_names[STATE_CAP_FLIP] = "Cap_Flip";
   state_names[STATE_JAM] = "Jam";
 }
 

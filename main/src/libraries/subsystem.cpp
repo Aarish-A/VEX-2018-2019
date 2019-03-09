@@ -5,7 +5,7 @@ Subsystem* Subsystem::subsystems[8] = { nullptr, nullptr, nullptr, nullptr, null
 
 /* Protected Non-Virtual Functions */
 void Subsystem::set_timeouts(uint32_t time, double velocity) {
-  this->state_timeout_time = time;
+  this->state_timeout_time = time + pros::millis();
   this->state_timeout_velocity = velocity;
 }
 
@@ -28,7 +28,7 @@ Subsystem::Subsystem() {
   this->state_names[STATE_IDLE] = "Idle";
   this->state_names[STATE_RESET] = "Reset";
   this->state_names[STATE_DISABLED] = "Disabled";
-  this->state_names[STATE_MOVE_POS] = "Move Pos";
+  this->state_names[STATE_MOVE_POS] = "Move_Pos";
   subsystems[number_of_subsystems] = this;
   Subsystem::number_of_subsystems++;
 }
@@ -116,5 +116,6 @@ void Subsystem::reset_all() {
       subsystems[i]->reset();
     } else log_ln(LOG_ERROR, "Could not reset subsystem %d", i);
   }
+  // Add while loop that waits for all subsystems to EXIT reset state
   log_ln(LOG_SUBSYSTEMS, "Reset all subsystems!");
 }
