@@ -28,6 +28,7 @@ Subsystem::Subsystem() {
   this->state_names[STATE_IDLE] = "Idle";
   this->state_names[STATE_RESET] = "Reset";
   this->state_names[STATE_DISABLED] = "Disabled";
+  this->state_names[STATE_MOVE_POS] = "Move Pos";
   subsystems[number_of_subsystems] = this;
   Subsystem::number_of_subsystems++;
 }
@@ -71,6 +72,16 @@ void Subsystem::set_state(uint8_t new_state) {
   this->state = new_state;
   this->state_change_time = pros::millis();
   log_ln(LOG_STATES, "Switching %s to %s state from %s state", (this->subsystem_name).c_str(), (this->state_names[state]).c_str(), (this->state_names[last_state]).c_str());
+}
+
+void Subsystem::set_target(double target) {
+  set_state_target(STATE_MOVE_POS, target);
+}
+
+void Subsystem::set_power(double target) {
+}
+
+void Subsystem::set_velocity(double target) {
 }
 
 /* Private */

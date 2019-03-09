@@ -9,8 +9,7 @@
 class Angler final : public Subsystem {
 public:
   static const uint8_t STATE_MOVE_MANUAL= 0x10;
-  static const uint8_t STATE_MOVE_POS = 0x11;
-  static const uint8_t STATE_HOLD = 0x12;
+  static const uint8_t STATE_HOLD = 0x11;
 
   static const int ANGLER_DZ = 50;
 

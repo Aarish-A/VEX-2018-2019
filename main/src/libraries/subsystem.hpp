@@ -7,6 +7,7 @@ public:
   static const uint8_t STATE_IDLE = 0x00;
   static const uint8_t STATE_RESET = 0x01;
   static const uint8_t STATE_DISABLED = 0x02;
+  static const uint8_t STATE_MOVE_POS = 0x03;
   static uint8_t number_of_subsystems;
   static Subsystem* subsystems[8];
 
@@ -43,15 +44,18 @@ public:
   double get_power(); // Returns the current power of the subsystem, if applicable
   double get_velocity(); // Returns the current velocity of the subsystem
   void operator= (uint8_t new_state); // Sets the state by doing Subsystem = Subsystem::State
+  void set_state_target(uint8_t new_state, double target); // Sets the target and moves into the required state
+  void set_state_power(uint8_t new_state, double power); // Sets the power and moves into the required state
+  void set_state_velocity(uint8_t new_state, double velocity); // Sets the velocity and moves into the required state
 
   void disable(); // Puts subsystem disabled state
   void reset(); // Resets subsystem through state machine (calibrate)
 
   // Virtual Functions
   virtual void set_state(uint8_t new_state); // Changes the state and sets the state variables
-  void set_state_target(uint8_t new_state, double target); // Sets the target and moves into the required state
-  void set_state_power(uint8_t new_state, double power); // Sets the power and moves into the required state
-  void set_state_velocity(uint8_t new_state, double velocity); // Sets the velocity and moves into the required state
+  virtual void set_target(double target); // Set target only - define in subsystem
+  virtual void set_power(double power); // Set power only - define in subsystem
+  virtual void set_velocity(double power); // Set velocity only - define in subsystem
 
   // Pure-Virtual Functions
   virtual void update() = 0; // Updates state machine, should be run in main loop
