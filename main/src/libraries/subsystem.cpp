@@ -94,7 +94,6 @@ void Subsystem::disable_all() {
   for(int i = 0; i < Subsystem::number_of_subsystems; i++) {
     if (subsystems[i] != nullptr) {
       subsystems[i]->disable();
-      log_ln(LOG_SUBSYSTEMS, "Disabled %s", (subsystems[i]->subsystem_name).c_str());
     } else log_ln(LOG_ERROR, "Could not disable subsystem %d", i);
   }
   log_ln(LOG_SUBSYSTEMS, "Disabled all subsystems!");
@@ -104,8 +103,7 @@ void Subsystem::reset_all() {
   for(int i = 0; i < Subsystem::number_of_subsystems; i++) {
     if (subsystems[i] != nullptr) {
       subsystems[i]->reset();
-      log_ln(LOG_SUBSYSTEMS, "Reset %s", (subsystems[i]->subsystem_name).c_str());
     } else log_ln(LOG_ERROR, "Could not reset subsystem %d", i);
   }
-  log_ln(LOG_SUBSYSTEMS, "Disabled all subsystems!");
+  log_ln(LOG_SUBSYSTEMS, "Reset all subsystems!");
 }
