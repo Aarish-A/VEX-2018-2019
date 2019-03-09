@@ -31,7 +31,6 @@ const Log_Info AUTO("USER", true);
 extern const char* log_file_name;
 extern const char* const log_mode;
 extern FILE* log_file;
-extern int log_close_timer;
 extern pros::Mutex mutex;
 constexpr int LOG_CLOSE_TIME = 1000;
 constexpr int LOG_MUTEX_TO = 50;

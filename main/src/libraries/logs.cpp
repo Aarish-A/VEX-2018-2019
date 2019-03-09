@@ -10,27 +10,18 @@ int buffer_tail = 0;
 FILE* log_file = NULL;
 
 const char* log_file_name = "/usd/log.txt";
-int log_close_timer = 0;
 const char* const log_mode = "a";
 
 void log_init() {
-  time_t current_time;
-  char* c_time_string;
   log_file = fopen(log_file_name, log_mode);
-  log_close_timer = 0;
   printf(">>>> %d log_init(): Start Logging for Program \n", pros::millis());
 	if (log_file == NULL) {
 		printf("  >>>> %d COULD NOT OPEN SD LOG FILE\n", pros::millis());
-     //ctrler.rumble("--------");
-    //pros::delay(3000);
 		return;
 	}
   printf(">>>> %d log_init(): Successfully opened SD log file \n", pros::millis());
-	// fputs("\r\n\r\n--------------------------------------------------\r\n\r\n", log_file);
+	fputs("\r\n\r\n--------------------------------------------------\r\n\r\n", log_file);
   fprintf(log_file, ">>>> %d Start Logging for Program \n", pros::millis());
-
-  log_close_timer = pros::millis() + LOG_CLOSE_TIME;
-  printf("time closed");
 }
 
 void _log_ln_internal(const char * format, ...) {
