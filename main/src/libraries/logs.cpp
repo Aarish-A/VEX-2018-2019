@@ -22,10 +22,11 @@ void log_init() {
   printf(">>>> %d log_init(): Successfully opened SD log file \n", pros::millis());
 	fputs("\r\n\r\n--------------------------------------------------\r\n\r\n", log_file);
   fprintf(log_file, ">>>> %d Start Logging for Program \n", pros::millis());
+
+  fclose(log_file);
 }
 
 void _log_ln_internal(const char * format, ...) {
-  mutex.take(LOG_MUTEX_TO);
 
   va_list args;
   va_start(args, format);
@@ -35,12 +36,17 @@ void _log_ln_internal(const char * format, ...) {
   printf("\n");
 
   // Write to file from buffer
-  int write_amount = vsprintf(log_buffer+sizeof(log_buffer[0])*buffer_write_index, format, args);
-  if (write_amount > 0) buffer_write_index += write_amount;
+  if (mutex.take(LOG_MUTEX_TO)) {
+    int write_amount = vsprintf(log_buffer+sizeof(log_buffer[0])*buffer_write_index, format, args);
+    if (write_amount > 0) buffer_write_index += write_amount;
+
+    mutex.give();
+
+  } else printf(">>> %d _log_ln_internal() Mutex 50ms TO | Err:%d \n", pros::millis(), errno);
+
 
   va_end (args);
 
-  mutex.give();
 }
 
 void buffer_to_sd() {
@@ -48,16 +54,18 @@ void buffer_to_sd() {
   while (true) {
     while ((log_file = fopen(log_file_name, log_mode)) == NULL) pros::delay(2);
 
-    mutex.take(LOG_MUTEX_TO);
+    if (mutex.take(LOG_MUTEX_TO))
+    {
+      int count = buffer_write_index - buffer_flush_index; // only works if buffer_write_index is greater than buffer_flush_lox TODO: FIX!!
+      if (count > 0) {
+        int flush_amount = fwrite(log_buffer+size*buffer_flush_index, size, count, log_file);
+        if (flush_amount > 0) buffer_flush_index += flush_amount;
+        fclose(log_file);
+      }
+      
+      mutex.give();
 
-    int count = buffer_write_index - buffer_flush_index; // only works if buffer_write_index is greater than buffer_flush_lox TODO: FIX!!
-    if (count > 0) {
-      int flush_amount = fwrite(log_buffer+size*buffer_flush_index, size, count, log_file);
-      if (flush_amount > 0) buffer_flush_index += flush_amount;
-      fclose(log_file);
-    }
-
-    mutex.give();
+    } else printf(">>> %d buffer_to_sd() Mutex 50ms TO | Err:%d \n", pros::millis(), errno);
 
     pros::delay(LOG_CLOSE_TIME);
   }

@@ -47,5 +47,6 @@ extern int buffer_tail;
 void log_init(); // Call in initialize to initialize log
 void _log_ln_internal(const char * format, ...); // Used by log_ln function overloads to log
 void buffer_to_sd(); // Push new data from the buffer into the sd
+
 void log_ln(Log_Info info_category, const char * format, ...); // Logs single line to SD and console (if info_category.enabled)
 void log_ln(Log_Info info_category, Log_Info info_subsystem, const char * format, ...);  // Logs single line to SD and console (if info_category.enabled AND info_subsystem.enabled)

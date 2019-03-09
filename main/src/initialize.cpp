@@ -8,6 +8,7 @@
 
 void initialize() {
 	log_init();
+	pros::Task buffer_to_sd_task((pros::task_fn_t) buffer_to_sd);
 	log_ln(PROGRAM_FLOW, "DONE LOG_INIT");
   controls_init();
 
