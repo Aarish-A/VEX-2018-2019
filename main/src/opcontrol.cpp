@@ -24,11 +24,6 @@ void opcontrol() {
 	log_ln(LOG_AUTO, "   --- %d START OPCONTROL --- \n", pros::millis());
 
 	pun_state_set(PunState::Loading);
-	if (pun_state != PunState::FatalError) {
-		pun_set(127);
-		shot_pun_go = false;
-		auto_set_shot = false;
-	}
 
 	intake_state_set(IntakeState::Off);
 
