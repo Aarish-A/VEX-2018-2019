@@ -73,11 +73,21 @@ void Subsystem::set_state(uint8_t new_state) {
   log_ln(LOG_STATES, "Switching %s to %s state from %s state", (this->subsystem_name).c_str(), (this->state_names[state]).c_str(), (this->state_names[last_state]).c_str());
 }
 
-void Subsystem::set_state_target(uint8_t new_state,  double target) {}
+/* Private */
+void Subsystem::set_state_target(uint8_t new_state, double target) {
+  set_state(new_state);
+  this->target = target;
+}
 
-void Subsystem::set_state_power(uint8_t new_state, double power) {}
+void Subsystem::set_state_power(uint8_t new_state, double power) {
+  set_state(new_state);
+  this->power = power;
+}
 
-void Subsystem::set_state_velocity(uint8_t new_state, double velocity) {}
+void Subsystem::set_state_velocity(uint8_t new_state, double velocity) {
+  set_state(new_state);
+  this->velocity = velocity;
+}
 
 /* Static Functions */
 void Subsystem::disable_all() {
