@@ -12,6 +12,7 @@ public:
 
 protected:
   // std::string subsystem_name;
+  bool done_reset_accel;
   std::string subsystem_name;
   std::string state_names[32];
 

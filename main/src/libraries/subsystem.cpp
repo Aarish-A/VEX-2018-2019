@@ -14,11 +14,11 @@ bool Subsystem::timed_out() {
 }
 
 bool Subsystem::above_vel_threshold() {
-  return (this->velocity > this->state_timeout_velocity && this->state_timeout_velocity != 0);
+  return (this->velocity > fabs(this->state_timeout_velocity) && this->state_timeout_velocity != 0);
 }
 
 bool Subsystem::below_vel_threshold() {
-  return (this->velocity < this->state_timeout_velocity && this->state_timeout_velocity != 0);
+  return (this->velocity < -fabs(this->state_timeout_velocity) && this->state_timeout_velocity != 0);
 }
 
 /* Protected Virtual Functions */
