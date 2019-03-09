@@ -16,28 +16,22 @@ void Intake::set_state(uint8_t new_state) {
   Subsystem::set_state(new_state);
   switch(new_state) {
     case STATE_IDLE:
-      this->power = 0;
-      set_timeouts();
       break;
     case STATE_RESET:
-      this->power = 0;
-      set_timeouts();
+      this->set_state(STATE_IDLE);
       break;
     case STATE_DISABLED:
-      this->power = 0;
-      set_timeouts();
       break;
     case STATE_PICKUP:
       this->power = 127;
-      set_timeouts(250, 10);
+      set_timeout_velocity(10, 250);
       break;
     case STATE_CAP_FLIP:
       this->power = -80;
-      set_timeouts();
       break;
     case STATE_JAM:
       this->power = -80;
-      set_timeouts(350);
+      set_timeout_time(350);
       break;
   }
 }
@@ -53,7 +47,6 @@ void Intake::update() {
       else if (check_single_press(BTN_INTAKE_DOWN)) this->set_state(STATE_CAP_FLIP);
       break;
     case STATE_RESET:
-      this->set_state(STATE_IDLE);
       break;
     case STATE_DISABLED:
       break;

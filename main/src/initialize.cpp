@@ -5,13 +5,11 @@
 #include "config.hpp"
 #include "subsystems/intake.hpp"
 #include "subsystems/drive.hpp"
+#include "subsystems/angler.hpp"
 
 void initialize() {
 	log_init();
   controls_init();
-
-	Subsystem::reset_all();
-
   log_ln(LOG_DRIVE, "%d Finished Init", pros::millis());
 }
 

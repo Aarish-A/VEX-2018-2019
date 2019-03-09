@@ -22,14 +22,18 @@ protected:
   uint32_t state_change_time;
   uint32_t state_timeout_time;
   double state_timeout_velocity;
+  uint32_t state_timeout_velocity_time;
+  double velocity_exceeded_time;
 
   double power;
   double position;
   double target;
   double error;
   double velocity;
+  double last_velocity;
 
-  void set_timeouts(uint32_t time = 0, double velocity = 0);
+  void set_timeout_time(uint32_t time = 0);
+  void set_timeout_velocity(double velocity = 0, uint32_t time = 0);
   bool timed_out();
   bool above_vel_threshold();
   bool below_vel_threshold();

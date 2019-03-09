@@ -11,17 +11,14 @@ void Drive::set_state(uint8_t new_state) {
   Subsystem::set_state(new_state);
   switch(this->state) {
     case STATE_IDLE:
-      set_timeouts();
       break;
     case STATE_RESET:
-      set_timeouts();
       this->set_state(STATE_DRIVER_CONTROL);
       break;
     case STATE_DISABLED:
-      set_timeouts(1000, 1);
+      set_timeout_velocity(1, 1000);
       break;
     case STATE_DRIVER_CONTROL:
-      set_timeouts();
       break;
   }
 }
@@ -78,7 +75,6 @@ void Drive::update() {
       int strafe = set_dz(ctrler.get_analog(JOY_DRIVE_STRAFE), this->STRAFE_DEADZONE);
       int throttle = set_dz(ctrler.get_analog(JOY_DRIVE_FW), this->THROTTLE_DEADZONE);
       int turn = set_scaled_dz(ctrler.get_analog(JOY_DRIVE_TURN), this->TURN_DEADZONE);
-      log_ln(LOG_STATES, "%d %d %d", strafe, throttle, turn);
       this->set(strafe, throttle, turn);
       break;
   }

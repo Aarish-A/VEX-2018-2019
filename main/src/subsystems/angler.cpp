@@ -1,5 +1,4 @@
 #include "angler.hpp"
-using namespace pros;
 
 /* Constructor */
 Angler::Angler(std::string subsystem_name, pros::Motor& angler_motor) : angler_motor(angler_motor) {
@@ -15,28 +14,20 @@ void Angler::set_state(uint8_t new_state) {
   Subsystem::set_state(new_state);
   switch(new_state) {
     case STATE_IDLE:
-      this->power = 0;
-      set_timeouts();
       break;
     case STATE_RESET:
       this->power = -30;
-      set_timeouts(1000, 0);
+      this->angler_motor.move(this->power);
+      set_timeout_time(1000);
+      set_timeout_velocity(10, 100);
       break;
     case STATE_DISABLED:
-      this->power = 0;
-      set_timeouts();
       break;
     case STATE_MOVE_MANUAL:
-      this->power = set_dz(ctrler.get_analog(JOY_ANGLER), ANGLER_DZ);
-      set_timeouts();
       break;
     case STATE_MOVE_POS:
-      set_timeouts();
       break;
     case STATE_HOLD:
-      this->power = 0;
-      this->target = angler_motor.get_position();
-      set_timeouts();
       break;
   }
 }
@@ -49,14 +40,17 @@ void Angler::update() {
     case STATE_IDLE:
       break;
     case STATE_RESET:
-      if (velocity > 0 && millis() > state_change_time+100) {
-        angler_motor.tare_position();
-      }
+      log_ln(LOG_STATES, "here %f", this->velocity);
+      if (this->below_vel_threshold()) {
+        this->angler_motor.tare_position();
+        this->set_state(STATE_MOVE_MANUAL);
+      } else if (this->timed_out()) this->set_state(STATE_IDLE);
       break;
     case STATE_DISABLED:
       break;
     case STATE_MOVE_MANUAL:
-      angler_motor.move(this->power);
+      this->power = set_dz(ctrler.get_analog(JOY_ANGLER), this->DEADZONE);
+      this->angler_motor.move(this->power);
       break;
     case STATE_MOVE_POS:
       //if (lst_joy && !joy) set_state(STATE_HOLD);
@@ -66,8 +60,9 @@ void Angler::update() {
       set_state(STATE_IDLE);
       break;
   }
+  this->last_velocity = this->velocity;
 }
 
 void Angler::enable() {
-  this->set_state(STATE_IDLE);
+  this->set_state(STATE_MOVE_MANUAL);
 }
