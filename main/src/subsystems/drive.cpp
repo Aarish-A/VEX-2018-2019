@@ -11,14 +11,17 @@ void Drive::set_state(uint8_t new_state) {
   Subsystem::set_state(new_state);
   switch(this->state) {
     case STATE_IDLE:
+      this->set(0);
       break;
     case STATE_RESET:
       this->set_state(STATE_DRIVER_CONTROL);
       break;
     case STATE_DISABLED:
-      set_timeout_velocity(1, 1000);
+      this->set(0);
       break;
     case STATE_DRIVER_CONTROL:
+      break;
+    case STATE_AUTO_CONTROL:
       break;
   }
 }

@@ -7,23 +7,17 @@ public:
   static const uint8_t STATE_IDLE = 0x00;
   static const uint8_t STATE_RESET = 0x01;
   static const uint8_t STATE_DISABLED = 0x02;
-  static const uint8_t STATE_MOVE_POS = 0x03;
   static uint8_t number_of_subsystems;
   static Subsystem* subsystems[8];
 
 protected:
-  // std::string subsystem_name;
-  bool done_reset_accel;
   std::string subsystem_name;
   std::string state_names[32];
 
   uint8_t state = STATE_IDLE;
   uint8_t last_state = STATE_IDLE;
   uint32_t state_change_time;
-  uint32_t state_timeout_time;
-  double state_timeout_velocity;
-  uint32_t state_timeout_velocity_time;
-  double velocity_exceeded_time;
+  uint32_t velocity_exceeded_time;
 
   double power;
   double position;
@@ -32,11 +26,9 @@ protected:
   double velocity;
   double last_velocity;
 
-  void set_timeout_time(uint32_t time = 0);
-  void set_timeout_velocity(double velocity = 0, uint32_t time = 0);
-  bool timed_out();
-  bool above_vel_threshold();
-  bool below_vel_threshold();
+  bool timed_out(uint32_t timeout);
+  bool above_vel_threshold(double velocity, uint32_t timeout);
+  bool below_vel_threshold(double velocity, uint32_t timeout);
 
 public:
   Subsystem();

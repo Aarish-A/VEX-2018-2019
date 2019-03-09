@@ -9,6 +9,7 @@
 class Drive final : public Subsystem {
 public:
   static const uint8_t STATE_DRIVER_CONTROL = 0x10;
+  static const uint8_t STATE_AUTO_CONTROL = 0x11;
 private:
   pros::Motor& fl_motor;
   pros::Motor& fr_motor;
