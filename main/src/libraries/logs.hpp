@@ -38,8 +38,8 @@ constexpr int LOG_MUTEX_TO = 50;
 /* Logging Buffer */
 constexpr int LOG_BUFFER_SIZE = 1000000;
 extern char log_buffer[LOG_BUFFER_SIZE];
-extern int buffer_write_loc;
-extern int buffer_flush_loc;
+extern int buffer_write_index;
+extern int buffer_flush_index;
 extern int buffer_head;
 extern int buffer_tail;
 
