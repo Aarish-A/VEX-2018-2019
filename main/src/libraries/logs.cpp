@@ -38,7 +38,8 @@ void _log_ln_internal(const char * format, ...) {
 
   va_list args;
   va_start(args, format);
-  // if (log_file == NULL) log_file = fopen(log_file_name, log_mode);
+
+  // Write to console
   vprintf(format, args);
   printf("\n");
 
@@ -58,9 +59,11 @@ void buffer_to_sd() {
     mutex.take(LOG_MUTEX_TO);
 
     int count = buffer_write_loc - buffer_flush_loc; // only works if buffer_write_loc is greater than buffer_flush_lox TODO: FIX!!
-    int flush_amount = fwrite(log_buffer+size*buffer_flush_loc, size, count, log_file);
-    if (flush_amount > 0) buffer_flush_loc += size*flush_amount;
-    fclose(log_file);
+    if (count > 0) {
+      int flush_amount = fwrite(log_buffer+size*buffer_flush_loc, size, count, log_file);
+      if (flush_amount > 0) buffer_flush_loc += size*flush_amount;
+      fclose(log_file);
+    }
 
     mutex.give();
 
