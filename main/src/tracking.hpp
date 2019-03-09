@@ -1,7 +1,7 @@
 #pragma once
 #include "main.h"
 #include "libraries/util.hpp"
-#include "logs.hpp"
+#include "libraries/logs.hpp"
 #include <cmath>
 #include <memory>
 

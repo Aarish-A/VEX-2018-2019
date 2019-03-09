@@ -78,7 +78,7 @@ void Drive::update() {
       int strafe = set_dz(ctrler.get_analog(JOY_DRIVE_STRAFE), this->STRAFE_DEADZONE);
       int throttle = set_dz(ctrler.get_analog(JOY_DRIVE_FW), this->THROTTLE_DEADZONE);
       int turn = set_scaled_dz(ctrler.get_analog(JOY_DRIVE_TURN), this->TURN_DEADZONE);
-      log_ln(LOG_STATES, "%d %d %d", strafe, throttle, turn);
+      {}//log_ln(LOG_STATES, "%d %d %d", strafe, throttle, turn);
       this->set(strafe, throttle, turn);
       break;
   }

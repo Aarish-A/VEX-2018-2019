@@ -1,18 +1,19 @@
 #include "main.h"
 #include "button.hpp"
 #include "controls.hpp"
-#include "logs.hpp"
+#include "libraries/logs.hpp"
 #include "config.hpp"
 #include "subsystems/intake.hpp"
 #include "subsystems/drive.hpp"
 
 void initialize() {
 	log_init();
+	log_ln(PROGRAM_FLOW, "DONE LOG_INIT");
   controls_init();
 
 	Subsystem::reset_all();
-
-  log_ln(LOG_DRIVE, "%d Finished Init", pros::millis());
+	log_ln(PROGRAM_FLOW, "Init first log");
+  {}//log_ln(LOG_DRIVE, "%d Finished Init", pros::millis());
 }
 
 /**

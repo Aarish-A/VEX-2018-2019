@@ -71,7 +71,7 @@ void Subsystem::set_state(uint8_t new_state) {
   this->last_state = state;
   this->state = new_state;
   this->state_change_time = pros::millis();
-  log_ln(LOG_STATES, "Switching %s to %s state from %s state", (this->subsystem_name).c_str(), (this->state_names[state]).c_str(), (this->state_names[last_state]).c_str());
+  {}//log_ln(LOG_STATES, "Switching %s to %s state from %s state", (this->subsystem_name).c_str(), (this->state_names[state]).c_str(), (this->state_names[last_state]).c_str());
 }
 
 void Subsystem::set_target(double target) {
@@ -105,16 +105,16 @@ void Subsystem::disable_all() {
   for(int i = 0; i < Subsystem::number_of_subsystems; i++) {
     if (subsystems[i] != nullptr) {
       subsystems[i]->disable();
-    } else log_ln(LOG_ERROR, "Could not disable subsystem %d", i);
+    } else {}//log_ln(LOG_ERROR, "Could not disable subsystem %d", i);
   }
-  log_ln(LOG_SUBSYSTEMS, "Disabled all subsystems!");
+  {}//log_ln(LOG_SUBSYSTEMS, "Disabled all subsystems!");
 }
 
 void Subsystem::reset_all() {
   for(int i = 0; i < Subsystem::number_of_subsystems; i++) {
     if (subsystems[i] != nullptr) {
       subsystems[i]->reset();
-    } else log_ln(LOG_ERROR, "Could not reset subsystem %d", i);
+    } else {}//log_ln(LOG_ERROR, "Could not reset subsystem %d", i);
   }
-  log_ln(LOG_SUBSYSTEMS, "Reset all subsystems!");
+  {}//log_ln(LOG_SUBSYSTEMS, "Reset all subsystems!");
 }

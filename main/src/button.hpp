@@ -1,7 +1,7 @@
 #pragma once
 #include "main.h"
 #include "controls.hpp"
-#include "logs.hpp"
+#include "libraries/logs.hpp"
 
 extern pros::Controller ctrler;
 extern pros::Controller partner;

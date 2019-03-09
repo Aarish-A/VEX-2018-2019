@@ -53,7 +53,7 @@ Tracking::Tracking(pros::ADIEncoder &encL, pros::ADIEncoder &encR, pros::ADIEnco
 }
 
 void Tracking::task() {
-  log_ln(LOG_AUTO, "%d Start Update Task", pros::millis());
+  {}//log_ln(LOG_AUTO, "%d Start Update Task", pros::millis());
   while (true) {
     update();
     pros::delay(1);
@@ -66,7 +66,7 @@ void Tracking::update() {
   int right = encR.get_value();
   int strafe = 0;//encS.get_value();
 
-  //log_ln("%d pos(%f, %f, %f) (%d, %d)", pros::millis(), x, y, RAD_TO_DEG(a), left, right);
+  //{}//log_ln("%d pos(%f, %f, %f) (%d, %d)", pros::millis(), x, y, RAD_TO_DEG(a), left, right);
 
 
   double L = (left - encLLst) * SPN_TO_IN_L; // The amount the left side of the robot moved
@@ -127,7 +127,7 @@ void Tracking::update() {
 }
 
 void Tracking::reset(double x, double y, double a) {
-  log_ln(LOG_AUTO, "\n%d Resetting Pos (%f, %f, %f) from (%f, %f, %f)", pros::millis(), x, y, RAD_TO_DEG(a), this->x, this->y, RAD_TO_DEG(this->a));
+  {}//log_ln(LOG_AUTO, "\n%d Resetting Pos (%f, %f, %f) from (%f, %f, %f)", pros::millis(), x, y, RAD_TO_DEG(a), this->x, this->y, RAD_TO_DEG(this->a));
   this->encL.reset();
   this->encR.reset();
   this->encS.reset();
