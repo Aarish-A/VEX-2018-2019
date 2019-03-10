@@ -7,13 +7,13 @@ Decapper_States decapper_state_last = decapper_state;
 double decapper_targ = 0;
 int decapper_state_change_time = 0;
 
-void set_decapper_targ_state(Decapper_States state, double targ) {
+void set_decapper_targ_state(Decapper_States state, double targ, int32_t velocity) {
   printf("Going from %d", decapper_state);
 	decapper_state_last = decapper_state;
 	decapper_state = state;
 	decapper_state_change_time = pros::millis();
   decapper_targ = targ;
-  decapper_move(targ);
+  decapper_move(targ, velocity);
   printf(" to %d\n", decapper_state);
 }
 
@@ -29,8 +29,8 @@ void set_decapper_pow_state(Decapper_States state, double pow) {
 void set_decapper_state(Decapper_States state) {
   switch(state) {
     case Decapper_States::Bot: set_decapper_targ_state(state, DECAPPER_BOT_POS); break;
-    case Decapper_States::Mid: set_decapper_targ_state(state, DECAPPER_MID_POS); break;
-    case Decapper_States::Top: set_decapper_targ_state(state, DECAPPER_TOP_POS); break;
+    case Decapper_States::Mid: set_decapper_targ_state(state, DECAPPER_MID_POS, 50); break;
+    case Decapper_States::Top: set_decapper_targ_state(state, DECAPPER_TOP_POS, 100); break;
     case Decapper_States::Idle: set_decapper_pow_state(state, 0); break;
   }
   log_ln(LOG_DECAPPER, "%d Change Decapper State to %d from %d | Time: %d | Targ: %d", millis(), state, decapper_state_last, decapper_state_change_time, decapper_targ);
@@ -124,7 +124,7 @@ void decapper_handle()
       {
         set_decapper_state(Decapper_States::Bot);
       }
-      else if (fabs(decapper.get_position() - DECAPPER_MID_POS) < (4*DECAPPER_RATIO)) decapper.move_relative(0, 200);
+      // else if (fabs(decapper.get_position() - DECAPPER_MID_POS) < (2*DECAPPER_RATIO)) decapper_set(DECAPPER_MID_HOLD_POW);//decapper.move_relative(0, 200);
       //printf("%d Mid vel:%f StateCT:%d pos:%f t:%f \n", millis(), decapper.get_actual_velocity(), decapper_state_change_time, decapper.get_position(), decapper_targ);
       break;
     }
@@ -134,6 +134,7 @@ void decapper_handle()
       {
           set_decapper_state(Decapper_States::Mid);
       }
+      else if (fabs(decapper.get_position() - DECAPPER_TOP_POS) < (3*DECAPPER_RATIO)) decapper.move_relative(0, 200);
       //printf("%d Top vel:%f StateCT:%d pos:%f t:%f \n", millis(), decapper.get_actual_velocity(), decapper_state_change_time, decapper.get_position(), decapper_targ);
     }
     case Decapper_States::Idle:

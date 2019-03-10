@@ -39,7 +39,7 @@ void angler_handle() {
 	static int anglerJoystickDZLast = 0;
 	static int anglerPow = 0;
 
-	anglerJoystickDZ = set_dz(ctrler.get_analog(JOY_ANGLER), ANGLER_DZ);
+	// anglerJoystickDZ = set_dz(ctrler.get_analog(JOY_ANGLER), ANGLER_DZ);
 	// printf("%d\n", abs(ctrler.get_analog(JOY_DRIVE_STRAFE)));
 
 	if (angler.get_position() < ANGLER_BOT_LIM_POS && anglerJoystickDZ < 0) anglerJoystickDZ = 0;

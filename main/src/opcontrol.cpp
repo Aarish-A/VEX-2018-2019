@@ -42,6 +42,11 @@ void opcontrol() {
 		intake_handle();
 		decapper_handle();
 
+		// if (abs(ctrler.get_analog(E_CONTROLLER_ANALOG_RIGHT_Y)) > 5) decapper.move(ctrler.get_analog(E_CONTROLLER_ANALOG_RIGHT_Y));
+		// else decapper.move(0);
+
+		// printf("Capper: %f\n", decapper.get_position());
+
 		if (partner_connected) gui_handle();
 		if (!in_menu) {
 			shot_req_make();
