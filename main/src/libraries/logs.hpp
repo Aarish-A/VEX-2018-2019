@@ -35,12 +35,13 @@ constexpr int LOG_BUFFER_FLUSH_DELAY = 1000;
 constexpr int LOG_MUTEX_TO = 50;
 
 /* Logging Buffer */
-constexpr int LOG_BUFFER_SIZE = 10000; // DO NOT ADD MORE 0S - WILL NOT COMPILE
+constexpr int LOG_BUFFER_SIZE = 100000; // Max is approx 8.5mil
 extern char log_buffer[LOG_BUFFER_SIZE];
 extern int buffer_write_index;
 extern int buffer_flush_index;
 extern int buffer_head;
 extern int buffer_tail;
+constexpr size_t BUF_OBJ_SIZE = sizeof(log_buffer[0]);
 
 /* Logging Functions */
 void log_init(); // Call in initialize to initialize log

@@ -33,14 +33,40 @@ void _log_ln_internal(const char * format, va_list args) {
   printf("\n");
 
   // Write to file from buffer
+  char str_end[] = "\r\n";
+  size_t str_whole_len = strlen(format)+strlen(str_end); // Amount of chars in input-string
+  char str_whole[str_whole_len];
+  std::strcpy(str_whole, format);
+  std::strcat(str_whole, str_end);
+
+  int write_amount = 0;
   if (mutex.take(LOG_MUTEX_TO)) {
-    char sd_end[] = "\r\n";
-    char sd_new[strlen(format)+strlen(sd_end)];
-    std::strcpy(sd_new, format);
-    std::strcat(sd_new, sd_end);
-    int write_amount = vsprintf(log_buffer+sizeof(log_buffer[0])*buffer_write_index, sd_new, args);
-    if (write_amount > 0) {
-      buffer_write_index += write_amount;
+    size_t buf_remaining_len = LOG_BUFFER_SIZE - buffer_write_index; // Amount of unfilled indices left in buffer
+    if (buf_remaining_len < str_whole_len) { // If the input-string is about to go out of the bounds of the buffer
+                                              // Split the input-string in two. Put whatever fits into the end of the buffer
+                                              // and put the remaining characters into the front of the buffer
+      printf(">>%d log_ln() WRITE->BUFFER wrapped around \n", pros::millis());
+      // Split whole string into two substrings
+      const size_t str_first_len = buf_remaining_len;
+      const size_t str_sec_len = str_whole_len-str_first_len;
+      char str_first[str_first_len];
+      char str_sec[str_sec_len];
+      strncpy(str_first, str_whole, str_first_len);
+      strncpy(str_sec, &str_whole[str_first_len], str_sec_len);
+      // 1) Write first part of string to end of buffer
+      write_amount = vsprintf(log_buffer+sizeof(log_buffer[0])*buffer_write_index, str_first, args);
+      if (write_amount > 0) buffer_write_index += write_amount;
+      printf("  >>%d log_ln() | write_amount = %d | buffer_write_index = %d \n", pros::millis(), write_amount, buffer_write_index);
+      // 2) Write sec part of string to front of buffer
+      write_amount = vsprintf(log_buffer, str_sec, args); // HOW WILL ARGS BE HANDLED? WILL IT USE THE RIGHT ARGS B/W THE TWO FUNC CALLS?
+      if (write_amount > 0) buffer_write_index = write_amount;
+      printf("  >>%d log_ln() | write_amount = %d | buffer_write_index = %d \n", pros::millis(), write_amount, buffer_write_index);
+    }
+    else {
+      int write_amount = vsprintf(log_buffer+sizeof(log_buffer[0])*buffer_write_index, str_whole, args);
+      if (write_amount > 0) {
+        buffer_write_index += write_amount;
+      }
     }
 
     mutex.give();
@@ -51,8 +77,8 @@ void _log_ln_internal(const char * format, va_list args) {
 }
 
 void buffer_to_sd() {
-  size_t size = sizeof(log_buffer[0]);
   log_ln(PROGRAM_FLOW, "%d Start buffer_to_sd() task \n", pros::millis());
+  int flush_amount = 0;
   while (true) {
       //printf("   >>>>>>>>%d NULL LOG_FILE \n", pros::millis());
       while (log_file == NULL) {
@@ -65,13 +91,26 @@ void buffer_to_sd() {
     if (mutex.take(LOG_MUTEX_TO))
     {
       //printf(">>>%d Start flush \n", pros::millis());
-      int count = buffer_write_index - buffer_flush_index; // only works if buffer_write_index is greater than buffer_flush_lox TODO: FIX!!
-      if (count > 0) {
-        int flush_amount = fwrite(log_buffer+size*buffer_flush_index, size, count, log_file);
+      int count = buffer_write_index - buffer_flush_index;
+      if (count > 0) { // The last character flushed from buf is behind last character written to it
+        // Flush everything b/w buffer_flush_index and buffer_write_index
+        flush_amount = fwrite(log_buffer+BUF_OBJ_SIZE*buffer_flush_index, BUF_OBJ_SIZE, count, log_file);
         if (flush_amount >  0) buffer_flush_index += flush_amount;
         printf("%d flush %d %d\n", pros::millis(), buffer_write_index, buffer_flush_index);
         fclose(log_file);
         log_file = fopen(log_file_name, log_mode);
+      }
+      else if (count < 0) { // We wrapped around when writing to the buffer (meaning the last character written is behind the last character flushed)
+        printf(">>%d buffer_to_sd() BUFFER->SD wrapped around \n", pros::millis());
+        // 1) Flush b/w buffer_flush_index & buffer_end
+        size_t buf_remaining_len = LOG_BUFFER_SIZE - buffer_flush_index; // Amount of unflushed indices left in buffer
+        flush_amount = fwrite(log_buffer+BUF_OBJ_SIZE*buffer_flush_index, BUF_OBJ_SIZE, buf_remaining_len, log_file);
+        if (flush_amount >  0) buffer_flush_index += flush_amount;
+        printf("  >>%d buffer_to_sd() | flush_amount = %d | buffer_flush_index = %d \n", pros::millis(), flush_amount, buffer_flush_index);
+        // 2) Flush b/w buffer_front and buffer_write_index
+        flush_amount = fwrite(log_buffer, BUF_OBJ_SIZE, buffer_write_index, log_file);
+        if (flush_amount >  0) buffer_flush_index = flush_amount;
+        printf("  >>%d buffer_to_sd() | flush_amount = %d | buffer_flush_index = %d \n", pros::millis(), flush_amount, buffer_flush_index);
       }
 
       mutex.give();
