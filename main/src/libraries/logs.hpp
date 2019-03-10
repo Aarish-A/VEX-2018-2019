@@ -27,6 +27,7 @@ const Log_Info DECAPPER("DECAPPER", true);
 const Log_Info AUTO("USER", true);
 
 /* Loging Constants */
+extern bool sd_logging_enabled;
 extern const char* log_file_name;
 extern const char* const log_mode;
 extern FILE* log_file;
@@ -35,7 +36,7 @@ constexpr int LOG_BUFFER_FLUSH_DELAY = 1000;
 constexpr int LOG_MUTEX_TO = 50;
 
 /* Logging Buffer */
-constexpr int LOG_BUFFER_SIZE = 100000; // Max is approx 8.5mil
+constexpr int LOG_BUFFER_SIZE = 100; // Max is approx 8.5mil
 extern char log_buffer[LOG_BUFFER_SIZE];
 extern int buffer_write_index;
 extern int buffer_flush_index;
@@ -44,8 +45,8 @@ extern int buffer_tail;
 constexpr size_t BUF_OBJ_SIZE = sizeof(log_buffer[0]);
 
 /* Logging Functions */
-void log_init(); // Call in initialize to initialize log
-void _log_ln_internal(const char * format, va_list args); // Used by log_ln function overloads to log
+void log_init(); // Initializes sd logging; Will disabling sd_logging if it cannot open the log_file
+void _log_ln_internal(const char * str_whole); // Used by log_ln function overloads to log to console and log_buffer (for sd)
 void buffer_to_sd(); // Push new data from the buffer into the sd
 
 void log_ln(Log_Info info_category, const char * format, ...); // Logs single line to SD and console (if info_category.enabled)
