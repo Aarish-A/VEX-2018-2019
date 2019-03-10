@@ -15,8 +15,6 @@ public:
 /* Log_Info Categories */
 const Log_Info PROGRAM_FLOW("PROGRAM_FLOW", true);
 const Log_Info USER("USER", true);
-const Log_Info SENSOR("SENSOR", true);
-const Log_Info STATE_MACHINE("STATE_MACHINE", true);
 const Log_Info SAFETY("SAFETY", true);
 const Log_Info ACCESS("ACCESS", true);
 const Log_Info HARDWARE("HARDWARE", true);
@@ -37,7 +35,7 @@ constexpr int LOG_BUFFER_FLUSH_DELAY = 1000;
 constexpr int LOG_MUTEX_TO = 50;
 
 /* Logging Buffer */
-constexpr int LOG_BUFFER_SIZE = 1000000; // DO NOT ADD MORE 0S - WILL NOT COMPILE
+constexpr int LOG_BUFFER_SIZE = 10000; // DO NOT ADD MORE 0S - WILL NOT COMPILE
 extern char log_buffer[LOG_BUFFER_SIZE];
 extern int buffer_write_index;
 extern int buffer_flush_index;

@@ -54,16 +54,24 @@ void buffer_to_sd() {
   size_t size = sizeof(log_buffer[0]);
   log_ln(PROGRAM_FLOW, "%d Start buffer_to_sd() task \n", pros::millis());
   while (true) {
-    while ((log_file = fopen(log_file_name, log_mode)) == NULL) pros::delay(2);
+      //printf("   >>>>>>>>%d NULL LOG_FILE \n", pros::millis());
+      while (log_file == NULL) {
+        log_file = fopen(log_file_name, log_mode);
+        //printf("  >>>>>>>>%d Opening file \n", pros::millis());
+        pros::delay(2);
+      }
 
-    if (mutex.take(TIMEOUT_MAX))
+    printf("  >>>%d Opened file \n", pros::millis());
+    if (mutex.take(LOG_MUTEX_TO))
     {
+      //printf(">>>%d Start flush \n", pros::millis());
       int count = buffer_write_index - buffer_flush_index; // only works if buffer_write_index is greater than buffer_flush_lox TODO: FIX!!
       if (count > 0) {
         int flush_amount = fwrite(log_buffer+size*buffer_flush_index, size, count, log_file);
-        if (flush_amount > 0) buffer_flush_index += flush_amount;
-        printf("%d flush \n", pros::millis());
+        if (flush_amount >  0) buffer_flush_index += flush_amount;
+        printf("%d flush %d %d\n", pros::millis(), buffer_write_index, buffer_flush_index);
         fclose(log_file);
+        log_file = fopen(log_file_name, log_mode);
       }
 
       mutex.give();
@@ -74,12 +82,16 @@ void buffer_to_sd() {
   }
 }
 
-void log_ln(Log_Info infoA, const char * format, ...) {
+void log_ln(Log_Info info_category, const char * format, ...) {
   va_list args;
   va_start(args, format);
-  if (infoA.enabled) {
+
+  char new_str[12+info_category.name.length()+strlen(format)];
+  sprintf(new_str, "%07d | %s | %s", pros::millis(), info_category.name.c_str(), format);
+
+  if (info_category.enabled) {
     // TODO: Add TimeStamp & Category to args list
-    _log_ln_internal(format, args);
+    _log_ln_internal(new_str, args);
   }
   va_end (args);
 
