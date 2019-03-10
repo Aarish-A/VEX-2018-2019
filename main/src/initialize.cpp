@@ -10,8 +10,12 @@ void initialize() {
 	log_init();
 	printf("%d done log init", pros::millis());
 	pros::delay(50);
-	if (sd_logging_enabled) pros::Task buffer_to_sd_task((pros::task_fn_t) buffer_to_sd);
-
+	printf("	%d After wait init() \n", pros::millis());
+	if (sd_logging_enabled) {
+		printf("	%d Start Log Buffer from init() \n", pros::millis());
+		pros::Task buffer_to_sd_task((pros::task_fn_t) buffer_to_sd);
+	}
+/*
 	log_ln(PROGRAM_FLOW, "DONE LOG_INIT");
   controls_init();
 
@@ -24,7 +28,7 @@ void initialize() {
 	log_ln(PROGRAM_FLOW, "%d 4 Init first log", pros::millis());
 	log_ln(PROGRAM_FLOW, "%d 5 Init first log", pros::millis());
   {}//log_ln(LOG_DRIVE, "%d Finished Init", pros::millis());
-
+*/
 }
 
 /**
