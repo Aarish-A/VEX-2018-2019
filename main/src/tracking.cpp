@@ -1,5 +1,7 @@
 #include "tracking.hpp"
 
+Tracking pos(enc_l, enc_r, enc_s);
+
 Tracking::Tracking(pros::ADIEncoder &encL, pros::ADIEncoder &encR, pros::ADIEncoder &encS, double x, double y, double a) : encL(encL), encR(encR), encS(encS) {
   this->x = this->xLst = x;
   this->y = this->yLst = y;

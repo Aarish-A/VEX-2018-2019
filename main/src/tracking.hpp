@@ -2,6 +2,7 @@
 #include "main.h"
 #include "libraries/util.hpp"
 #include "logs.hpp"
+#include "config.hpp"
 #include <cmath>
 #include <memory>
 
@@ -62,3 +63,5 @@ public:
   vector position() const;
   vector velocity() const;
 };
+
+extern Tracking pos;

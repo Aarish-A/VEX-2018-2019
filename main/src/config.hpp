@@ -12,8 +12,12 @@ extern pros::Motor m_drive_fr;
 extern pros::Motor m_drive_bl;
 extern pros::Motor m_drive_br;
 extern pros::Motor m_angler;
+extern pros::ADIAnalogIn s_pole_poti;
 extern pros::Motor m_puncher;
-extern pros::ADILineSensor ball_sensor;
+extern pros::ADILineSensor s_ball_detector;
+extern pros::ADIEncoder enc_l;
+extern pros::ADIEncoder enc_r;
+extern pros::ADIEncoder enc_s;
 
 extern Intake intake;
 extern Drive drive;
