@@ -2,6 +2,7 @@
 #include "button.hpp"
 #include "logs.hpp"
 #include "config.hpp"
+#include "libraries/util.hpp"
 
 void opcontrol() {
 	log_ln(LOG_AUTO, "   --- %d START OPCONTROL --- \n", pros::millis());
@@ -12,6 +13,7 @@ void opcontrol() {
 		intake.update();
 		drive.update();
 		angler.update();
+		puncher.update();
 
 		int8_t drive_x = set_dz(ctrler.get_analog(ANALOG_RIGHT_X), Drive::STRAFE_DEADZONE);
 		int8_t drive_y = set_dz(ctrler.get_analog(ANALOG_LEFT_Y), Drive::THROTTLE_DEADZONE);

@@ -6,7 +6,10 @@ pros::Motor m_drive_fr(10, pros::E_MOTOR_GEARSET_18, false, pros::E_MOTOR_ENCODE
 pros::Motor m_drive_bl(4, pros::E_MOTOR_GEARSET_18, true, pros::E_MOTOR_ENCODER_DEGREES);
 pros::Motor m_drive_br(8, pros::E_MOTOR_GEARSET_18, false, pros::E_MOTOR_ENCODER_DEGREES);
 pros::Motor m_angler(9, pros::E_MOTOR_GEARSET_18, false, pros::E_MOTOR_ENCODER_DEGREES);
+pros::Motor m_puncher(3, pros::E_MOTOR_GEARSET_18, false, pros::E_MOTOR_ENCODER_DEGREES);
+pros::ADILineSensor ball_sensor(5);
 
 Intake intake("Intake", Intake::STATE_OFF, m_intake);
 Drive drive("Drive", Drive::STATE_AUTO_CONTROL, m_drive_fl, m_drive_fr, m_drive_bl, m_drive_br);
 Angler angler("Angler", Angler::STATE_AUTO_CONTROL, m_angler);
+Puncher puncher("Puncher", Puncher::STATE_DISABLED, m_angler, ball_sensor);
