@@ -407,9 +407,9 @@ void move_drive_rel_simple(double dis, int vel, bool stop) {
 }
 void sweep_turn_new(const AngleTarget& target, float radius, bool cw, bool brake, int max_power)
 {
-  double kP = 127.0 / 24.0_in;
+  double kP = 200/90;
   double kD = 00.0;
-  double kI = 0.00;
+  double kI = 0.02;
   double p_val = 0;
   double d_val = 0;
   double i_val = 0;
@@ -418,7 +418,8 @@ void sweep_turn_new(const AngleTarget& target, float radius, bool cw, bool brake
   double start_angle = getGlobalAngle();
   double target_angle = target.getTarget();
   double angle_error = target_angle - start_angle;
-  log_ln(LOG_AUTO, "%d Started sweep turn to %f deg, radius is %f, starting at %f deg", pros::millis(), RAD_TO_DEG(target_angle), radius, RAD_TO_DEG(start_angle));
+  double dA = target.getTarget() - getGlobalAngle();
+  double target_half = angle_error/2;
 
   double enc_l_start = enc_l.get_value();
   double enc_r_start = enc_r.get_value();
@@ -436,6 +437,43 @@ void sweep_turn_new(const AngleTarget& target, float radius, bool cw, bool brake
 
   double error = 0;
   double last_error = 0;
+
+  if (cw) {
+    distance_right = angle_error * (radius + EDGE_TO_TRACKING_WHEEL);
+    distance_left = angle_error * (radius + EDGE_TO_TRACKING_WHEEL + WHL_DIS_R * 2);
+    mecanum_distance_left = radius + DRIVE_EDGE_TO_MECANUM + MECANUM_DRIVE_WIDTH;
+    mecanum_distance_right = radius + DRIVE_EDGE_TO_MECANUM;
+    power_ratio = mecanum_distance_right / mecanum_distance_left;
+  } else {
+    distance_left = angle_error * (radius + EDGE_TO_TRACKING_WHEEL);
+    distance_right = angle_error * (radius + EDGE_TO_TRACKING_WHEEL + WHL_DIS_R * 2);
+    mecanum_distance_right = radius + DRIVE_EDGE_TO_MECANUM + MECANUM_DRIVE_WIDTH;
+    mecanum_distance_left = radius + DRIVE_EDGE_TO_MECANUM;
+    power_ratio = mecanum_distance_left / mecanum_distance_right;
+  }
+  power = 170;
+  for(int i = 20; i < power; i++) {
+    drive_fl.move_velocity(i);
+    drive_bl.move_velocity(i);
+    drive_fr.move_velocity(i*power_ratio);
+    drive_br.move_velocity(i*power_ratio);
+    pros::delay(2);
+  }
+  while(fabs(dA)>0.8_deg)
+  {
+    if(fabs(dA)<45_deg)
+    {
+     kP = 200/60;
+    }
+    dA = target.getTarget() - getGlobalAngle();
+    drive_fl.move_velocity(power);
+    drive_bl.move_velocity(power);
+    drive_fr.move_velocity(power*power_ratio);
+    drive_br.move_velocity(power*power_ratio);
+    printf("fl: %f, bl: %f, fr: %f, br: %f\n", drive_fl.get_actual_velocity(), drive_bl.get_actual_velocity(),drive_fr.get_actual_velocity(), drive_br.get_actual_velocity());
+  }
+move_drive_new(8_in, 200, true, 180_deg);
+
 }
 void sweep_turn(const AngleTarget& target, float radius, bool cw, bool brake, int max_power) {
   double kP = 127.0 / 24.0_in;
@@ -490,7 +528,13 @@ void sweep_turn(const AngleTarget& target, float radius, bool cw, bool brake, in
     current_pos = (delta_enc_l * SPN_TO_IN_L + delta_enc_r * SPN_TO_IN_R) / 2.0;
     error = distance - current_pos;
     power += 0.5;
-    if (cw) setDriveTurn(power, power * power_ratio);
+    if (cw)
+    {
+    drive_fl.move_velocity(power);
+    drive_bl.move_velocity(power);
+    drive_fr.move_velocity(power*power_ratio);
+    drive_br.move_velocity(power*power_ratio);
+    }
     else setDriveTurn(power * power_ratio, power);
     pros::delay(1);
   } while(abs(current_pos) < abs(distance) * 0.15);
@@ -522,7 +566,6 @@ void sweep_turn(const AngleTarget& target, float radius, bool cw, bool brake, in
     last_error = error;
     pros::delay(1);
   } while(abs(error) > 0.5_in);
-
   if (brake) {
     double error_right = distance_right - (delta_enc_r * SPN_TO_IN_R);
     double error_left = distance_right - (delta_enc_l * SPN_TO_IN_L);

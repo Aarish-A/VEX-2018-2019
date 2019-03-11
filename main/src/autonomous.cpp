@@ -37,7 +37,7 @@ void autonomous() {
   autoStartTime = millis();
   resetGlobalAngle();
 
-  sweep_turn(FixedAngleTarget(90.0_deg), 12_in, true);
+  sweep_turn_new(FixedAngleTarget(180_deg), 15_in, true);
 
 
 
