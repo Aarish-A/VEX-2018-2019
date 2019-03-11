@@ -13,7 +13,6 @@ public:
   static const uint8_t STATE_PULLBACK = 0x13;
   static const uint8_t STATE_BOLT_WAIT = 0x14;
 
-
 private:
   pros::Motor& puncher_motor;
   pros::ADILineSensor& ball_sensor;

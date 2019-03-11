@@ -1,13 +1,5 @@
 #include "intake.hpp"
 
-/* Constructor */
-Intake::Intake(std::string subsystem_name, uint8_t default_state, pros::Motor& intake_motor) : Subsystem(subsystem_name, default_state), intake_motor(intake_motor) {
-  state_names[STATE_OFF] = "Off";
-  state_names[STATE_FORWARDS] = "Forwards";
-  state_names[STATE_BACKWARDS] = "Backwards";
-  state_names[STATE_JAM] = "Jam";
-}
-
 /* Private Functions */
 void Intake::set_power(int8_t power) {
   this->intake_motor.move(power);
@@ -35,6 +27,14 @@ void Intake::set_state(uint8_t new_state) {
       set_power(-80);
       break;
   }
+}
+
+/* Constructor */
+Intake::Intake(std::string subsystem_name, uint8_t default_state, pros::Motor& intake_motor) : Subsystem(subsystem_name, default_state), intake_motor(intake_motor) {
+  state_names[STATE_OFF] = "Off";
+  state_names[STATE_FORWARDS] = "Forwards";
+  state_names[STATE_BACKWARDS] = "Backwards";
+  state_names[STATE_JAM] = "Jam";
 }
 
 /* Public Functions */

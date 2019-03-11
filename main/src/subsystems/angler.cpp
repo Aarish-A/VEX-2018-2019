@@ -8,8 +8,6 @@ Angler::Angler(std::string subsystem_name, uint8_t default_state, pros::Motor& a
 }
 
 /* Private Functions */
-
-/* Public Functions */
 void Angler::set_state(uint8_t new_state) {
   Subsystem::set_state(new_state);
   switch(new_state) {
@@ -32,6 +30,7 @@ void Angler::set_state(uint8_t new_state) {
   }
 }
 
+/* Public Functions */
 void Angler::update() {
   this->velocity = angler_motor.get_actual_velocity();
   this->position = angler_motor.get_position();

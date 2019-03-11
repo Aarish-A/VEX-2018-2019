@@ -11,14 +11,21 @@ public:
 
 private:
   pros::Motor& intake_motor;
+
   int8_t power;
-  void set_state(uint8_t new_state) override;
+
+  /* Private Functions */
   void set_power(int8_t power);
+  
+  void set_state(uint8_t new_state) override;
 
 public:
+  /* Constructor */
   Intake(std::string subsystem_name, uint8_t default_state, pros::Motor& intake_motor);
 
+  /* Public Functions */
   void update() override;
+
   void intake(int8_t power = 127);
   void outtake(int8_t power = -80);
   void stop();

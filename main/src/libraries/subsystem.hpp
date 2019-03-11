@@ -15,9 +15,9 @@ protected:
 
   uint8_t state = STATE_DISABLED;
   uint8_t last_state = STATE_DISABLED;
+  uint8_t DEFAULT_STATE = STATE_DISABLED;
   uint32_t state_change_time;
   uint32_t velocity_exceeded_time;
-  uint8_t DEFAULT_STATE = STATE_DISABLED;
 
   double position;
   double target;
@@ -25,16 +25,19 @@ protected:
   double velocity;
   double last_velocity;
 
-  bool timed_out(uint32_t timeout);
-  bool above_vel_threshold(double velocity, uint32_t timeout);
-  bool below_vel_threshold(double velocity, uint32_t timeout);
+  /* Protected Non-Virtual Functions */
+  bool timed_out(uint32_t timeout); // Return whether or not the subsystem has been in a state for longer than the timeout
+  bool above_vel_threshold(double velocity, uint32_t timeout); // Return whether or not the subsystem has been above a velocity for longer than some duration
+  bool below_vel_threshold(double velocity, uint32_t timeout); // Return whether or not the subsystem has been below a velocity for longer than some duration
 
+  /* Protected Virtual Functions */
   virtual void set_state(uint8_t new_state); // Changes the state and sets the state variables
 
 public:
+  /* Constructor */
   Subsystem(std::string subsystem_name, uint8_t default_state);
 
-  // Non-Virtual Functions
+  /* Public Non-Virtual Functions */
   double get_position(); // Return the current position
   double get_target(); // Return the current target (if there is any)
   double get_error(); // Return the error between it's current position and target (if there is any)
@@ -43,13 +46,13 @@ public:
 
   void disable(); // Puts subsystem disabled state
   void enable(); // Puts subsystem in the state where it should be when enabled
-  bool enabled();
-  bool disabled();
+  bool enabled(); // Returns whether or not the subsystem is not in disabled
+  bool disabled(); // Returns whether or not the subsystem is in disabled
   void reset(); // Resets subsystem through state machine (calibrate)
 
-  // Virtual Functions
+  /* Public Virtual Functions */
 
-  // Pure-Virtual Functions
+  /* Public Pure-Virtual Functions */
   virtual void update() = 0; // Updates state machine, should be run in main loop
 
   // Static Functions

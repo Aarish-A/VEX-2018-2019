@@ -11,6 +11,7 @@ public:
   static const uint8_t THROTTLE_DEADZONE = 10;
   static const uint8_t TURN_DEADZONE = 30;
   static const uint8_t STRAFE_DEADZONE = 10;
+
 private:
   pros::Motor& fl_motor;
   pros::Motor& fr_motor;
@@ -19,7 +20,7 @@ private:
 
   int8_t x, y, a;
 
-  void set_state(uint8_t new_state) override;
+  /* Private Functions */
   void set_power(double x, double y, double a);
   void set_power(double power);
   void set_vel(double x, double y, double a);
@@ -27,9 +28,15 @@ private:
   void set_side_power(double left, double right);
   void set_side_vel(double left, double right);
 
+  void set_state(uint8_t new_state) override;
+
+
 public:
+  /* Constructor */
   Drive(std::string subsystem_name, uint8_t default_state, pros::Motor& front_left_motor, pros::Motor& front_right_motor, pros::Motor& back_left_motor, pros::Motor& back_right_motor);
 
+  /* Public Functions */
   void update() override;
+  
   void driver_set(int8_t x, int8_t y, int8_t a);
 };
