@@ -40,7 +40,7 @@ void Puncher::set_state(uint8_t new_state) {
     case STATE_PULLBACK:
       this->set_power(127);
       ++(this->shot_number);
-      this->no_return_target = this->OFFSET + (this->shot_number * this->TPR) - this->NO_RETURN;
+      this->point_of_no_return = this->OFFSET + (this->shot_number * this->TPR) - this->NO_RETURN;
       this->ball_check_target = this->OFFSET + (this->shot_number * this->TPR) - this->BALL_CHECK_START;
       this->target = this->OFFSET + (this->shot_number * this->TPR) - (15.0 * this->GEAR_RATIO);
       break;
@@ -88,13 +88,13 @@ void Puncher::update() {
       // Wait for Puncher::shoot() to be called
       break;
     case STATE_PULLBACK:
-      if (this->position < this->no_return_target && !ball_on && this->position > this->ball_check_target) this->set_state(STATE_CANCEL);
-      else if (this->cancelling_shot && this->position < this->no_return_target) this->set_state(STATE_CANCEL);
+      if (this->position < this->point_of_no_return && !ball_on && this->position > this->ball_check_target) this->set_state(STATE_CANCEL);
+      else if (this->cancelling_shot && this->position < this->point_of_no_return) this->set_state(STATE_CANCEL);
       else if (timed_out(800)) this->set_state(STATE_DISABLED);
       else if (this->position > this->target) this->set_state(STATE_BOLT_WAIT);
       break;
     case STATE_BOLT_WAIT:
-      if (timed_out(this->WAIT_TIME)) this->set_state(STATE_LOADING);
+      if (timed_out(this->BOLT_WAIT_TIME)) this->set_state(STATE_LOADING);
       break;
   }
 
@@ -102,7 +102,7 @@ void Puncher::update() {
 }
 
 void Puncher::shoot() {
-  this->set_state(STATE_PULLBACK);
+  if (this->state == STATE_LOADED) this->set_state(STATE_PULLBACK);
 }
 
 void Puncher::cancel_shot() {
@@ -110,5 +110,5 @@ void Puncher::cancel_shot() {
 }
 
 bool Puncher::shooting() {
-  return false;
+  return this->state != STATE_LOADED;
 }
