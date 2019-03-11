@@ -1,37 +1,5 @@
 #include "tracking.hpp"
 
-double operator "" _in(long double val) {
-  return val;
-}
-
-double operator "" _cm(long double val) {
-  return val * 2.54;
-}
-
-double operator "" _in(unsigned long long val) {
-  return val;
-}
-
-double operator "" _cm(unsigned long long val) {
-  return val * 2.54;
-}
-
-double operator "" _rad(long double val) {
-  return val;
-}
-
-double operator "" _deg(long double val) {
-  return  DEG_TO_RAD(val);
-}
-
-double operator "" _rad(unsigned long long val) {
-  return val;
-}
-
-double operator "" _deg(unsigned long long val) {
-  return  DEG_TO_RAD(val);
-}
-
 Tracking::Tracking(pros::ADIEncoder &encL, pros::ADIEncoder &encR, pros::ADIEncoder &encS, double x, double y, double a) : encL(encL), encR(encR), encS(encS) {
   this->x = this->xLst = x;
   this->y = this->yLst = y;

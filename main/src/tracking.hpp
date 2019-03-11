@@ -27,15 +27,14 @@ const uint32_t VEL_TIME = 40;
 constexpr double RAD_TO_DEG(double rad) { return rad * 180 / M_PI; }
 constexpr double DEG_TO_RAD(double deg) { return deg *  M_PI / 180; }
 
-double operator "" _in(long double val);
-double operator "" _cm(long double val);
-double operator "" _in(unsigned long long val);
-double operator "" _cm(unsigned long long val);
+constexpr double operator"" _in(long double val) { return val; }
+constexpr double operator"" _in(unsigned long long val) { return val; }
 
-double operator "" _rad(long double val);
-double operator "" _deg(long double val);
-double operator "" _rad(unsigned long long val);
-double operator "" _deg(unsigned long long val);
+constexpr double operator"" _rad(long double val) { return val; }
+constexpr double operator"" _rad(unsigned long long val) { return val; }
+
+constexpr double operator"" _deg(long double val) { return DEG_TO_RAD(val); }
+constexpr double operator"" _deg(unsigned long long val) { return DEG_TO_RAD(val); }
 
 class Tracking {
 private:
