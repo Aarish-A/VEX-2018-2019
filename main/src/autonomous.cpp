@@ -6,6 +6,7 @@
 #include "angler.hpp"
 #include "drive.hpp"
 #include "gui.hpp"
+#include "decapper.hpp"
 
 /**
  * Runs the user autonomous code. This function will be started in its own task
@@ -30,6 +31,18 @@ void auto_blue_back();
 void auto_blue_back_no_second_shot();
 void programming_skills();
 
+void align_with_pole() {
+  flatten_against_wall(false, true);
+  if (capper_poti.get_value() > 2850) {
+    drive_set(55, -5, 0);
+  } else if (capper_poti.get_value() < 2450) {
+    drive_set(-55, -5, 0);
+  }
+
+  while (abs(capper_poti.get_value() - 2650) > 125) pros::delay(10);
+  flatten_against_wall(false, true);
+}
+
 void autonomous() {
   is_disabled = false;
   shot_req_handle_stop_task();
@@ -37,16 +50,36 @@ void autonomous() {
   autoStartTime = millis();
   resetGlobalAngle();
 
-  sweep_turn_new(FixedAngleTarget(180_deg), 15_in, true);
+  // sweep_turn_new(FixedAngleTarget(180_deg), 15_in, true);
 
+  // int CAPPER_POTI_DEADZONE = 300;
+  // int CAPPER_POTI_ZERO = 2700;
+  // int CAPPER_POTI_LEFT = CAPPER_POTI_ZERO - CAPPER_POTI_DEADZONE//2400
+  // int CAPPER_POTI_RIGHT = CAPPER_POTI_ZERO + CAPPER_POTI_DEADZONE;
 
+  // flatten_against_wall(false, true);
+  // drive_set(0, -20, 0);
+  // pros::delay(250);
+  // drive_set(0, -10, 0);
+  // pros::delay(200);
+
+  move_drive_new(22_in, 200, false);
+  set_decapper_state(Decapper_States::Mid);
+  move_drive_new(4_in, 100, true);
+  pros::delay(20);
+  move_drive_new(-24_in, 200, false);
+  set_decapper_state(Decapper_States::Top_Bot);
+  align_with_pole();
+  set_decapper_state(Decapper_States::Top);
+  uint32_t timeout = pros::millis();
+  while(!decapper_cappable && pros::millis() - 750 < timeout) pros::delay(2);
+  move_drive_new(4_in);
+  set_decapper_state(Decapper_States::Bot);
+  pros::delay(5000);
 
   ctrler.print(2,0,"Auto T: %d   ",millis()-autoStartTime);
   log_ln(LOG_AUTO, "%d Auto Done in %dms", pros::millis(), pros::millis()-autoStartTime);
   auto_update_stop_task();
-  //flatten_against_wall(true, true);
-
-  shot_req_handled_num = 0;
 }
 
 

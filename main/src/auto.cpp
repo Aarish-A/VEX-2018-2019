@@ -14,6 +14,7 @@ void auto_update(void* param) {
     //if (is_disabled) printf(" >>> %d IN AUTO_UPDATE IN DISABLED\n", millis());
     //pos.update();
     pun_handle();
+    decapper_handle();
     pros::delay(10);
   }
 }
@@ -23,6 +24,7 @@ void auto_update_stop_task() {
 	{
 		log_ln(LOG_SHOTS, "  >>> %d Stop Auto Update Task", pros::millis());
     pun_set(PUN_HOLD_PWR);
+    setDrive(0, 0, 0);
     if(auto_update_task->get_state() != pros::E_TASK_STATE_DELETED)
       auto_update_task->remove();
 		delete auto_update_task;
@@ -131,9 +133,9 @@ void move_drive_new(double dist_target, int max_power, bool brake, double angle_
   double dist_d_val = 0;
 
   // Angle Correction PID Values
-  double angle_kP = 5.0 / 1.7_deg;
-  double angle_kD = 65.00;
-  double angle_kI = 0.0275;
+  double angle_kP = 5.0 / 2.0_deg;
+  double angle_kD = 69.00;
+  double angle_kI = 0.0350;
   double angle_p_val = 0;
   double angle_i_val = 0;
   double angle_d_val = 0;
@@ -177,7 +179,7 @@ void move_drive_new(double dist_target, int max_power, bool brake, double angle_
     // if (abs(dist_current) < 8_in && dist_error > 2_in) {
     if (abs(dist_current) < abs(dist_target) * 0.30) {
       power += 0.40 * sgn(dist_target);
-      log_ln(LOG_AUTO, "%d Ramping up...", pros::millis(), power, dist_current, dist_error, angle_current, angle_error);
+      // log_ln(LOG_AUTO, "%d Ramping up...", pros::millis(), power, dist_current, dist_error, angle_current, angle_error);
     } else {
       // Calculate PID values for distance
       dist_p_val = dist_error * dist_kP;
@@ -220,11 +222,11 @@ void move_drive_new(double dist_target, int max_power, bool brake, double angle_
       //     right_power = power * abs(angle_error) * angle_kP;
       //   }
       // }
-      log_ln(LOG_AUTO, "%d In PID...", pros::millis());
+      // log_ln(LOG_AUTO, "%d In PID...", pros::millis());
     }
-    log_ln(LOG_AUTO, "%d Distance | Current: %f in, Error: %f in, Power: %f, P: %f, I: %f, D: %f", pros::millis(), dist_current, dist_error, power, dist_p_val, dist_i_val, dist_d_val);
-    log_ln(LOG_AUTO, "%d Angle    | Current: %f deg, Error: %f deg, Angle Power: %f, P: %f, I: %f, D: %f", pros::millis(), RAD_TO_DEG(angle_current), RAD_TO_DEG(angle_error), angle_power, angle_p_val, angle_i_val, angle_d_val);
-    log_ln(LOG_AUTO, "----------------------------------------------------------------");
+    // log_ln(LOG_AUTO, "%d Distance | Current: %f in, Error: %f in, Power: %f, P: %f, I: %f, D: %f", pros::millis(), dist_current, dist_error, power, dist_p_val, dist_i_val, dist_d_val);
+    // log_ln(LOG_AUTO, "%d Angle    | Current: %f deg, Error: %f deg, Angle Power: %f, P: %f, I: %f, D: %f", pros::millis(), RAD_TO_DEG(angle_current), RAD_TO_DEG(angle_error), angle_power, angle_p_val, angle_i_val, angle_d_val);
+    // log_ln(LOG_AUTO, "----------------------------------------------------------------");
 
     setDrive(0, power, angle_power);
 
@@ -894,6 +896,8 @@ void turn_vel_side_simple(const AngleTarget& target, double kP, double offset, b
 void flatten_against_wall(bool f_w, bool hold, int hold_power) {
 	//pos.reset(0,0,0);
 	//int pow = 40;
+  bool right_done = false;
+  bool left_done = false;
 	int hold_pow = hold_power;
 	if (f_w) {
 		//log_ln("%d FW Start", pros::millis());
@@ -902,7 +906,7 @@ void flatten_against_wall(bool f_w, bool hold, int hold_power) {
 		do {
 			//log_ln("%d Reset Back Up(%f, %f, %f) Vel(%f, %f, %f) VeelLoc(%f, %f)", pros::millis(), pos.x, pos.y, RAD_TO_DEG(pos.a), pos.xVel, pos.yVel, pos.aVel, pos.velLocal.x, pos.velLocal.y);
 			pros::delay(10);
-		} while (abs(drive_bl.get_actual_velocity()) > 1); //aVel < -0.1);
+		} while (abs(drive_bl.get_actual_velocity()) > 2); //aVel < -0.1);
 		if (hold) setDrive(0, hold_pow, 0);
 		else setDrive(0);
 	}
@@ -912,8 +916,18 @@ void flatten_against_wall(bool f_w, bool hold, int hold_power) {
 		pros::delay(200);
 		do {
 			//log_ln("%d Reset Back Up(%f, %f, %f) Vel(%f, %f, %f) VeelLoc(%f, %f)", pros::millis(), pos.x, pos.y, RAD_TO_DEG(pos.a), pos.xVel, pos.yVel, pos.aVel, pos.velLocal.x, pos.velLocal.y);
+      // if (abs(drive_fl.get_actual_velocity()) < abs(drive_fr.get_actual_velocity()) - 5) setDrive(0, -60, 7);
+      // else if (abs(drive_fr.get_actual_velocity()) < abs(drive_fl.get_actual_velocity()) - 5) setDrive(0, -60, -7);
+      // else if (abs(drive_fl.get_actual_velocity()) < abs(drive_fr.get_actual_velocity()) - 2) setDrive(0, -60, 12);
+      // else if (abs(drive_fr.get_actual_velocity()) < abs(drive_fl.get_actual_velocity()) - 2) setDrive(0, -60, -12);
+      // else setDrive(0, -60, 0);
+      if (abs(drive_fl.get_actual_velocity()) < 1) left_done = true;
+      if (abs(drive_fr.get_actual_velocity()) < 1) right_done = true;
+      if (left_done && !right_done) setDriveTurn(0, -60);
+      else if (!left_done && right_done) setDriveTurn(-60, 0);
+      else if (left_done && right_done) break;
 			pros::delay(10);
-		} while (abs(drive_fl.get_actual_velocity()) > 1); //aVel < -0.1);
+		} while (true); //aVel < -0.1);
 		if (hold) setDrive(0, -hold_pow, 0);
 		else setDrive(0);
 	}

@@ -18,5 +18,6 @@ pros::ADILineSensor ball_sensor(5);
 pros::ADILineSensor left_platform_sensor(6);
 pros::ADILineSensor right_platform_sensor(4);
 pros::Vision vision_sensor(6);
+pros::ADIAnalogIn capper_poti(3);
 
 bool is_disabled = false;

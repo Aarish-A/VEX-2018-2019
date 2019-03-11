@@ -6,6 +6,7 @@
 #include "logs.hpp"
 #include "puncher.hpp"
 #include "angler.hpp"
+#include "decapper.hpp"
 #include <math.h>
 
 /* Auto Task Handler */

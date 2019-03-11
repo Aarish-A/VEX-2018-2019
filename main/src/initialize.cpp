@@ -45,7 +45,7 @@ void initialize() {
     pun_handle();
     pros::delay(10);
   }
-  angler_cal();
+  // angler_cal();
   decapper_cal();
   /*
 	pun_cal();
