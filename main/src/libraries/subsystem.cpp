@@ -32,12 +32,18 @@ bool Subsystem::below_vel_threshold(double velocity, uint32_t timeout) {
 }
 
 /* Protected Virtual Functions */
+void Subsystem::set_state(uint8_t new_state) {
+  this->last_state = state;
+  this->state = new_state;
+  this->state_change_time = pros::millis();
+  this->velocity_exceeded_time = 0;
+  if (this->last_state != this->state) log_ln(LOG_STATES, "Switching %s to %s state from %s state", (this->subsystem_name).c_str(), (this->state_names[state]).c_str(), (this->state_names[last_state]).c_str());
+}
 
 /* Constructor */
-Subsystem::Subsystem() {
-  this->state_names[STATE_IDLE] = "Idle";
-  this->state_names[STATE_RESET] = "Reset";
+Subsystem::Subsystem(std::string subsystem_name, uint8_t default_state) : subsystem_name(subsystem_name), DEFAULT_STATE(default_state) {
   this->state_names[STATE_DISABLED] = "Disabled";
+  this->state_names[STATE_RESET] = "Reset";
   subsystems[number_of_subsystems] = this;
   Subsystem::number_of_subsystems++;
 }
@@ -55,61 +61,35 @@ double Subsystem::get_error() {
   return this->error;
 }
 
-double Subsystem::get_power() {
-  return this->power;
-}
-
 double Subsystem::get_velocity() {
   return this->velocity;
 }
 
-void Subsystem::operator= (uint8_t new_state) {
-  set_state(new_state);
+void Subsystem::enable() {
+  log_ln(LOG_SUBSYSTEMS, "Enabled %s subsystem", (this->subsystem_name).c_str());
+  set_state(this->DEFAULT_STATE);
+}
+
+void Subsystem::disable() {
+  log_ln(LOG_ERROR, "Disabled %s subsystem", (this->subsystem_name).c_str());
+  set_state(STATE_DISABLED);
+}
+
+bool Subsystem::enabled() {
+  return this->state != this->STATE_DISABLED;
+}
+
+bool Subsystem::disabled() {
+  return this->state == this->STATE_DISABLED;
 }
 
 void Subsystem::reset() {
+  log_ln(LOG_ERROR, "Resetting %s subsystem", (this->subsystem_name).c_str());
   set_state(STATE_RESET);
 }
 
 /* Public Virtual Functions */
-void Subsystem::disable() {
-  set_state(STATE_DISABLED);
-}
 
-void Subsystem::set_state(uint8_t new_state) {
-  this->last_state = state;
-  this->state = new_state;
-  this->state_change_time = pros::millis();
-  this->velocity_exceeded_time = 0;
-  // set_timeout_time();
-  // set_timeout_velocity();
-  log_ln(LOG_STATES, "Switching %s to %s state from %s state", (this->subsystem_name).c_str(), (this->state_names[state]).c_str(), (this->state_names[last_state]).c_str());
-}
-
-void Subsystem::set_target(double target) {
-}
-
-void Subsystem::set_power(double target) {
-}
-
-void Subsystem::set_velocity(double target) {
-}
-
-/* Private */
-void Subsystem::set_state_target(uint8_t new_state, double target) {
-  set_state(new_state);
-  this->target = target;
-}
-
-void Subsystem::set_state_power(uint8_t new_state, double power) {
-  set_state(new_state);
-  this->power = power;
-}
-
-void Subsystem::set_state_velocity(uint8_t new_state, double velocity) {
-  set_state(new_state);
-  this->velocity = velocity;
-}
 
 /* Static Functions */
 void Subsystem::disable_all() {

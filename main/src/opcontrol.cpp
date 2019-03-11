@@ -13,16 +13,27 @@ void opcontrol() {
 		drive.update();
 		angler.update();
 
+		int8_t drive_x = set_dz(ctrler.get_analog(ANALOG_RIGHT_X), Drive::STRAFE_DEADZONE);
+		int8_t drive_y = set_dz(ctrler.get_analog(ANALOG_LEFT_Y), Drive::THROTTLE_DEADZONE);
+		int8_t drive_a = set_dz(ctrler.get_analog(ANALOG_LEFT_X), Drive::TURN_DEADZONE);
+		int8_t angler_power = set_scaled_dz(ctrler.get_analog(JOY_ANGLER), Angler::DEADZONE);
 
-		if (check_single_press(BTN_SHOT_L_T)) {
-			angler.set_target(Angler::CAP_PICKUP_POSITION);
-			intake.set_state(Intake::STATE_PICKUP);
+		drive.driver_set(drive_x, drive_y, drive_a);
+		angler.driver_set(angler_power);
+
+		// if (check_single_press(BTN_SHOT_R_T)) Subsystem::disable_all();
+
+		if (check_single_press(BTN_INTAKE_UP)) intake.off() ? intake.intake() : intake.stop();
+		else if (check_single_press(BTN_INTAKE_DOWN)) intake.off() ? intake.outtake() : intake.stop();
+		else if (check_single_press(BTN_SHOT_L_T)) {
+			angler.move_to(Angler::CAP_PICKUP_POSITION);
+			intake.intake();
 		} else if (check_single_press(BTN_SHOT_L_M)) {
-			angler.set_target(Angler::PICKUP_POSITION);
-			intake.set_state(Intake::STATE_PICKUP);
+			angler.move_to(Angler::PICKUP_POSITION);
+			intake.intake();
 		} else if (check_double_press(BTN_SHOT_L_T, BTN_SHOT_L_M)) {
-			angler.set_target(Angler::CAP_FLIP_POSITION);
-			intake.set_state(Intake::STATE_CAP_FLIP);
+			angler.move_to(Angler::CAP_FLIP_POSITION);
+			intake.outtake();
 		}
 
 		pros::delay(10);
