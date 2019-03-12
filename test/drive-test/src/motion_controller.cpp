@@ -1,4 +1,4 @@
-/*
+
 //#include "main.h"
 #include "tracking.hpp"
 #include "motion_controller.hpp"
@@ -154,4 +154,3 @@ namespace pilons::tracking {
     return (this->angle_target->getTarget() - pos.a);
   }
 }
-*/
