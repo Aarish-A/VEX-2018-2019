@@ -407,7 +407,7 @@ void move_drive_rel_simple(double dis, int vel, bool stop) {
   //log_ln("%f %f", (enc_L.get_value() - enc_LStart) / 360.0 * 2.75 * M_PI, (enc_R.get_value() - enc_RStart) / 360.0 * 2.75 * M_PI);
   setDrive(0);
 }
-void sweep_turn_new(const AngleTarget& target, float radius, double postdis, bool cw, bool brake, int max_power)
+void sweep_turn_new(const AngleTarget& target, float radius, bool fw, double postdis, bool cw, bool brake, int max_power)
 {
   double kP = 200/90;
   double kD = 00.0;
@@ -453,13 +453,27 @@ void sweep_turn_new(const AngleTarget& target, float radius, double postdis, boo
     mecanum_distance_left = radius + DRIVE_EDGE_TO_MECANUM;
     power_ratio = mecanum_distance_left / mecanum_distance_right;
   }
-  power = 170;
-  for(int i = 20; i < power; i++) {
-    drive_fl.move_velocity(i);
-    drive_bl.move_velocity(i);
-    drive_fr.move_velocity(i*power_ratio);
-    drive_br.move_velocity(i*power_ratio);
-    pros::delay(2);
+  if(fw)
+  {
+    power = 170;
+    for(int i = 20; i < power; i++) {
+      drive_fl.move_velocity(i);
+      drive_bl.move_velocity(i);
+      drive_fr.move_velocity(i*power_ratio);
+      drive_br.move_velocity(i*power_ratio);
+      pros::delay(2);
+    }
+  }
+  else
+  {
+    power = -170;
+    for(int i = -20; i > power; i--) {
+      drive_fl.move_velocity(i);
+      drive_bl.move_velocity(i);
+      drive_fr.move_velocity(i*power_ratio);
+      drive_br.move_velocity(i*power_ratio);
+      pros::delay(2);
+    }
   }
   while(fabs(dA)>0.8_deg)
   {
