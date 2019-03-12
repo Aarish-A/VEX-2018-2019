@@ -32,15 +32,32 @@ void auto_blue_back_no_second_shot();
 void programming_skills();
 
 void align_with_pole() {
+  // 2730
   flatten_against_wall(false, true);
-  if (capper_poti.get_value() > 2850) {
+  if (capper_poti.get_value() > 2930) {
     drive_set(55, -5, 0);
-  } else if (capper_poti.get_value() < 2450) {
+  } else if (capper_poti.get_value() < 2530) {
     drive_set(-55, -5, 0);
   }
 
-  while (abs(capper_poti.get_value() - 2650) > 125) pros::delay(10);
+  while (abs(capper_poti.get_value() - 2650) > 175) pros::delay(10);
   flatten_against_wall(false, true);
+}
+
+void cap_on_pole() {
+  set_decapper_state(Decapper_States::Top_Bot);
+  align_with_pole();
+  set_decapper_state(Decapper_States::Top);
+  uint32_t timeout = pros::millis();
+  while(!decapper_cappable && pros::millis() - 750 < timeout) pros::delay(2);
+}
+
+void raise_cap() {
+  set_decapper_state(Decapper_States::Mid);
+}
+
+void lower_capper() {
+  set_decapper_state(Decapper_States::Bot);
 }
 
 void autonomous() {
@@ -50,31 +67,13 @@ void autonomous() {
   autoStartTime = millis();
   resetGlobalAngle();
 
-  // sweep_turn_new(FixedAngleTarget(180_deg), 15_in, true);
-
-  // int CAPPER_POTI_DEADZONE = 300;
-  // int CAPPER_POTI_ZERO = 2700;
-  // int CAPPER_POTI_LEFT = CAPPER_POTI_ZERO - CAPPER_POTI_DEADZONE//2400
-  // int CAPPER_POTI_RIGHT = CAPPER_POTI_ZERO + CAPPER_POTI_DEADZONE;
-
-  // flatten_against_wall(false, true);
-  // drive_set(0, -20, 0);
-  // pros::delay(250);
-  // drive_set(0, -10, 0);
-  // pros::delay(200);
-
-  move_drive_new(22_in, 200, false);
-  set_decapper_state(Decapper_States::Mid);
-  move_drive_new(4_in, 100, true);
+  move_drive_new(24_in, 200, false);
   pros::delay(20);
+  raise_cap();
   move_drive_new(-24_in, 200, false);
-  set_decapper_state(Decapper_States::Top_Bot);
-  align_with_pole();
-  set_decapper_state(Decapper_States::Top);
-  uint32_t timeout = pros::millis();
-  while(!decapper_cappable && pros::millis() - 750 < timeout) pros::delay(2);
+  cap_on_pole();
   move_drive_new(4_in);
-  set_decapper_state(Decapper_States::Bot);
+  lower_capper();
   pros::delay(5000);
 
   ctrler.print(2,0,"Auto T: %d   ",millis()-autoStartTime);
