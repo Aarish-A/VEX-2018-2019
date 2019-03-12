@@ -5,7 +5,6 @@ char log_buffer[LOG_BUFFER_SIZE];
 int buffer_write_index = 0;
 int buffer_flush_index = 0;
 
-
 FILE* log_file = NULL;
 
 const char* log_file_name = "/usd/log.txt";
@@ -17,11 +16,10 @@ void open_log_file() {
   while (log_file == NULL && open_attempt_count < MAX_ALLOWABLE_OPEN_ATTEMPTS) {
     log_file = fopen(log_file_name, log_mode);
     if (log_file == NULL) {
-			printf(" ERR %d log_file fopen failed | errno: %d | file-open-attempt: %d \n", pros::millis(), errno, open_attempt_count);
+			printf(" ERR %d log_file fopen failed | errno: %d | file-open-attempt: %d | %p \n", pros::millis(), errno, open_attempt_count, log_file);
       open_attempt_count++;
       pros::delay(1);
 		} //else printf("\n\n\n       >>> %d OPEN LOG_FILE: %p   \n\n\n", pros::millis(), log_file);
-
   }
 }
 
@@ -32,7 +30,7 @@ void close_log_file() {
     while (f_close_ret != 0 && attempt_cnt < MAX_ALLOWABLE_CLOSE_ATTEMPTS) {
       f_close_ret = fclose(log_file);
       if (f_close_ret != 0) {
-        printf("  %d ERR log_file fclose failed | errno: %d | f_close_ret: %d | attempt-cnt: %d | \n", pros::millis(), errno, f_close_ret, attempt_cnt);
+        printf("  %d ERR log_file fclose failed | errno: %d | f_close_ret: %d | attempt-cnt: %d | %p \n", pros::millis(), errno, f_close_ret, attempt_cnt, log_file);
         attempt_cnt++;
         pros::delay(1);
       }
@@ -138,24 +136,30 @@ void log_ln(Log_Info info_category, const char * format, ...) {
 
 /* Buffer -> SD Functions */
 void flush_to_sd(int given_amnt_to_flush, int pos_to_flush_to) {
+  // 1) Open Log File
   open_log_file();
-  //printf("                  \n  >>>%d Opened file <<< \n\n", pros::millis());
-  if (log_file != NULL) {
+  pros::delay(FILE_SLEEP);
+
+  if (log_file != NULL) { // Only perform flush_to_sd opperations if file is oppened
     int amnt_to_flush = std::min(given_amnt_to_flush, MAX_AMNT_TO_FLUSH); // Lim num of indices to flush to MAX_AMNT_TO_FLUSH
 
+    // 2) Flush buffer into the SD file
     const char* FLUSH_START_POS = &log_buffer[buffer_flush_index];
-    //printf("%d >>>before ToFLUSH: %d | %d %d | \n", pros::millis(), amnt_to_flush, pos_to_flush_to, buffer_flush_index);
     int flush_amount = fwrite(FLUSH_START_POS, BUF_OBJ_SIZE, amnt_to_flush, log_file);
     int err = ferror(log_file);
-    //printf("%d >>>after FLUSH %d | %d %d | err: %d\n", pros::millis(), flush_amount,  pos_to_flush_to, buffer_flush_index, ferror(log_file));
-    //int old_bfi = buffer_flush_index;
-    if (flush_amount >  0) buffer_flush_index += flush_amount;
 
+    // 2a) Print error messages upon failure
+    if (err) printf("  %d ERR log_write <1> failed | errno: %d | ferror: %d | flush_amount: %d | %p \n", pros::millis(), errno, err, flush_amount, log_file);
+    if (flush_amount <= 0) printf("  %d ERR log_write <2> failed | errno: %d | ferror: %d | flush_amount: %d | %p \n", pros::millis(), errno, err, flush_amount, log_file);
+    // 2b) Set buffer_flush_index upon success
+    else buffer_flush_index += flush_amount; // Incrememnt blush_flush_index upon successful write
     if (buffer_flush_index >= LOG_BUFFER_SIZE) buffer_flush_index = 0; // If the pointer is at the end of the buffer, move it back to the front
 
+    pros::delay(FILE_SLEEP);
 
-    //printf("%d >>>before ToFLUSH: %d | %d %d | \n", pros::millis(), amnt_to_flush, pos_to_flush_to, buffer_flush_index);
+    // 3) Close log_file
     close_log_file();
+    pros::delay(FILE_SLEEP);
   }
 }
 
@@ -175,7 +179,6 @@ void buffer_to_sd() {
       int buf_remaining_len = LOG_BUFFER_SIZE - buffer_flush_index; // Amount of unflushed indices left in buffer
       flush_to_sd(buf_remaining_len, pos_to_flush_to); // Flush b/w buffer_flush_index -> buffer_end. Move the pointer back to the beginning of the buffer
     }
-
     pros::delay(LOG_BUFFER_FLUSH_DELAY);
   }
 }
