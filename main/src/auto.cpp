@@ -407,7 +407,7 @@ void move_drive_rel_simple(double dis, int vel, bool stop) {
   //log_ln("%f %f", (enc_L.get_value() - enc_LStart) / 360.0 * 2.75 * M_PI, (enc_R.get_value() - enc_RStart) / 360.0 * 2.75 * M_PI);
   setDrive(0);
 }
-void sweep_turn_new(const AngleTarget& target, float radius, bool cw, bool brake, int max_power)
+void sweep_turn_new(const AngleTarget& target, float radius, bool cw, double postdis, bool brake, int max_power)
 {
   double kP = 200/90;
   double kD = 00.0;
@@ -463,10 +463,6 @@ void sweep_turn_new(const AngleTarget& target, float radius, bool cw, bool brake
   }
   while(fabs(dA)>0.8_deg)
   {
-    if(fabs(dA)<45_deg)
-    {
-     kP = 200/60;
-    }
     dA = target.getTarget() - getGlobalAngle();
     drive_fl.move_velocity(power);
     drive_bl.move_velocity(power);
@@ -474,119 +470,7 @@ void sweep_turn_new(const AngleTarget& target, float radius, bool cw, bool brake
     drive_br.move_velocity(power*power_ratio);
     printf("fl: %f, bl: %f, fr: %f, br: %f\n", drive_fl.get_actual_velocity(), drive_bl.get_actual_velocity(),drive_fr.get_actual_velocity(), drive_br.get_actual_velocity());
   }
-move_drive_new(8_in, 200, true, 180_deg);
-
-}
-void sweep_turn(const AngleTarget& target, float radius, bool cw, bool brake, int max_power) {
-  double kP = 127.0 / 24.0_in;
-  double kD = 00.0;
-  double kI = 0.00;
-  double p_val = 0;
-  double d_val = 0;
-  double i_val = 0;
-
-  uint32_t start_time = pros::millis();
-  double start_angle = getGlobalAngle();
-  double target_angle = target.getTarget();
-  double angle_error = target_angle - start_angle;
-  log_ln(LOG_AUTO, "%d Started sweep turn to %f deg, radius is %f, starting at %f deg", pros::millis(), RAD_TO_DEG(target_angle), radius, RAD_TO_DEG(start_angle));
-
-  double enc_l_start = enc_l.get_value();
-  double enc_r_start = enc_r.get_value();
-  double delta_enc_l = 0;
-  double delta_enc_r = 0;
-  double current_pos = 0;
-
-  double distance;
-  double distance_right;
-  double distance_left;
-  double mecanum_distance_right;
-  double mecanum_distance_left;
-  double power_ratio;
-  double power = 0;
-
-  double error = 0;
-  double last_error = 0;
-
-  if (cw) {
-    distance_right = angle_error * (radius + EDGE_TO_TRACKING_WHEEL);
-    distance_left = angle_error * (radius + EDGE_TO_TRACKING_WHEEL + WHL_DIS_R * 2);
-    mecanum_distance_left = radius + DRIVE_EDGE_TO_MECANUM + MECANUM_DRIVE_WIDTH;
-    mecanum_distance_right = radius + DRIVE_EDGE_TO_MECANUM;
-    power_ratio = mecanum_distance_right / mecanum_distance_left;
-  } else {
-    distance_left = angle_error * (radius + EDGE_TO_TRACKING_WHEEL);
-    distance_right = angle_error * (radius + EDGE_TO_TRACKING_WHEEL + WHL_DIS_R * 2);
-    mecanum_distance_right = radius + DRIVE_EDGE_TO_MECANUM + MECANUM_DRIVE_WIDTH;
-    mecanum_distance_left = radius + DRIVE_EDGE_TO_MECANUM;
-    power_ratio = mecanum_distance_left / mecanum_distance_right;
-  }
-
-  distance = (distance_right + distance_left) / 2;
-
-  do {
-    delta_enc_l = (enc_l.get_value() - enc_l_start);
-    delta_enc_r = (enc_r.get_value() - enc_r_start);
-    current_pos = (delta_enc_l * SPN_TO_IN_L + delta_enc_r * SPN_TO_IN_R) / 2.0;
-    error = distance - current_pos;
-    power += 0.5;
-    if (cw)
-    {
-    drive_fl.move_velocity(power);
-    drive_bl.move_velocity(power);
-    drive_fr.move_velocity(power*power_ratio);
-    drive_br.move_velocity(power*power_ratio);
-    }
-    else setDriveTurn(power * power_ratio, power);
-    pros::delay(1);
-  } while(abs(current_pos) < abs(distance) * 0.15);
-
-  do {
-    delta_enc_l = (enc_l.get_value() - enc_l_start);
-    delta_enc_r = (enc_r.get_value() - enc_r_start);
-    current_pos = (delta_enc_l * SPN_TO_IN_L + delta_enc_r * SPN_TO_IN_R) / 2.0;
-    error = distance - current_pos;
-
-    p_val = error * kP;
-    if (last_error && abs(error) < abs(distance * 0.25) && (error - last_error) < 2.0_in) d_val = (error - last_error) * kD;
-    else d_val = 0;
-
-    if (abs(error) < 4.0_in) i_val += error * kI;
-    else i_val = 0;
-
-    power = p_val + d_val + i_val;
-    if (abs(power) > max_power) power = max_power * sgn(power);
-
-    if (cw) setDriveTurn(power, power * power_ratio);
-    else setDriveTurn(power * power_ratio, power);
-
-    log_ln(LOG_AUTO, "%d Moving to %f, Cur: %f, Error: %f, Target Power: %f, Power Ratio: %f, P: %f, I: %f, D: %f", pros::millis(), distance, current_pos, error, power, power_ratio, p_val, i_val, d_val);
-    log_ln(LOG_AUTO, "%d Actual Velocities are: FR: %f, FL: %f, BL: %f, BR: %f", pros::millis(), drive_fr.get_actual_velocity(), drive_fl.get_actual_velocity(), drive_bl.get_actual_velocity(), drive_br.get_actual_velocity());
-    log_ln(LOG_AUTO, "%d Start Angle: %f, Current Angle: %f, Angle Should Be: %f, Delta Angle: %f", pros::millis(), RAD_TO_DEG(start_angle), RAD_TO_DEG(getGlobalAngle()), RAD_TO_DEG((current_pos) / (radius + EDGE_TO_TRACKING_WHEEL + WHL_DIS_R) + start_angle), RAD_TO_DEG(getGlobalAngle() - start_angle));
-    log_ln(LOG_AUTO, "----------------------------------------------------------------");
-
-    last_error = error;
-    pros::delay(1);
-  } while(abs(error) > 0.5_in);
-  if (brake) {
-    double error_right = distance_right - (delta_enc_r * SPN_TO_IN_R);
-    double error_left = distance_right - (delta_enc_l * SPN_TO_IN_L);
-    double targetFL = drive_fl.get_position() + (error_left) * (DRIVE_TPR / (DRIVE_DIA * M_PI));
-    double targetBL = drive_bl.get_position() + (error_left) * (DRIVE_TPR / (DRIVE_DIA * M_PI));
-    double targetFR = drive_fr.get_position() + (error_right) * (DRIVE_TPR / (DRIVE_DIA * M_PI));
-    double targetBR = drive_br.get_position() + (error_right) * (DRIVE_TPR / (DRIVE_DIA * M_PI));
-
-    drive_fl.move_absolute(targetFL, 25);
-    drive_bl.move_absolute(targetBL, 25);
-    drive_fr.move_absolute(targetFR, 25);
-    drive_br.move_absolute(targetBR, 25);
-    log_ln(LOG_AUTO, "%d Stopping from FL: %f, BL: %f, FR: %f, BR %f", millis(), drive_fl.get_position(), drive_bl.get_position(), drive_fr.get_position(), drive_br.get_position());
-    while (fabs(drive_fl.get_position() - targetFL) > 3 || fabs(drive_bl.get_position() - targetBL) > 3 || fabs(drive_fr.get_position() - targetFR) > 3 || fabs(drive_br.get_position() - targetBR) > 3) delay(1);
-    delay(100);
-  } else setDriveVel(0, 0, 0);
-  current_pos = ((enc_l.get_value() - enc_l_start) * SPN_TO_IN_L + (enc_r.get_value() - enc_r_start) * SPN_TO_IN_R) / 2.0;
-  error = distance - current_pos;
-  log_ln(LOG_AUTO, "%d FINISHED TURN >>>> Took %d ms, Ended At: %f, Error: %f, Change in Angle %f", pros::millis(), pros::millis() - start_time, current_pos, error, RAD_TO_DEG(getGlobalAngle() - start_angle));
+move_drive_new(postdis, max_power, true, target_angle);
 }
 
 void turn_vel_new(const AngleTarget& target)
