@@ -32,7 +32,8 @@ void set_decapper_state(Decapper_States state) {
     case Decapper_States::Bot: set_decapper_targ_state(state, DECAPPER_BOT_POS); break;
     // case Decapper_States::Mid: set_decapper_pow_state(state, 50); break;
     case Decapper_States::Mid: set_decapper_targ_state(state, DECAPPER_MID_POS, 50); break;
-    case Decapper_States::Top_Bot: set_decapper_targ_state(state, DECAPPER_TOP_BOT_POS, 200); break;
+    // case Decapper_States::Top_Bot: set_decapper_targ_state(state, DECAPPER_TOP_BOT_POS, 200); break;
+    case Decapper_States::Top_Bot: set_decapper_pow_state(state, 100); break;
     case Decapper_States::Top_Mid: set_decapper_targ_state(state, DECAPPER_TOP_MID_POS, 75); break;
     // case Decapper_States::Top: set_decapper_targ_state(state, DECAPPER_TOP_POS, 125); break;
     case Decapper_States::Top: set_decapper_pow_state(state, 90); decapper_targ = DECAPPER_TOP_POS; decapper_cappable = false; break;
