@@ -470,7 +470,7 @@ void sweep_turn_new(const AngleTarget& target, float radius, double postdis, boo
     drive_br.move_velocity(power*power_ratio);
     printf("fl: %f, bl: %f, fr: %f, br: %f\n", drive_fl.get_actual_velocity(), drive_bl.get_actual_velocity(),drive_fr.get_actual_velocity(), drive_br.get_actual_velocity());
   }
-move_drive_new(postdis, max_power, true, target_angle);
+move_drive_new(postdis, max_power, brake, target_angle);
 }
 
 void turn_vel_new(const AngleTarget& target)
@@ -511,6 +511,7 @@ void turn_vel_new(const AngleTarget& target)
   }
   setDrive(0);
   drive_brake();
+  delay(1000);
   printf("End angle is %f\n", RAD_TO_DEG(getGlobalAngle()));
 }
 
