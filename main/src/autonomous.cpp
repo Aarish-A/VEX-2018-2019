@@ -49,8 +49,8 @@ void autonomous() {
   auto_update_start_task();
   autoStartTime = millis();
   resetGlobalAngle();
-
-  // sweep_turn_new(FixedAngleTarget(180_deg), 15_in, true);
+  turn_vel_new(FixedAngleTarget(90_deg));
+  //sweep_turn_new(FixedAngleTarget(90_deg), 7_in, 8_in, true, true);
 
   // int CAPPER_POTI_DEADZONE = 300;
   // int CAPPER_POTI_ZERO = 2700;
@@ -63,19 +63,19 @@ void autonomous() {
   // drive_set(0, -10, 0);
   // pros::delay(200);
 
-  move_drive_new(22_in, 200, false);
-  set_decapper_state(Decapper_States::Mid);
-  move_drive_new(4_in, 100, true);
-  pros::delay(20);
-  move_drive_new(-24_in, 200, false);
-  set_decapper_state(Decapper_States::Top_Bot);
-  align_with_pole();
-  set_decapper_state(Decapper_States::Top);
-  uint32_t timeout = pros::millis();
-  while(!decapper_cappable && pros::millis() - 750 < timeout) pros::delay(2);
-  move_drive_new(4_in);
-  set_decapper_state(Decapper_States::Bot);
-  pros::delay(5000);
+  // move_drive_new(22_in, 200, false);
+  // set_decapper_state(Decapper_States::Mid);
+  // move_drive_new(4_in, 100, true);
+  // pros::delay(20);
+  // move_drive_new(-24_in, 200, false);
+  // set_decapper_state(Decapper_States::Top_Bot);
+  // align_with_pole();
+  // set_decapper_state(Decapper_States::Top);
+  // uint32_t timeout = pros::millis();
+  // while(!decapper_cappable && pros::millis() - 750 < timeout) pros::delay(2);
+  // move_drive_new(4_in);
+  // set_decapper_state(Decapper_States::Bot);
+  // pros::delay(5000);
 
   ctrler.print(2,0,"Auto T: %d   ",millis()-autoStartTime);
   log_ln(LOG_AUTO, "%d Auto Done in %dms", pros::millis(), pros::millis()-autoStartTime);
