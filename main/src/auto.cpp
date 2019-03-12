@@ -407,7 +407,7 @@ void move_drive_rel_simple(double dis, int vel, bool stop) {
   //log_ln("%f %f", (enc_L.get_value() - enc_LStart) / 360.0 * 2.75 * M_PI, (enc_R.get_value() - enc_RStart) / 360.0 * 2.75 * M_PI);
   setDrive(0);
 }
-void sweep_turn_new(const AngleTarget& target, float radius, bool cw, double postdis, bool brake, int max_power)
+void sweep_turn_new(const AngleTarget& target, float radius, double postdis, bool cw, bool brake, int max_power)
 {
   double kP = 200/90;
   double kD = 00.0;
