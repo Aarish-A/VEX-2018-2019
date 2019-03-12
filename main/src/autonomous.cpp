@@ -34,13 +34,13 @@ void programming_skills();
 void align_with_pole() {
   // 2730
   flatten_against_wall(false, true);
-  if (capper_poti.get_value() > 2930) {
+  if (capper_poti.get_value() > 2730 + 80) {
     drive_set(55, -5, 0);
-  } else if (capper_poti.get_value() < 2530) {
+  } else if (capper_poti.get_value() < 2730 - 80) {
     drive_set(-55, -5, 0);
   }
 
-  while (abs(capper_poti.get_value() - 2650) > 175) pros::delay(10);
+  while (abs(capper_poti.get_value() - 2730) > 125) pros::delay(10);
   flatten_against_wall(false, true);
 }
 
@@ -72,7 +72,7 @@ void autonomous() {
   raise_cap();
   move_drive_new(-24_in, 200, false);
   cap_on_pole();
-  move_drive_new(4_in);
+  move_drive_new(6_in);
   lower_capper();
   pros::delay(5000);
 

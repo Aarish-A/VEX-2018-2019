@@ -808,8 +808,8 @@ void flatten_against_wall(bool f_w, bool hold, int hold_power) {
       // else setDrive(0, -60, 0);
       if (abs(drive_fl.get_actual_velocity()) < 1) left_done = true;
       if (abs(drive_fr.get_actual_velocity()) < 1) right_done = true;
-      if (left_done && !right_done) setDriveTurn(0, -60);
-      else if (!left_done && right_done) setDriveTurn(-60, 0);
+      if (left_done && !right_done) setDriveTurn(-15, -60);
+      else if (!left_done && right_done) setDriveTurn(-60, -15);
       else if (left_done && right_done) break;
 			pros::delay(10);
 		} while (true); //aVel < -0.1);
