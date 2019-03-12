@@ -661,8 +661,10 @@ void turn_vel_side(const AngleTarget& target, double kP, double offset, bool f_w
 			} else {
 				drive_br.move_velocity(kP*fabs(dA));
 				drive_fr.move_velocity(kP*fabs(dA));
-				drive_bl.move_velocity(0);
-				drive_fl.move_velocity(0);
+				// drive_bl.move_velocity(0);
+				// drive_fl.move_velocity(0);
+        drive_bl.move_velocity(0);
+        drive_fl.move_velocity(0);
 			}
 			delay(5);
 		}

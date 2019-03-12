@@ -66,16 +66,27 @@ void autonomous() {
   auto_update_start_task();
   autoStartTime = millis();
   resetGlobalAngle();
+  //Capping routine
+  // move_drive_new(24_in, 200, false);
+  // pros::delay(20);
+  // raise_cap();
+  move_drive_new(28_in);
+  turn_vel_new(FixedAngleTarget(90_deg));
+  move_drive_new(23_in);
+  turn_vel_new(FixedAngleTarget(0_deg));
 
-  move_drive_new(24_in, 200, false);
-  pros::delay(20);
-  raise_cap();
-  move_drive_new(-24_in, 200, false);
-  cap_on_pole();
-  move_drive_new(6_in);
-  lower_capper();
-  pros::delay(5000);
+  //turn_vel_side(FixedAngleTarget(90_deg), 200/90_deg, 0, true);
+  // move_drive_new(-24_in, 200, false);
+  // cap_on_pole();
+  // move_drive_new(6_in);
+  // lower_capper();
+  // pros::delay(5000);
 
+  // sweep_turn_new(FixedAngleTarget(-90_deg), -2_in, false, -8_in, false);
+  // cap_on_pole();
+  // move_drive_new(6_in);
+  // lower_capper();
+  // pros::delay(5000);
   ctrler.print(2,0,"Auto T: %d   ",millis()-autoStartTime);
   log_ln(LOG_AUTO, "%d Auto Done in %dms", pros::millis(), pros::millis()-autoStartTime);
   auto_update_stop_task();
