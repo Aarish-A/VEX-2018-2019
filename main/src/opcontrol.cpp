@@ -14,7 +14,7 @@ void opcontrol() {
 	while(true)
 	{
 		if (log_file == NULL) log_file = fopen(log_file_name, log_mode);
-		if (log_file == NULL || errno != 0) {
+		if (log_file == NULL) {
 			printf(" ERR %d log_file fopen failed | errno: %d %s | %ld | %p\n", pros::millis(), errno, strerror(errno), counter, log_file);
 			//pros::delay(1);
 		} //else printf("\n       >>> %d OPEN LOG_FILE: %p | %ld \n", pros::millis(), log_file, counter);
