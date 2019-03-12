@@ -24,6 +24,8 @@ private:
   static constexpr double TPR = 360.0 * GEAR_RATIO;
   static constexpr double WHEEL_DIAMETER = 3.95;
 
+  pros::Task* move_alg_task = nullptr;
+
   int8_t x, y, a;
 
   /* Private Functions */
@@ -50,6 +52,8 @@ public:
 
   void reset_global_angle();
   void move(double distance, uint8_t max_power = 200, bool brake = true, double angle_target = 1000);
+  void move_async(double distance, uint8_t max_power = 200, bool brake = true, double angle_target = 1000);
   void turn(const AngleTarget& target);
+  void turn_async(const AngleTarget& target);
   void flatten_against_wall(bool forward, bool hold = true, uint8_t hold_power = 15);
 };

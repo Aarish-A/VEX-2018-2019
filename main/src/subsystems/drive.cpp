@@ -103,6 +103,7 @@ void Drive::driver_set(int8_t x, int8_t y, int8_t a) {
 }
 
 void Drive::move(double dist_target, uint8_t max_power, bool brake, double angle_target) {
+    this->set_state(STATE_AUTO_CONTROL);
     // If the correct angle is default, the correct angle should be the starting angle
     double angle_start = this->get_global_angle();
     if (angle_target == 1000) angle_target = angle_start;
@@ -222,12 +223,97 @@ void Drive::move(double dist_target, uint8_t max_power, bool brake, double angle
     angle_error = angle_target - angle_current;
 
     log_ln(LOG_AUTO, "%d FINISHED MOVE >>>> Took %d ms, Ended At: %f, Distance Error: %f, Angle Error: %f", pros::millis(), pros::millis() - start_time, dist_current, dist_error, RAD_TO_DEG(angle_error));
+    this->set_state(STATE_DRIVER_CONTROL);
 }
 
-void Drive::turn(const AngleTarget& target) {
+void Drive::move_async(double dist_target, uint8_t max_power, bool brake, double angle_target) {
+  if (move_alg_task != nullptr) {
+    move_alg_task->remove();
+    delete move_alg_task;
+    move_alg_task = nullptr;
+  }
 
+  typedef void (Drive::*DriveFunction)(double, uint8_t, bool, double);
+  DriveFunction move_async = &Drive::move;
+  move_alg_task = new pros::Task( ? );
+}
+
+
+void Drive::turn(const AngleTarget& target) {
+  this->set_state(STATE_AUTO_CONTROL);
+  double dA = target.getTarget() - this->get_global_angle();
+  double fixeddA = dA;
+  double drive_volt = 0;
+  double kP = 200/50;
+  double kI = 0.02;
+  double kD = 70;
+  double iVal = 0;
+  double last_error = 0;
+  double dVal = 0;
+
+  while(fabs(dA) > fabs((0.4 * fixeddA))) {
+    dA = target.getTarget() - this->get_global_angle();
+    this->error = dA;
+    drive_volt = RAD_TO_DEG(dA) * kP;
+    this->set_power(0, 0, drive_volt);
+    pros::delay(1);
+    //printf("hello world %f and %f\n", target.getTarget(), getGlobalAngle());
+  }
+
+  kP = 200/100;
+
+  while(fabs(dA) > 0.5_deg) {
+    if (fabs(dA) < 5_deg) iVal += RAD_TO_DEG(dA)*kI;
+    else iVal = 0;
+    dA = target.getTarget() - this->get_global_angle();
+    this->error = dA;
+    drive_volt = RAD_TO_DEG(dA) * kP + iVal;
+    this->set_power(0, 0, drive_volt);
+    // printf("%d Drive voltage is: %f and iVal is %f dA is %f\n", pros::millis(),drive_volt, iVal, RAD_TO_DEG(dA));
+    pros::delay(1);
+  }
+  this->set_power(0);
+  this->brake();
+  printf("End angle is %f\n", RAD_TO_DEG(this->get_global_angle()));
+  this->set_state(STATE_DRIVER_CONTROL);
 }
 
 void Drive::flatten_against_wall(bool forward, bool hold, uint8_t hold_power) {
+  this->set_state(STATE_AUTO_CONTROL);
+  bool right_done = false;
+  bool left_done = false;
 
+	if (forward) {
+		//log_ln("%d FW Start", pros::millis());
+		this->set_power(0, 40, 0);
+		pros::delay(200);
+		do {
+			//log_ln("%d Reset Back Up(%f, %f, %f) Vel(%f, %f, %f) VeelLoc(%f, %f)", pros::millis(), pos.x, pos.y, RAD_TO_DEG(pos.a), pos.xVel, pos.yVel, pos.aVel, pos.velLocal.x, pos.velLocal.y);
+			pros::delay(5);
+		} while (fabs(this->bl_motor.get_actual_velocity()) > 2); //aVel < -0.1);
+		if (hold) this->set_power(0, hold_power, 0);
+		else this->set_power(0);
+	} else {
+		//log_ln("%d FW Start", pros::millis());
+		this->set_power(0,-60, 0);
+		pros::delay(200);
+		do {
+			//log_ln("%d Reset Back Up(%f, %f, %f) Vel(%f, %f, %f) VeelLoc(%f, %f)", pros::millis(), pos.x, pos.y, RAD_TO_DEG(pos.a), pos.xVel, pos.yVel, pos.aVel, pos.velLocal.x, pos.velLocal.y);
+      // if (abs(drive_fl.get_actual_velocity()) < abs(drive_fr.get_actual_velocity()) - 5) setDrive(0, -60, 7);
+      // else if (abs(drive_fr.get_actual_velocity()) < abs(drive_fl.get_actual_velocity()) - 5) setDrive(0, -60, -7);
+      // else if (abs(drive_fl.get_actual_velocity()) < abs(drive_fr.get_actual_velocity()) - 2) setDrive(0, -60, 12);
+      // else if (abs(drive_fr.get_actual_velocity()) < abs(drive_fl.get_actual_velocity()) - 2) setDrive(0, -60, -12);
+      // else setDrive(0, -60, 0);
+      if (fabs(this->fl_motor.get_actual_velocity()) < 1) left_done = true;
+      if (fabs(this->fr_motor.get_actual_velocity()) < 1) right_done = true;
+      if (left_done && !right_done) this->set_side_power(0, -60);
+      else if (!left_done && right_done) this->set_side_power(-60, 0);
+      else if (left_done && right_done) break;
+			pros::delay(10);
+		} while (true); //aVel < -0.1);
+		if (hold) this->set_power(0, -hold_power, 0);
+		else this->set_power(0);
+	}
+	log_ln(LOG_AUTO, "%d Done flatten_against_wall", pros::millis());
+  this->set_state(STATE_AUTO_CONTROL);
 }
