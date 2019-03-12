@@ -41,6 +41,18 @@ constexpr double MECANUM_DRIVE_WIDTH = 13.20;
 constexpr double EDGE_TO_TRACKING_WHEEL = 1.25;
 constexpr double DRIVE_EDGE_TO_MECANUM = 2.50;
 
+extern pros::Task* move_alg_task;
+extern double drive_error;
+extern bool drive_moving;
+
+struct Drive_Move_Params {
+  double dist_target;
+  int max_power;
+  bool brake;
+  double angle_target;
+};
+
+extern Drive_Move_Params move_params;
 
 double getGlobalAngle();
 void resetGlobalAngle();
@@ -51,7 +63,12 @@ void setDriveVel(int x, int y, int a);
 void setDriveVel(int vel);
 
 void drive_brake();
-void move_drive_new(double distance, int max_power = 200, bool stop = true, double correct_angle = 1000);
+
+void stop_move_alg_task();
+void move_drive_sync(double dist_target, int max_power = 200, bool brake = true, double angle_target = 1000);
+void move_drive_async(double dist_target, int max_power = 200, bool brake = true, double angle_target = 1000);
+void move_drive_new(void* ptr);
+
 void move_drive(vector targ, int vel = 200, bool stop = true);
 
 void move_drive_rel(double targ, int vel = 200, bool brake = true);

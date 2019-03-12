@@ -3,6 +3,9 @@
 using namespace pros;
 
 bool blue_team = true;
+pros::Task* move_alg_task = nullptr;
+double drive_error = 0;
+bool drive_moving = false;
 
 /* Auto Update Task */
 pros::Task* auto_update_task = nullptr;
@@ -116,7 +119,42 @@ void drive_brake() {
 	*/
 }
 
-void move_drive_new(double dist_target, int max_power, bool brake, double angle_target) {
+void stop_move_alg_task() {
+  if (move_alg_task != nullptr) {
+    move_alg_task->remove();
+    delete move_alg_task;
+    move_alg_task = nullptr;
+  }
+  drive_moving = false;
+}
+
+void move_drive_sync(double dist_target, int max_power, bool brake, double angle_target) {
+  move_params.dist_target = dist_target;
+  move_params.max_power = max_power;
+  move_params.brake = brake;
+  move_params.angle_target = angle_target;
+  drive_moving = true;
+  move_drive_new(nullptr);
+}
+
+void move_drive_async(double dist_target, int max_power, bool brake, double angle_target) {
+  stop_move_alg_task();
+  move_params.dist_target = dist_target;
+  move_params.max_power = max_power;
+  move_params.brake = brake;
+  move_params.angle_target = angle_target;
+  drive_moving = true;
+  drive_error = dist_target;
+  move_alg_task = new pros::Task(move_drive_new, nullptr);
+}
+
+
+
+void move_drive_new(void* ptr) {
+  double dist_target = move_params.dist_target;
+  int max_power = move_params.max_power;
+  bool brake = move_params.brake;
+  double angle_target = move_params.angle_target;
   // If the correct angle is default, the correct angle should be the starting angle
   double angle_start = getGlobalAngle();
   if (angle_target == 1000) angle_target = angle_start;
@@ -470,7 +508,7 @@ void sweep_turn_new(const AngleTarget& target, float radius, double postdis, boo
     drive_br.move_velocity(power*power_ratio);
     printf("fl: %f, bl: %f, fr: %f, br: %f\n", drive_fl.get_actual_velocity(), drive_bl.get_actual_velocity(),drive_fr.get_actual_velocity(), drive_br.get_actual_velocity());
   }
-move_drive_new(postdis, max_power, brake, target_angle);
+  move_drive_sync(postdis, max_power, brake, target_angle);
 }
 
 void turn_vel_new(const AngleTarget& target)
@@ -808,8 +846,8 @@ void flatten_against_wall(bool f_w, bool hold, int hold_power) {
       // else setDrive(0, -60, 0);
       if (abs(drive_fl.get_actual_velocity()) < 1) left_done = true;
       if (abs(drive_fr.get_actual_velocity()) < 1) right_done = true;
-      if (left_done && !right_done) setDriveTurn(0, -60);
-      else if (!left_done && right_done) setDriveTurn(-60, 0);
+      if (left_done && !right_done) setDriveTurn(-10, -60);
+      else if (!left_done && right_done) setDriveTurn(-60, -10);
       else if (left_done && right_done) break;
 			pros::delay(10);
 		} while (true); //aVel < -0.1);

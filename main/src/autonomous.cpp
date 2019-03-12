@@ -67,14 +67,16 @@ void autonomous() {
   autoStartTime = millis();
   resetGlobalAngle();
 
-  move_drive_new(24_in, 200, false);
-  pros::delay(20);
-  raise_cap();
-  move_drive_new(-24_in, 200, false);
-  cap_on_pole();
-  move_drive_new(4_in);
-  lower_capper();
-  pros::delay(5000);
+  /* capper test */
+  // move_drive_new(24_in, 200, false);
+  // pros::delay(20);
+  // raise_cap();
+  // move_drive_new(-24_in, 200, false);
+  // cap_on_pole();
+  // move_drive_new(4_in);
+  // lower_capper();
+  // pros::delay(5000);
+  align_with_pole();
 
   ctrler.print(2,0,"Auto T: %d   ",millis()-autoStartTime);
   log_ln(LOG_AUTO, "%d Auto Done in %dms", pros::millis(), pros::millis()-autoStartTime);
