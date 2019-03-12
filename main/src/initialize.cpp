@@ -7,6 +7,7 @@
 #include "subsystems/drive.hpp"
 
 void initialize() {
+	/*
 	printf("%d enter init()", pros::millis());
 	log_init();
 	printf("%d done log init", pros::millis());
@@ -14,6 +15,8 @@ void initialize() {
   controls_init();
 
 	Subsystem::reset_all();
+	*/
+
 }
 
 /**
