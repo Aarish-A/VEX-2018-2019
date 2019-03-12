@@ -35,18 +35,12 @@ void opcontrol() {
 
 			//close
 			int f_close_ret = -1;
-			while (f_close_ret != 0)
-			{
-				f_close_ret = fclose(log_file);
-				if (f_close_ret != 0) {
-					printf("  %d ERR log_file fclose failed | errno: %d %s | f_close_ret: %d | %ld | %p\n", pros::millis(), errno, strerror(errno), f_close_ret, counter, log_file);
-					//pros::delay(1);
-				}
-			 else {
-				 log_file = NULL; // Set log_file to null upon successful close
-				 printf("    >>> %d CLOSELOG_FILE: %p | %ld \n", pros::millis(), log_file, counter);
-			 }
-		 }
+			f_close_ret = fclose(log_file);
+			if (f_close_ret != 0) {
+				printf("  %d ERR log_file fclose failed | errno: %d %s | f_close_ret: %d | %ld | %p\n", pros::millis(), errno, strerror(errno), f_close_ret, counter, log_file);
+				//pros::delay(1);
+			}
+		 	log_file = NULL;
 		}
 		//pros::delay(100);
 		counter++;
