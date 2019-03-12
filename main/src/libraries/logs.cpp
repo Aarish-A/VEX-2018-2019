@@ -16,28 +16,23 @@ void open_log_file() {
   int open_attempt_count = 0;
   while (log_file == NULL && open_attempt_count < MAX_ALLOWABLE_OPEN_ATTEMPTS) {
     log_file = fopen(log_file_name, log_mode);
-    if (log_file == NULL) {
-			printf(" ERR %d log_file fopen failed | errno: %d | file-open-attempt: %d \n", pros::millis(), errno, open_attempt_count);
-      open_attempt_count++;
-      pros::delay(1);
-		} //else printf("\n\n\n       >>> %d OPEN LOG_FILE: %p   \n\n\n", pros::millis(), log_file);
-
+		if (log_file == NULL) {
+			printf(" ERR %d log_file fopen failed | errno: %d %s | %p\n", pros::millis(), errno, strerror(errno), log_file);
+			pros::delay(5);
+		} //else printf("\n       >>> %d OPEN LOG_FILE: %p | %ld \n", pros::millis(), log_file, counter);
   }
+  pros::delay(10);
 }
 
 void close_log_file() {
   if (log_file != NULL) {
     int f_close_ret = -1;
-    int attempt_cnt  = 0;
-    while (f_close_ret != 0 && attempt_cnt < MAX_ALLOWABLE_CLOSE_ATTEMPTS) {
-      f_close_ret = fclose(log_file);
-      if (f_close_ret != 0) {
-        printf("  %d ERR log_file fclose failed | errno: %d | f_close_ret: %d | attempt-cnt: %d | \n", pros::millis(), errno, f_close_ret, attempt_cnt);
-        attempt_cnt++;
-        pros::delay(1);
-      }
+    f_close_ret = fclose(log_file);
+    if (f_close_ret != 0) {
+      printf("  %d ERR log_file fclose failed | errno: %d %s | f_close_ret: %d | %p\n", pros::millis(), errno, strerror(errno), f_close_ret, log_file);
     }
-    if (f_close_ret == 0) log_file = NULL; // Set log_file to null upon successful close
+    log_file = NULL;
+    pros::delay(10);
   }
 }
 
