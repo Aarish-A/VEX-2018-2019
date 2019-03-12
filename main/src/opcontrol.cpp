@@ -16,6 +16,6 @@ void opcontrol() {
 		drive.update();
 		log_ln(PROGRAM_FLOW, "OPCONTROL TEST TEST TEST | cntr: %ld", loop_counter);
 		loop_counter++;
-		pros::delay(100);
+		pros::delay(10);
 	}
 }

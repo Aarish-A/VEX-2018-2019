@@ -36,10 +36,10 @@ constexpr int LOG_BUFFER_FLUSH_DELAY = 500; // Amount of time between consecutiv
 constexpr int LOG_MUTEX_TO = 5; // Max amnt of time that log_ln_internal() will wait for sd_buffer_mutex
 constexpr int MAX_ALLOWABLE_OPEN_ATTEMPTS = 100; // Max num of attempts that log_init() will make when trying to open the file
 constexpr int MAX_ALLOWABLE_CLOSE_ATTEMPTS = 100; // Max num of attempts that close_log_file will make when trying to close the file
-constexpr int FILE_SLEEP = 30; // Time (in ms) for sleeps b/w opperations in flush_to_sd() function
+constexpr int FILE_SLEEP = 10; // Time (in ms) for sleeps b/w opperations in flush_to_sd() function
 
 /* Logging Buffer */
-constexpr int LOG_BUFFER_SIZE = 1000; // Max size of log_buffer
+constexpr int LOG_BUFFER_SIZE = 10000; // Max size of log_buffer
 extern char log_buffer[LOG_BUFFER_SIZE]; // If sd_logging_enabled, log functions log to this buffer. Then, buffer_to_sd() task flushes buffer into SD
 extern int buffer_write_index; // Last index in buffer that was written to + 1 ; Writes to the buffer start from this index
 extern int buffer_flush_index; // Last index in buffer that was flushed onto the SD card ; buffer_to_sd() flushes buffer from this index to buffer_write_index
