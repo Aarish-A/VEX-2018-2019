@@ -7,13 +7,15 @@
 #include "libraries/subsystem.hpp"
 
 void opcontrol() {
-	{}//log_ln(LOG_AUTO, "   --- %d START OPCONTROL --- \n", pros::millis());
-
+	printf("%d P - Opcontrol \n", pros::millis());
+	log_ln(PROGRAM_FLOW, "   --- START OPCONTROL --- \n");
+	long loop_counter = 0;
 	while (true) {
 		update_buttons();
 		intake.update();
 		drive.update();
-
-		pros::delay(10);
+		log_ln(PROGRAM_FLOW, "OPCONTROL TEST TEST TEST | cntr: %ld", loop_counter);
+		loop_counter++;
+		pros::delay(100);
 	}
 }

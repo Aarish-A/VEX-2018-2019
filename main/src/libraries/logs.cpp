@@ -1,5 +1,5 @@
 #include "logs.hpp"
-bool sd_logging_enabled = true;
+bool sd_logging_enabled = false;
 pros::Mutex sd_buffer_mutex;
 char log_buffer[LOG_BUFFER_SIZE];
 int buffer_write_index = 0;
@@ -11,31 +11,29 @@ const char* log_file_name = "/usd/log.txt";
 const char* const log_mode = "a";
 
 /* Open and Close Log File */
+/* Open and Close Log File */
 void open_log_file() {
   int open_attempt_count = 0;
   while (log_file == NULL && open_attempt_count < MAX_ALLOWABLE_OPEN_ATTEMPTS) {
     log_file = fopen(log_file_name, log_mode);
-    if (log_file == NULL) {
-			printf(" ERR %d log_file fopen failed | errno: %d | file-open-attempt: %d | %p \n", pros::millis(), errno, open_attempt_count, log_file);
-      open_attempt_count++;
-      pros::delay(1);
-		} //else printf("\n\n\n       >>> %d OPEN LOG_FILE: %p   \n\n\n", pros::millis(), log_file);
+		if (log_file == NULL) {
+			printf(" ERR %d log_file fopen failed | errno: %d %s | %p\n", pros::millis(), errno, strerror(errno), log_file);
+			pros::delay(5);
+		} else printf("\n       >>> %d OPEN LOG_FILE: | errno: %d %s | %p\n", pros::millis(), errno, strerror(errno), log_file);
   }
+  pros::delay(FILE_SLEEP);
 }
 
 void close_log_file() {
   if (log_file != NULL) {
     int f_close_ret = -1;
-    int attempt_cnt  = 0;
-    while (f_close_ret != 0 && attempt_cnt < MAX_ALLOWABLE_CLOSE_ATTEMPTS) {
-      f_close_ret = fclose(log_file);
-      if (f_close_ret != 0) {
-        printf("  %d ERR log_file fclose failed | errno: %d | f_close_ret: %d | attempt-cnt: %d | %p \n", pros::millis(), errno, f_close_ret, attempt_cnt, log_file);
-        attempt_cnt++;
-        pros::delay(1);
-      }
+    f_close_ret = fclose(log_file);
+    if (f_close_ret != 0) {
+      printf("  %d ERR log_file fclose failed | errno: %d %s | f_close_ret: %d | %p\n", pros::millis(), errno, strerror(errno), f_close_ret, log_file);
     }
-    if (f_close_ret == 0) log_file = NULL; // Set log_file to null upon successful close
+    else printf("  %d CLOSE LOG FILE | errno: %d %s | f_close_ret: %d | %p\n", pros::millis(), errno, strerror(errno), f_close_ret, log_file);
+    log_file = NULL;
+    pros::delay(FILE_SLEEP);
   }
 }
 
@@ -89,11 +87,11 @@ void log_ln_internal(const char * str_whole) {
         // 1) Write first part of string to end of buffer
         write_amount = sprintf(log_buffer+sizeof(log_buffer[0])*buffer_write_index, "%s", str_first.c_str());
         if (write_amount > 0) buffer_write_index += write_amount;
-        //printf("  >>%d log_ln() | write_amount = %d | %d %d \n", pros::millis(), write_amount, buffer_write_index, buffer_flush_index);
+        printf("  >>%d log_ln() | write_amount = %d | %d %d \n", pros::millis(), write_amount, buffer_write_index, buffer_flush_index);
         // 2) Write second part of string to front of buffer
         write_amount = sprintf(log_buffer, "%s", str_sec.c_str()); // HOW WILL ARGS BE HANDLED? WILL IT USE THE RIGHT ARGS B/W THE TWO FUNC CALLS?
         if (write_amount > 0) buffer_write_index = write_amount;
-        //printf("  >>%d log_ln() | write_amount = %d | %d %d \n", pros::millis(), write_amount, buffer_write_index, buffer_flush_index);
+        printf("  >>%d log_ln() | write_amount = %d | %d %d \n", pros::millis(), write_amount, buffer_write_index, buffer_flush_index);
       }
       else {
         write_amount = sprintf(log_buffer+BUF_OBJ_SIZE*buffer_write_index, "%s", str_whole);
@@ -136,13 +134,13 @@ void log_ln(Log_Info info_category, const char * format, ...) {
 
 /* Buffer -> SD Functions */
 void flush_to_sd(int given_amnt_to_flush, int pos_to_flush_to) {
+  int amnt_to_flush = std::min(given_amnt_to_flush, MAX_AMNT_TO_FLUSH); // Lim num of indices to flush to MAX_AMNT_TO_FLUSH
+
   // 1) Open Log File
   open_log_file();
-  pros::delay(FILE_SLEEP);
+  printf("\n         >>> %d F_TO_SD() OPEN: | errno: %d %s | %p | %d %d | F: %d->%d\n", pros::millis(), errno, strerror(errno), log_file, buffer_flush_index, pos_to_flush_to, given_amnt_to_flush, amnt_to_flush);
 
   if (log_file != NULL) { // Only perform flush_to_sd opperations if file is oppened
-    int amnt_to_flush = std::min(given_amnt_to_flush, MAX_AMNT_TO_FLUSH); // Lim num of indices to flush to MAX_AMNT_TO_FLUSH
-
     // 2) Flush buffer into the SD file
     const char* FLUSH_START_POS = &log_buffer[buffer_flush_index];
     int flush_amount = fwrite(FLUSH_START_POS, BUF_OBJ_SIZE, amnt_to_flush, log_file);
@@ -154,12 +152,12 @@ void flush_to_sd(int given_amnt_to_flush, int pos_to_flush_to) {
     // 2b) Set buffer_flush_index upon success
     else buffer_flush_index += flush_amount; // Incrememnt blush_flush_index upon successful write
     if (buffer_flush_index >= LOG_BUFFER_SIZE) buffer_flush_index = 0; // If the pointer is at the end of the buffer, move it back to the front
-
     pros::delay(FILE_SLEEP);
+    printf("\n         >>> %d F_TO_SD() FLUSH: | errno: %d %s | %p | %d %d | F: %d->%d\n", pros::millis(), errno, strerror(errno), log_file, buffer_flush_index, pos_to_flush_to, given_amnt_to_flush, amnt_to_flush);
 
     // 3) Close log_file
     close_log_file();
-    pros::delay(FILE_SLEEP);
+    printf("\n         >>> %d F_TO_SD() CLOSE: | errno: %d %s | %p | %d %d | F: %d->%d\n", pros::millis(), errno, strerror(errno), log_file, buffer_flush_index, pos_to_flush_to, given_amnt_to_flush, amnt_to_flush);
   }
 }
 

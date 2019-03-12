@@ -8,7 +8,11 @@
 
 void initialize() {
 	printf("%d enter init()", pros::millis());
-	log_init();
+	//log_init();
+	for (int i = 0; i < LOG_BUFFER_SIZE; i++) log_buffer[i] = 'c';
+	pros::delay(100);
+	log_ln(PROGRAM_FLOW, " Construct buffer_to_sd() task from log_init()");
+	pros::Task buffer_to_sd_task((pros::task_fn_t) buffer_to_sd);
 	printf("%d done log init", pros::millis());
 
   controls_init();
