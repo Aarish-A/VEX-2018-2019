@@ -10,6 +10,8 @@
 void initialize() {
 	log_init();
   controls_init();
+	Subsystem::reset_all();
+	while(Subsystem::any_resetting()) pros::delay(2);
   log_ln(LOG_DRIVE, "%d Finished Init", pros::millis());
 }
 

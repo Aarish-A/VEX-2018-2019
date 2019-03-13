@@ -3,6 +3,7 @@
 #include "../logs.hpp"
 #include "../libraries/subsystem.hpp"
 #include "../libraries/angle_target.hpp"
+#include "../tracking.hpp"
 
 class Drive final : public Subsystem {
 public:
@@ -19,12 +20,12 @@ private:
   pros::Motor& bl_motor;
   pros::Motor& br_motor;
   pros::ADIAnalogIn& pole_poti;
+  pros::ADIEncoder& enc_l;
+  pros::ADIEncoder& enc_r;
 
   static constexpr double GEAR_RATIO = 60.0 / 84.0;
   static constexpr double TPR = 360.0 * GEAR_RATIO;
   static constexpr double WHEEL_DIAMETER = 3.95;
-
-  pros::Task* move_alg_task = nullptr;
 
   int8_t x, y, a;
 
@@ -43,7 +44,7 @@ private:
 
 public:
   /* Constructor */
-  Drive(std::string subsystem_name, uint8_t default_state, pros::Motor& front_left_motor, pros::Motor& front_right_motor, pros::Motor& back_left_motor, pros::Motor& back_right_motor, pros::ADIAnalogIn& pole_poti);
+  Drive(std::string subsystem_name, uint8_t default_state, pros::Motor& front_left_motor, pros::Motor& front_right_motor, pros::Motor& back_left_motor, pros::Motor& back_right_motor, pros::ADIAnalogIn& pole_poti, pros::ADIEncoder& enc_l, pros::ADIEncoder& enc_r);
 
   /* Public Functions */
   void update() override;
@@ -52,8 +53,6 @@ public:
 
   void reset_global_angle();
   void move(double distance, uint8_t max_power = 200, bool brake = true, double angle_target = 1000);
-  void move_async(double distance, uint8_t max_power = 200, bool brake = true, double angle_target = 1000);
   void turn(const AngleTarget& target);
-  void turn_async(const AngleTarget& target);
   void flatten_against_wall(bool forward, bool hold = true, uint8_t hold_power = 15);
 };

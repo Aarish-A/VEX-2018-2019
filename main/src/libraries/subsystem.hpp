@@ -58,4 +58,5 @@ public:
   // Static Functions
   static void disable_all();
   static void reset_all();
+  static bool any_resetting();
 };

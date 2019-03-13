@@ -65,11 +65,11 @@ void Drive::brake() {
 }
 
 double Drive::get_global_angle() {
-  return (enc_l.get_value() * SPN_TO_IN_L - enc_r.get_value() * SPN_TO_IN_R) / (WHL_DIS_L + WHL_DIS_R);
+  return (this->enc_l.get_value() * SPN_TO_IN_L - this->enc_r.get_value() * SPN_TO_IN_R) / (WHL_DIS_L + WHL_DIS_R);
 }
 
 /* Constructor */
-Drive::Drive(std::string subsystem_name, uint8_t default_state, pros::Motor& fl_motor, pros::Motor& fr_motor, pros::Motor& bl_motor, pros::Motor& br_motor, pros::ADIAnalogIn& pole_poti) : Subsystem(subsystem_name, default_state), fl_motor(fl_motor), fr_motor(fr_motor), bl_motor(bl_motor), br_motor(br_motor), pole_poti(pole_poti) {
+Drive::Drive(std::string subsystem_name, uint8_t default_state, pros::Motor& fl_motor, pros::Motor& fr_motor, pros::Motor& bl_motor, pros::Motor& br_motor, pros::ADIAnalogIn& pole_poti, pros::ADIEncoder& enc_l, pros::ADIEncoder& enc_r) : Subsystem(subsystem_name, default_state), fl_motor(fl_motor), fr_motor(fr_motor), bl_motor(bl_motor), br_motor(br_motor), pole_poti(pole_poti), enc_l(enc_l), enc_r(enc_r) {
   state_names[STATE_DRIVER_CONTROL] = "Driver Control";
 }
 
@@ -128,8 +128,8 @@ void Drive::move(double dist_target, uint8_t max_power, bool brake, double angle
     double angle_d_val = 0;
 
     // Tracking wheel variables
-    double enc_l_start = enc_l.get_value();
-    double enc_r_start = enc_r.get_value();
+    double enc_l_start = this->enc_l.get_value();
+    double enc_r_start = this->enc_r.get_value();
     double delta_enc_l = 0;
     double delta_enc_r = 0;
 
@@ -150,8 +150,8 @@ void Drive::move(double dist_target, uint8_t max_power, bool brake, double angle
 
     do {
       // Calculate how far the robot has moved and get current angle
-      delta_enc_l = (enc_l.get_value() - enc_l_start);
-      delta_enc_r = (enc_r.get_value() - enc_r_start);
+      delta_enc_l = (this->enc_l.get_value() - enc_l_start);
+      delta_enc_r = (this->enc_r.get_value() - enc_r_start);
       dist_current = (delta_enc_l * SPN_TO_IN_L + delta_enc_r * SPN_TO_IN_R) / 2.0;
       angle_current = this->get_global_angle();
 
@@ -216,7 +216,7 @@ void Drive::move(double dist_target, uint8_t max_power, bool brake, double angle
       pros::delay(100);
     } else set_vel(0, 0, 0);
 
-    dist_current = ((enc_l.get_value() - enc_l_start) * SPN_TO_IN_L + (enc_r.get_value() - enc_r_start) * SPN_TO_IN_R) / 2.0;
+    dist_current = ((this->enc_l.get_value() - enc_l_start) * SPN_TO_IN_L + (this->enc_r.get_value() - enc_r_start) * SPN_TO_IN_R) / 2.0;
     angle_current = get_global_angle();
 
     dist_error = dist_target - dist_current;
@@ -225,19 +225,6 @@ void Drive::move(double dist_target, uint8_t max_power, bool brake, double angle
     log_ln(LOG_AUTO, "%d FINISHED MOVE >>>> Took %d ms, Ended At: %f, Distance Error: %f, Angle Error: %f", pros::millis(), pros::millis() - start_time, dist_current, dist_error, RAD_TO_DEG(angle_error));
     this->set_state(STATE_DRIVER_CONTROL);
 }
-
-void Drive::move_async(double dist_target, uint8_t max_power, bool brake, double angle_target) {
-  if (move_alg_task != nullptr) {
-    move_alg_task->remove();
-    delete move_alg_task;
-    move_alg_task = nullptr;
-  }
-
-  typedef void (Drive::*DriveFunction)(double, uint8_t, bool, double);
-  DriveFunction move_async = &Drive::move;
-  move_alg_task = new pros::Task( ? );
-}
-
 
 void Drive::turn(const AngleTarget& target) {
   this->set_state(STATE_AUTO_CONTROL);

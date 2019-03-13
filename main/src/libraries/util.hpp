@@ -1,6 +1,6 @@
 #pragma once
 #include "main.h"
-#include "..\controls.hpp"
+#include "../controls.hpp"
 
 template <typename T> int sgn(T val) { return (T(0) < val) - (val < T(0)); }
 

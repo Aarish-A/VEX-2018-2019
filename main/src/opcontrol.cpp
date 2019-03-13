@@ -6,8 +6,7 @@
 
 void opcontrol() {
 	log_ln(LOG_AUTO, "   --- %d START OPCONTROL --- \n", pros::millis());
-	Subsystem::reset_all();
-
+	
 	while (true) {
 		update_buttons();
 		intake.update();

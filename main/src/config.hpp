@@ -1,10 +1,10 @@
 #pragma once
 #include "main.h"
-#include "libraries/subsystem.hpp"
 #include "subsystems/intake.hpp"
 #include "subsystems/drive.hpp"
 #include "subsystems/angler.hpp"
 #include "subsystems/puncher.hpp"
+#include "tracking.hpp"
 
 extern pros::Motor m_intake;
 extern pros::Motor m_drive_fl;
@@ -23,3 +23,4 @@ extern Intake intake;
 extern Drive drive;
 extern Angler angler;
 extern Puncher puncher;
+extern Tracking pos;

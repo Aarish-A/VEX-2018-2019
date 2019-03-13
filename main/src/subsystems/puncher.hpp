@@ -2,8 +2,6 @@
 #include "main.h"
 #include "../logs.hpp"
 #include "../libraries/subsystem.hpp"
-#include "../button.hpp"
-#include "../controls.hpp"
 
 class Puncher final : public Subsystem {
 public:

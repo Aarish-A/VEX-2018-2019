@@ -113,3 +113,10 @@ void Subsystem::reset_all() {
   }
   log_ln(LOG_SUBSYSTEMS, "Reset all subsystems!");
 }
+
+bool Subsystem::any_resetting() {
+  for(int i = 0; i < Subsystem::number_of_subsystems; i++) {
+    if (subsystems[i] != nullptr && subsystems[i]->state == STATE_RESET) return true;
+  }
+  return false;
+}
