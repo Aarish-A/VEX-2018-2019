@@ -1,5 +1,7 @@
 #include "main.h"
 #include "config.hpp"
+#include "auto.hpp"
+#include "button.hpp"
 
 /**
  * Runs the user autonomous code. This function will be started in its own task
@@ -24,6 +26,15 @@ void auto_blue_back_no_second_shot();
 void programming_skills();
 
 void autonomous() {
+  uint32_t autonomous_time = pros::millis();
+  start_auto_update_task();
+
+
+
+
+
+  stop_auto_update_task();
+  ctrler.print(2, 0, "Time: %d", pros::millis() - autonomous_time);
 }
 
 

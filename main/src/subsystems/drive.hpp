@@ -41,6 +41,9 @@ private:
 
   void set_state(uint8_t new_state) override;
 
+  friend void stop_move_alg_task();
+  friend void drive_move(void* _params);
+  friend void drive_turn(void* _params);
 
 public:
   /* Constructor */
@@ -52,7 +55,8 @@ public:
   void driver_set(int8_t x, int8_t y, int8_t a);
 
   void reset_global_angle();
-  void move(double distance, uint8_t max_power = 200, bool brake = true, double angle_target = 1000);
-  void turn(const AngleTarget& target);
-  void flatten_against_wall(bool forward, bool hold = true, uint8_t hold_power = 15);
+  void flatten_against_wall(bool forward = true, bool hold = true, uint8_t hold_power = 15);
+  void align_with_pole(uint16_t poti_zero = 2730);
+  bool moving();
+  void set_error(double error);
 };

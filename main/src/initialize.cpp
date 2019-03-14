@@ -6,6 +6,7 @@
 #include "subsystems/intake.hpp"
 #include "subsystems/drive.hpp"
 #include "subsystems/angler.hpp"
+#include "auto.hpp"
 
 void initialize() {
 	log_init();
@@ -20,7 +21,10 @@ void initialize() {
  * the VEX Competition Switch, following either autonomous or opcontrol. When
  * the robot is enabled, this task will exit.
  */
-void disabled() {}
+void disabled() {
+	stop_auto_update_task();
+	stop_move_alg_task();
+}
 
 /**
  * Runs after initialize(), and before autonomous when connected to the Field

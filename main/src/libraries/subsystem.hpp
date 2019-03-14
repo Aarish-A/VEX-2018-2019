@@ -56,6 +56,7 @@ public:
   virtual void update() = 0; // Updates state machine, should be run in main loop
 
   // Static Functions
+  static void update_all();
   static void disable_all();
   static void reset_all();
   static bool any_resetting();

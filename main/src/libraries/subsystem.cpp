@@ -96,6 +96,14 @@ void Subsystem::reset() {
 
 
 /* Static Functions */
+void Subsystem::update_all() {
+  for(int i = 0; i < Subsystem::number_of_subsystems; i++) {
+    if (subsystems[i] != nullptr) {
+      subsystems[i]->update();
+    } else log_ln(LOG_ERROR, "Could not update subsystem %d", i);
+  }
+}
+
 void Subsystem::disable_all() {
   for(int i = 0; i < Subsystem::number_of_subsystems; i++) {
     if (subsystems[i] != nullptr) {
