@@ -51,7 +51,7 @@ void setDriveVel(int x, int y, int a);
 void setDriveVel(int vel);
 
 void drive_brake();
-void move_drive_new(double distance, int max_power = 200, bool stop = true, double correct_angle = 1000);
+void move_drive_new(double distance, double correct_angle = 1000, int max_power = 200, bool stop = true);
 void move_drive(vector targ, int vel = 200, bool stop = true);
 
 void move_drive_rel(double targ, int vel = 200, bool brake = true);
@@ -65,6 +65,7 @@ void turn_vel_auto(const AngleTarget& target, double kP, double offset = 0, floa
 void turn_vel_side(const AngleTarget& target, double kP, double offset, bool f_w);
 void turn_vel_side_simple(const AngleTarget& target, double kP, double offset, bool f_w);
 void turn_vel_new(const AngleTarget& target);
+void turn_vel_new_shoot(const AngleTarget& target, double angler_target, double drive_offset);
 
 void flatten_against_wall(bool f_w, bool hold, int hold_power = 15);
 void flatten_angle(bool left, bool right, bool hold);

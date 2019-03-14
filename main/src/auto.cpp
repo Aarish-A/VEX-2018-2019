@@ -116,7 +116,7 @@ void drive_brake() {
 	*/
 }
 
-void move_drive_new(double dist_target, int max_power, bool brake, double angle_target) {
+void move_drive_new(double dist_target, double angle_target, int max_power, bool brake) {
   // If the correct angle is default, the correct angle should be the starting angle
   double angle_start = getGlobalAngle();
   if (angle_target == 1000) angle_target = angle_start;
@@ -486,9 +486,9 @@ void sweep_turn_new(const AngleTarget& target, float radius, bool fw, double pos
   }
 move_drive_new(postdis, max_power, brake, target_angle);
 }
-
-void turn_vel_new(const AngleTarget& target)
+void turn_vel_new_shoot(const AngleTarget& target, double angler_target, double drive_offset)
 {
+  bool shot = false;
   double dA = target.getTarget() - getGlobalAngle();
   double fixeddA = dA;
   double drive_volt = 0;
@@ -498,6 +498,7 @@ void turn_vel_new(const AngleTarget& target)
   double iVal = 0;
   double last_error = 0;
   double dVal = 0;
+  angler_move(angler_target);
   while(fabs(dA)> fabs((0.4*fixeddA)))
   {
     dA = target.getTarget() - getGlobalAngle();
@@ -506,9 +507,14 @@ void turn_vel_new(const AngleTarget& target)
     delay(1);
     //printf("hello world %f and %f\n", target.getTarget(), getGlobalAngle());
   }
-  kP = 200/100;
+  kP = 200/115;
   while(fabs(dA)>0.5_deg)
   {
+    if(fabs(dA)<drive_offset && !shot)
+    {
+      auto_set_first_shot(angler_target);
+      shot = true;
+    }
     if(fabs(dA)<5_deg)
     {
       iVal += RAD_TO_DEG(dA)*kI;
@@ -525,7 +531,58 @@ void turn_vel_new(const AngleTarget& target)
   }
   setDrive(0);
   drive_brake();
-  delay(1000);
+  printf("End angle is %f\n", RAD_TO_DEG(getGlobalAngle()));
+}
+void turn_vel_new(const AngleTarget& target)
+{
+  double dA = target.getTarget() - getGlobalAngle();
+  double fixeddA = dA;
+  double drive_volt = 0;
+  double kP = 200/50;
+  double kI = 0.035;
+  double kD = 70;
+  double iVal = 0;
+  double last_error = 0;
+  double dVal = 0;
+  while(fabs(dA)> fabs((0.4*fixeddA)))
+  {
+    dA = target.getTarget() - getGlobalAngle();
+    drive_volt = RAD_TO_DEG(dA) * kP;
+    setDrive(0,0,drive_volt);
+    delay(1);
+    //printf("hello world %f and %f\n", target.getTarget(), getGlobalAngle());
+  }
+  kP = 200/115;
+  while(fabs(dA)>0.5_deg)
+  {
+    if(fabs(dA)<(0.1*fabs(fixeddA)))
+    {
+      iVal += RAD_TO_DEG(dA)*kI;
+      if(fabs(iVal) > 15) iVal = 25*sgn(iVal);
+    }
+    else
+    {
+      iVal = 0;
+    }
+    dA = target.getTarget() - getGlobalAngle();
+    drive_volt = RAD_TO_DEG(dA) * kP + iVal;
+    setDrive(0,0,drive_volt);
+    printf("%d Drive voltage is: %f and iVal is %f dA is %f\n", pros::millis(),drive_volt, iVal, RAD_TO_DEG(dA));
+    delay(1);
+  }
+// }
+// else
+// {
+//   kP = 200/120;
+//   while(fabs(dA)>0.8_deg)
+//   {
+//     dA = target.getTarget() - getGlobalAngle();
+//     setDrive(0,0,dA*kP);
+//   }
+//
+  setDrive(0);
+  drive_brake();
+  //delay(1000);
   printf("End angle is %f\n", RAD_TO_DEG(getGlobalAngle()));
 }
 

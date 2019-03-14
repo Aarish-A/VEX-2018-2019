@@ -32,15 +32,15 @@ void auto_blue_back_no_second_shot();
 void programming_skills();
 
 void align_with_pole() {
-  // 2730
+  // 2790
   flatten_against_wall(false, true);
-  if (capper_poti.get_value() > 2730 + 80) {
-    drive_set(55, -5, 0);
-  } else if (capper_poti.get_value() < 2730 - 80) {
-    drive_set(-55, -5, 0);
+  if (capper_poti.get_value() > 2790 + 80) {
+    drive_set(55, -15, 0);
+  } else if (capper_poti.get_value() < 2790 - 80) {
+    drive_set(-55, -15, 0);
   }
 
-  while (abs(capper_poti.get_value() - 2730) > 125) pros::delay(10);
+  while (abs(capper_poti.get_value() - 2790) > 100) pros::delay(10);
   flatten_against_wall(false, true);
 }
 
@@ -66,27 +66,38 @@ void autonomous() {
   auto_update_start_task();
   autoStartTime = millis();
   resetGlobalAngle();
-  //Capping routine
-  // move_drive_new(24_in, 200, false);
-  // pros::delay(20);
-  // raise_cap();
-  move_drive_new(28_in);
-  turn_vel_new(FixedAngleTarget(90_deg));
-  move_drive_new(23_in);
+  auto_set_first_shot(front_SP.mid);
+  while (auto_set_shot) pros::delay(10);
+  turn_vel_new(FixedAngleTarget(37_deg));
+  angler_move(ANGLER_CAP_PU_POS);
+  intake.move(127);
+  move_drive_new(24_in,37_deg);
+  delay(200);
+  move_drive_new(-24_in,37_deg);
   turn_vel_new(FixedAngleTarget(0_deg));
-
-  //turn_vel_side(FixedAngleTarget(90_deg), 200/90_deg, 0, true);
-  // move_drive_new(-24_in, 200, false);
-  // cap_on_pole();
-  // move_drive_new(6_in);
-  // lower_capper();
-  // pros::delay(5000);
-
-  // sweep_turn_new(FixedAngleTarget(-90_deg), -2_in, false, -8_in, false);
-  // cap_on_pole();
-  // move_drive_new(6_in);
-  // lower_capper();
-  // pros::delay(5000);
+  auto_set_first_shot(front_SP.top);
+  while (auto_set_shot) pros::delay(10);
+  turn_vel_new(FixedAngleTarget(84_deg));
+  angler_move(ANGLER_CAP_PU_POS);
+  intake.move(-127);
+  move_drive_new(38_in,84_deg);
+  delay(200);
+  move_drive_new(-7_in,84_deg);
+  angler_move(ANGLER_PU_POS);
+  intake.move(127);
+  move_drive_new(7_in,84_deg);
+  delay(100);
+  turn_vel_new(FixedAngleTarget(12_deg));
+  auto_set_first_shot(front_SP.top);
+  while (auto_set_shot) pros::delay(10);
+  auto_set_second_shot(front_SP.mid);
+  while (auto_set_shot) pros::delay(10);
+  angler_move(ANGLER_PU_POS);
+  move_drive_new(45_in,0_deg);
+  move_drive_new(-45_in, 0_deg);
+  turn_vel_new(FixedAngleTarget(84_deg));
+  move_drive_new(-48_in,84_deg, 200, false);
+  flatten_against_wall(false, true);
   ctrler.print(2,0,"Auto T: %d   ",millis()-autoStartTime);
   log_ln(LOG_AUTO, "%d Auto Done in %dms", pros::millis(), pros::millis()-autoStartTime);
   auto_update_stop_task();
