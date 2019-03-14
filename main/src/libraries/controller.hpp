@@ -31,5 +31,6 @@ namespace pilons {
     bool check_single_press(int button);
     bool check_double_press(int button1, int button2);
     int32_t print(uint8_t line, uint8_t col, const char* fmt, ...);
+    int32_t rumble(const char* rumble_pattern);
   };
 };

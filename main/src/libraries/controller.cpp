@@ -60,3 +60,7 @@ int32_t pilons::Controller::print(uint8_t line, uint8_t col, const char* fmt, ..
   va_start(args, fmt);
   return pros::Controller::print(line, col, fmt, args);
 }
+
+int32_t pilons::Controller::rumble(const char* rumble_pattern) {
+  return pros::Controller::rumble(rumble_pattern);
+}
