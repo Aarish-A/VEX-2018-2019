@@ -1,5 +1,4 @@
 #include "main.h"
-#include "button.hpp"
 #include "controls.hpp"
 #include "logs.hpp"
 #include "config.hpp"

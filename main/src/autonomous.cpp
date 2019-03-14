@@ -1,7 +1,6 @@
 #include "main.h"
 #include "config.hpp"
 #include "auto.hpp"
-#include "button.hpp"
 
 /**
  * Runs the user autonomous code. This function will be started in its own task
@@ -34,7 +33,7 @@ void autonomous() {
 
 
   stop_auto_update_task();
-  ctrler.print(2, 0, "Time: %d", pros::millis() - autonomous_time);
+  master.print(2, 0, "Time: %d", pros::millis() - autonomous_time);
 }
 
 

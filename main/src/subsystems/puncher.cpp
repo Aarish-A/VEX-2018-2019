@@ -110,5 +110,5 @@ void Puncher::cancel_shot() {
 }
 
 bool Puncher::shooting() {
-  return this->state != STATE_LOADED;
+  return !(this->state == STATE_LOADED || this->state == STATE_CANCEL);
 }

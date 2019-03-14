@@ -1,44 +1,30 @@
 #pragma once
 #include "main.h"
-#include "button.hpp"
-/*
-E_CONTROLLER_DIGITAL_L1 = 6 -- btn = 0
-  E_CONTROLLER_DIGITAL_L2, 1
-  E_CONTROLLER_DIGITAL_R1, 2
-  E_CONTROLLER_DIGITAL_R2, 3
-  E_CONTROLLER_DIGITAL_UP, 4
-  E_CONTROLLER_DIGITAL_DOWN,5
-  E_CONTROLLER_DIGITAL_LEFT, 6
-  E_CONTROLLER_DIGITAL_RIGHT, 7
-  E_CONTROLLER_DIGITAL_X, 8
-  E_CONTROLLER_DIGITAL_B, 9
-  E_CONTROLLER_DIGITAL_Y, 10
-  E_CONTROLLER_DIGITAL_A 11
-  */
 
 constexpr int GET_BTN_INDEX(pros::controller_digital_e_t btn) { return (btn - pros::E_CONTROLLER_DIGITAL_L1); }
 
 void controls_init();
 extern bool partner_connected;
 
+/* Drive */
+constexpr pros::controller_analog_e_t JOY_DRIVE_THROTTLE = pros::E_CONTROLLER_ANALOG_LEFT_Y;
+constexpr pros::controller_analog_e_t JOY_DRIVE_TURN = pros::E_CONTROLLER_ANALOG_LEFT_X;
+constexpr pros::controller_analog_e_t JOY_DRIVE_STRAFE = pros::E_CONTROLLER_ANALOG_RIGHT_X;
 
-/* Constant Controls */
+/* Angler */
+constexpr pros::controller_analog_e_t JOY_ANGLER = pros::E_CONTROLLER_ANALOG_RIGHT_Y;
+
 /* Intake */
 constexpr int BTN_INTAKE_UP = GET_BTN_INDEX(pros::E_CONTROLLER_DIGITAL_RIGHT);
 constexpr int BTN_INTAKE_DOWN = GET_BTN_INDEX(pros::E_CONTROLLER_DIGITAL_DOWN);
 
-/* Angler */
-constexpr int BTN_ANGLER_PU = GET_BTN_INDEX(pros::E_CONTROLLER_DIGITAL_LEFT);
-constexpr int BTN_ANGLER_CAP_PU = GET_BTN_INDEX(pros::E_CONTROLLER_DIGITAL_RIGHT);
-constexpr pros::controller_analog_e_t JOY_ANGLER = pros::E_CONTROLLER_ANALOG_RIGHT_Y;
+/* Puncher */
+constexpr int BTN_SHOT_CANCEL = GET_BTN_INDEX(pros::E_CONTROLLER_DIGITAL_B);
 
-/* Drive */
-constexpr pros::controller_analog_e_t JOY_DRIVE_FW = pros::E_CONTROLLER_ANALOG_LEFT_Y;
-constexpr pros::controller_analog_e_t JOY_DRIVE_TURN = pros::E_CONTROLLER_ANALOG_LEFT_X;
-constexpr pros::controller_analog_e_t JOY_DRIVE_STRAFE = pros::E_CONTROLLER_ANALOG_RIGHT_X;
+/* Macros */
+constexpr int BTN_GROUND_PICKUP = GET_BTN_INDEX(pros::E_CONTROLLER_DIGITAL_L2);
+constexpr int BTN_CAP_PICKUP = GET_BTN_INDEX(pros::E_CONTROLLER_DIGITAL_L1);
 
-/* Shooter */
-constexpr int BTN_SHOOT_CANCEL = GET_BTN_INDEX(pros::E_CONTROLLER_DIGITAL_B);
 constexpr int BTN_SHOT_L_T = GET_BTN_INDEX(pros::E_CONTROLLER_DIGITAL_L1);
 constexpr int BTN_SHOT_L_M = GET_BTN_INDEX(pros::E_CONTROLLER_DIGITAL_L2);
 constexpr int BTN_SHOT_R_T = GET_BTN_INDEX(pros::E_CONTROLLER_DIGITAL_R1);

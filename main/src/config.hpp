@@ -4,7 +4,11 @@
 #include "subsystems/drive.hpp"
 #include "subsystems/angler.hpp"
 #include "subsystems/puncher.hpp"
+#include "libraries/controller.hpp"
 #include "tracking.hpp"
+
+extern pilons::Controller master;
+extern pilons::Controller partner;
 
 extern pros::Motor m_intake;
 extern pros::Motor m_drive_fl;

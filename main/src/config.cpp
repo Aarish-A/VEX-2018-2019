@@ -1,5 +1,8 @@
 #include "config.hpp"
 
+pilons::Controller master(pros::E_CONTROLLER_MASTER, "Master");
+pilons::Controller partner(pros::E_CONTROLLER_PARTNER, "Partner");
+
 pros::Motor m_intake(2, pros::E_MOTOR_GEARSET_18, false, pros::E_MOTOR_ENCODER_DEGREES);
 pros::Motor m_drive_fl(7 , pros::E_MOTOR_GEARSET_18, true, pros::E_MOTOR_ENCODER_DEGREES);
 pros::Motor m_drive_fr(10, pros::E_MOTOR_GEARSET_18, false, pros::E_MOTOR_ENCODER_DEGREES);

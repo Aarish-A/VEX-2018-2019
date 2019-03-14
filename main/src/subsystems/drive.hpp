@@ -10,10 +10,6 @@ public:
   static const uint8_t STATE_DRIVER_CONTROL = 0x10;
   static const uint8_t STATE_AUTO_CONTROL = 0x11;
 
-  static const uint8_t THROTTLE_DEADZONE = 10;
-  static const uint8_t TURN_DEADZONE = 30;
-  static const uint8_t STRAFE_DEADZONE = 10;
-
 private:
   pros::Motor& fl_motor;
   pros::Motor& fr_motor;
