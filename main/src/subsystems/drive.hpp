@@ -37,9 +37,9 @@ private:
 
   void set_state(uint8_t new_state) override;
 
-  friend void stop_move_alg_task();
   friend void drive_move(void* _params);
   friend void drive_turn(void* _params);
+  friend void drive_task_stop_function();
 
 public:
   /* Constructor */

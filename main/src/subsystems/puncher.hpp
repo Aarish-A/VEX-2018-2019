@@ -14,6 +14,7 @@ public:
 private:
   pros::Motor& puncher_motor;
   pros::ADILineSensor& ball_sensor;
+  bool reset_finished = false;
 
   static constexpr double GEAR_RATIO = 5.0 / 3.0;
   static constexpr double OFFSET = 50 * GEAR_RATIO;
@@ -41,6 +42,7 @@ public:
   Puncher(std::string subsystem_name, uint8_t default_state, pros::Motor& puncher_motor, pros::ADILineSensor& ball_sensor);
 
   void update() override;
+  void enable() override;
   void shoot();
   void cancel_shot();
   bool shooting();

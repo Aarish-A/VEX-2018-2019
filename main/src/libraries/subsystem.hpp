@@ -45,12 +45,12 @@ public:
   double get_velocity(); // Returns the current velocity of the subsystem
 
   void disable(); // Puts subsystem disabled state
-  void enable(); // Puts subsystem in the state where it should be when enabled
   bool enabled(); // Returns whether or not the subsystem is not in disabled
   bool disabled(); // Returns whether or not the subsystem is in disabled
   void reset(); // Resets subsystem through state machine (calibrate)
 
   /* Public Virtual Functions */
+  virtual void enable(); // Puts subsystem in the state where it should be when enabled
 
   /* Public Pure-Virtual Functions */
   virtual void update() = 0; // Updates state machine, should be run in main loop

@@ -73,6 +73,7 @@ void Puncher::update() {
       if (timed_out(2250)) this->set_state(STATE_DISABLED);
       else if (below_vel_threshold(5, 150)) {
         this->puncher_motor.tare_position();
+        this->reset_finished = true;
         this->set_state(STATE_LOADING);
       }
       break;
@@ -101,6 +102,13 @@ void Puncher::update() {
   this->last_velocity = this->velocity;
 }
 
+void Puncher::enable() {
+  if (this->state == STATE_DISABLED && this->reset_finished) {
+    log_ln(LOG_SUBSYSTEMS, "Enabled %s subsystem", (this->subsystem_name).c_str());
+    set_state(this->DEFAULT_STATE);
+  }
+}
+
 void Puncher::shoot() {
   if (this->state == STATE_LOADED) this->set_state(STATE_PULLBACK);
 }
@@ -110,5 +118,6 @@ void Puncher::cancel_shot() {
 }
 
 bool Puncher::shooting() {
-  return !(this->state == STATE_LOADED || this->state == STATE_CANCEL);
+  // return !(this->state == STATE_LOADED || this->state == STATE_CANCEL);
+  return (this->state != STATE_LOADED);
 }

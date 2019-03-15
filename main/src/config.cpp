@@ -17,7 +17,7 @@ pros::ADIEncoder enc_l(1, 2, false);
 pros::ADIEncoder enc_s(5, 6, true);
 
 Intake intake("Intake", Intake::STATE_OFF, m_intake);
-Drive drive("Drive", Drive::STATE_AUTO_CONTROL, m_drive_fl, m_drive_fr, m_drive_bl, m_drive_br, s_pole_poti, enc_l, enc_r);
-Angler angler("Angler", Angler::STATE_AUTO_CONTROL, m_angler);
-Puncher puncher("Puncher", Puncher::STATE_DISABLED, m_angler, s_ball_detector);
+Drive drive("Drive", Drive::STATE_DRIVER_CONTROL, m_drive_fl, m_drive_fr, m_drive_bl, m_drive_br, s_pole_poti, enc_l, enc_r);
+Angler angler("Angler", Angler::STATE_DRIVER_CONTROL, m_angler);
+Puncher puncher("Puncher", Puncher::STATE_LOADED, m_angler, s_ball_detector);
 Tracking pos(enc_l, enc_r, enc_s);

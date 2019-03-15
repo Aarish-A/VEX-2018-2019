@@ -65,13 +65,6 @@ double Subsystem::get_velocity() {
   return this->velocity;
 }
 
-void Subsystem::enable() {
-  if (this->state == STATE_DISABLED) {
-    log_ln(LOG_SUBSYSTEMS, "Enabled %s subsystem", (this->subsystem_name).c_str());
-    set_state(this->DEFAULT_STATE);
-  }
-}
-
 void Subsystem::disable() {
   if (this->state != STATE_DISABLED) {
     log_ln(LOG_ERROR, "Disabled %s subsystem", (this->subsystem_name).c_str());
@@ -93,7 +86,12 @@ void Subsystem::reset() {
 }
 
 /* Public Virtual Functions */
-
+void Subsystem::enable() {
+  if (this->state == STATE_DISABLED) {
+    log_ln(LOG_SUBSYSTEMS, "Enabled %s subsystem", (this->subsystem_name).c_str());
+    set_state(this->DEFAULT_STATE);
+  }
+}
 
 /* Static Functions */
 void Subsystem::update_all() {

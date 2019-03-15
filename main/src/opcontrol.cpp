@@ -3,8 +3,10 @@
 #include "config.hpp"
 #include "libraries/util.hpp"
 #include "controls.hpp"
+#include "libraries/task.hpp"
 
 void opcontrol() {
+	pilons::Task::stop_all_tasks();
 	log_ln(LOG_AUTO, "   --- %d START OPCONTROL --- \n", pros::millis());
 
 	while (true) {

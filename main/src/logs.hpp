@@ -18,6 +18,7 @@ constexpr bool LOG_VISION = 1;
 constexpr bool LOG_STATES = 1;
 constexpr bool LOG_SUBSYSTEMS = 1;
 constexpr bool LOG_MOVEMENT_ALGS = 0;
+constexpr bool LOG_TASKS = 1;
 
 constexpr int LOG_CLOSE_TIME = 1000;
 constexpr int LOG_MUTEX_TO = 50;

@@ -5,7 +5,7 @@
 #include "subsystems/intake.hpp"
 #include "subsystems/drive.hpp"
 #include "subsystems/angler.hpp"
-#include "auto.hpp"
+#include "libraries/task.hpp"
 
 void initialize() {
 	log_init();
@@ -21,8 +21,7 @@ void initialize() {
  * the robot is enabled, this task will exit.
  */
 void disabled() {
-	stop_auto_update_task();
-	stop_move_alg_task();
+	pilons::Task::stop_all_tasks();
 }
 
 /**

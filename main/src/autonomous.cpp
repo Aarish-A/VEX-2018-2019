@@ -26,13 +26,13 @@ void programming_skills();
 
 void autonomous() {
   uint32_t autonomous_time = pros::millis();
-  start_auto_update_task();
+  auto_update_task.start_task();
 
 
 
 
 
-  stop_auto_update_task();
+  pilons::Task::stop_all_tasks();
   master.print(2, 0, "Time: %d", pros::millis() - autonomous_time);
 }
 
