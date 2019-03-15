@@ -1,7 +1,7 @@
 #include "logs.hpp"
 bool sd_logging_enabled = false;
 pros::Mutex sd_buffer_mutex;
-char log_buffer[LOG_BUFFER_SIZE+1];
+char log_buffer[LOG_BUFFER_SIZE];
 //char log_buffer_test[LOG_BUFFER_SIZE+1];
 int buffer_write_index = 0;
 int buffer_flush_index = 0;
@@ -83,40 +83,40 @@ void log_ln_internal(const char * str_whole) {
     int write_amount = 0;
     if (sd_buffer_mutex.take(LOG_MUTEX_TO))
     {
-      int new_bwi = buffer_write_index;
-      if (buffer_write_index >= LOG_BUFFER_SIZE || buffer_write_index < 0) printf("\n\n\n\n %d log_ln() BAD WRITE I: %d >>>> \n\n\n\n", pros::millis(), buffer_write_index);
-      if (buffer_flush_index >= LOG_BUFFER_SIZE || buffer_flush_index < 0) printf("\n\n\n\n %d log_ln() BAD flush I: %d >>>> \n\n\n\n", pros::millis(), buffer_flush_index);
+      if (buffer_write_index >= LOG_BUFFER_SIZE || buffer_write_index < 0) {
+        printf("\n\n  %d log_ln_internal() ERROR: buffer_write_index out of bounds | Current = %d | Resetting to 0 \n\n", pros::millis(), buffer_write_index);
+        buffer_write_index = 0;
+      }
+      if (buffer_flush_index >= LOG_BUFFER_SIZE || buffer_flush_index < 0) {
+         printf("\n\n  %d log_ln_internal() ERROR: buffer_flush_index out of bounds | Current = %d \n\n", pros::millis(), buffer_flush_index);
+       }
 
       size_t buf_remaining_len = LOG_BUFFER_SIZE - buffer_write_index; // Amount of unfilled indices left in buffer
+
+      int new_bwi = buffer_write_index; // Modify this temporary variable, then copy this into buffer_write_index at the end of the function
+
       if (buf_remaining_len < str_whole_len) { // If the input-string is about to go out of the bounds of the buffer
-                                                // Split the input-string in two. Put whatever fits into the end of the buffer
-                                                // and put the remaining characters into the front of the buffer
-        // Split whole string into two substrings
+        // Copy whatever fits from the input string into the end of the buffer, and the rest into the the front of the buffer
         const size_t str_first_len = buf_remaining_len;
         const size_t str_sec_len = str_whole_len-str_first_len;
-        std::string str_first, str_sec;
-        str_first.resize(str_first_len);
-        str_sec.resize(str_sec_len);
-        strncpy((char*) str_first.data(), str_whole, str_first_len);
-        strncpy((char*) str_sec.data(), &str_whole[str_first_len], str_sec_len);
-        // 1) Write first part of string to end of buffer
-        write_amount = sprintf(log_buffer+sizeof(log_buffer[0])*buffer_write_index, "%s", str_first.c_str());
-        if (write_amount > 0) new_bwi += write_amount;
-        //printf("  >>%d log_ln() | write_amount = %d | %d %d | %d\n", pros::millis(), write_amount, buffer_flush_index, buffer_write_index, new_bwi);
-        // 2) Write second part of string to front of buffer
-        write_amount = sprintf(log_buffer, "%s", str_sec.c_str()); // HOW WILL ARGS BE HANDLED? WILL IT USE THE RIGHT ARGS B/W THE TWO FUNC CALLS?
-        if (write_amount > 0) new_bwi = write_amount;
-        //printf("  >>%d log_ln() | write_amount = %d | %d %d | %d \n", pros::millis(), write_amount, buffer_flush_index, buffer_write_index, new_bwi);
+        memcpy(&log_buffer[buffer_write_index], str_whole, str_first_len);
+        memcpy(&log_buffer[0], &str_whole[str_first_len], str_sec_len);
+        new_bwi = 0;
+        printf("  >>%d log_ln() | write_amount = %d | %d %d | %d\n", pros::millis(), write_amount, buffer_flush_index, buffer_write_index, new_bwi);
       }
       else {
-        write_amount = sprintf(log_buffer+BUF_OBJ_SIZE*buffer_write_index, "%s", str_whole);
+        write_amount = sprintf(&log_buffer[buffer_write_index], "%s", str_whole);
         if (write_amount > 0) new_bwi += write_amount;
       }
 
-      if (new_bwi >= LOG_BUFFER_SIZE) buffer_write_index = 0;
+      // Set global buffer_write_index using local variable new_bwi
+      if (new_bwi >= LOG_BUFFER_SIZE || new_bwi < 0) {
+        printf("\n\n  %d log_ln_internal() ERROR: tried to set buffer_write_index out of bounds | Current = %d | Set to 0 \n\n", pros::millis(), buffer_write_index);
+        buffer_write_index = 0;
+      }
       else buffer_write_index = new_bwi;
 
-      sd_buffer_mutex.give();
+      sd_buffer_mutex.give(); // Give up mutex so that other log_ln() calls can be executed
       //printf("        >>%d LOG_LN() GAVE sd_buffer_mutex \n", pros::millis());
     } else printf("\n   ERR>>> %d log_ln_internal() sd_buffer_mutex take failed (TO = 50ms) | Err:%d \n\n", pros::millis(), errno);
   }
@@ -154,8 +154,13 @@ void log_ln(Log_Info info_category, const char * format, ...) {
 /* Buffer -> SD Functions */
 void flush_to_sd(int given_amnt_to_flush, int pos_to_flush_to) {
   int amnt_to_flush = given_amnt_to_flush; // std::min(given_amnt_to_flush, MAX_AMNT_TO_FLUSH); // Lim num of indices to flush to MAX_AMNT_TO_FLUSH
-  if (buffer_write_index >= LOG_BUFFER_SIZE || buffer_write_index < 0) printf("\n\n\n\n %d flush_to_sd() BAD WRITE I: %d >>>> \n\n\n\n", pros::millis(), buffer_write_index);
-  if (buffer_flush_index >= LOG_BUFFER_SIZE || buffer_flush_index < 0) printf("\n\n\n\n %d flush_to_sd() BAD flush I: %d >>>> \n\n\n\n", pros::millis(), buffer_flush_index);
+  if (buffer_write_index >= LOG_BUFFER_SIZE || buffer_write_index < 0) {
+    printf("\n\n  %d flush_to_sd() ERROR: buffer_write_index out of bounds | Current = %d \n\n", pros::millis(), buffer_write_index);
+  }
+  if (buffer_flush_index >= LOG_BUFFER_SIZE || buffer_flush_index < 0) {
+     printf("\n\n  %d flush_to_sd() ERROR: buffer_flush_index out of bounds | Current = %d | Resetting to 0 \n\n", pros::millis(), buffer_flush_index);
+     buffer_flush_index = 0;
+   }
 
   // 1) Open Log File
   open_log_file();
@@ -176,7 +181,10 @@ void flush_to_sd(int given_amnt_to_flush, int pos_to_flush_to) {
     // 2b) Set buffer_flush_index upon success
     else new_bfi += flush_amount; // Incrememnt blush_flush_index upon successful write
 
-    if ( new_bfi >= LOG_BUFFER_SIZE) buffer_flush_index = 0; // If the pointer is at the end of the buffer, move it back to the front
+    if (new_bfi >= LOG_BUFFER_SIZE || new_bfi < 0) { // If the pointer is at the end of the buffer, move it back to the front
+      printf("\n\n  %d flush_to_sd() ERROR: tried to set buffer_flush_index out of bounds | Current = %d | Set to 0 \n\n", pros::millis(), buffer_flush_index);
+      buffer_flush_index = 0;
+    }
     else buffer_flush_index = new_bfi;
 
     pros::delay(FILE_SLEEP);

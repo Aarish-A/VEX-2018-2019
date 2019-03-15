@@ -15,6 +15,6 @@ void opcontrol() {
 		log_ln(PROGRAM_FLOW, "OPCONTROL TEST TEST TEST | cntr: %ld", loop_counter);
 		loop_counter++;
 		//printf("        >>>>>>>>>>%d GOING TO SLEEP <<<<<<<< \n", pros::millis());
-		pros::delay(1);
+		pros::delay(10);
 	}
 }
