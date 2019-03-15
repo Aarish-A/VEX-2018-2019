@@ -20,6 +20,7 @@ void auto_set_angler_target(double target);
 void auto_set_first_shot(double target);
 void auto_set_second_shot(double target);
 
+extern bool intakeLog;
 extern bool blue_team;
 
 constexpr double DRIVE_DIA = 3.95;

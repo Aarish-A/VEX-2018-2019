@@ -7,7 +7,7 @@ bool drive_enabled = true;
 pros::Task* shot_req_handle_task = nullptr;
 
 /* Shot Positions */
-volatile ShotPos front_SP (FieldPos_Front, 98, 0);
+volatile ShotPos front_SP (FieldPos_Front, 120, 40);
 volatile ShotPos auto_front_SP (FieldPos_Front, 88, 0);
 volatile ShotPos auto_mid_flag_SP (FieldPos_Front, 88, 0);
 volatile ShotPos auto_far_flag_SP (FieldPos_Front, 118, 30);

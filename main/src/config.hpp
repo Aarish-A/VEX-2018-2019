@@ -19,7 +19,7 @@ extern pros::ADIAnalogIn autoPoti;
 extern pros::ADILineSensor ball_sensor;
 extern pros::ADILineSensor left_platform_sensor;
 extern pros::ADILineSensor right_platform_sensor;
-extern pros::Vision vision_sensor;
+//extern pros::Vision vision_sensor;
 extern pros::ADIAnalogIn capper_poti;
 
 extern bool is_disabled;

@@ -7,7 +7,8 @@ Decapper_States decapper_state_last = decapper_state;
 double decapper_targ = 0;
 int decapper_state_change_time = 0;
 bool decapper_cappable = false;
-
+int going_up = 1;
+bool slow_bottom = true;
 void set_decapper_targ_state(Decapper_States state, double targ, int32_t velocity) {
   printf("Going from %d", decapper_state);
 	decapper_state_last = decapper_state;
@@ -29,12 +30,34 @@ void set_decapper_pow_state(Decapper_States state, double pow) {
 
 void set_decapper_state(Decapper_States state) {
   switch(state) {
-    case Decapper_States::Bot: set_decapper_targ_state(state, DECAPPER_BOT_POS); break;
+    case Decapper_States::Bot:
+    if(slow_bottom)
+    {
+    set_decapper_targ_state(state, DECAPPER_BOT_POS, 55);
+    }
+    else
+    {
+    set_decapper_targ_state(state, DECAPPER_BOT_POS, 200);
+    }
+    break;
     // case Decapper_States::Mid: set_decapper_pow_state(state, 50); break;
-    case Decapper_States::Mid: set_decapper_targ_state(state, DECAPPER_MID_POS, 50); break;
+    case Decapper_States::Mid:
+    if(going_up==1)
+    {
+    set_decapper_targ_state(state, DECAPPER_MID_POS+100, 55);
+    }
+    else if(going_up==2)
+    {
+    set_decapper_targ_state(state, DECAPPER_MID_POS, 200);
+    }
+    else if(going_up==3)
+    {
+    set_decapper_targ_state(state, DECAPPER_MID_POS-100, 200);
+    }
+    break;
     // case Decapper_States::Top_Bot: set_decapper_targ_state(state, DECAPPER_TOP_BOT_POS, 200); break;
     case Decapper_States::Top_Bot: set_decapper_pow_state(state, 100); break;
-    case Decapper_States::Top_Mid: set_decapper_targ_state(state, DECAPPER_TOP_MID_POS, 75); break;
+    case Decapper_States::Top_Mid: set_decapper_targ_state(state, DECAPPER_TOP_MID_POS, 125); break;
     // case Decapper_States::Top: set_decapper_targ_state(state, DECAPPER_TOP_POS, 125); break;
     case Decapper_States::Top: set_decapper_pow_state(state, 90); decapper_targ = DECAPPER_TOP_POS; decapper_cappable = false; break;
     case Decapper_States::Idle: set_decapper_pow_state(state, 0); break;
@@ -146,13 +169,16 @@ void decapper_handle()
     }
     case Decapper_States::Top:
     {
+      printf("Decapper at: %f, target: %f\n", decapper.get_position(), DECAPPER_TOP_POS - 5);
       if (decapper.get_position()>DECAPPER_TOP_POS-15 && check_single_press(BTN_DECAPPER_DOWN))
       {
           set_decapper_state(Decapper_States::Mid);
       }
       if (decapper.get_position() > DECAPPER_TOP_POS - 5) {
         decapper_set(DECAPPER_TOP_HOLD_POW);
+        printf("HERE!\n");
         decapper_cappable = true;
+        //set_decapper_state(Decapper_States::Idle);
       }
       // else if (fabs(decapper.get_position() - DECAPPER_TOP_POS) < (5*DECAPPER_RATIO)) decapper_set(DECAPPER_TOP_HOLD_POW);//decapper.move_relative(0, 200);
       //printf("%d Top vel:%f StateCT:%d pos:%f t:%f \n", millis(), decapper.get_actual_velocity(), decapper_state_change_time, decapper.get_position(), decapper_targ);

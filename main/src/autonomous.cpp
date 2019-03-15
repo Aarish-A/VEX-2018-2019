@@ -34,13 +34,13 @@ void programming_skills();
 void align_with_pole() {
   // 2790
   flatten_against_wall(false, true);
-  if (capper_poti.get_value() > 2790 + 80) {
+  if (capper_poti.get_value() > 2820 + 80) {
     drive_set(55, -15, 0);
-  } else if (capper_poti.get_value() < 2790 - 80) {
+  } else if (capper_poti.get_value() < 2820 - 80) {
     drive_set(-55, -15, 0);
   }
 
-  while (abs(capper_poti.get_value() - 2790) > 100) pros::delay(10);
+  while (abs(capper_poti.get_value() - 2820) > 100) pros::delay(10);
   flatten_against_wall(false, true);
 }
 
@@ -48,14 +48,15 @@ void cap_on_pole() {
   set_decapper_state(Decapper_States::Top_Bot);
   align_with_pole();
   set_decapper_state(Decapper_States::Top);
+  printf("Poti: %d", capper_poti.get_value());
   uint32_t timeout = pros::millis();
-  while(!decapper_cappable && pros::millis() - 750 < timeout) pros::delay(2);
+  while (!decapper_cappable) pros::delay(2);
+  // while(!decapper_cappable && pros::millis() - 750 < timeout) pros::delay(2);
 }
 
 void raise_cap() {
   set_decapper_state(Decapper_States::Mid);
 }
-
 void lower_capper() {
   set_decapper_state(Decapper_States::Bot);
 }
@@ -66,38 +67,135 @@ void autonomous() {
   auto_update_start_task();
   autoStartTime = millis();
   resetGlobalAngle();
+  going_up = 2;
+  raise_cap();
   auto_set_first_shot(front_SP.mid);
   while (auto_set_shot) pros::delay(10);
   turn_vel_new(FixedAngleTarget(37_deg));
   angler_move(ANGLER_CAP_PU_POS);
   intake.move(127);
-  move_drive_new(24_in,37_deg);
+  move_drive_new(22_in,37_deg);
+  delay(100);
+  slow_bottom = true;
+  lower_capper();
+  move_drive_new(-15_in,37_deg);
+  intake.move(0);
+  angler_move(ANGLER_PU_POS);
+  move_drive_new(17_in,37_deg);
+  going_up = 1;
+  raise_cap();
   delay(200);
+  intake.move(127);
   move_drive_new(-24_in,37_deg);
   turn_vel_new(FixedAngleTarget(0_deg));
   auto_set_first_shot(front_SP.top);
   while (auto_set_shot) pros::delay(10);
-  turn_vel_new(FixedAngleTarget(84_deg));
+  turn_vel_new(FixedAngleTarget(86_deg));
   angler_move(ANGLER_CAP_PU_POS);
   intake.move(-127);
-  move_drive_new(38_in,84_deg);
+  move_drive_new(38_in,86_deg);
   delay(200);
-  move_drive_new(-7_in,84_deg);
+  move_drive_new(-7_in,86_deg);
   angler_move(ANGLER_PU_POS);
+  intakeLog = true;
   intake.move(127);
-  move_drive_new(7_in,84_deg);
-  delay(100);
-  turn_vel_new(FixedAngleTarget(12_deg));
-  auto_set_first_shot(front_SP.top);
+  move_drive_new(7_in,86_deg);
+  delay(200);
+  intakeLog = false;
+  turn_vel_new(FixedAngleTarget(10_deg));
+  auto_set_first_shot(front_SP.top+15);
   while (auto_set_shot) pros::delay(10);
-  auto_set_second_shot(front_SP.mid);
+  going_up = 2;
+  raise_cap();
+  auto_set_second_shot(front_SP.mid+15);
   while (auto_set_shot) pros::delay(10);
   angler_move(ANGLER_PU_POS);
-  move_drive_new(45_in,0_deg);
-  move_drive_new(-45_in, 0_deg);
+  going_up = 1;
+  raise_cap();
+  move_drive_new(33_in, 10_deg);
+  move_drive_new(-33_in, 10_deg);
+  turn_vel_new(FixedAngleTarget(86_deg));
+  move_drive_new(-37_in,86_deg);
+  turn_vel_new(FixedAngleTarget(-6_deg));
+  move_drive_new(-69_in, -6_deg);
   turn_vel_new(FixedAngleTarget(84_deg));
-  move_drive_new(-48_in,84_deg, 200, false);
-  flatten_against_wall(false, true);
+  cap_on_pole();
+  resetGlobalAngle();
+  delay(500);
+  move_drive_new(6_in, 0_deg);
+  intake.move(127);
+  going_up = 3;
+  raise_cap();
+  turn_vel_new(FixedAngleTarget(-15_deg));
+  angler_move(ANGLER_PU_POS);
+  move_drive_new(36_in, -15_deg,80);
+  delay(100);
+  decapper.move_absolute(300, 200);
+  move_drive_new(-13.5_in,-15_deg);
+  turn_vel_new(FixedAngleTarget(45_deg));
+  angler_move(ANGLER_CAP_PU_POS);
+  move_drive_new(17_in, 45_deg);
+  delay(100);
+  move_drive_new(-15_in,45_deg);
+  angler_move(ANGLER_PU_POS);
+  intake.move(0);
+  slow_bottom = false;
+  lower_capper();
+  move_drive_new(15_in, 45_deg);
+  going_up = 1;
+  raise_cap();
+  delay(100);
+  sweep_turn_new(FixedAngleTarget(-90_deg), -4_in, false,0_in,false);
+  cap_on_pole();
+  resetGlobalAngle();
+  delay(500);
+  move_drive_new(12_in,0_deg);
+  slow_bottom = false;
+  lower_capper();
+  turn_vel_new(FixedAngleTarget(103_deg));
+  intake.move(-127);
+  move_drive_new(38_in, 103_deg);
+  going_up = 1;
+  raise_cap();
+  delay(100);
+  turn_vel_new(FixedAngleTarget(74_deg));
+  move_drive_new(38_in, 74_deg);
+  turn_vel_new(FixedAngleTarget(-90_deg));
+  move_drive_new(-12_in, -90_deg, 200, false);
+  cap_on_pole();
+  resetGlobalAngle();
+  delay(500);
+  move_drive_new(6_in, 0_deg);
+  intake.move(127);
+  going_up = 3;
+  raise_cap();
+  turn_vel_new(FixedAngleTarget(15_deg));
+  angler_move(ANGLER_CAP_PU_POS);
+  move_drive_new(36_in, 15_deg,80);
+  delay(100);
+  decapper.move_absolute(300, 200);
+  move_drive_new(-36_in, 15_deg,80);
+  turn_vel_new(FixedAngleTarget(83_deg));
+  going_up = 2;
+  raise_cap();
+  move_drive_new(59_in, 83_deg);
+  auto_set_first_shot(front_SP.top+15);
+  while (auto_set_shot) pros::delay(10);
+  going_up = 3;
+  raise_cap();
+  auto_set_second_shot(front_SP.mid+15);
+  going_up = 1;
+  raise_cap();
+  while (auto_set_shot) pros::delay(10);
+  intake.move(-80);
+  angler_move(ANGLER_CAP_FLIP_POS);
+  turn_vel_new(FixedAngleTarget(65_deg));
+  move_drive_new(24_in,65_deg);
+  move_drive_new(-24_in,65_deg);
+  turn_vel_new(FixedAngleTarget(0_deg));
+  angler_move(ANGLER_CAP_PU_POS);
+  move_drive_new(35_in,0_deg);
+  move_drive_new(-15_in, 0_deg);
   ctrler.print(2,0,"Auto T: %d   ",millis()-autoStartTime);
   log_ln(LOG_AUTO, "%d Auto Done in %dms", pros::millis(), pros::millis()-autoStartTime);
   auto_update_stop_task();

@@ -1,7 +1,7 @@
 #include "auto.hpp"
 
 using namespace pros;
-
+bool intakeLog = false;
 bool blue_team = true;
 
 /* Auto Update Task */
@@ -13,6 +13,10 @@ void auto_update(void* param) {
   {
     //if (is_disabled) printf(" >>> %d IN AUTO_UPDATE IN DISABLED\n", millis());
     //pos.update();
+    if(intakeLog)
+    {
+      printf("intake speed is %d\n", intake.get_voltage());
+    }
     pun_handle();
     decapper_handle();
     pros::delay(10);
@@ -526,7 +530,7 @@ void turn_vel_new_shoot(const AngleTarget& target, double angler_target, double 
     dA = target.getTarget() - getGlobalAngle();
     drive_volt = RAD_TO_DEG(dA) * kP + iVal;
     setDrive(0,0,drive_volt);
-    printf("%d Drive voltage is: %f and iVal is %f dA is %f\n", pros::millis(),drive_volt, iVal, RAD_TO_DEG(dA));
+    //printf("%d Drive voltage is: %f and iVal is %f dA is %f\n", pros::millis(),drive_volt, iVal, RAD_TO_DEG(dA));
     delay(1);
   }
   setDrive(0);
@@ -555,14 +559,22 @@ void turn_vel_new(const AngleTarget& target)
   kP = 200/115;
   while(fabs(dA)>0.5_deg)
   {
-    if(fabs(dA)<(0.1*fabs(fixeddA)))
+    if(fabs(fixeddA)<25_deg)
     {
       iVal += RAD_TO_DEG(dA)*kI;
-      if(fabs(iVal) > 15) iVal = 25*sgn(iVal);
+      if(fabs(iVal) > 25) iVal = 25*sgn(iVal);
     }
     else
     {
-      iVal = 0;
+      if(fabs(dA)<(0.17*fabs(fixeddA)))
+      {
+        iVal += RAD_TO_DEG(dA)*kI;
+        if(fabs(iVal) > 25) iVal = 25*sgn(iVal);
+      }
+      else
+      {
+        iVal = 0;
+      }
     }
     dA = target.getTarget() - getGlobalAngle();
     drive_volt = RAD_TO_DEG(dA) * kP + iVal;
