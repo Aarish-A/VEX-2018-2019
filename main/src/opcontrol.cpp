@@ -11,11 +11,10 @@ void opcontrol() {
 	log_ln(PROGRAM_FLOW, "   --- START OPCONTROL --- \n");
 	long loop_counter = 0;
 	while (true) {
-		update_buttons();
-		intake.update();
-		drive.update();
+		//printf("     		   >>>>>>>>>>%d Start while TO SLEEP <<<<<<<< \n", pros::millis());
 		log_ln(PROGRAM_FLOW, "OPCONTROL TEST TEST TEST | cntr: %ld", loop_counter);
 		loop_counter++;
-		pros::delay(10);
+		//printf("        >>>>>>>>>>%d GOING TO SLEEP <<<<<<<< \n", pros::millis());
+		pros::delay(1);
 	}
 }
