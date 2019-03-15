@@ -6,8 +6,9 @@
 #include "libraries/task.hpp"
 
 void opcontrol() {
-	pilons::Task::stop_all_tasks();
 	log_ln(LOG_AUTO, "   --- %d START OPCONTROL --- \n", pros::millis());
+	pilons::Task::stop_all_tasks();
+	Subsystem::enable_all();
 
 	while (true) {
 		master.update();
@@ -16,6 +17,7 @@ void opcontrol() {
 		drive.update();
 		angler.update();
 		puncher.update();
+
 
 		/* Drive */
 		int8_t drive_y = master.get_analog(JOY_DRIVE_THROTTLE, 10);
@@ -41,15 +43,19 @@ void opcontrol() {
 			puncher.cancel_shot();
 		}
 
+		if (master.check_single_press(BTN_SHOT_R_T)) {
+			puncher.shoot();
+		}
+
 
 		/* Macros */
 		if (master.check_single_press(BTN_GROUND_PICKUP)) {
-			angler.move_to(Angler::CAP_PICKUP_POSITION);
+			angler.move_to(Angler::PICKUP_POSITION);
 			intake.intake();
 		}
 
 		else if (master.check_single_press(BTN_CAP_PICKUP)) {
-			angler.move_to(Angler::PICKUP_POSITION);
+			angler.move_to(Angler::CAP_PICKUP_POSITION);
 			intake.intake();
 		}
 

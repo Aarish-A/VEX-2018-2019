@@ -29,6 +29,7 @@ private:
 
   uint32_t shot_number = 0;
   uint32_t ball_on_time = 0;
+  uint32_t ball_sensor_value = 2900;
   int32_t ball_check_target = 0;
   int32_t point_of_no_return = 0;
   bool ball_on = false;
@@ -39,11 +40,12 @@ private:
   void set_state(uint8_t new_state) override;
 
 public:
-  Puncher(std::string subsystem_name, uint8_t default_state, pros::Motor& puncher_motor, pros::ADILineSensor& ball_sensor);
+  Puncher(std::string subsystem_name, uint8_t default_state, pros::Motor& puncher_motor, pros::ADILineSensor& bs);
 
   void update() override;
   void enable() override;
   void shoot();
   void cancel_shot();
   bool shooting();
+  void set_holding();
 };

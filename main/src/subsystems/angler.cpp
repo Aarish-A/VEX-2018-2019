@@ -52,8 +52,9 @@ void Angler::update() {
       else this->set_state(STATE_HOLD);
       break;
     case STATE_AUTO_CONTROL:
-      if (timed_out(this->move_timeout) || below_vel_threshold(2, 400)) this->disable();
-      else if (this->power) {
+      if (timed_out(this->move_timeout) || below_vel_threshold(1, 400)) {
+        this->disable();
+      } else if (this->power) {
         log_ln(LOG_STATES, "Angler move interrupted by driver");
         this->set_state(STATE_DRIVER_CONTROL);
       } else if (fabs(this->error) < this->error_threshold) {

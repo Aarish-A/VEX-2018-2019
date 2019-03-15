@@ -71,6 +71,7 @@ double Drive::get_global_angle() {
 /* Constructor */
 Drive::Drive(std::string subsystem_name, uint8_t default_state, pros::Motor& fl_motor, pros::Motor& fr_motor, pros::Motor& bl_motor, pros::Motor& br_motor, pros::ADIAnalogIn& pole_poti, pros::ADIEncoder& enc_l, pros::ADIEncoder& enc_r) : Subsystem(subsystem_name, default_state), fl_motor(fl_motor), fr_motor(fr_motor), bl_motor(bl_motor), br_motor(br_motor), pole_poti(pole_poti), enc_l(enc_l), enc_r(enc_r) {
   state_names[STATE_DRIVER_CONTROL] = "Driver Control";
+  state_names[STATE_AUTO_CONTROL] = "Auto Control";
 }
 
 /* Public Functions */
@@ -150,4 +151,27 @@ bool Drive::moving() {
 
 void Drive::set_error(double error) {
   this->error = error;
+}
+
+void Drive::set_target(double target) {
+  this->target = target;
+}
+
+void Drive::wait_for_stop() {
+  while (this->state == STATE_AUTO_CONTROL) {
+    // printf("Waiting\n");
+    pros::delay(2);
+  }
+}
+
+void Drive::wait_for_distance(double target_distance) {
+  bool forwards = (target_distance > 0 ? true : false);
+  if (forwards) while (this->target - this->error < target_distance) pros::delay(2);
+  else while(this->target - this->error > target_distance) pros::delay(2);
+}
+
+void Drive::wait_for_angle(double target_angle) {
+  bool clockwise = (this->target - this->get_global_angle() > 0 ? true : false);
+  if (clockwise) while (this->get_global_angle() < target_angle) pros::delay(2);
+  else while (this->get_global_angle() > target_angle) pros::delay(2);
 }

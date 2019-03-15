@@ -16,11 +16,11 @@ void pilons::Task::start_task(void* params) {
 }
 
 void pilons::Task::stop_task() {
+  if (this->task_stop_function != nullptr) this->task_stop_function();
   if (this->task != nullptr) {
-    this->task->remove();
+    if ((this->task)->get_state() != pros::E_TASK_STATE_DELETED) (this->task)->remove();
     delete this->task;
     this->task = nullptr;
-    if (this->task_stop_function != nullptr) this->task_stop_function();
     log_ln(LOG_TASKS, "Stopped %s task", (this->task_name).c_str());
   }
 }

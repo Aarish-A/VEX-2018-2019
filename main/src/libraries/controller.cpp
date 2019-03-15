@@ -30,7 +30,7 @@ int8_t pilons::Controller::get_analog(pros::controller_analog_e_t joystick, uint
   int8_t val = this->pros::Controller::get_analog(joystick);
   if (deadzone) {
     int8_t after_dz = (abs(val) > deadzone ? val : 0);
-    if (after_dz != 0) return (127 / 127 - deadzone) * (abs(after_dz) * sgn(after_dz));
+    if (after_dz != 0) return (int8_t)((abs(after_dz) - deadzone) * (127.0) / (127 - deadzone)) * sgn(after_dz);
     else return 0;
   } else return val;
 }
@@ -53,14 +53,4 @@ bool pilons::Controller::check_double_press(int button1, int button2) {
     this->buttons[button2].last_pressed_time = 0;
     return true;
   } else return false;
-}
-
-int32_t pilons::Controller::print(uint8_t line, uint8_t col, const char* fmt, ...) {
-  va_list args;
-  va_start(args, fmt);
-  return pros::Controller::print(line, col, fmt, args);
-}
-
-int32_t pilons::Controller::rumble(const char* rumble_pattern) {
-  return pros::Controller::rumble(rumble_pattern);
 }

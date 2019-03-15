@@ -25,15 +25,27 @@ void auto_blue_back_no_second_shot();
 void programming_skills();
 
 void autonomous() {
+  // Auto Start
   uint32_t autonomous_time = pros::millis();
+  Subsystem::enable_all();
   auto_update_task.start_task();
+  drive.reset_global_angle();
 
+  // Auto
+  // drive_move_sync(40_in, 0_deg);
+  drive_move_async(70_in);
+  drive.wait_for_distance(35_in);
+  puncher.shoot();
+  drive.wait_for_stop();
+  drive_move_async(-70_in);
+  drive.wait_for_distance(-35_in);
+  puncher.shoot();
+  drive.wait_for_stop();
 
-
-
-
+  // Auto End
   pilons::Task::stop_all_tasks();
-  master.print(2, 0, "Time: %d", pros::millis() - autonomous_time);
+  uint32_t auto_finished_time = pros::millis() - autonomous_time;
+  master.print(2, 0, "Time: %d", auto_finished_time);
 }
 
 
@@ -62,5 +74,9 @@ void auto_blue_back_no_second_shot() {
 }
 
 void programming_skills() {
+
+}
+
+void driver_skills() {
 
 }

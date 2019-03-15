@@ -82,7 +82,7 @@ bool Subsystem::disabled() {
 
 void Subsystem::reset() {
   log_ln(LOG_ERROR, "Resetting %s subsystem", (this->subsystem_name).c_str());
-  set_state(STATE_RESET);
+  this->set_state(STATE_RESET);
 }
 
 /* Public Virtual Functions */
@@ -102,6 +102,15 @@ void Subsystem::update_all() {
   }
 }
 
+void Subsystem::enable_all() {
+  for(int i = 0; i < Subsystem::number_of_subsystems; i++) {
+    if (subsystems[i] != nullptr) {
+      subsystems[i]->enable();
+    } else log_ln(LOG_ERROR, "Could not enable subsystem %d", i);
+  }
+  log_ln(LOG_SUBSYSTEMS, "Enabled all subsystems!");
+}
+
 void Subsystem::disable_all() {
   for(int i = 0; i < Subsystem::number_of_subsystems; i++) {
     if (subsystems[i] != nullptr) {
@@ -115,6 +124,7 @@ void Subsystem::reset_all() {
   for(int i = 0; i < Subsystem::number_of_subsystems; i++) {
     if (subsystems[i] != nullptr) {
       subsystems[i]->reset();
+      printf("reset %d\n", i);
     } else log_ln(LOG_ERROR, "Could not reset subsystem %d", i);
   }
   log_ln(LOG_SUBSYSTEMS, "Reset all subsystems!");

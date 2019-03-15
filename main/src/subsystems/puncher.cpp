@@ -1,6 +1,6 @@
 #include "puncher.hpp"
 
-Puncher::Puncher(std::string subsystem_name, uint8_t default_state, pros::Motor& puncher_motor, pros::ADILineSensor& ball_sensor) : Subsystem(subsystem_name, default_state), puncher_motor(puncher_motor), ball_sensor(ball_sensor) {
+Puncher::Puncher(std::string subsystem_name, uint8_t default_state, pros::Motor& puncher_motor, pros::ADILineSensor& bs) : Subsystem(subsystem_name, default_state), puncher_motor(puncher_motor), ball_sensor(bs) {
   state_names[STATE_CANCEL] = "Cancel";
   state_names[STATE_LOADING] = "Loading";
   state_names[STATE_LOADED] = "Loaded";
@@ -17,6 +17,7 @@ void Puncher::move_to(double target, double velocity) {
 }
 
 void Puncher::set_state(uint8_t new_state) {
+  Subsystem::set_state(new_state);
   switch(new_state) {
     case STATE_DISABLED:
       this->set_power(0);
@@ -27,7 +28,8 @@ void Puncher::set_state(uint8_t new_state) {
       this->set_power(-20);
       break;
     case STATE_CANCEL:
-      this->move_to(this->OFFSET + (--(this->shot_number) * this->TPR) + this->HOLD);
+      this->target = this->OFFSET + (--(this->shot_number) * this->TPR) + this->HOLD;
+      this->move_to(this->target);
       this->cancelling_shot = false;
       break;
     case STATE_LOADING:
@@ -45,7 +47,8 @@ void Puncher::set_state(uint8_t new_state) {
       this->target = this->OFFSET + (this->shot_number * this->TPR) - (15.0 * this->GEAR_RATIO);
       break;
     case STATE_BOLT_WAIT:
-      this->move_to(this->OFFSET + (this->shot_number * this->TPR));
+      this->target = this->OFFSET + (this->shot_number * this->TPR);
+      this->move_to(this->target);
       break;
   }
 }
@@ -53,9 +56,10 @@ void Puncher::set_state(uint8_t new_state) {
 void Puncher::update() {
   this->position = puncher_motor.get_position();
   this->velocity = puncher_motor.get_actual_velocity();
-  this->error = this->target - this->error;
+  this->error = this->target - this->position;
+  this->ball_sensor_value = this->ball_sensor.get_value();
 
-  if (ball_sensor.get_value() < BALL_THRESHOLD) {
+  if (this->ball_sensor_value < BALL_THRESHOLD) {
     this->ball_on_time = pros::millis();
     if (!ball_on) log_ln(LOG_PUNCHER, "Ball has gotten on the puncher");
     ball_on = true;
@@ -70,16 +74,16 @@ void Puncher::update() {
     case STATE_DISABLED:
       break;
     case STATE_RESET:
-      if (timed_out(2250)) this->set_state(STATE_DISABLED);
-      else if (below_vel_threshold(5, 150)) {
+      if (timed_out(2500)) this->set_state(STATE_DISABLED);
+      else if (below_vel_threshold(5, 100)) {
         this->puncher_motor.tare_position();
         this->reset_finished = true;
         this->set_state(STATE_LOADING);
       }
       break;
     case STATE_CANCEL:
-      if (timed_out(2000)) this->set_state(STATE_DISABLED);
-      else if (this->error >= -(4.0 * this->GEAR_RATIO)) this->set_state(STATE_LOADED);
+      // if (timed_out(2000)) this->set_state(STATE_DISABLED);
+      if (this->error >= -(4.0 * this->GEAR_RATIO)) this->set_state(STATE_LOADED);
       break;
     case STATE_LOADING:
       if (timed_out(1000)) this->set_state(STATE_DISABLED);
@@ -110,7 +114,7 @@ void Puncher::enable() {
 }
 
 void Puncher::shoot() {
-  if (this->state == STATE_LOADED) this->set_state(STATE_PULLBACK);
+  if (!this->shooting()) this->set_state(STATE_PULLBACK);
 }
 
 void Puncher::cancel_shot() {
@@ -120,4 +124,8 @@ void Puncher::cancel_shot() {
 bool Puncher::shooting() {
   // return !(this->state == STATE_LOADED || this->state == STATE_CANCEL);
   return (this->state != STATE_LOADED);
+}
+
+void Puncher::set_holding() {
+  if (this->state != STATE_LOADING) this->set_state(STATE_LOADED);
 }

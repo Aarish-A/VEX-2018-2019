@@ -11,6 +11,20 @@ void auto_update(void* _params) {
   }
 }
 
+/* Shots */
+void single_shot(double targ, bool wait) {
+  angler.move_to(targ);
+  while(angler.moving_to_target()) pros::delay(2);
+  puncher.shoot();
+  if (wait) while(puncher.shooting()) pros::delay(2);
+}
+
+void double_shot(double targ1, double targ2, bool wait) {
+  single_shot(targ1);
+  single_shot(targ2, wait);
+}
+
+/* Drive */
 void drive_move(void* _params) {
   drive.set_state(Drive::STATE_AUTO_CONTROL);
 
@@ -19,6 +33,7 @@ void drive_move(void* _params) {
   double angle_target = params->angle_target;
   bool brake = params-brake;
   uint8_t max_power = params->max_power;
+  drive.target = dist_target;
 
   // If the correct angle is default, the correct angle should be the starting angle
   double angle_start = drive.get_global_angle();
@@ -101,12 +116,15 @@ void drive_move(void* _params) {
 
       if (fabs(angle_error) < 2.0_deg) angle_d_val = (angle_error - angle_last_error) * angle_kD;
       else angle_d_val = 0;
+
+      // Calculate powers
+      power = dist_p_val + dist_i_val + dist_d_val;
+      angle_power = angle_p_val + angle_i_val + angle_d_val;
+
       log_ln(LOG_MOVEMENT_ALGS, "%d In PID...", pros::millis());
     }
 
-    // Calculate powers
-    power = dist_p_val + dist_i_val + dist_d_val;
-    angle_power = angle_p_val + angle_i_val + angle_d_val;
+
     log_ln(LOG_MOVEMENT_ALGS, "%d Distance | Current: %f in, Error: %f in, Power: %f, P: %f, I: %f, D: %f", pros::millis(), dist_current, dist_error, power, dist_p_val, dist_i_val, dist_d_val);
     log_ln(LOG_MOVEMENT_ALGS, "%d Angle    | Current: %f deg, Error: %f deg, Angle Power: %f, P: %f, I: %f, D: %f", pros::millis(), RAD_TO_DEG(angle_current), RAD_TO_DEG(angle_error), angle_power, angle_p_val, angle_i_val, angle_d_val);
     log_ln(LOG_MOVEMENT_ALGS, "----------------------------------------------------------------");
@@ -143,12 +161,17 @@ void drive_move(void* _params) {
   drive_move_task.stop_task();
 }
 
-void drive_move_async(drive_move_params params) {
-  drive.set_error(params.dist_target);
-  drive_move_task.start_task((void*)(&params));
+void drive_move_async(double dist_target, double angle_target, bool brake, uint8_t max_power) {
+  drive_move_params* params = new drive_move_params{dist_target, angle_target, brake, max_power};
+  drive.set_error(params->dist_target);
+  drive.set_target(params->dist_target);
+  drive_move_task.start_task((void*)(params));
+  // pros::delay(100);
+  // delete params;
 }
 
-void drive_move_sync(drive_move_params params) {
+void drive_move_sync(double dist_target, double angle_target, bool brake, uint8_t max_power) {
+  drive_move_params params = {dist_target, angle_target, brake, max_power};
   drive_move((void*)(&params));
 }
 
@@ -156,6 +179,7 @@ void drive_turn(void *_params) {
   drive.set_state(Drive::STATE_AUTO_CONTROL);
   drive_turn_params* params = (drive_turn_params*)_params;
   const AngleTarget& target = params->target;
+  drive.target = target.getTarget();
 
   double dA = target.getTarget() - drive.get_global_angle();
   double fixeddA = dA;
@@ -201,17 +225,21 @@ void drive_turn(void *_params) {
   drive_turn_task.stop_task();
 }
 
-void drive_turn_async(drive_turn_params params) {
+void drive_turn_async(const AngleTarget& target) {
+  drive_turn_params params = {target};
   drive.set_error(params.target.getTarget());
+  drive.set_target(params.target.getTarget());
   drive_turn_task.start_task((void*)(&params));
 }
 
-void drive_move_sync(drive_turn_params params) {
+void drive_move_sync(const AngleTarget& target) {
+  drive_turn_params params = {target};
   drive_turn((void*)(&params));
 }
 
 void auto_update_task_stop_function() {
-  Subsystem::disable_all();
+  // Subsystem::disable_all();
+  puncher.set_holding();
 }
 
 void drive_task_stop_function() {

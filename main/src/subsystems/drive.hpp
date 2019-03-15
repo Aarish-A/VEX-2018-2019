@@ -54,5 +54,11 @@ public:
   void flatten_against_wall(bool forward = true, bool hold = true, uint8_t hold_power = 15);
   void align_with_pole(uint16_t poti_zero = 2730);
   bool moving();
+
   void set_error(double error);
+  void set_target(double target);
+
+  void wait_for_stop();
+  void wait_for_distance(double target_distance);
+  void wait_for_angle(double target_angle);
 };

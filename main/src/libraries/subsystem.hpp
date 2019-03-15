@@ -16,8 +16,8 @@ protected:
   uint8_t state = STATE_DISABLED;
   uint8_t last_state = STATE_DISABLED;
   uint8_t DEFAULT_STATE = STATE_DISABLED;
-  uint32_t state_change_time;
-  uint32_t velocity_exceeded_time;
+  uint32_t state_change_time = 0;
+  uint32_t velocity_exceeded_time = 0;
 
   double position;
   double target;
@@ -57,6 +57,7 @@ public:
 
   // Static Functions
   static void update_all();
+  static void enable_all();
   static void disable_all();
   static void reset_all();
   static bool any_resetting();
