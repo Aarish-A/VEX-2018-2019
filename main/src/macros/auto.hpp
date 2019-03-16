@@ -1,8 +1,8 @@
 #pragma once
 #include "main.h"
-#include "config.hpp"
-#include "logs.hpp"
-#include "libraries/task.hpp"
+#include "../config.hpp"
+#include "../logs.hpp"
+#include "../libraries/task.hpp"
 
 extern pilons::Task auto_update_task;
 extern pilons::Task move_alg_task;

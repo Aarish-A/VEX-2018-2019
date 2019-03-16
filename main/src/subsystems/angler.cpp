@@ -89,3 +89,7 @@ void Angler::move_to(double target, uint32_t move_timeout, uint8_t error_thresho
 bool Angler::moving_to_target() {
   return state == STATE_AUTO_CONTROL;
 }
+
+void Angler::wait_for_target_reach() {
+  while (this->moving_to_target()) pros::delay(2);
+}

@@ -34,6 +34,7 @@ public:
   void update() override;
 
   void driver_set(int8_t power);
-  void move_to(double target, uint32_t timeout = 1200, uint8_t error_threshold = 5);
+  void move_to(double target, uint32_t timeout = 1200, uint8_t error_threshold = 3);
   bool moving_to_target();
+  void wait_for_target_reach();
 };

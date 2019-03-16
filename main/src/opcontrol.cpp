@@ -1,8 +1,9 @@
 #include "main.h"
 #include "logs.hpp"
 #include "config.hpp"
-#include "libraries/util.hpp"
 #include "controls.hpp"
+#include "macros/shot_queueing.hpp"
+#include "libraries/util.hpp"
 #include "libraries/task.hpp"
 
 void opcontrol() {
@@ -17,7 +18,6 @@ void opcontrol() {
 		drive.update();
 		angler.update();
 		puncher.update();
-
 
 		/* Drive */
 		int8_t drive_y = master.get_analog(JOY_DRIVE_THROTTLE, 10);
@@ -43,7 +43,7 @@ void opcontrol() {
 			puncher.cancel_shot();
 		}
 
-		if (master.check_single_press(BTN_SHOT_R_T)) {
+		else if (master.check_single_press(BTN_SHOT_R_T)) {
 			puncher.shoot();
 		}
 
@@ -64,6 +64,30 @@ void opcontrol() {
 			intake.outtake();
 		}
 
-		pros::delay(10);
+		else if (master.check_single_press(BTN_SHOT_R_T)) {
+			make_shot_request(front_SP.top, Turn_Direction::STRAIGHT, true);
+		}
+
+		else if (master.check_single_press(BTN_SHOT_R_M)) {
+			make_shot_request(front_SP.mid, Turn_Direction::STRAIGHT, true);
+		}
+
+		if (partner.check_single_press(BTN_SHOT_L_T)) {
+			make_shot_request(platform_SP.top, Turn_Direction::LEFT);
+		}
+
+		else if (partner.check_single_press(BTN_SHOT_L_M)) {
+			make_shot_request(platform_SP.mid, Turn_Direction::LEFT);
+		}
+
+		else if (partner.check_single_press(BTN_SHOT_R_T)) {
+			make_shot_request(platform_SP.top, Turn_Direction::RIGHT);
+		}
+
+		else if (partner.check_single_press(BTN_SHOT_R_M)) {
+			make_shot_request(platform_SP.mid, Turn_Direction::RIGHT);
+		}
+
+		pros::delay(5);
 	}
 }

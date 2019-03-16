@@ -47,5 +47,6 @@ public:
   void shoot();
   void cancel_shot();
   bool shooting();
+  void wait_for_shot_finish();
   void set_holding();
 };

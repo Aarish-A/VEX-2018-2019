@@ -1,6 +1,6 @@
 #include "main.h"
 #include "config.hpp"
-#include "auto.hpp"
+#include "macros/auto.hpp"
 
 /**
  * Runs the user autonomous code. This function will be started in its own task
@@ -33,14 +33,12 @@ void autonomous() {
 
   // Auto
   // drive_move_sync(40_in, 0_deg);
-  drive_move_async(70_in);
-  drive.wait_for_distance(35_in);
-  puncher.shoot();
-  drive.wait_for_stop();
-  drive_move_async(-70_in);
-  drive.wait_for_distance(-35_in);
-  puncher.shoot();
-  drive.wait_for_stop();
+  // drive_move_async(70_in);
+  // drive.wait_for_distance(35_in);
+  // puncher.shoot();
+  // drive.wait_for_stop();
+  // puncher.shoot();
+  // drive.wait_for_stop();
 
   // Auto End
   pilons::Task::stop_all_tasks();

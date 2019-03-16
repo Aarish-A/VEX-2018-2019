@@ -25,6 +25,10 @@ void pilons::Task::stop_task() {
   }
 }
 
+bool pilons::Task::running() {
+  return ((this->task)->get_state() == pros::E_TASK_STATE_DELETED && (this->task)->get_state() != pros::E_TASK_STATE_DELETED);
+}
+
 void pilons::Task::stop_all_tasks() {
   for (int i = 0; i < pilons::Task::number_of_tasks; i++) {
     pilons::Task::tasks[i]->stop_task();

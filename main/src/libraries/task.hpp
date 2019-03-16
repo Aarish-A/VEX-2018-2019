@@ -11,9 +11,6 @@ namespace pilons {
     std::string task_name;
     pros::Task* task = nullptr;
     pros::task_fn_t task_function = nullptr;
-
-    // typedef void(*task_stop_function);
-    // task_stop_function function;
     void (*task_stop_function)() = nullptr;
 
   public:
@@ -21,6 +18,7 @@ namespace pilons {
 
     void start_task(void* params = nullptr);
     void stop_task();
+    bool running();
 
     static void stop_all_tasks();
   };

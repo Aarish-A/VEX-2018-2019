@@ -126,6 +126,10 @@ bool Puncher::shooting() {
   return (this->state != STATE_LOADED);
 }
 
+void Puncher::wait_for_shot_finish() {
+  while (this->shooting()) pros::delay(2);
+}
+
 void Puncher::set_holding() {
   if (this->state != STATE_LOADING) this->set_state(STATE_LOADED);
 }
