@@ -1,12 +1,12 @@
 #pragma once
 #include "main.h"
 #include "../config.hpp"
+#include "../gui.hpp"
 #include "../libraries/task.hpp"
 #include "../libraries/util.hpp"
 #include <deque>
 
 constexpr double FLAG_WIDTH = 16.50;
-extern char game_side;
 
 extern pilons::Task shot_queue_handle_task;
 

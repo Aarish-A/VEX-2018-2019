@@ -1,7 +1,5 @@
 #include "shot_queueing.hpp"
 
-char game_side = 'R';
-
 pilons::Task shot_queue_handle_task("Shot Request Handle", shot_queue_handle, shot_task_cleanup);
 
 volatile Shot_Pos front_SP = {0, 0, 0};
