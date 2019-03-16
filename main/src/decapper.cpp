@@ -48,11 +48,19 @@ void set_decapper_state(Decapper_States state) {
     }
     else if(going_up==2)
     {
-    set_decapper_targ_state(state, DECAPPER_MID_POS, 200);
+    set_decapper_targ_state(state, DECAPPER_MID_POS, 120);
     }
     else if(going_up==3)
     {
     set_decapper_targ_state(state, DECAPPER_MID_POS-100, 200);
+    }
+    else if(going_up==4)
+    {
+    set_decapper_targ_state(state, DECAPPER_MID_POS-100, 70);
+    }
+    else if(going_up==5)
+    {
+    set_decapper_targ_state(state, DECAPPER_MID_POS, 200);
     }
     break;
     // case Decapper_States::Top_Bot: set_decapper_targ_state(state, DECAPPER_TOP_BOT_POS, 200); break;

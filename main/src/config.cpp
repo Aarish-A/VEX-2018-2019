@@ -14,8 +14,9 @@ pros::Motor puncherRight(5, pros::E_MOTOR_GEARSET_18, false, pros::E_MOTOR_ENCOD
 pros::ADIEncoder enc_r(7, 8, false);
 pros::ADIEncoder enc_l(1, 2, false);
 pros::ADIEncoder enc_s(5, 6, true);
+pros::ADIGyro gyro(6);
 pros::ADILineSensor ball_sensor(5);
-pros::ADILineSensor left_platform_sensor(6);
+//pros::ADILineSensor left_platform_sensor(6);
 pros::ADILineSensor right_platform_sensor(4);
 //pros::Vision vision_sensor(6);
 pros::ADIAnalogIn capper_poti(3);

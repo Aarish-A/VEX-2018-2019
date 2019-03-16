@@ -42,6 +42,7 @@ void align_with_pole() {
 
   while (abs(capper_poti.get_value() - 2820) > 100) pros::delay(10);
   flatten_against_wall(false, true);
+  resetGlobalAngle();
 }
 
 void cap_on_pole() {
@@ -74,11 +75,11 @@ void autonomous() {
   turn_vel_new(FixedAngleTarget(37_deg));
   angler_move(ANGLER_CAP_PU_POS);
   intake.move(127);
-  move_drive_new(22_in,37_deg);
+  move_drive_new(23.5_in,37_deg);
   delay(100);
   slow_bottom = true;
   lower_capper();
-  move_drive_new(-15_in,37_deg);
+  move_drive_new(-16.5_in,37_deg);
   intake.move(0);
   angler_move(ANGLER_PU_POS);
   move_drive_new(17_in,37_deg);
@@ -87,22 +88,18 @@ void autonomous() {
   delay(200);
   intake.move(127);
   move_drive_new(-24_in,37_deg);
-  turn_vel_new(FixedAngleTarget(0_deg));
+  turn_vel_new(FixedAngleTarget(-2_deg));
   auto_set_first_shot(front_SP.top);
   while (auto_set_shot) pros::delay(10);
   turn_vel_new(FixedAngleTarget(86_deg));
-  angler_move(ANGLER_CAP_PU_POS);
-  intake.move(-127);
-  move_drive_new(38_in,86_deg);
-  delay(200);
-  move_drive_new(-7_in,86_deg);
   angler_move(ANGLER_PU_POS);
-  intakeLog = true;
   intake.move(127);
-  move_drive_new(7_in,86_deg);
+  going_up = 4;
+  raise_cap();
+  move_drive_new(38_in,86_deg,80);
   delay(200);
-  intakeLog = false;
-  turn_vel_new(FixedAngleTarget(10_deg));
+  angler_move(ANGLER_PU_POS);
+  turn_vel_new(FixedAngleTarget(9_deg));
   auto_set_first_shot(front_SP.top+15);
   while (auto_set_shot) pros::delay(10);
   going_up = 2;
@@ -112,23 +109,21 @@ void autonomous() {
   angler_move(ANGLER_PU_POS);
   going_up = 1;
   raise_cap();
-  move_drive_new(33_in, 10_deg);
-  move_drive_new(-33_in, 10_deg);
-  turn_vel_new(FixedAngleTarget(86_deg));
-  move_drive_new(-37_in,86_deg);
+  move_drive_new(33_in, 9_deg);
+  move_drive_new(-10_in, 9_deg);
+  turn_vel_new(FixedAngleTarget(50_deg));
+  move_drive_new(-54_in,50_deg);
   turn_vel_new(FixedAngleTarget(-6_deg));
-  move_drive_new(-69_in, -6_deg);
+  move_drive_new(-55_in, -6_deg);
   turn_vel_new(FixedAngleTarget(84_deg));
   cap_on_pole();
-  resetGlobalAngle();
-  delay(500);
   move_drive_new(6_in, 0_deg);
   intake.move(127);
   going_up = 3;
   raise_cap();
   turn_vel_new(FixedAngleTarget(-15_deg));
   angler_move(ANGLER_PU_POS);
-  move_drive_new(36_in, -15_deg,80);
+  move_drive_new(36_in, -15_deg,60);
   delay(100);
   decapper.move_absolute(300, 200);
   move_drive_new(-13.5_in,-15_deg);
@@ -147,8 +142,6 @@ void autonomous() {
   delay(100);
   sweep_turn_new(FixedAngleTarget(-90_deg), -4_in, false,0_in,false);
   cap_on_pole();
-  resetGlobalAngle();
-  delay(500);
   move_drive_new(12_in,0_deg);
   slow_bottom = false;
   lower_capper();
@@ -163,39 +156,94 @@ void autonomous() {
   turn_vel_new(FixedAngleTarget(-90_deg));
   move_drive_new(-12_in, -90_deg, 200, false);
   cap_on_pole();
-  resetGlobalAngle();
-  delay(500);
   move_drive_new(6_in, 0_deg);
   intake.move(127);
   going_up = 3;
   raise_cap();
-  turn_vel_new(FixedAngleTarget(15_deg));
-  angler_move(ANGLER_CAP_PU_POS);
-  move_drive_new(36_in, 15_deg,80);
-  delay(100);
-  decapper.move_absolute(300, 200);
-  move_drive_new(-36_in, 15_deg,80);
   turn_vel_new(FixedAngleTarget(83_deg));
   going_up = 2;
   raise_cap();
-  move_drive_new(59_in, 83_deg);
+  move_drive_new(11.5_in, 83_deg);
   auto_set_first_shot(front_SP.top+15);
   while (auto_set_shot) pros::delay(10);
   going_up = 3;
   raise_cap();
   auto_set_second_shot(front_SP.mid+15);
+  while (auto_set_shot) pros::delay(10);
+  turn_vel_new(FixedAngleTarget(0_deg));
+
+  going_up = 5;
+  raise_cap();
+  intake.move(127);
+  angler_move(ANGLER_PU_POS);
+  move_drive_new(32_in,0_deg,45,false);
+  delay(200);
+  slow_bottom = false;
+  move_drive_new(-8_in,0_deg, 80);
+  intake.move(0);
+  lower_capper();
+  delay(1000);
+  move_drive_new(15_in,0_deg);
   going_up = 1;
   raise_cap();
+  delay(100);
+  move_drive_new(-24_in, 0_deg);
+  turn_vel_new(FixedAngleTarget(90_deg));
+  move_drive_new(-15_in,90_deg);
+  cap_on_pole();
+  intake.move(127);
+  move_drive_new(6_in, 0_deg);
+  turn_vel_new(FixedAngleTarget(-38.5_deg));
+  auto_set_first_shot(15);
   while (auto_set_shot) pros::delay(10);
-  intake.move(-80);
-  angler_move(ANGLER_CAP_FLIP_POS);
-  turn_vel_new(FixedAngleTarget(65_deg));
-  move_drive_new(24_in,65_deg);
-  move_drive_new(-24_in,65_deg);
-  turn_vel_new(FixedAngleTarget(0_deg));
+  move_drive_new(20_in, -38.5_deg);
   angler_move(ANGLER_CAP_PU_POS);
-  move_drive_new(35_in,0_deg);
-  move_drive_new(-15_in, 0_deg);
+  // delay(1000);
+  turn_vel_new(FixedAngleTarget(0_deg));
+  move_drive_new(6_in, 0_deg, 200, false);
+  flatten_against_wall(true, true);
+  drive_set(55,15,0);
+  while(right_platform_sensor.get_value()<2000) delay(5);
+  drive_set(-55,15,0);
+  while(right_platform_sensor.get_value()>1500) delay(5);
+  drive_set(0,0,0);
+  gyro.reset();
+  angler_move(0);
+  drive_br.tare_position();
+  for(int i = 40; i < 100; i++) {
+    setDriveTurn(i+20, i);
+    pros::delay(3);
+  }
+  while(fabs(gyro.get_value()) < 150) pros::delay(5);
+  while(fabs(gyro.get_value())>60) pros::delay(5);
+  move_drive_new(10_in);
+  angler_move(ANGLER_CAP_PU_POS);
+  setDrive(0, -20, 0);
+  pros::delay(150);
+  setDrive(0, 0, 0);
+  //pros::delay(100);
+  resetGlobalAngle();
+  turn_vel_new(FixedAngleTarget(-90_deg));
+  flatten_against_wall(true, true);
+  drive_set(55,15,0);
+  while(right_platform_sensor.get_value()<2000) delay(5);
+  drive_set(-55,15,0);
+  while(right_platform_sensor.get_value()>1500) delay(5);
+  drive_set(0,0,0);
+  gyro.reset();
+  angler_move(0);
+  drive_br.tare_position();
+  for(int i = 40; i < 100; i++) {
+    setDriveTurn(i+20, i);
+    pros::delay(3);
+  }
+  while(fabs(gyro.get_value()) < 150) pros::delay(5);
+  while(fabs(gyro.get_value())>60) pros::delay(5);
+  move_drive_new(7_in);
+  setDrive(0, -20, 0);
+  pros::delay(150);
+  setDrive(0, 0, 0);
+  pros::delay(100);
   ctrler.print(2,0,"Auto T: %d   ",millis()-autoStartTime);
   log_ln(LOG_AUTO, "%d Auto Done in %dms", pros::millis(), pros::millis()-autoStartTime);
   auto_update_stop_task();
@@ -828,22 +876,22 @@ void programming_skills() {
   flatten_against_wall(true, false);
   resetGlobalAngle();
 
-  if (left_platform_sensor.get_value() > 1750) {
-    drive_set(50, 10, 0);
-    while(left_platform_sensor.get_value() > 1750) pros::delay(5);
-    drive_set(-10, 10, 0);
-  } else if (right_platform_sensor.get_value() > 1750) {
-    drive_set(-50, 10, 0);
-    while(right_platform_sensor.get_value() > 1750) pros::delay(5);
-    drive_br.tare_position();
-    while(drive_br.get_position() > -30) pros::delay(5);
-    drive_set(10, 10, 0);
-  } else if (right_platform_sensor.get_value() < 1750 && left_platform_sensor.get_value() < 1750) {
-    drive_br.tare_position();
-    drive_set(-50, 10, 0);
-    while(drive_br.get_position() > -30) pros::delay(5);
-    drive_set(10, 10, 0);
-  }
+  // if (left_platform_sensor.get_value() > 1750) {
+  //   drive_set(50, 10, 0);
+  //   while(left_platform_sensor.get_value() > 1750) pros::delay(5);
+  //   drive_set(-10, 10, 0);
+  // } else if (right_platform_sensor.get_value() > 1750) {
+  //   drive_set(-50, 10, 0);
+  //   while(right_platform_sensor.get_value() > 1750) pros::delay(5);
+  //   drive_br.tare_position();
+  //   while(drive_br.get_position() > -30) pros::delay(5);
+  //   drive_set(10, 10, 0);
+  // } else if (right_platform_sensor.get_value() < 1750 && left_platform_sensor.get_value() < 1750) {
+  //   drive_br.tare_position();
+  //   drive_set(-50, 10, 0);
+  //   while(drive_br.get_position() > -30) pros::delay(5);
+  //   drive_set(10, 10, 0);
+  // }
   pros::delay(100);
   drive_set(0);
 
@@ -861,17 +909,17 @@ void programming_skills() {
   turn_vel(FixedAngleTarget(85.0_deg), 200/80_deg, 0, 0, 0, 100);
 
   flatten_against_wall(true, true, 17);
-  if (right_platform_sensor.get_value() > 1500) {
-    drive_set(-50, 10, 0);
-    while(right_platform_sensor.get_value() > 1500) pros::delay(5);
-    drive_set(10, 10, 0);
-    pros::delay(100);
-  } else if (left_platform_sensor.get_value() > 1500) {
-    drive_set(50, 10, 0);
-    while(left_platform_sensor.get_value() > 1500) pros::delay(5);
-    drive_set(-10, 10, 0);
-    pros::delay(100);
-  }
+  // if (right_platform_sensor.get_value() > 1500) {
+  //   drive_set(-50, 10, 0);
+  //   while(right_platform_sensor.get_value() > 1500) pros::delay(5);
+  //   drive_set(10, 10, 0);
+  //   pros::delay(100);
+  // } else if (left_platform_sensor.get_value() > 1500) {
+  //   drive_set(50, 10, 0);
+  //   while(left_platform_sensor.get_value() > 1500) pros::delay(5);
+  //   drive_set(-10, 10, 0);
+  //   pros::delay(100);
+  // }
   drive_set(0);
 
   drive_br.tare_position();

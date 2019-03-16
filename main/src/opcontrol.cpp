@@ -30,7 +30,7 @@ void opcontrol() {
 	}
 
 	intake_state_set(IntakeState::Off);
-
+	gyro.reset();
 	while (true) {
 		//printf("Ball ls %d\n",ball_sensor.get_value());
 		pos.update();
@@ -40,6 +40,7 @@ void opcontrol() {
 		drive_handle();
 		intake_handle();
 		decapper_handle();
+		printf("Light Sensor: %d\n",ball_sensor.get_value());
 		// printf("Left Enc = %d, Right Enc = %d\n",enc_l.get_value(), enc_r.get_value());
 		// if (abs(ctrler.get_analog(E_CONTROLLER_ANALOG_RIGHT_Y)) > 5) decapper.move(ctrler.get_analog(E_CONTROLLER_ANALOG_RIGHT_Y));
 		// else decapper.move(0);

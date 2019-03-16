@@ -17,6 +17,7 @@ void auto_update(void* param) {
     {
       printf("intake speed is %d\n", intake.get_voltage());
     }
+    printf("gyro is %d\n",right_platform_sensor.get_value());
     pun_handle();
     decapper_handle();
     pros::delay(10);
