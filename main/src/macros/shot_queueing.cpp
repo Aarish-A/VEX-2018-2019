@@ -15,7 +15,7 @@ Field_Position field_position = Field_Position::FRONT;
 std::deque<Shot_Target> shot_queue;
 
 void trigger_shot_queue() {
-  shot_queue_handle_task.start_task();
+  if (!shot_queue_handle_task.running()) shot_queue_handle_task.start_task();
 }
 
 void make_shot_request(uint8_t shot_height, Turn_Direction direction, bool trigger_shot) {
