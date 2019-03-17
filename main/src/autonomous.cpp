@@ -32,15 +32,15 @@ void auto_blue_back_no_second_shot();
 void programming_skills();
 
 void align_with_pole() {
-  // 2790
+  // 2800
   flatten_against_wall(false, true);
-  if (capper_poti.get_value() > 2820 + 80) {
+  if (capper_poti.get_value() > 2800 + 80) {
     drive_set(55, -15, 0);
-  } else if (capper_poti.get_value() < 2820 - 80) {
+  } else if (capper_poti.get_value() < 2800 - 80) {
     drive_set(-55, -15, 0);
   }
 
-  while (abs(capper_poti.get_value() - 2820) > 100) pros::delay(10);
+  while (abs(capper_poti.get_value() - 2800) > 100) pros::delay(10);
   flatten_against_wall(false, true);
   resetGlobalAngle();
 }
@@ -237,7 +237,7 @@ void autonomous() {
     setDriveTurn(i+20, i);
     pros::delay(3);
   }
-  while(fabs(gyro.get_value()) < 150) pros::delay(5);
+  while(fabs(gyro.get_value()) < 100) pros::delay(5);
   while(fabs(gyro.get_value())>60) pros::delay(5);
   move_drive_new(7_in);
   setDrive(0, -20, 0);

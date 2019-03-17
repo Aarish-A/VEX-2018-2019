@@ -40,8 +40,8 @@ void opcontrol() {
 		drive_handle();
 		intake_handle();
 		decapper_handle();
-		printf("Light Sensor: %d\n",ball_sensor.get_value());
-		// printf("Left Enc = %d, Right Enc = %d\n",enc_l.get_value(), enc_r.get_value());
+		printf("decapper: %d\n",capper_poti.get_value());
+		//printf("Left Enc = %d, Right Enc = %d\n",enc_l.get_value(), enc_r.get_value());
 		// if (abs(ctrler.get_analog(E_CONTROLLER_ANALOG_RIGHT_Y)) > 5) decapper.move(ctrler.get_analog(E_CONTROLLER_ANALOG_RIGHT_Y));
 		// else decapper.move(0);
 
