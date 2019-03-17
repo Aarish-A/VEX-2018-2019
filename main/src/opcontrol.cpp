@@ -18,6 +18,14 @@ void opcontrol() {
 		drive.update();
 		angler.update();
 		puncher.update();
+		capper.update();
+
+		if (master.check_single_press(BTN_DECAPPER_UP)) {
+		} else if (master.check_single_press(BTN_DECAPPER_DOWN)) {
+			capper.move_to_velocity(0, 100, false);
+		}
+
+
 
 		/* Drive */
 		int8_t drive_y = master.get_analog(JOY_DRIVE_THROTTLE, 10);

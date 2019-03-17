@@ -5,25 +5,27 @@
 
 class Capper final : public Subsystem {
 public:
-  static const uint8_t STATE_PICKUP = 0x10;
-  static const uint8_t STATE_CARRY = 0x11;
-  static const uint8_t STATE_CAP_START = 0x12;
-  static const uint8_t STATE_CAP_INTERIM = 0x13;
-  static const uint8_t STATE_CAP_END = 0x14;
-  static const uint8_t STATE_CAP_FINISHED = 0x15;
+  static const uint8_t STATE_AUTO_CONTROL = 0x10;
+  static const uint8_t STATE_HOLD = 0x11;
 
-  static constexpr uint16_t PICKUP_POSITION = 0;
-  static constexpr uint16_t CARRY_POSITION = 310;
-  static constexpr uint16_t CAP_START_POSITION = 550;
-  static constexpr uint16_t CAP_INTERIM_POSITION = 800;
-  static constexpr uint16_t CAP_END_POSIITON = 1010;
+  static constexpr double GEAR_RATIO = 5.0 / 1.0;
+  static constexpr uint16_t PICKUP_POSITION = 0 * Capper::GEAR_RATIO;
+  static constexpr uint16_t CAP_FLIP_POSITION = 31 * Capper::GEAR_RATIO;
+  static constexpr uint16_t CARRY_POSITION = 46 * Capper::GEAR_RATIO;
+  static constexpr uint16_t FLAG_FLIP_POSITION = 60 * Capper::GEAR_RATIO;
+
+  static constexpr uint16_t CAP_START_POSITION = 110 * Capper::GEAR_RATIO;
+  static constexpr uint16_t CAP_MID_POSITION = 120 * Capper::GEAR_RATIO;
+  static constexpr uint16_t CAP_END_POSIITON = 202 * Capper::GEAR_RATIO;
 
 private:
   pros::Motor& capper_motor;
 
-  static constexpr double GEAR_RATIO = 5.0 / 1.0;
+  int8_t target_power = 0;
+  uint8_t target_velocity = 0;
   uint8_t error_threshold = 5;
-  uint32_t move_timeout = 800;
+  uint32_t move_timeout = 1200;
+  bool hold = false;
 
   /* Private Functions */
   void set_state(uint8_t new_state) override;
@@ -35,10 +37,11 @@ public:
   /* Public Functions */
   void update() override;
 
-  void pickup_cap();
-  void start_capping();
-  void finish_capping();
-  void move_to_bottom();
+  void move_to_power(double target, int8_t power, bool hold = true, uint8_t error_threshold = 5);
+  void move_to_velocity(double target, uint8_t velocity, bool hold = true, uint8_t error_threshold = 5);
 
-  bool ready_to_cap();
+  void pickup_cap();
+  void move_to_cap_flip();
+  void move_to_flag_flip();
+  void start_capping();
 };

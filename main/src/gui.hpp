@@ -10,7 +10,7 @@ enum class Menu_Screens {
   AUTO_SELECT,
   NUM_MENU_SCREENS
 };
-std::string menu_screen_strings[(int)Menu_Screens::NUM_MENU_SCREENS];
+extern std::string menu_screen_strings[(int)Menu_Screens::NUM_MENU_SCREENS];
 
 enum class Menu_Shot_Positions {
   PLATFORM_MID,
@@ -26,7 +26,7 @@ enum class Menu_Shot_Positions {
   AUTO_BACK_FAR_TOP,
   NUM_MENU_SHOT_POSITIONS
 };
-std::string menu_shot_positions[(int)Menu_Shot_Positions::NUM_MENU_SHOT_POSITIONS];
+extern std::string menu_shot_positions[(int)Menu_Shot_Positions::NUM_MENU_SHOT_POSITIONS];
 
 enum class Auto_Routines {
   FRONT,

@@ -17,6 +17,8 @@ void auto_update(void* _params);
 void single_shot(double targ, bool wait = true);
 void double_shot(double targ1, double targ2, bool wait = true);
 
+/* Capping */
+void cap_on_pole();
 
 /* Drive */
 struct drive_move_params {

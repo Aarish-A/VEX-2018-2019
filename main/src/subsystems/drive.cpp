@@ -139,10 +139,11 @@ void Drive::flatten_against_wall(bool forward, bool hold, uint8_t hold_power) {
 
 void Drive::align_with_pole(uint16_t poti_zero) {
   this->flatten_against_wall(false, true);
-  if (this->pole_poti.get_value() > poti_zero + 80) this->set_power(55, -5, 0);
-  else if (this->pole_poti.get_value() < poti_zero - 80) this->set_power(-55, -5, 0);
-  while (abs(this->pole_poti.get_value() - poti_zero) > 125) pros::delay(5);
+  if (this->pole_poti.get_value() > poti_zero + 80) this->set_power(55, -15, 0);
+  else if (this->pole_poti.get_value() < poti_zero - 80) this->set_power(-55, -15, 0);
+  while (abs(this->pole_poti.get_value() - poti_zero) > 100) pros::delay(5);
   this->flatten_against_wall(false, true);
+  this->reset_global_angle();
 }
 
 bool Drive::moving() {
@@ -165,7 +166,8 @@ void Drive::wait_for_stop() {
 }
 
 void Drive::wait_for_distance(double target_distance) {
-  bool forwards = (target_distance > 0 ? true : false);
+  bool forwards;
+  target_distance > 0 ? forwards = true : forwards = false;
   if (forwards) while (this->target - this->error < target_distance) pros::delay(2);
   else while(this->target - this->error > target_distance) pros::delay(2);
 }

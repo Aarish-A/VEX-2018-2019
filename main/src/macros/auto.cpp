@@ -24,6 +24,10 @@ void double_shot(double targ1, double targ2, bool wait) {
   single_shot(targ2, wait);
 }
 
+/* Capping */
+void cap_on_pole() {
+}
+
 /* Drive */
 void drive_move(void* _params) {
   drive.set_state(Drive::STATE_AUTO_CONTROL);

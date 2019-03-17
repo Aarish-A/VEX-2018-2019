@@ -12,6 +12,7 @@ pros::Motor m_angler(9, pros::E_MOTOR_GEARSET_18, false, pros::E_MOTOR_ENCODER_D
 pros::ADIAnalogIn s_pole_poti(3);
 pros::Motor m_puncher(3, pros::E_MOTOR_GEARSET_18, false, pros::E_MOTOR_ENCODER_DEGREES);
 pros::ADILineSensor s_ball_detector(5);
+pros::Motor m_capper(1, pros::E_MOTOR_GEARSET_18, true, pros::E_MOTOR_ENCODER_DEGREES);
 pros::ADIEncoder enc_r(7, 8, false);
 pros::ADIEncoder enc_l(1, 2, false);
 
@@ -19,3 +20,4 @@ Intake intake("Intake", Intake::STATE_OFF, m_intake);
 Drive drive("Drive", Drive::STATE_DRIVER_CONTROL, m_drive_fl, m_drive_fr, m_drive_bl, m_drive_br, s_pole_poti, enc_l, enc_r);
 Angler angler("Angler", Angler::STATE_DRIVER_CONTROL, m_angler);
 Puncher puncher("Puncher", Puncher::STATE_LOADED, m_puncher, s_ball_detector);
+Capper capper("Capper", Capper::STATE_HOLD, m_capper);
