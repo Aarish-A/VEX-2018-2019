@@ -25,8 +25,6 @@ void opcontrol() {
 			capper.move_to_velocity(0, 100, false);
 		}
 
-
-
 		/* Drive */
 		int8_t drive_y = master.get_analog(JOY_DRIVE_THROTTLE, 10);
 		int8_t drive_x = master.get_analog(JOY_DRIVE_STRAFE, 10);

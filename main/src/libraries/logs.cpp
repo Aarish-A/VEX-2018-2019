@@ -1,32 +1,31 @@
 #include "logs.hpp"
-bool sd_logging_enabled = false;
+bool sd_logging_enabled = true;
 pros::Mutex sd_buffer_mutex;
 char log_buffer[LOG_BUFFER_SIZE];
-//char log_buffer_test[LOG_BUFFER_SIZE+1];
 int buffer_write_index = 0;
 int buffer_flush_index = 0;
 
-FILE* log_file = NULL;
+/* Log Count File */
+FILE* log_count_file = NULL;
+std::string log_count_file_name = "/usd/logs/_log_num.txt";
 
-const char* log_file_name = "/usd/log.txt";
+/* Log File */
+FILE* log_file = NULL;
+std::string log_file_name = "/usd/logs/log";
 const char* const log_mode = "a";
 
-/* Open and Close Log File */
-/* Open and Close Log File */
+/* Helper Functions */
 void open_log_file() {
   int open_attempt_count = 0;
   while (log_file == NULL && open_attempt_count < MAX_ALLOWABLE_OPEN_ATTEMPTS) {
-    log_file = fopen(log_file_name, log_mode);
+    log_file = fopen(log_file_name.c_str(), log_mode);
 		if (log_file == NULL) {
 			printf(" >><< ERR %d log_file fopen failed | errno: %d %s | %p\n", pros::millis(), errno, strerror(errno), log_file);
 			pros::delay(5);
       open_attempt_count++;
 		} //else printf("\n       >>> %d OPEN LOG_FILE: | errno: %d %s | %p\n", pros::millis(), errno, strerror(errno), log_file);
   }
-  //printf("\n           >>> %d b_ sleeep OPEN: | errno: %d %s | %p | %d \n", pros::millis(), errno, strerror(errno), log_file, buffer_flush_index);
   pros::delay(FILE_SLEEP);
-  //printf("\n           >>> %d sleep done OPEN: | errno: %d %s | %p | %d \n", pros::millis(), errno, strerror(errno), log_file,  buffer_flush_index);
-
 }
 
 void close_log_file() {
@@ -38,18 +37,49 @@ void close_log_file() {
     }
     //else printf("  %d CLOSE LOG FILE | errno: %d %s | f_close_ret: %d | %p\n", pros::millis(), errno, strerror(errno), f_close_ret, log_file);
     log_file = NULL;
-    //printf("\n           >>> %d b_ sleeep CLOSE: | errno: %d %s | %p | %d \n", pros::millis(), errno, strerror(errno), log_file, buffer_flush_index);
     pros::delay(FILE_SLEEP);
-    //printf("\n           >>> %d sleep done CLOSE: | errno: %d %s | %p | %d \n", pros::millis(), errno, strerror(errno), log_file,  buffer_flush_index);
-
   }
+}
+
+void set_log_file_name() {
+  // Read current log_file_num
+  log_count_file = fopen(log_count_file_name.c_str(), "r");
+  int cur_log_num = 0;
+  if (log_count_file != NULL) {
+    pros::delay(FILE_SLEEP);
+    int scanf_ret = 0, read_attempt_num = 0;
+    while (scanf_ret <= 0 && read_attempt_num < 100) {
+      scanf_ret = fscanf(log_count_file, "%d", &cur_log_num);
+      read_attempt_num++;
+    }
+    if (scanf_ret <= 0) printf("\t%d log_init() FAILED TO READ LOG_FILE_NUM | cur: %d\n", pros::millis(), cur_log_num); // Leave cur_log_num at 0 if fscanf fails
+    else cur_log_num++; // If fscanf if successful, increment cur_log_num
+    pros::delay(FILE_SLEEP);
+    fclose(log_count_file);
+    pros::delay(FILE_SLEEP);
+  } else printf("\n\t %d log_init() FAILED TO OPEN LOG_FILE_NUM TO READ |cur_log_num: %d \n", pros::millis(), cur_log_num);
+
+  // Write new log_file_num
+  log_count_file = fopen(log_count_file_name.c_str(), "w");
+  if (log_count_file != NULL) {
+     fprintf(log_count_file, "%d", cur_log_num); // Write new cur_log_num into log_count_file
+     printf("\t%d log_init() SUCCESSFULLY INCREMENTED LOG_FILE_NUM TO %d\n", pros::millis(), cur_log_num);
+     fclose(log_count_file);
+   } else printf("\t%d log_init() FAILED TO OPEN LOG_FILE_NUM TO WRITE | cur: %d\n", pros::millis(), cur_log_num);
+
+  // Generate log file name
+  std::string log_name_end(std::to_string(cur_log_num));
+  log_name_end.append(".txt");
+  log_file_name.append(log_name_end);
+  printf("\n\t%d log_init() FILE STRING: <%s> \n\n", pros::millis(), log_file_name.c_str());
 }
 
 /* Logging Functions */
 void log_init() {
-  //for (int i = 500; i < LOG_BUFFER_SIZE; i++) log_buffer_test[i] = 'c';
-  //printf("%d %p \n", pros::millis());
-  pros::delay(5);
+  // Set log file name
+  set_log_file_name();
+
+  // Init logging
   printf(" %d log_init(): Start Logging for Program \n", pros::millis());
   open_log_file(); // Open log_file
 	if (log_file == NULL) { // If the log_file could not be oppend
@@ -102,7 +132,6 @@ void log_ln_internal(const char * str_whole) {
         memcpy(&log_buffer[buffer_write_index], str_whole, str_first_len);
         memcpy(&log_buffer[0], &str_whole[str_first_len], str_sec_len);
         new_bwi = str_sec_len;
-        //printf("  >>%d log_ln() | write_amount = %d | %d %d | %d | lens: %d, %d | \n", pros::millis(), write_amount, buffer_flush_index, buffer_write_index, new_bwi, str_first_len, str_sec_len);
       }
       else {
         write_amount = sprintf(&log_buffer[buffer_write_index], "%s", str_whole);
@@ -124,7 +153,6 @@ void log_ln_internal(const char * str_whole) {
 void log_ln(Log_Info info_category, const char * format, ...) {
   va_list args;
   va_start(args, format);
-  //printf("\n\n\n%d START PRINT \n\n", pros::millis());
   if (info_category.enabled)
   {
     int size = ((int)strlen(format)) * 2 + 50;   // Initial str size
@@ -142,20 +170,16 @@ void log_ln(Log_Info info_category, const char * format, ...) {
       new_str.resize(15 + formatted_len + info_category.name.length());
 
       sprintf((char *)new_str.data(), "%07d | %s | %s\r\n", pros::millis(), info_category.name.c_str(), formatted_str.c_str());
-      //printf("\n   %d L >>> %s \n", new_str.length(), new_str.c_str());
       log_ln_internal(new_str.c_str());
-      //printf("   L2 >>> %s \n", new_str.c_str());namespace  {
     }
   }
-  //printf("\n\n\n%d DONE PRINT \n\n", pros::millis());
   va_end (args);
 }
 
 void log_ln(Log_Info info_category, Log_Info info_subsystem, const char * format, ...) {
   va_list args;
   va_start(args, format);
-  //printf("\n\n\n%d START PRINT \n\n", pros::millis());
-  if (info_category.enabled && info_subsystem.enabled)
+  if (info_category.enabled || info_subsystem.enabled)
   {
     int size = ((int)strlen(format)) * 2 + 50;   // Initial str size
     std::string formatted_str;
@@ -172,12 +196,9 @@ void log_ln(Log_Info info_category, Log_Info info_subsystem, const char * format
       new_str.resize(16 + formatted_len + info_category.name.length() + info_subsystem.name.length());
 
       sprintf((char *)new_str.data(), "%07d | %s-%s | %s\r\n", pros::millis(), info_category.name.c_str(), info_subsystem.name.c_str(), formatted_str.c_str());
-      //printf("\n   %d L >>> %s \n", new_str.length(), new_str.c_str());
       log_ln_internal(new_str.c_str());
-      //printf("   L2 >>> %s \n", new_str.c_str());namespace  {
     }
   }
-  //printf("\n\n\n%d DONE PRINT \n\n", pros::millis());
   va_end (args);
 }
 
@@ -194,7 +215,6 @@ void flush_to_sd(int given_amnt_to_flush, int pos_to_flush_to) {
 
   // 1) Open Log File
   open_log_file();
-  //printf("\n         >>> %d F_TO_SD() OPEN: | errno: %d %s | %p | %d %d | F: %d->%d | \n\t\t>>>>%s<<<<<\n", pros::millis(), errno, strerror(errno), log_file, buffer_flush_index, pos_to_flush_to, given_amnt_to_flush, amnt_to_flush, log_buffer);
 
   if (log_file != NULL) { // Only perform flush_to_sd opperations if file is oppened
     // 2) Flush buffer into the SD file
@@ -221,7 +241,6 @@ void flush_to_sd(int given_amnt_to_flush, int pos_to_flush_to) {
 
     // 3) Close log_file
     close_log_file();
-    //printf("\n         >>> %d F_TO_SD() CLOSE: | errno: %d %s | %p | %d->%d %d | F: %d->%d\n", pros::millis(), errno, strerror(errno), log_file, old_bfi, buffer_flush_index, pos_to_flush_to, given_amnt_to_flush, amnt_to_flush);
   }
 }
 
@@ -230,20 +249,17 @@ void buffer_to_sd() {
   log_ln(PROGRAM_FLOW, "%d Start buffer_to_sd() task \n", pros::millis());
 
   while (true) {
-    // if (sd_buffer_mutex.take(TIMEOUT_MAX)) {
-      int pos_to_flush_to = buffer_write_index; // Take a copy of buffer_write_index (so we task not be affected if log_ln modifies it)
+    int pos_to_flush_to = buffer_write_index; // Take a copy of buffer_write_index (so we task not be affected if log_ln modifies it)
 
-      if (pos_to_flush_to > buffer_flush_index) { // The last character flushed from buf is behind last character written to it
-        int amnt_to_flush = pos_to_flush_to-buffer_flush_index;
-        flush_to_sd(amnt_to_flush, pos_to_flush_to); // Flush everything b/w buffer_flush_index -> pos_to_flush_to
-      }
-      else if (pos_to_flush_to < buffer_flush_index) { // We wrapped around when writing to the buffer (meaning the last character written is behind the last character flushed)
-        //printf("  >>%d buffer_to_sd() BUFFER->SD wrapped around \n", pros::millis());
-        int buf_remaining_len = LOG_BUFFER_SIZE - buffer_flush_index; // Amount of unflushed indices left in buffer
-        flush_to_sd(buf_remaining_len, pos_to_flush_to); // Flush b/w buffer_flush_index -> buffer_end. Move the pointer back to the beginning of the buffer
-      }
-      /// sd_buffer_mutex.give();
-    // } else printf("\n   ERR>>> %d buffer_to_sd() sd_buffer_mutex take failed (TO = TIMEOUT_MAX) | Err:%d \n\n", pros::millis(), errno);
+    if (pos_to_flush_to > buffer_flush_index) { // The last character flushed from buf is behind last character written to it
+      int amnt_to_flush = pos_to_flush_to-buffer_flush_index;
+      flush_to_sd(amnt_to_flush, pos_to_flush_to); // Flush everything b/w buffer_flush_index -> pos_to_flush_to
+    }
+    else if (pos_to_flush_to < buffer_flush_index) { // We wrapped around when writing to the buffer (meaning the last character written is behind the last character flushed)
+      //printf("  >>%d buffer_to_sd() BUFFER->SD wrapped around \n", pros::millis());
+      int buf_remaining_len = LOG_BUFFER_SIZE - buffer_flush_index; // Amount of unflushed indices left in buffer
+      flush_to_sd(buf_remaining_len, pos_to_flush_to); // Flush b/w buffer_flush_index -> buffer_end. Move the pointer back to the beginning of the buffer
+    }
     pros::delay(LOG_BUFFER_FLUSH_DELAY);
   }
 }
@@ -260,7 +276,7 @@ void _test_flush_time() {
 	int dif_sum = 0;;
 	for (int i = 0; i < NUM_TESTS; i++) {
 		while (log_file == NULL) {
-      log_file = fopen(log_file_name, log_mode);
+      log_file = fopen("/usd/logs/_test", log_mode);
       printf("  \n>>>>>>>>%d Opening file \n\n", pros::millis());
       pros::delay(2);
     }

@@ -19,8 +19,8 @@ const Log_Info MOVE("MOVE", true);
 const Log_Info USER_IN("USER_IN", true);
 const Log_Info SENSOR("SENSOR", true);
 const Log_Info SAFETY("SAFETY", true);
-const Log_Info ACCESS("ACCESS", true);
-const Log_Info HARDWARE("HARDWARE", true);
+const Log_Info ACCESS_ERROR("ACCESS_ERROR", true);
+const Log_Info HARDWARE_ERROR("HARDWARE_ERROR", true);
 const Log_Info FATAL_ERROR("FATAL_ERROR", true);
 /* Log_Info Subsystems */
 const Log_Info ANGLER("ANGLER", true);
@@ -29,12 +29,20 @@ const Log_Info PUNCHER("PUN", true);
 const Log_Info CAPPER("CAPPER", true);
 const Log_Info AUTO("AUTO", true);
 
-/* Loging Constants */
+/* Misc Logging Vars */
 extern bool sd_logging_enabled; // Boolean that is set during init(). If false, log functions will only log to the console and not the SD
-extern const char* log_file_name; // Name of file on SD card that is printed to
+extern pros::Mutex sd_buffer_mutex; // sd_buffer_mutex used to ensure only one piece of code touches the buffer at a time
+
+/* Log Count File */
+extern FILE* log_count_file;
+extern std::string log_count_file_name;
+
+/* Log File */
+extern std::string log_file_name; // Name of file on SD card that is printed to
 extern const char* const log_mode; // Logging mode that is used
 extern FILE* log_file; // File on SD card that we print to
-extern pros::Mutex sd_buffer_mutex; // sd_buffer_mutex used to ensure only one piece of code touches the buffer at a time
+
+/* Loging Constants */
 constexpr int LOG_BUFFER_FLUSH_DELAY = 500; // Amount of time between consecutive flushes of the buffer into the SD
 constexpr int LOG_MUTEX_TO = 5; // Max amnt of time that log_ln_internal() will wait for sd_buffer_mutex
 constexpr int MAX_ALLOWABLE_OPEN_ATTEMPTS = 100; // Max num of attempts that log_init() will make when trying to open the file
@@ -44,16 +52,15 @@ constexpr int FILE_SLEEP = 10; // Time (in ms) for sleeps b/w opperations in flu
 /* Logging Buffer */
 constexpr int LOG_BUFFER_SIZE = 10000; // Max size of log_buffer
 extern char log_buffer[LOG_BUFFER_SIZE]; // If sd_logging_enabled, log functions log to this buffer. Then, buffer_to_sd() task flushes buffer into SD
-//extern char log_buffer_test[LOG_BUFFER_SIZE+1]; // If sd_logging_enabled, log functions log to this buffer. Then, buffer_to_sd() task flushes buffer into SD
 extern int buffer_write_index; // Last index in buffer that was written to + 1 ; Writes to the buffer start from this index
 extern int buffer_flush_index; // Last index in buffer that was flushed onto the SD card ; buffer_to_sd() flushes buffer from this index to buffer_write_index
 constexpr size_t BUF_OBJ_SIZE = sizeof(log_buffer[0]); // Size of single element in the buffer
-
 constexpr int MAX_AMNT_TO_FLUSH = LOG_BUFFER_SIZE; // Maximum amount of characters allowed to be flushed to the SD at once. Flushing 1000 takes approx. 13ms
 
-/* Log_File open/close Functions */
+/* Helper Functionss */
 void open_log_file(); // Open log_file and sets log_file ptr. Will attempt to open file MAX_ALLOWABLE_OPEN_ATTEMPTS times
 void close_log_file(); // Closes log_file and sets log_file to NULL. Will attempt to close file MAX_ALLOWABLE_CLOSE_ATTEMPTS times
+void set_log_file_name(); // Sets full log file name using log_count_file ; MUST BE CALLED AT THE BEGINNING OF LOG_INIT()
 
 /* Logging Functions */
 void log_init(); // Initializes sd logging; Will disabling sd_logging if it cannot open the log_file
