@@ -23,9 +23,9 @@ void open_log_file() {
       open_attempt_count++;
 		} //else printf("\n       >>> %d OPEN LOG_FILE: | errno: %d %s | %p\n", pros::millis(), errno, strerror(errno), log_file);
   }
-  printf("\n           >>> %d b_ sleeep OPEN: | errno: %d %s | %p | %d \n", pros::millis(), errno, strerror(errno), log_file, buffer_flush_index);
+  //printf("\n           >>> %d b_ sleeep OPEN: | errno: %d %s | %p | %d \n", pros::millis(), errno, strerror(errno), log_file, buffer_flush_index);
   pros::delay(FILE_SLEEP);
-  printf("\n           >>> %d sleep done OPEN: | errno: %d %s | %p | %d \n", pros::millis(), errno, strerror(errno), log_file,  buffer_flush_index);
+  //printf("\n           >>> %d sleep done OPEN: | errno: %d %s | %p | %d \n", pros::millis(), errno, strerror(errno), log_file,  buffer_flush_index);
 
 }
 
@@ -38,9 +38,9 @@ void close_log_file() {
     }
     //else printf("  %d CLOSE LOG FILE | errno: %d %s | f_close_ret: %d | %p\n", pros::millis(), errno, strerror(errno), f_close_ret, log_file);
     log_file = NULL;
-    printf("\n           >>> %d b_ sleeep CLOSE: | errno: %d %s | %p | %d \n", pros::millis(), errno, strerror(errno), log_file, buffer_flush_index);
+    //printf("\n           >>> %d b_ sleeep CLOSE: | errno: %d %s | %p | %d \n", pros::millis(), errno, strerror(errno), log_file, buffer_flush_index);
     pros::delay(FILE_SLEEP);
-    printf("\n           >>> %d sleep done CLOSE: | errno: %d %s | %p | %d \n", pros::millis(), errno, strerror(errno), log_file,  buffer_flush_index);
+    //printf("\n           >>> %d sleep done CLOSE: | errno: %d %s | %p | %d \n", pros::millis(), errno, strerror(errno), log_file,  buffer_flush_index);
 
   }
 }
@@ -101,8 +101,8 @@ void log_ln_internal(const char * str_whole) {
         const size_t str_sec_len = str_whole_len-str_first_len;
         memcpy(&log_buffer[buffer_write_index], str_whole, str_first_len);
         memcpy(&log_buffer[0], &str_whole[str_first_len], str_sec_len);
-        new_bwi = 0;
-        printf("  >>%d log_ln() | write_amount = %d | %d %d | %d\n", pros::millis(), write_amount, buffer_flush_index, buffer_write_index, new_bwi);
+        new_bwi = str_sec_len;
+        //printf("  >>%d log_ln() | write_amount = %d | %d %d | %d | lens: %d, %d | \n", pros::millis(), write_amount, buffer_flush_index, buffer_write_index, new_bwi, str_first_len, str_sec_len);
       }
       else {
         write_amount = sprintf(&log_buffer[buffer_write_index], "%s", str_whole);
@@ -158,13 +158,13 @@ void flush_to_sd(int given_amnt_to_flush, int pos_to_flush_to) {
     printf("\n\n  %d flush_to_sd() ERROR: buffer_write_index out of bounds | Current = %d \n\n", pros::millis(), buffer_write_index);
   }
   if (buffer_flush_index >= LOG_BUFFER_SIZE || buffer_flush_index < 0) {
-     printf("\n\n  %d flush_to_sd() ERROR: buffer_flush_index out of bounds | Current = %d | Resetting to 0 \n\n", pros::millis(), buffer_flush_index);
+     if (buffer_flush_index < 0) printf("\n\n  %d flush_to_sd() ERROR: buffer_flush_index < 0 | Current = %d | Resetting to 0 \n\n", pros::millis(), buffer_flush_index);
      buffer_flush_index = 0;
    }
 
   // 1) Open Log File
   open_log_file();
-  printf("\n         >>> %d F_TO_SD() OPEN: | errno: %d %s | %p | %d %d | F: %d->%d\n", pros::millis(), errno, strerror(errno), log_file, buffer_flush_index, pos_to_flush_to, given_amnt_to_flush, amnt_to_flush);
+  //printf("\n         >>> %d F_TO_SD() OPEN: | errno: %d %s | %p | %d %d | F: %d->%d | \n\t\t>>>>%s<<<<<\n", pros::millis(), errno, strerror(errno), log_file, buffer_flush_index, pos_to_flush_to, given_amnt_to_flush, amnt_to_flush, log_buffer);
 
   if (log_file != NULL) { // Only perform flush_to_sd opperations if file is oppened
     // 2) Flush buffer into the SD file
@@ -182,7 +182,7 @@ void flush_to_sd(int given_amnt_to_flush, int pos_to_flush_to) {
     else new_bfi += flush_amount; // Incrememnt blush_flush_index upon successful write
 
     if (new_bfi >= LOG_BUFFER_SIZE || new_bfi < 0) { // If the pointer is at the end of the buffer, move it back to the front
-      printf("\n\n  %d flush_to_sd() ERROR: tried to set buffer_flush_index out of bounds | Current = %d | Set to 0 \n\n", pros::millis(), buffer_flush_index);
+      if (new_bfi < 0) printf("\n\n  %d flush_to_sd() ERROR: tried to set buffer_flush_index < 0 | Current = %d | Set to 0 \n\n", pros::millis(), buffer_flush_index);
       buffer_flush_index = 0;
     }
     else buffer_flush_index = new_bfi;
