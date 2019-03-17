@@ -64,8 +64,8 @@ void shot_queue_handle(void* param) {
 }
 
 void shot_task_cleanup() {
-  puncher.cancel_shot();
-  shot_queue.clear();
-  angler.move_to(Angler::PICKUP_POSITION);
-  intake.intake();
+  // puncher.cancel_shot();
+  // shot_queue.clear();
+  // angler.move_to(Angler::PICKUP_POSITION);
+  // intake.intake();
 }

@@ -2,8 +2,8 @@
 
 bool partner_connected = false;
 
-int BTN_DECAPPER_UP;
-int BTN_DECAPPER_DOWN;
+// int BTN_DECAPPER_UP;
+// int BTN_DECAPPER_DOWN;
 int BTN_CHANGE_GAME_SIDE;
 
 /* Shooter */

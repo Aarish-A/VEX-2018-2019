@@ -24,7 +24,6 @@ void Angler::set_state(uint8_t new_state) {
       break;
     case STATE_HOLD:
       this->target = this->position;
-      // this->angler_motor.move_relative(0, 100);
       this->angler_motor.move_absolute(this->target, 200);
       break;
   }

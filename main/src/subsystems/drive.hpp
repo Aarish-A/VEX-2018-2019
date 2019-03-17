@@ -52,7 +52,7 @@ public:
 
   void reset_global_angle();
   void flatten_against_wall(bool forward = true, bool hold = true, uint8_t hold_power = 15);
-  void align_with_pole(uint16_t poti_zero = 2730);
+  void align_with_pole(uint16_t poti_zero = 2820);
   bool moving();
 
   void set_error(double error);

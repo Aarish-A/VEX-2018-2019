@@ -2,12 +2,8 @@
 
 /* Constructor */
 Capper::Capper(std::string subsystem_name, uint8_t default_state, pros::Motor& capper_motor) : Subsystem(subsystem_name, default_state), capper_motor(capper_motor) {
-  this->state_names[STATE_PICKUP] = "Pickup";
-  this->state_names[STATE_CARRY] = "Carry";
-  this->state_names[STATE_CAP_START] = "Cap Start";
-  this->state_names[STATE_CAP_INTERIM] = "Cap Interim";
-  this->state_names[STATE_CAP_END] = "Cap End";
-  this->state_names[STATE_CAP_FINISHED] = "Cap Finished";
+  this->state_names[STATE_AUTO_CONTROL] = "Auto Control";
+  this->state_names[STATE_HOLD] = "Hold";
 }
 
 /* Private Functions */
@@ -20,29 +16,15 @@ void Capper::set_state(uint8_t new_state) {
     case STATE_RESET:
       this->capper_motor.move(-45);
       break;
-    case STATE_PICKUP:
-      this->target = this->PICKUP_POSITION;
-      this->capper_motor.move_absolute(this->target, 200);
+    case STATE_AUTO_CONTROL:
+      printf("TV: %d, TP: %d\n", this->target_velocity, this->target_power);
+      if (this->target_velocity) this->capper_motor.move_absolute(this->target, this->target_velocity);
+      else if (this->target_power) this->capper_motor.move(this->target_power);
       break;
-    case STATE_CARRY:
-      this->target = this->CARRY_POSITION;
-      if (this->last_state != this->STATE_CARRY) this->capper_motor.move_absolute(this->target, 200);
-      else this->capper_motor.move_absolute(this->target, 50);
-      break;
-    case STATE_CAP_START:
-      this->target = this->CAP_START_POSITION;
-      this->capper_motor.move_absolute(this->target, 200);
-      break;
-    case STATE_CAP_INTERIM:
-      this->target = this->CAP_INTERIM_POSITION;
-      this->capper_motor.move_absolute(this->target, 75);
-      break;
-    case STATE_CAP_END:
-      this->target = this->CAP_INTERIM_POSITION;
-      this->capper_motor.move(90);
-      break;
-    case STATE_CAP_FINISHED:
-      this->capper_motor.move(0);
+    case STATE_HOLD:
+      this->target = this->position;
+      if (this->hold) this->capper_motor.move_absolute(this->target, 200);
+      else this->capper_motor.move(0);
       break;
   }
 }
@@ -58,49 +40,45 @@ void Capper::update() {
       break;
     case STATE_RESET:
       if (this->below_vel_threshold(5, 200)) {
+        printf("Here");
         this->capper_motor.tare_position();
-        this->set_state(STATE_PICKUP);
+        this->set_state(STATE_HOLD);
       } else if (this->timed_out(3000)) this->set_state(STATE_DISABLED);
       break;
-    case STATE_PICKUP:
-      // Wait for pickup routine to begin
+    case STATE_AUTO_CONTROL:
+      if (timed_out(this->move_timeout) || below_vel_threshold(1, 500)) {
+        this->disable();
+      }
+      else if (fabs(this->error) < this->error_threshold) {
+        log_ln(LOG_STATES, "Capper move finished at %f, target was %f", this->position, this->target);
+        this->set_state(STATE_HOLD);
+      }
       break;
-    case STATE_CARRY:
-      // Wait for cap routine to beging
-      break;
-    case STATE_CAP_START:
-      if (fabs(this->error) < 5 * this->GEAR_RATIO) this->set_state(this->STATE_CAP_INTERIM);
-      break;
-    case STATE_CAP_INTERIM:
-      if (fabs(this->error) < 5 * this->GEAR_RATIO) this->capper_motor.move_relative(0, 200);
-      break;
-    case STATE_CAP_END:
-      if (fabs(this->error) < 5 * this->GEAR_RATIO) this->set_state(this->STATE_CAP_FINISHED);
-      break;
-    case STATE_CAP_FINISHED:
-      // Wait for move to ground to be called
+    case STATE_HOLD:
       break;
   }
 
   this->last_velocity = this->velocity;
 }
 
+void Capper::move_to_power(double target, int8_t power, bool hold, uint8_t error_threshold) {
+  this->target_velocity = 0;
+  this->target_power = power;
+  this->target = target;
+  this->error_threshold = error_threshold;
+  this->hold = hold;
+  this->set_state(STATE_AUTO_CONTROL);
+}
+
+void Capper::move_to_velocity(double target, uint8_t velocity, bool hold, uint8_t error_threshold) {
+  this->target_velocity = velocity;
+  this->target_power = 0;
+  this->target = target;
+  this->error_threshold = error_threshold;
+  this->hold = hold;
+  this->set_state(STATE_AUTO_CONTROL);
+}
+
 void Capper::pickup_cap() {
-  if (this->state == STATE_PICKUP) this->set_state(STATE_CARRY);
-}
-
-void Capper::start_capping() {
-  if (this->state == STATE_CARRY) this->set_state(STATE_CAP_START);
-}
-
-void Capper::finish_capping() {
-  if (this->state == STATE_CAP_INTERIM && fabs(this->error) < 5 * this->GEAR_RATIO) this->set_state(STATE_CAP_END);
-}
-
-void Capper::move_to_bottom() {
-  if (this->state != STATE_PICKUP) this->set_state(STATE_PICKUP);
-}
-
-bool Capper::ready_to_cap() {
-  return (this->state == STATE_CAP_INTERIM && fabs(this-> error) < 5 * this->GEAR_RATIO);
+  this->move_to_velocity(Capper::CARRY_POSITION, 100);
 }
