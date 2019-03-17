@@ -4,9 +4,13 @@ pilons::Task auto_update_task("Auto Update", auto_update, auto_update_task_stop_
 pilons::Task drive_move_task("Drive Move", drive_move, drive_task_stop_function);
 pilons::Task drive_turn_task("Drive Turn", drive_turn, drive_task_stop_function);
 
+drive_move_params* drive_move_param = nullptr;
+drive_turn_params* drive_turn_param = nullptr;
+
 void auto_update(void* _params) {
   while(true) {
     Subsystem::update_all();
+    printf("state: %d", drive_turn_task.get_state());
     pros::delay(10);
   }
 }
@@ -166,10 +170,15 @@ void drive_move(void* _params) {
 }
 
 void drive_move_async(double dist_target, double angle_target, bool brake, uint8_t max_power) {
-  drive_move_params* params = new drive_move_params{dist_target, angle_target, brake, max_power};
-  drive.set_error(params->dist_target);
-  drive.set_target(params->dist_target);
-  drive_move_task.start_task((void*)(params));
+  drive.set_state(Drive::STATE_AUTO_CONTROL);
+  if (drive_move_param != nullptr) {
+    delete drive_turn_param;
+    drive_move_param = nullptr;
+  }
+  drive_move_param = new drive_move_params{dist_target, angle_target, brake, max_power};
+  drive.set_error(drive_move_param->dist_target);
+  drive.set_target(drive_move_param->dist_target);
+  drive_move_task.start_task((void*)(drive_move_param));
   // pros::delay(100);
   // delete params;
 }
@@ -180,10 +189,12 @@ void drive_move_sync(double dist_target, double angle_target, bool brake, uint8_
 }
 
 void drive_turn(void *_params) {
+  printf("Made it to drive turn func\n");
   drive.set_state(Drive::STATE_AUTO_CONTROL);
   drive_turn_params* params = (drive_turn_params*)_params;
   const AngleTarget& target = params->target;
   drive.target = target.getTarget();
+  printf("made it to further in the drive turnfunc\n");
 
   double dA = target.getTarget() - drive.get_global_angle();
   double fixeddA = dA;
@@ -230,13 +241,20 @@ void drive_turn(void *_params) {
 }
 
 void drive_turn_async(const AngleTarget& target) {
-  drive_turn_params params = {target};
-  drive.set_error(params.target.getTarget());
-  drive.set_target(params.target.getTarget());
-  drive_turn_task.start_task((void*)(&params));
+  drive.set_state(Drive::STATE_AUTO_CONTROL);
+  if (drive_turn_param != nullptr) {
+    delete drive_turn_param;
+    drive_turn_param = nullptr;
+  }
+  drive_turn_param = new drive_turn_params{target};
+  drive.set_error(drive_turn_param->target.getTarget());
+  drive.set_target(drive_turn_param->target.getTarget());
+  printf("made it to right before task start\n");
+  drive_turn_task.start_task((void*)(drive_turn_param));
+  printf("Got to end of function\n");
 }
 
-void drive_move_sync(const AngleTarget& target) {
+void drive_turn_sync(const AngleTarget& target) {
   drive_turn_params params = {target};
   drive_turn((void*)(&params));
 }
@@ -249,4 +267,12 @@ void auto_update_task_stop_function() {
 void drive_task_stop_function() {
   drive.set_state(Drive::STATE_DRIVER_CONTROL);
   drive.set_power(0);
+  if (drive_turn_param != nullptr) {
+    delete drive_turn_param;
+    drive_turn_param = nullptr;
+  }
+  if (drive_move_param != nullptr) {
+    delete drive_move_param;
+    drive_move_param = nullptr;
+  }
 }

@@ -27,6 +27,7 @@ struct drive_move_params {
   bool brake = true;
   uint8_t max_power = 200;
 };
+extern drive_move_params* drive_move_param;
 
 void drive_move(void* _params);
 void drive_move_async(double dist_target, double angle_target = 1000, bool brake = true, uint8_t max_power = 200);
@@ -35,6 +36,7 @@ void drive_move_sync(double dist_target, double angle_target = 1000, bool brake 
 struct drive_turn_params {
   const AngleTarget& target;
 };
+extern drive_turn_params* drive_turn_param;
 
 void drive_turn(void* _params);
 void drive_turn_async(const AngleTarget& target);

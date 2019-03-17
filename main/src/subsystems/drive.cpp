@@ -50,6 +50,7 @@ void Drive::set_state(uint8_t new_state) {
       this->set_state(STATE_DRIVER_CONTROL);
       break;
     case STATE_DRIVER_CONTROL:
+      if (this->x || this->a || this->y) this->set_state(STATE_DRIVER_CONTROL);
       break;
     case STATE_AUTO_CONTROL:
       break;
@@ -174,6 +175,12 @@ void Drive::wait_for_distance(double target_distance) {
 
 void Drive::wait_for_angle(double target_angle) {
   bool clockwise = (this->target - this->get_global_angle() > 0 ? true : false);
-  if (clockwise) while (this->get_global_angle() < target_angle) pros::delay(2);
-  else while (this->get_global_angle() > target_angle) pros::delay(2);
+  if (clockwise) while (this->get_global_angle() < target_angle) {
+    printf("Target: %f, Current: %f\n", target_angle, this->get_global_angle());
+    pros::delay(1);
+  }
+  else while (this->get_global_angle() > target_angle) {
+    printf("Target: %f, Current: %f\n", target_angle, this->get_global_angle());
+    pros::delay(1);
+  }
 }

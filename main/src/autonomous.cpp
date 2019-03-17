@@ -35,17 +35,16 @@ void autonomous() {
   // Auto
   // drive_move_sync(40_in, 0_deg);
 
-  printf("here0\n");
   angler.move_to(Angler::PICKUP_POSITION);
-
-  printf("here1\n");
-  drive_turn_async(FixedAngleTarget(90_deg));
-  pros::delay(10000);
-  printf("here2\n");
-  drive.wait_for_angle(2_deg);
+  drive_turn_async(FixedAngleTarget(-90_deg));
+  // drive_turn_sync(FixedAngleTarget(90_deg));
+  drive.wait_for_angle(-2_deg);
   printf("here3, %f\n", drive.get_error());
   single_shot(5);
   drive.wait_for_stop();
+  drive_turn_async(FixedAngleTarget(30_deg));
+  drive.wait_for_stop();
+  // drive_turn_sync(FixedAngleTarget(0));
 
 
   // Auto End

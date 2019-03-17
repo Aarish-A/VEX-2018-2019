@@ -40,6 +40,8 @@ private:
   friend void drive_move(void* _params);
   friend void drive_turn(void* _params);
   friend void drive_task_stop_function();
+  friend void drive_move_async(double dist_target, double angle_target, bool brake, uint8_t max_power);
+  friend void drive_turn_async(const AngleTarget& target);
 
 public:
   /* Constructor */

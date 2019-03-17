@@ -16,8 +16,8 @@ void pilons::Task::start_task(void* params) {
 }
 
 void pilons::Task::stop_task() {
-  if (this->task_stop_function != nullptr) this->task_stop_function();
   if (this->task != nullptr) {
+    if (this->task_stop_function != nullptr) this->task_stop_function();
     if ((this->task)->get_state() != pros::E_TASK_STATE_DELETED) (this->task)->remove();
     delete this->task;
     this->task = nullptr;
@@ -34,4 +34,8 @@ void pilons::Task::stop_all_tasks() {
     pilons::Task::tasks[i]->stop_task();
   }
   log_ln(LOG_TASKS, "Stopped all tasks!");
+}
+
+int pilons::Task::get_state() {
+  return (int)this->task->get_state();
 }

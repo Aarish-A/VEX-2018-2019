@@ -24,6 +24,15 @@ void initialize() {
  */
 void disabled() {
 	pilons::Task::stop_all_tasks();
+
+	m_drive_bl.move(0);
+	m_drive_br.move(0);
+	m_drive_fl.move(0);
+	m_drive_fr.move(0);
+	m_puncher.move(0);
+	m_angler.move(0);
+	m_capper.move(0);
+	m_intake.move(0);
 }
 
 /**
