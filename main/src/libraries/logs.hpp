@@ -26,7 +26,7 @@ const Log_Info FATAL_ERROR("FATAL_ERROR", true);
 const Log_Info ANGLER("ANGLER", true);
 const Log_Info DRIVE("USER", true);
 const Log_Info PUNCHER("PUN", true);
-const Log_Info DECAPPER("DECAPPER", true);
+const Log_Info CAPPER("CAPPER", true);
 const Log_Info AUTO("AUTO", true);
 
 /* Loging Constants */

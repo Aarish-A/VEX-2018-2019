@@ -50,7 +50,7 @@ void Capper::update() {
         this->disable();
       }
       else if (fabs(this->error) < this->error_threshold) {
-        log_ln(LOG_STATES, "Capper move finished at %f, target was %f", this->position, this->target);
+        log_ln(MOVE, CAPPER, "Capper move finished at %f, target was %f", this->position, this->target);
         this->set_state(STATE_HOLD);
       }
       break;
