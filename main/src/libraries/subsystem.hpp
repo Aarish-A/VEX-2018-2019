@@ -1,6 +1,6 @@
 #pragma once
 #include "main.h"
-#include "../logs.hpp"
+#include "logs.hpp"
 
 class Subsystem {
 public:

@@ -38,7 +38,7 @@ int8_t pilons::Controller::get_analog(pros::controller_analog_e_t joystick, uint
 bool pilons::Controller::check_single_press(int button) {
   if (this->buttons[button].last_pressed_time && (pros::millis() - this->buttons[button].last_pressed_time >= pilons::Controller::BUTTON_PRESS_TIME)) {
     this->buttons[button].last_pressed_time = 0;
-    log_ln(LOG_JOYSTICK, "Single Pressed %s on %s controller", (this->button_names[button]).c_str(), (this->controller_name).c_str());
+    log_ln(USER_IN, "Single Pressed %s on %s controller", (this->button_names[button]).c_str(), (this->controller_name).c_str());
     return true;
   } else return false;
 }

@@ -14,7 +14,10 @@ public:
 };
 /* Log_Info Categories */
 const Log_Info PROGRAM_FLOW("PROGRAM_FLOW", true);
-const Log_Info USER("USER", true);
+const Log_Info STATE_CHANGE("STATE_CHANGE", true);
+const Log_Info MOVE("MOVE", true);
+const Log_Info USER_IN("USER_IN", true);
+const Log_Info SENSOR("SENSOR", true);
 const Log_Info SAFETY("SAFETY", true);
 const Log_Info ACCESS("ACCESS", true);
 const Log_Info HARDWARE("HARDWARE", true);
@@ -24,7 +27,7 @@ const Log_Info ANGLER("ANGLER", true);
 const Log_Info DRIVE("USER", true);
 const Log_Info PUNCHER("PUN", true);
 const Log_Info DECAPPER("DECAPPER", true);
-const Log_Info AUTO("USER", true);
+const Log_Info AUTO("AUTO", true);
 
 /* Loging Constants */
 extern bool sd_logging_enabled; // Boolean that is set during init(). If false, log functions will only log to the console and not the SD

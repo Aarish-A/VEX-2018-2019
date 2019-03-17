@@ -40,7 +40,7 @@ void drive_move(void* _params) {
   if (angle_target == 1000) angle_target = angle_start;
 
   uint32_t start_time = pros::millis();
-  log_ln(LOG_AUTO, "%d Started moving %f inches straight, Starting angle is %f deg, Correcting to %f deg", pros::millis(), dist_target, RAD_TO_DEG(angle_start), RAD_TO_DEG(angle_target));
+  log_ln(MOVE, AUTO, "%d Started moving %f inches straight, Starting angle is %f deg, Correcting to %f deg", pros::millis(), dist_target, RAD_TO_DEG(angle_start), RAD_TO_DEG(angle_target));
 
   // Distance correction PID Values
   double dist_kP = 127 / 25.0_in;
@@ -95,7 +95,7 @@ void drive_move(void* _params) {
     // if (abs(dist_current) < 8_in && dist_error > 2_in) {
     if (fabs(dist_current) < fabs(dist_target) * 0.30) {
       power += 0.40 * sgn(dist_target);
-      log_ln(LOG_MOVEMENT_ALGS, "%d Ramping up...", pros::millis(), power, dist_current, dist_error, angle_current, angle_error);
+      log_ln(MOVE, AUTO, "%d Ramping up...", pros::millis(), power, dist_current, dist_error, angle_current, angle_error);
     } else {
       // Calculate PID values for distance
       dist_p_val = dist_error * dist_kP;
@@ -121,13 +121,13 @@ void drive_move(void* _params) {
       power = dist_p_val + dist_i_val + dist_d_val;
       angle_power = angle_p_val + angle_i_val + angle_d_val;
 
-      log_ln(LOG_MOVEMENT_ALGS, "%d In PID...", pros::millis());
+      log_ln(MOVE, AUTO, "%d In PID...", pros::millis());
     }
 
 
-    log_ln(LOG_MOVEMENT_ALGS, "%d Distance | Current: %f in, Error: %f in, Power: %f, P: %f, I: %f, D: %f", pros::millis(), dist_current, dist_error, power, dist_p_val, dist_i_val, dist_d_val);
-    log_ln(LOG_MOVEMENT_ALGS, "%d Angle    | Current: %f deg, Error: %f deg, Angle Power: %f, P: %f, I: %f, D: %f", pros::millis(), RAD_TO_DEG(angle_current), RAD_TO_DEG(angle_error), angle_power, angle_p_val, angle_i_val, angle_d_val);
-    log_ln(LOG_MOVEMENT_ALGS, "----------------------------------------------------------------");
+    log_ln(MOVE, AUTO, "%d Distance | Current: %f in, Error: %f in, Power: %f, P: %f, I: %f, D: %f", pros::millis(), dist_current, dist_error, power, dist_p_val, dist_i_val, dist_d_val);
+    log_ln(MOVE, AUTO, "%d Angle    | Current: %f deg, Error: %f deg, Angle Power: %f, P: %f, I: %f, D: %f", pros::millis(), RAD_TO_DEG(angle_current), RAD_TO_DEG(angle_error), angle_power, angle_p_val, angle_i_val, angle_d_val);
+    log_ln(MOVE, AUTO, "----------------------------------------------------------------");
 
     drive.set_power(0, power, angle_power);
 
@@ -146,7 +146,7 @@ void drive_move(void* _params) {
     drive.bl_motor.move_absolute(targetBL, 25);
     drive.fr_motor.move_absolute(targetFR, 25);
     drive.br_motor.move_absolute(targetBR, 25);
-    log_ln(LOG_AUTO, "%d Stopping from FL: %f, BL: %f, FR: %f, BR %f", pros::millis(), drive.fl_motor.get_position(), drive.bl_motor.get_position(), drive.fr_motor.get_position(), drive.br_motor.get_position());
+    log_ln(MOVE, AUTO, "%d Stopping from FL: %f, BL: %f, FR: %f, BR %f", pros::millis(), drive.fl_motor.get_position(), drive.bl_motor.get_position(), drive.fr_motor.get_position(), drive.br_motor.get_position());
     while (fabs(drive.fl_motor.get_position() - targetFL) > 3 || fabs(drive.bl_motor.get_position() - targetBL) > 3 || fabs(drive.fr_motor.get_position() - targetFR) > 3 || fabs(drive.br_motor.get_position() - targetBR) > 3) pros::delay(1);
     pros::delay(100);
   } else drive.set_vel(0, 0, 0);
@@ -157,7 +157,7 @@ void drive_move(void* _params) {
   dist_error = dist_target - dist_current;
   angle_error = angle_target - angle_current;
 
-  log_ln(LOG_AUTO, "%d FINISHED MOVE >>>> Took %d ms, Ended At: %f, Distance Error: %f, Angle Error: %f", pros::millis(), pros::millis() - start_time, dist_current, dist_error, RAD_TO_DEG(angle_error));
+  log_ln(MOVE, AUTO, "%d FINISHED MOVE >>>> Took %d ms, Ended At: %f, Distance Error: %f, Angle Error: %f", pros::millis(), pros::millis() - start_time, dist_current, dist_error, RAD_TO_DEG(angle_error));
   drive_move_task.stop_task();
 }
 
@@ -215,13 +215,13 @@ void drive_turn(void *_params) {
     drive.error = dA;
     drive_volt = RAD_TO_DEG(dA) * kP + iVal;
     drive.set_power(0, 0, drive_volt);
-    log_ln(LOG_MOVEMENT_ALGS, "%d Drive voltage is: %f and iVal is %f dA is %f", pros::millis(),drive_volt, iVal, RAD_TO_DEG(dA));
+    log_ln(MOVE, AUTO, "%d Drive voltage is: %f and iVal is %f dA is %f", pros::millis(),drive_volt, iVal, RAD_TO_DEG(dA));
     pros::delay(1);
   }
   drive.set_power(0);
   drive.brake();
   pros::delay(50);
-  log_ln(LOG_MOVEMENT_ALGS, "End angle is %f\n", RAD_TO_DEG(drive.get_global_angle()));
+  log_ln(MOVE, AUTO, "End angle is %f\n", RAD_TO_DEG(drive.get_global_angle()));
   drive_turn_task.stop_task();
 }
 

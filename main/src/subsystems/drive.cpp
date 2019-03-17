@@ -134,7 +134,7 @@ void Drive::flatten_against_wall(bool forward, bool hold, uint8_t hold_power) {
     if (hold) this->set_power(0, -hold_power, 0);
     else this->set_power(0);
   }
-  log_ln(LOG_AUTO, "Done flatten against wall");
+  log_ln(MOVE, AUTO, "Done flatten against wall");
 }
 
 void Drive::align_with_pole(uint16_t poti_zero) {

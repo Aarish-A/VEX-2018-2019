@@ -1,5 +1,5 @@
 #include "main.h"
-#include "logs.hpp"
+#include "libraries/logs.hpp"
 #include "config.hpp"
 #include "controls.hpp"
 #include "macros/shot_queueing.hpp"
@@ -7,7 +7,7 @@
 #include "libraries/task.hpp"
 
 void opcontrol() {
-	log_ln(LOG_AUTO, "   --- %d START OPCONTROL --- \n", pros::millis());
+	log_ln(PROGRAM_FLOW, "   --- %d START OPCONTROL --- \n", pros::millis());
 	pilons::Task::stop_all_tasks();
 	Subsystem::enable_all();
 
