@@ -10,7 +10,7 @@ pilons::Task::Task(std::string task_name, pros::task_fn_t task_function, void(*f
 }
 
 void pilons::Task::start_task(void* params) {
-  this->stop_task();
+  // this->stop_task();
   log_ln(LOG_TASKS, "Started %s task", (this->task_name).c_str());
   this->task = new pros::Task(this->task_function, params);
 }

@@ -8,9 +8,10 @@ drive_move_params* drive_move_param = nullptr;
 drive_turn_params* drive_turn_param = nullptr;
 
 void auto_update(void* _params) {
+  uint32_t timer = pros::millis() + 1250;
   while(true) {
     Subsystem::update_all();
-    printf("state: %d", drive_turn_task.get_state());
+    if (pros::millis() > timer) printf("state: %d\n", drive_turn_task.get_state());
     pros::delay(10);
   }
 }
@@ -236,12 +237,11 @@ void drive_turn(void *_params) {
   drive.set_power(0);
   drive.brake();
   pros::delay(50);
-  log_ln(LOG_MOVEMENT_ALGS, "End angle is %f\n", RAD_TO_DEG(drive.get_global_angle()));
+  log_ln(LOG_AUTO, "End angle is %f\n", RAD_TO_DEG(drive.get_global_angle()));
   drive_turn_task.stop_task();
 }
 
 void drive_turn_async(const AngleTarget& target) {
-  drive.set_state(Drive::STATE_AUTO_CONTROL);
   if (drive_turn_param != nullptr) {
     delete drive_turn_param;
     drive_turn_param = nullptr;
@@ -249,9 +249,7 @@ void drive_turn_async(const AngleTarget& target) {
   drive_turn_param = new drive_turn_params{target};
   drive.set_error(drive_turn_param->target.getTarget());
   drive.set_target(drive_turn_param->target.getTarget());
-  printf("made it to right before task start\n");
   drive_turn_task.start_task((void*)(drive_turn_param));
-  printf("Got to end of function\n");
 }
 
 void drive_turn_sync(const AngleTarget& target) {
