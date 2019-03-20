@@ -4,6 +4,10 @@
 #include "../logs.hpp"
 #include "../libraries/task.hpp"
 
+constexpr double MECANUM_DRIVE_WIDTH = 13.20;
+constexpr double EDGE_TO_TRACKING_WHEEL = 1.25;
+constexpr double DRIVE_EDGE_TO_MECANUM = 2.50;
+
 extern pilons::Task auto_update_task;
 extern pilons::Task move_alg_task;
 
@@ -41,6 +45,8 @@ extern drive_turn_params* drive_turn_param;
 void drive_turn(void* _params);
 void drive_turn_async(const AngleTarget& target);
 void drive_turn_sync(const AngleTarget& target);
+
+void sweep_turn(const AngleTarget& target, double radius, bool forwards, double post_distance = 8_in, bool clockwise = true, bool brake = true, int max_power = 200);
 
 void auto_update_task_stop_function();
 void drive_task_stop_function();

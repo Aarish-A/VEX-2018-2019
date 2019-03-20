@@ -11,7 +11,6 @@ void auto_update(void* _params) {
   uint32_t timer = pros::millis() + 1250;
   while(true) {
     Subsystem::update_all();
-    if (pros::millis() > timer) printf("state: %d\n", drive_turn_task.get_state());
     pros::delay(10);
   }
 }
@@ -31,6 +30,13 @@ void double_shot(double targ1, double targ2, bool wait) {
 
 /* Capping */
 void cap_on_pole() {
+  drive.flatten_against_wall(false, true);
+  capper.start_capping();
+  drive.align_with_pole();
+  capper.finish_capping();
+  drive.flatten_against_wall();
+  drive.reset_global_angle();
+  while(capper.capping()) pros::delay(2);
 }
 
 /* Drive */
@@ -190,12 +196,10 @@ void drive_move_sync(double dist_target, double angle_target, bool brake, uint8_
 }
 
 void drive_turn(void *_params) {
-  printf("Made it to drive turn func\n");
   drive.set_state(Drive::STATE_AUTO_CONTROL);
   drive_turn_params* params = (drive_turn_params*)_params;
   const AngleTarget& target = params->target;
   drive.target = target.getTarget();
-  printf("made it to further in the drive turnfunc\n");
 
   double dA = target.getTarget() - drive.get_global_angle();
   double fixeddA = dA;
@@ -242,6 +246,7 @@ void drive_turn(void *_params) {
 }
 
 void drive_turn_async(const AngleTarget& target) {
+  drive.set_state(Drive::STATE_AUTO_CONTROL);
   if (drive_turn_param != nullptr) {
     delete drive_turn_param;
     drive_turn_param = nullptr;
@@ -257,8 +262,76 @@ void drive_turn_sync(const AngleTarget& target) {
   drive_turn((void*)(&params));
 }
 
+void sweep_turn(const AngleTarget& target, double radius, bool forwards, double post_distance, bool clockwise, bool brake, int max_power) {
+  drive.set_state(Drive::STATE_AUTO_CONTROL);
+  double kP = 200/90;
+  double kD = 00.0;
+  double kI = 0.02;
+  double p_val = 0;
+  double d_val = 0;
+  double i_val = 0;
+
+  uint32_t start_time = pros::millis();
+  double start_angle = drive.get_global_angle();
+  double target_angle = target.getTarget();
+  double angle_error = target_angle - start_angle;
+  double dA = target.getTarget() - drive.get_global_angle();
+  double target_half = angle_error/2;
+
+  double enc_l_start = enc_l.get_value();
+  double enc_r_start = enc_r.get_value();
+  double delta_enc_l = 0;
+  double delta_enc_r = 0;
+  double current_pos = 0;
+
+  double distance;
+  double distance_right;
+  double distance_left;
+  double mecanum_distance_right;
+  double mecanum_distance_left;
+  double power_ratio;
+  double power = 0;
+
+  double error = 0;
+  double last_error = 0;
+
+  if (clockwise) {
+    distance_right = angle_error * (radius + EDGE_TO_TRACKING_WHEEL);
+    distance_left = angle_error * (radius + EDGE_TO_TRACKING_WHEEL + WHL_DIS_R * 2);
+    mecanum_distance_left = radius + DRIVE_EDGE_TO_MECANUM + MECANUM_DRIVE_WIDTH;
+    mecanum_distance_right = radius + DRIVE_EDGE_TO_MECANUM;
+    power_ratio = mecanum_distance_right / mecanum_distance_left;
+  } else {
+    distance_left = angle_error * (radius + EDGE_TO_TRACKING_WHEEL);
+    distance_right = angle_error * (radius + EDGE_TO_TRACKING_WHEEL + WHL_DIS_R * 2);
+    mecanum_distance_right = radius + DRIVE_EDGE_TO_MECANUM + MECANUM_DRIVE_WIDTH;
+    mecanum_distance_left = radius + DRIVE_EDGE_TO_MECANUM;
+    power_ratio = mecanum_distance_left / mecanum_distance_right;
+  }
+  if(forwards) {
+    power = 170;
+    for(int i = 20; i < power; i++) {
+      drive.set_side_vel(i, i * power_ratio);
+      pros::delay(2);
+    }
+  }
+  else {
+    power = -170;
+    for(int i = -20; i > power; i--) {
+      drive.set_side_vel(i, i * power_ratio);
+      pros::delay(2);
+    }
+  }
+  while(fabs(dA)>0.8_deg)
+  {
+    dA = target.getTarget() - drive.get_global_angle();
+    drive.set_side_vel(power, power * power_ratio);
+    printf("fl: %f, bl: %f, fr: %f, br: %f\n", drive.fl_motor.get_actual_velocity(), drive.bl_motor.get_actual_velocity(), drive.fr_motor.get_actual_velocity(), drive.br_motor.get_actual_velocity());
+  }
+  drive_move_sync(post_distance, max_power, brake, target_angle);
+}
+
 void auto_update_task_stop_function() {
-  // Subsystem::disable_all();
   puncher.set_holding();
 }
 

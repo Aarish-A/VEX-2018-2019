@@ -50,7 +50,6 @@ void Drive::set_state(uint8_t new_state) {
       this->set_state(STATE_DRIVER_CONTROL);
       break;
     case STATE_DRIVER_CONTROL:
-      if (this->x || this->a || this->y) this->set_state(STATE_DRIVER_CONTROL);
       break;
     case STATE_AUTO_CONTROL:
       break;
@@ -87,6 +86,10 @@ void Drive::update() {
       this->set_power(x, y, a);
       break;
     case STATE_AUTO_CONTROL:
+      if (this->x || this->a || this->y) {
+        this->set_state(STATE_DRIVER_CONTROL);
+        printf("Drive move interrupted by driver\n");
+      }
       break;
   }
 }
@@ -110,6 +113,7 @@ void Drive::reset_global_angle() {
 }
 
 void Drive::flatten_against_wall(bool forward, bool hold, uint8_t hold_power) {
+  this->set_state(STATE_AUTO_CONTROL);
   bool right_done = false;
   bool left_done = false;
 
@@ -124,8 +128,8 @@ void Drive::flatten_against_wall(bool forward, bool hold, uint8_t hold_power) {
     this->set_power(0, -60, 0);
     pros::delay(200);
     do {
-      if (fabs(this->fl_motor.get_actual_velocity()) < 1) left_done = true;
-      if (fabs(this->fr_motor.get_actual_velocity()) < 1) right_done = true;
+      if (fabs(this->fl_motor.get_actual_velocity()) < 2) left_done = true;
+      if (fabs(this->fr_motor.get_actual_velocity()) < 2) right_done = true;
 
       if (left_done && !right_done) this->set_side_power(-15, -60);
       else if (!left_done && right_done) this->set_side_power(-60, -15);
@@ -140,11 +144,13 @@ void Drive::flatten_against_wall(bool forward, bool hold, uint8_t hold_power) {
 
 void Drive::align_with_pole(uint16_t poti_zero) {
   this->flatten_against_wall(false, true);
+  printf("poti: %d", this->pole_poti.get_value());
   if (this->pole_poti.get_value() > poti_zero + 80) this->set_power(55, -15, 0);
   else if (this->pole_poti.get_value() < poti_zero - 80) this->set_power(-55, -15, 0);
   while (abs(this->pole_poti.get_value() - poti_zero) > 100) pros::delay(5);
   this->flatten_against_wall(false, true);
   this->reset_global_angle();
+  this->set_state(STATE_DRIVER_CONTROL);
 }
 
 bool Drive::moving() {
@@ -160,10 +166,7 @@ void Drive::set_target(double target) {
 }
 
 void Drive::wait_for_stop() {
-  while (this->state == STATE_AUTO_CONTROL) {
-    // printf("Waiting\n");
-    pros::delay(2);
-  }
+  while (this->state == STATE_AUTO_CONTROL) pros::delay(2);
 }
 
 void Drive::wait_for_distance(double target_distance) {
@@ -175,12 +178,6 @@ void Drive::wait_for_distance(double target_distance) {
 
 void Drive::wait_for_angle(double target_angle) {
   bool clockwise = (this->target - this->get_global_angle() > 0 ? true : false);
-  if (clockwise) while (this->get_global_angle() < target_angle) {
-    printf("Target: %f, Current: %f\n", target_angle, this->get_global_angle());
-    pros::delay(1);
-  }
-  else while (this->get_global_angle() > target_angle) {
-    printf("Target: %f, Current: %f\n", target_angle, this->get_global_angle());
-    pros::delay(1);
-  }
+  if (clockwise) while (this->get_global_angle() < target_angle) pros::delay(1);
+  else while (this->get_global_angle() > target_angle) pros::delay(1);
 }

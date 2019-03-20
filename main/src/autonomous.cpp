@@ -33,27 +33,16 @@ void autonomous() {
   drive.reset_global_angle();
 
   // Auto
-  // drive_move_sync(40_in, 0_deg);
+  capper.pickup_cap();
+  pros::delay(3000);
+  cap_on_pole();
+  // drive.align_with_pole();
+  // capper.start_capping();
+  // capper.finish_capping();
 
-  angler.move_to(Angler::PICKUP_POSITION);
-  drive_turn_async(FixedAngleTarget(-90_deg));
-  // drive.wait_for_angle(-2_deg);
-  // printf("here3, %f\n", drive.get_error());
-  // single_shot(5);
-  drive.wait_for_stop();
-  // printf("Got to 2nd move\n");
-  pros::delay(1000);
-  drive_turn_async(FixedAngleTarget(0_deg));
-  drive.wait_for_stop();
-  printf("finished wait for stop\n");
+  pros::delay(5000);
 
-  uint32_t timer = pros::millis() + 100000;
-  while (pros::millis() < timer) {
-    printf("waiting\n");
-    pros::delay(5);
-  }
-  // drive.wait_for_stop();
-  // drive_turn_sync(FixedAngleTarget(0));
+  pros::delay(50000);
 
 
   // Auto End
