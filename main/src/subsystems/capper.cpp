@@ -63,7 +63,7 @@ void Capper::update() {
       else if (this->position < 115 * Capper::GEAR_RATIO) this->capper_motor.move_velocity(110);
       else if (this->position < 145 * Capper::GEAR_RATIO) this->capper_motor.move_velocity(85);
       else if (this->position < 165 * Capper::GEAR_RATIO) this->capper_motor.move_velocity(70);
-      else if (this->position < 190 * Capper::GEAR_RATIO) this->capper_motor.move_velocity(45);
+      else if (this->position < Capper::CAPPING_HOLD_POSITION) this->capper_motor.move_velocity(45);
       else this->set_state(STATE_HOLD);
       break;
   }
@@ -112,7 +112,7 @@ void Capper::start_capping() {
 
 void Capper::finish_capping() {
   while(this->state == STATE_CAPPING) pros::delay(2);
-  this->move_to_power(CAP_END_POSIITON, 127, false);
+  this->move_to_power(CAPPING_END_POSIITON, 105, false);
 }
 
 bool Capper::capping() {

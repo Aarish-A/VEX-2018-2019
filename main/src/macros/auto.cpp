@@ -186,8 +186,6 @@ void drive_move_async(double dist_target, double angle_target, bool brake, uint8
   drive.set_error(drive_move_param->dist_target);
   drive.set_target(drive_move_param->dist_target);
   drive_move_task.start_task((void*)(drive_move_param));
-  // pros::delay(100);
-  // delete params;
 }
 
 void drive_move_sync(double dist_target, double angle_target, bool brake, uint8_t max_power) {
