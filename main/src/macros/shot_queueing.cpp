@@ -2,7 +2,7 @@
 
 pilons::Task shot_queue_handle_task("Shot Request Handle", shot_queue_handle, shot_task_cleanup);
 
-volatile Shot_Pos front_SP = {120, 40, 0};
+volatile Shot_Pos front_SP = {140, 60, 0};
 volatile Shot_Pos platform_SP = {0, 0, 0};
 volatile Shot_Pos back_SP = {0, 0, 0};
 
