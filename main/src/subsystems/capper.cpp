@@ -38,6 +38,7 @@ void Capper::update() {
   this->position = this->capper_motor.get_position();
   this->error = this->target - this->position;
 
+
   switch(this->state) {
     case STATE_DISABLED:
       break;
@@ -48,11 +49,11 @@ void Capper::update() {
       } else if (this->timed_out(3000)) this->set_state(STATE_DISABLED);
       break;
     case STATE_AUTO_CONTROL:
-      if (timed_out(this->move_timeout) || below_vel_threshold(1, 500)) {
-        this->disable();
-      }
-      else if (fabs(this->error) < this->error_threshold) {
-        log_ln(LOG_STATES, "Capper move finished at %f, target was %f", this->position, this->target);
+      // if (timed_out(this->move_timeout) || below_vel_threshold(1, 500)) {
+      //   this->disable();
+      // }
+      if (fabs(this->error) < this->error_threshold) {
+        log_ln(LOG_STATES, "Capper move finished at %f, target was %f", this->position / this->GEAR_RATIO, this->target / this->GEAR_RATIO);
         this->set_state(STATE_HOLD);
       }
       break;
@@ -93,9 +94,10 @@ void Capper::move_to_pickup() {
   this->move_to_velocity(Capper::PICKUP_POSITION, 200);
 }
 
-void Capper::move_to_cap_flip() {
+void Capper::move_to_cap_flip(bool holding_cap) {
   // this->move_to_velocity(Capper::CAP_FLIP_POSITION, 100);
-  this->move_to_velocity(Capper::CAP_FLIP_POSITION, 125);
+  if (holding_cap) this->move_to_velocity(Capper::CAP_FLIP_POSITION, 125);
+  else this->move_to_velocity(31 * this->GEAR_RATIO, 140, true, 2);
 }
 
 void Capper::move_to_flag_flip() {

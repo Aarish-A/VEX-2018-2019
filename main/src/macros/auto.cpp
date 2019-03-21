@@ -146,6 +146,7 @@ void drive_move(void* _params) {
     log_ln(LOG_MOVEMENT_ALGS, "%d Angle    | Current: %f deg, Error: %f deg, Angle Power: %f, P: %f, I: %f, D: %f", pros::millis(), RAD_TO_DEG(angle_current), RAD_TO_DEG(angle_error), angle_power, angle_p_val, angle_i_val, angle_d_val);
     log_ln(LOG_MOVEMENT_ALGS, "----------------------------------------------------------------");
 
+    if (fabs(power) > max_power) power = max_power * sgn(power);
     drive.set_power(0, power, angle_power);
 
     dist_last_error = dist_error;

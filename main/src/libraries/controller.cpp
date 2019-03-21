@@ -18,12 +18,12 @@ bool pilons::Controller::check_falling(int button) {
 
 /* Public Functions */
 void pilons::Controller::update() {
-  if (pros::millis() > this->last_screen_update_time + Controller::SCREEN_UPDATE_INTERVAL) {
-    this->print(this->update_line_number, 0, (screen_lines[this->update_line_number]).c_str());
-    this->last_screen_update_time = pros::millis();
-    if (this->update_line_number < 2) this->update_line_number++;
-    else this->update_line_number = 0;
-  }
+  // if (pros::millis() > this->last_screen_update_time + Controller::SCREEN_UPDATE_INTERVAL) {
+  //   this->print(this->update_line_number, 0, (screen_lines[this->update_line_number]).c_str());
+  //   this->last_screen_update_time = pros::millis();
+  //   if (this->update_line_number < 2) this->update_line_number++;
+  //   else this->update_line_number = 0;
+  // }
 
   for(int i = 0; i < 12; i++) {
     this->buttons[i].last_pressed = this->buttons[i].pressed;

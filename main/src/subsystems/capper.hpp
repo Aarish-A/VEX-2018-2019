@@ -41,7 +41,7 @@ public:
   void move_to_velocity(double target, uint8_t velocity, bool hold = true, uint8_t error_threshold = 5);
 
   void move_to_pickup();
-  void move_to_cap_flip();
+  void move_to_cap_flip(bool holding_cap = true);
   void move_to_flag_flip();
   void pickup_cap();
   void start_capping();

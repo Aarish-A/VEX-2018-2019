@@ -22,10 +22,10 @@ void opcontrol() {
 		capper.update();
 
 		if (master.check_single_press(BTN_DECAPPER_UP)) {
+			capper.move_to_cap_flip(false);
 		} else if (master.check_single_press(BTN_DECAPPER_DOWN)) {
 			capper.move_to_velocity(0, 100, false);
 		}
-
 
 
 		/* Drive */
@@ -39,23 +39,12 @@ void opcontrol() {
 		angler.driver_set(angler_power);
 
 		/* Intake */
-		if (master.check_single_press(BTN_INTAKE_UP)) {
-			intake.off() ? intake.intake() : intake.stop();
-		}
-
-		else if (master.check_single_press(BTN_INTAKE_DOWN)) {
-			intake.off() ? intake.outtake() : intake.stop();
-		}
+		if (master.check_single_press(BTN_INTAKE_UP)) intake.off() ? intake.intake() : intake.stop();
+		else if (master.check_single_press(BTN_INTAKE_DOWN)) intake.off() ? intake.outtake() : intake.stop();
 
 		/* Puncher */
-		if (master.check_single_press(BTN_SHOT_CANCEL)) {
-			puncher.cancel_shot();
-		}
-
-		else if (master.check_single_press(BTN_SHOT_R_T)) {
-			puncher.shoot();
-		}
-
+		if (master.check_single_press(BTN_SHOT_CANCEL)) puncher.cancel_shot();
+		else if (master.check_single_press(BTN_SHOT_R_T)) puncher.shoot();
 
 		/* Macros */
 		if (master.check_single_press(BTN_GROUND_PICKUP)) {
@@ -73,33 +62,33 @@ void opcontrol() {
 			intake.outtake();
 		}
 
-		if (master.check_single_press(BTN_SHOT_R_T)) {
-			make_shot_request(front_SP.top, Turn_Direction::STRAIGHT, Field_Position::FRONT, true);
-		}
-
-		else if (master.check_single_press(BTN_SHOT_R_M)) {
-			make_shot_request(front_SP.mid, Turn_Direction::STRAIGHT, Field_Position::FRONT, true);
-		}
-
-		if (partner.check_single_press(BTN_SHOT_L_T)) {
-			make_shot_request(platform_SP.top, Turn_Direction::LEFT, Field_Position::BLUE_PF);
-			make_shot_request(platform_SP.top, Turn_Direction::LEFT, Field_Position::RED_PF);
-		}
-
-		else if (partner.check_single_press(BTN_SHOT_L_M)) {
-			make_shot_request(platform_SP.mid, Turn_Direction::LEFT, Field_Position::BLUE_PF);
-			make_shot_request(platform_SP.mid, Turn_Direction::LEFT, Field_Position::RED_PF);
-		}
-
-		else if (partner.check_single_press(BTN_SHOT_R_T)) {
-			make_shot_request(platform_SP.top, Turn_Direction::RIGHT, Field_Position::BLUE_PF);
-			make_shot_request(platform_SP.top, Turn_Direction::RIGHT, Field_Position::RED_PF);
-		}
-
-		else if (partner.check_single_press(BTN_SHOT_R_M)) {
-			make_shot_request(platform_SP.mid, Turn_Direction::RIGHT, Field_Position::BLUE_PF);
-			make_shot_request(platform_SP.mid, Turn_Direction::RIGHT, Field_Position::RED_PF);
-		}
+		// if (master.check_single_press(BTN_SHOT_R_T)) {
+		// 	make_shot_request(front_SP.top, Turn_Direction::STRAIGHT, Field_Position::FRONT, true);
+		// }
+		//
+		// else if (master.check_single_press(BTN_SHOT_R_M)) {
+		// 	make_shot_request(front_SP.mid, Turn_Direction::STRAIGHT, Field_Position::FRONT, true);
+		// }
+		//
+		// if (partner.check_single_press(BTN_SHOT_L_T)) {
+		// 	make_shot_request(platform_SP.top, Turn_Direction::LEFT, Field_Position::BLUE_PF);
+		// 	make_shot_request(platform_SP.top, Turn_Direction::LEFT, Field_Position::RED_PF);
+		// }
+		//
+		// else if (partner.check_single_press(BTN_SHOT_L_M)) {
+		// 	make_shot_request(platform_SP.mid, Turn_Direction::LEFT, Field_Position::BLUE_PF);
+		// 	make_shot_request(platform_SP.mid, Turn_Direction::LEFT, Field_Position::RED_PF);
+		// }
+		//
+		// else if (partner.check_single_press(BTN_SHOT_R_T)) {
+		// 	make_shot_request(platform_SP.top, Turn_Direction::RIGHT, Field_Position::BLUE_PF);
+		// 	make_shot_request(platform_SP.top, Turn_Direction::RIGHT, Field_Position::RED_PF);
+		// }
+		//
+		// else if (partner.check_single_press(BTN_SHOT_R_M)) {
+		// 	make_shot_request(platform_SP.mid, Turn_Direction::RIGHT, Field_Position::BLUE_PF);
+		// 	make_shot_request(platform_SP.mid, Turn_Direction::RIGHT, Field_Position::RED_PF);
+		// }
 
 		pros::delay(5);
 	}
