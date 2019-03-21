@@ -33,6 +33,7 @@ void autonomous() {
   auto_update_task.start_task();
   drive.reset_global_angle();
 
+
   // Auto
   // capper.move_to_flag_flip();
   // single_shot(front_SP.top);
@@ -109,10 +110,13 @@ void autonomous() {
   drive_turn_sync(FixedAngleTarget(-90_deg));
   drive_move_sync(-12_in, -90_deg);
   cap_on_pole();
+
+
   // Auto End
-  pilons::Task::stop_all_tasks();
   uint32_t auto_finished_time = pros::millis() - autonomous_time;
-  master.print(2, 0, "Time: %d", auto_finished_time);
+  master.write_line(2, 0, "Time: %d", auto_finished_time);
+  pros::delay(60);
+  pilons::Task::stop_all_tasks();
 }
 
 

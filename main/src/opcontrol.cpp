@@ -12,6 +12,7 @@ void opcontrol() {
 	Subsystem::enable_all();
 
 	while (true) {
+		pos.update();
 		master.update();
 		partner.update();
 		intake.update();

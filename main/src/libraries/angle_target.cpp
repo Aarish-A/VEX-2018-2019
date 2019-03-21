@@ -10,5 +10,5 @@ PointAngleTarget::PointAngleTarget(vector target) : target(target) {}
 
 double PointAngleTarget::getTarget() const {
   vector t = target;
-  return t.phase();
+  return (t - pos.position()).phase();
 }

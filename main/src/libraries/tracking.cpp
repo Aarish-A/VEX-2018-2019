@@ -1,17 +1,19 @@
 #include "tracking.hpp"
 
-Tracking::Tracking(pros::ADIEncoder &encL, pros::ADIEncoder &encR, pros::ADIEncoder &encS, double x, double y, double a) : encL(encL), encR(encR), encS(encS) {
+pros::ADIEncoder enc_r(7, 8, false);
+pros::ADIEncoder enc_l(1, 2, false);
+Tracking pos(enc_l, enc_r);
+
+Tracking::Tracking(pros::ADIEncoder &encL, pros::ADIEncoder &encR, double x, double y, double a) : encL(encL), encR(encR) {
   this->x = this->xLst = x;
   this->y = this->yLst = y;
   this->aRst = this->aLst = a;
 
   encL.reset();
   encR.reset();
-  encS.reset();
 
   this->encLLst = 0;
   this->encRLst = 0;
-  this->encSLst = 0;
 
   this->xVel = 0;
   this->yVel = 0;
@@ -39,11 +41,11 @@ void Tracking::update() {
 
   double L = (left - encLLst) * SPN_TO_IN_L; // The amount the left side of the robot moved
   double R = (right - encRLst) * SPN_TO_IN_R; // The amount the right side of the robot moved
-  double S = (strafe - encSLst) * SPN_TO_IN_S; // The amount the back side of the robot moved
+  double S = 0;//(strafe - encSLst) * SPN_TO_IN_S; // The amount the back side of the robot moved
 
   encLLst = left;
   encRLst = right;
-  encSLst = strafe;
+  // encSLst = strafe;
 
   double h; // The hypotenuse of the triangle formed by the middle of the robot on the starting position and ending position and the middle of the circle it travels around
 	double i; // Half on the angle  traveled
@@ -98,10 +100,10 @@ void Tracking::reset(double x, double y, double a) {
   log_ln(LOG_AUTO, "\n%d Resetting Pos (%f, %f, %f) from (%f, %f, %f)", pros::millis(), x, y, RAD_TO_DEG(a), this->x, this->y, RAD_TO_DEG(this->a));
   this->encL.reset();
   this->encR.reset();
-  this->encS.reset();
+  // this->encS.reset();
   this->encLLst = 0;
   this->encRLst = 0;
-  this->encSLst = 0;
+  // this->encSLst = 0;
 
   this->x = x;
   this->y = y;

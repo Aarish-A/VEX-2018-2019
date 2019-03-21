@@ -9,6 +9,12 @@ namespace pilons {
 
   private:
     std::string controller_name;
+
+    static const uint32_t SCREEN_UPDATE_INTERVAL = 60;
+    std::string screen_lines[3] = {"               ", "               ", "               "};
+    std::uint8_t update_line_number = 0;
+    uint32_t last_screen_update_time = 0;
+
     static const uint32_t BUTTON_PRESS_TIME = 50;
     static const std::string button_names[12];
 
@@ -30,5 +36,7 @@ namespace pilons {
     int8_t get_analog(pros::controller_analog_e_t joystick, uint8_t deadzone);
     bool check_single_press(int button);
     bool check_double_press(int button1, int button2);
+
+    void write_line(uint8_t line, const char* format, ...);
   };
 };

@@ -57,6 +57,7 @@ void shot_queue_handle(void* param) {
 
     if (field_position != Field_Position::FRONT) {
       // Move to flag... this is going to be asynchronous
+      pos.reset();
     }
     angler.move_to(temp_target.angler_target);
     angler.wait_for_target_reach();

@@ -1,7 +1,7 @@
 #pragma once
 #include "main.h"
-#include "libraries/util.hpp"
-#include "logs.hpp"
+#include "util.hpp"
+#include "../logs.hpp"
 #include <cmath>
 #include <memory>
 
@@ -38,8 +38,8 @@ constexpr double operator"" _deg(unsigned long long val) { return DEG_TO_RAD(val
 
 class Tracking {
 private:
-  pros::ADIEncoder &encL, &encR, &encS;
-  int encLLst, encRLst, encSLst;
+  pros::ADIEncoder &encL, &encR;
+  int encLLst, encRLst;
   double aRst;
 
   double xLst, yLst, aLst;
@@ -53,7 +53,7 @@ public:
   double xVel = 0, yVel = 0, aVel = 0;
   vector velLocal;
 
-  Tracking(pros::ADIEncoder &encL, pros::ADIEncoder &encR, pros::ADIEncoder &encS, double x = 0, double y = 0, double a = 0);
+  Tracking(pros::ADIEncoder &encL, pros::ADIEncoder &encR, double x = 0, double y = 0, double a = 0);
 
   void task();
 
@@ -62,3 +62,7 @@ public:
   vector position() const;
   vector velocity() const;
 };
+
+extern pros::ADIEncoder enc_l;
+extern pros::ADIEncoder enc_r;
+extern Tracking pos;

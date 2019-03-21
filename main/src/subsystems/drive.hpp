@@ -3,7 +3,7 @@
 #include "../logs.hpp"
 #include "../libraries/subsystem.hpp"
 #include "../libraries/angle_target.hpp"
-#include "../tracking.hpp"
+#include "../libraries/tracking.hpp"
 
 class Drive final : public Subsystem {
 public:

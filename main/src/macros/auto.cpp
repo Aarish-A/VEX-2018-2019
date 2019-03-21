@@ -11,6 +11,7 @@ void auto_update(void* _params) {
   uint32_t timer = pros::millis() + 1250;
   while(true) {
     Subsystem::update_all();
+    master.update();
     pros::delay(10);
   }
 }
