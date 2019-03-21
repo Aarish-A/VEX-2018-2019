@@ -72,28 +72,32 @@ void opcontrol() {
 			intake.outtake();
 		}
 
-		else if (master.check_single_press(BTN_SHOT_R_T)) {
-			make_shot_request(front_SP.top, Turn_Direction::STRAIGHT, true);
+		if (master.check_single_press(BTN_SHOT_R_T)) {
+			make_shot_request(front_SP.top, Turn_Direction::STRAIGHT, Field_Position::FRONT, true);
 		}
 
 		else if (master.check_single_press(BTN_SHOT_R_M)) {
-			make_shot_request(front_SP.mid, Turn_Direction::STRAIGHT, true);
+			make_shot_request(front_SP.mid, Turn_Direction::STRAIGHT, Field_Position::FRONT, true);
 		}
 
 		if (partner.check_single_press(BTN_SHOT_L_T)) {
-			make_shot_request(platform_SP.top, Turn_Direction::LEFT);
+			make_shot_request(platform_SP.top, Turn_Direction::LEFT, Field_Position::BLUE_PF);
+			make_shot_request(platform_SP.top, Turn_Direction::LEFT, Field_Position::RED_PF);
 		}
 
 		else if (partner.check_single_press(BTN_SHOT_L_M)) {
-			make_shot_request(platform_SP.mid, Turn_Direction::LEFT);
+			make_shot_request(platform_SP.mid, Turn_Direction::LEFT, Field_Position::BLUE_PF);
+			make_shot_request(platform_SP.mid, Turn_Direction::LEFT, Field_Position::RED_PF);
 		}
 
 		else if (partner.check_single_press(BTN_SHOT_R_T)) {
-			make_shot_request(platform_SP.top, Turn_Direction::RIGHT);
+			make_shot_request(platform_SP.top, Turn_Direction::RIGHT, Field_Position::BLUE_PF);
+			make_shot_request(platform_SP.top, Turn_Direction::RIGHT, Field_Position::RED_PF);
 		}
 
 		else if (partner.check_single_press(BTN_SHOT_R_M)) {
-			make_shot_request(platform_SP.mid, Turn_Direction::RIGHT);
+			make_shot_request(platform_SP.mid, Turn_Direction::RIGHT, Field_Position::BLUE_PF);
+			make_shot_request(platform_SP.mid, Turn_Direction::RIGHT, Field_Position::RED_PF);
 		}
 
 		pros::delay(5);

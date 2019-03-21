@@ -16,33 +16,36 @@ void trigger_shot_queue() {
   if (!shot_queue_handle_task.running()) shot_queue_handle_task.start_task();
 }
 
-void make_shot_request(uint8_t shot_height, Turn_Direction direction, bool trigger_shot) {
-  if (shot_queue.size() == 2) shot_queue.pop_back();
-  switch(field_position) {
-    case Field_Position::FRONT:
-      if (direction == Turn_Direction::STRAIGHT) shot_queue.push_back({shot_height});
-      break;
-    case Field_Position::RED_PF:
-      if (game_side == 'R') {
-        if (direction == Turn_Direction::LEFT) shot_queue.push_back({shot_height, {-28 - FLAG_WIDTH, 94}});
-        else if (direction == Turn_Direction::RIGHT) shot_queue.push_back({shot_height, {22 - FLAG_WIDTH, 94}});
-      } else if (game_side == 'B') {
-        if (direction == Turn_Direction::LEFT) shot_queue.push_back({shot_height, {-31, 94}});
-        else if (direction == Turn_Direction::RIGHT) shot_queue.push_back({shot_height, {18, 94}});
-      }
-      break;
-    case Field_Position::BLUE_PF:
-      if (game_side == 'R') {
-        if (direction == Turn_Direction::LEFT) shot_queue.push_back({shot_height, {-24 - FLAG_WIDTH, 94}});
-        else if (direction == Turn_Direction::RIGHT) shot_queue.push_back({shot_height, {25 - FLAG_WIDTH, 94}});
-      } else if (game_side == 'B') {
-        if (direction == Turn_Direction::LEFT) shot_queue.push_back({shot_height, {-27, 94}});
-        else if (direction == Turn_Direction::RIGHT) shot_queue.push_back({shot_height, {22, 94}});
-      }
-      break;
-    case Field_Position::BACK:
-      if (direction == Turn_Direction::STRAIGHT) shot_queue.push_back({shot_height});
-      break;
+void make_shot_request(uint8_t shot_height, Turn_Direction direction, Field_Position target_field_pos, bool trigger_shot) {
+  if (target_field_pos == field_position) {
+    if (shot_queue.size() == 2) shot_queue.pop_back();
+
+    switch(field_position) {
+      case Field_Position::FRONT:
+        if (direction == Turn_Direction::STRAIGHT) shot_queue.push_back({shot_height});
+        break;
+      case Field_Position::RED_PF:
+        if (game_side == 'R') {
+          if (direction == Turn_Direction::LEFT) shot_queue.push_back({shot_height, {-28 - FLAG_WIDTH, 94}});
+          else if (direction == Turn_Direction::RIGHT) shot_queue.push_back({shot_height, {22 - FLAG_WIDTH, 94}});
+        } else if (game_side == 'B') {
+          if (direction == Turn_Direction::LEFT) shot_queue.push_back({shot_height, {-31, 94}});
+          else if (direction == Turn_Direction::RIGHT) shot_queue.push_back({shot_height, {18, 94}});
+        }
+        break;
+      case Field_Position::BLUE_PF:
+        if (game_side == 'R') {
+          if (direction == Turn_Direction::LEFT) shot_queue.push_back({shot_height, {-24 - FLAG_WIDTH, 94}});
+          else if (direction == Turn_Direction::RIGHT) shot_queue.push_back({shot_height, {25 - FLAG_WIDTH, 94}});
+        } else if (game_side == 'B') {
+          if (direction == Turn_Direction::LEFT) shot_queue.push_back({shot_height, {-27, 94}});
+          else if (direction == Turn_Direction::RIGHT) shot_queue.push_back({shot_height, {22, 94}});
+        }
+        break;
+      case Field_Position::BACK:
+        if (direction == Turn_Direction::STRAIGHT) shot_queue.push_back({shot_height});
+        break;
+    }
   }
 
   if (trigger_shot) trigger_shot_queue();

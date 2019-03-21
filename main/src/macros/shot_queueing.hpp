@@ -46,6 +46,6 @@ struct Shot_Target {
 extern std::deque<Shot_Target> shot_queue;
 
 void trigger_shot_queue();
-void make_shot_request(uint8_t shot_height, Turn_Direction direction, bool trigger_shot = false);
+void make_shot_request(uint8_t shot_height, Turn_Direction direction, Field_Position target_field_pos, bool trigger_shot = false);
 void shot_queue_handle(void* param);
 void shot_task_cleanup();
