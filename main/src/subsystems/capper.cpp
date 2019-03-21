@@ -95,15 +95,15 @@ void Capper::move_to_pickup() {
 
 void Capper::move_to_cap_flip() {
   // this->move_to_velocity(Capper::CAP_FLIP_POSITION, 100);
-  this->move_to_velocity(Capper::CAP_FLIP_POSITION, 100);
+  this->move_to_velocity(Capper::CAP_FLIP_POSITION, 125);
 }
 
 void Capper::move_to_flag_flip() {
-  this->move_to_velocity(FLAG_FLIP_POSITION, 100);
+  this->move_to_velocity(FLAG_FLIP_POSITION, 65);
 }
 
 void Capper::pickup_cap() {
-  this->move_to_velocity(Capper::CARRY_POSITION, 100);
+  this->move_to_velocity(Capper::CARRY_POSITION, 65);
 }
 
 void Capper::start_capping() {

@@ -21,6 +21,7 @@ void single_shot(double targ, bool wait) {
   while(angler.moving_to_target()) pros::delay(2);
   puncher.shoot();
   if (wait) while(puncher.shooting()) pros::delay(2);
+  printf("angle error is %f\n", drive.get_error());
 }
 
 void double_shot(double targ1, double targ2, bool wait) {
@@ -34,7 +35,7 @@ void cap_on_pole() {
   capper.start_capping();
   drive.align_with_pole();
   capper.finish_capping();
-  drive.flatten_against_wall();
+  drive.flatten_against_wall(false,true);
   drive.reset_global_angle();
   while(capper.capping()) pros::delay(2);
 }
