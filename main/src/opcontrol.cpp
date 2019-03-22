@@ -22,7 +22,6 @@ void opcontrol() {
 		capper.update();
 
 		if (master.check_single_press(BTN_DECAPPER_UP)) {
-			capper.move_to_cap_flip(false);
 		} else if (master.check_single_press(BTN_DECAPPER_DOWN)) {
 			capper.move_to_velocity(0, 100, false);
 		}

@@ -94,14 +94,15 @@ void Capper::move_to_pickup() {
   this->move_to_velocity(Capper::PICKUP_POSITION, 200);
 }
 
-void Capper::move_to_cap_flip(bool holding_cap) {
+void Capper::move_to_cap_flip(bool holding_cap, double velocity) {
   // this->move_to_velocity(Capper::CAP_FLIP_POSITION, 100);
-  if (holding_cap) this->move_to_velocity(Capper::CAP_FLIP_POSITION, 125);
-  else this->move_to_velocity(31 * this->GEAR_RATIO, 140, true, 2);
+  if (holding_cap) this->move_to_velocity(Capper::CAP_FLIP_POSITION, velocity);
+  // else this->move_to_velocity(33 * this->GEAR_RATIO, 140, true, 2);
+  else this->move_to_velocity(35 * this->GEAR_RATIO, 140, true, 2);
 }
 
-void Capper::move_to_flag_flip() {
-  this->move_to_velocity(FLAG_FLIP_POSITION, 65);
+void Capper::move_to_flag_flip(double velocity) {
+  this->move_to_velocity(FLAG_FLIP_POSITION, velocity);
 }
 
 void Capper::pickup_cap() {

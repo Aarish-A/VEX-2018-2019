@@ -12,7 +12,7 @@ public:
   static constexpr double GEAR_RATIO = 5.0 / 1.0;
 
   static constexpr uint16_t PICKUP_POSITION = 0 * Capper::GEAR_RATIO;
-  static constexpr uint16_t CAP_FLIP_POSITION = 35 * Capper::GEAR_RATIO;
+  static constexpr uint16_t CAP_FLIP_POSITION = 32 * Capper::GEAR_RATIO;
   static constexpr uint16_t CARRY_POSITION = 46 * Capper::GEAR_RATIO;
   static constexpr uint16_t FLAG_FLIP_POSITION = 60 * Capper::GEAR_RATIO;
   static constexpr uint16_t CAPPING_HOLD_POSITION = 190 * Capper::GEAR_RATIO;
@@ -41,8 +41,8 @@ public:
   void move_to_velocity(double target, uint8_t velocity, bool hold = true, uint8_t error_threshold = 5);
 
   void move_to_pickup();
-  void move_to_cap_flip(bool holding_cap = true);
-  void move_to_flag_flip();
+  void move_to_cap_flip(bool holding_cap = true, double velocity = 125);
+  void move_to_flag_flip(double velocity = 65);
   void pickup_cap();
   void start_capping();
   void finish_capping();
