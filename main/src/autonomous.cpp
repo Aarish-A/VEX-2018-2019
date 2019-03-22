@@ -2,6 +2,7 @@
 #include "config.hpp"
 #include "macros/auto.hpp"
 #include "macros/shot_queueing.hpp"
+#include "menu.hpp"
 
 /**
  * Runs the user autonomous code. This function will be started in its own task
@@ -14,8 +15,6 @@
  * will be stopped. Re-enabling the robot will restart the task, not re-start it
  * from where it left off.
  */
-
-uint32_t autoStartTime;
 
 void auto_red_front();
 void auto_red_back();
@@ -127,22 +126,22 @@ void autonomous() {
   // drive_move_sync(42.0_in, 74_deg);
   // drive_turn_sync(FixedAngleTarget(-90_deg));
   // drive_move_sync(-9.0_in, -90_deg);
-  cap_on_pole();
-
-  drive_move_async(8_in, 0_deg);
-  drive.wait_for_distance(3.0_in);
-  capper.move_to_cap_flip(true, 200);
-  intake.intake();
-  drive.wait_for_stop();
-  drive_turn_async(FixedAngleTarget(86.0_deg));
-  drive.wait_for_angle(60_deg);
-  double_shot(front_SP.top, front_SP.mid);
-  capper.pickup_cap();
-  drive_turn_sync(FixedAngleTarget(18_deg));
-  drive_move_async(32.5_in);
-  drive.wait_for_distance(31.0_in);
-  drive_move_async(-23.5_in, 86_deg);
-  drive.wait_for_stop();
+  // cap_on_pole();
+  //
+  // drive_move_async(8_in, 0_deg);
+  // drive.wait_for_distance(3.0_in);
+  // capper.move_to_cap_flip(true, 200);
+  // intake.intake();
+  // drive.wait_for_stop();
+  // drive_turn_async(FixedAngleTarget(86.0_deg));
+  // drive.wait_for_angle(60_deg);
+  // double_shot(front_SP.top, front_SP.mid);
+  // capper.pickup_cap();
+  // drive_turn_sync(FixedAngleTarget(18_deg));
+  // drive_move_async(32.5_in);
+  // drive.wait_for_distance(31.0_in);
+  // drive_move_async(-23.5_in, 86_deg);
+  // drive.wait_for_stop();
   // drive.wait_for_distance(-12_in);
   // capper.move_to_pickup();
   // drive.wait_for_stop();

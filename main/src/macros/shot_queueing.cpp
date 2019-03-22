@@ -2,12 +2,12 @@
 
 pilons::Task shot_queue_handle_task("Shot Request Handle", shot_queue_handle, shot_task_cleanup);
 
-volatile Shot_Pos front_SP = {140, 60, 0};
-volatile Shot_Pos platform_SP = {0, 0, 0};
-volatile Shot_Pos back_SP = {0, 0, 0};
-
-volatile Shot_Pos auto_back_mid_SP = {0, 0, 0};
-volatile Shot_Pos auto_back_far_SP = {0, 0, 0};
+// volatile Shot_Pos front_SP = {140, 60, 0};
+// volatile Shot_Pos platform_SP = {0, 0, 0};
+// volatile Shot_Pos back_SP = {0, 0, 0};
+//
+// volatile Shot_Pos auto_back_mid_SP = {0, 0, 0};
+// volatile Shot_Pos auto_back_far_SP = {0, 0, 0};
 
 Field_Position field_position = Field_Position::FRONT;
 std::deque<Shot_Target> shot_queue;
