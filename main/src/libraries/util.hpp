@@ -4,6 +4,11 @@
 
 template <typename T> int sgn(T val) { return (T(0) < val) - (val < T(0)); }
 
+template<class T> T operator++ (T enum_type, int) { return static_cast<T>(static_cast<int>(enum_type) + 1); }
+template<class T> T operator-- (T enum_type, int) { return static_cast<T>(static_cast<int>(enum_type) - 1); }
+template<class T> T next_enum_value(T enum_type);
+template<class T> T previous_enum_value(T enum_type);
+
 int set_dz(int val, int dz);
 int set_scaled_dz(int val, int dz);
 

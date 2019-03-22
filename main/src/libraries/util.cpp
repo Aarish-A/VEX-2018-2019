@@ -1,5 +1,15 @@
 #include "util.hpp"
 
+template<class T> T next_enum_value(T enum_type) {
+  if (static_cast<int>(enum_type) < static_cast<int>(T::NUM_OF_ELEMENTS)) return enum_type++;
+  else return static_cast<T>(0);
+}
+
+template<class T> T previous_enum_value(T enum_type) {
+  if (static_cast<int>(enum_type) > static_cast<int>(static_cast<T>(0))) return enum_type--;
+  else return static_cast<T>(static_cast<int>(T::NUM_OF_ELEMENTS) - 1);
+}
+
 int set_dz(int val, int dz) {
   dz = abs(dz);
   return (abs(val) < dz ? 0 : val);
