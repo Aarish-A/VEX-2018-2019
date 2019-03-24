@@ -122,7 +122,7 @@ void Drive::flatten_against_wall(bool forward, bool hold, uint8_t hold_power) {
     pros::delay(200);
     do {
       pros::delay(2);
-    } while (fabs(this->bl_motor.get_actual_velocity()) > 2);
+    } while (fabs(this->br_motor.get_actual_velocity()) > 1);
     if (hold) this->set_power(0, hold_power, 0);
   } else {
     this->set_power(0, -60, 0);
@@ -143,13 +143,25 @@ void Drive::flatten_against_wall(bool forward, bool hold, uint8_t hold_power) {
 }
 
 void Drive::align_with_pole(uint16_t poti_zero) {
+  //2820
+  uint8_t deadzone = 80;
   this->flatten_against_wall(false, true);
-  printf("poti: %d", this->pole_poti.get_value());
-  if (this->pole_poti.get_value() > poti_zero + 80) this->set_power(55, -15, 0);
-  else if (this->pole_poti.get_value() < poti_zero - 80) this->set_power(-55, -15, 0);
-  while (abs(this->pole_poti.get_value() - poti_zero) > 100) pros::delay(5);
+
+  int16_t poti_val = this->pole_poti.get_value();
+  int16_t poti_val_last = poti_val;
+
+  if (poti_val > poti_zero + deadzone) this->set_power(55, -15, 0);
+  else if (poti_val < poti_zero - deadzone) this->set_power(-55, -15, 0);
+
+  while (abs(poti_val - poti_zero) > deadzone && sgn(poti_val - poti_zero) == sgn(poti_val_last - poti_zero)) {
+    poti_val_last = poti_val;
+    poti_val = this->pole_poti.get_value();
+    pros::delay(3);
+  }
+
   this->flatten_against_wall(false, true);
   this->reset_global_angle();
+  printf("err: %d", this->pole_poti.get_value() - poti_zero);
   this->set_state(STATE_DRIVER_CONTROL);
 }
 

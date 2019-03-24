@@ -5,6 +5,7 @@ Capper::Capper(std::string subsystem_name, uint8_t default_state, pros::Motor& c
   this->state_names[STATE_AUTO_CONTROL] = "Auto Control";
   this->state_names[STATE_HOLD] = "Hold";
   this->state_names[STATE_CAPPING] = "Capping";
+  this->state_names[STATE_FINISH_CAPPING] = "State Finish Capping";
 }
 
 /* Private Functions */
@@ -29,6 +30,10 @@ void Capper::set_state(uint8_t new_state) {
     case STATE_CAPPING:
       this->target = 130 * Capper::GEAR_RATIO;
       break;
+    case STATE_FINISH_CAPPING:
+      this->capper_motor.move(100);
+      this->target = Capper::CAPPING_END_POSIITON;
+      break;
   }
 }
 
@@ -37,6 +42,8 @@ void Capper::update() {
   this->velocity = this->capper_motor.get_actual_velocity();
   this->position = this->capper_motor.get_position();
   this->error = this->target - this->position;
+
+  // printf("%f\n", this->position / GEAR_RATIO);
 
 
   switch(this->state) {
@@ -67,6 +74,12 @@ void Capper::update() {
       else if (this->position < Capper::CAPPING_HOLD_POSITION) this->capper_motor.move_velocity(45);
       else this->set_state(STATE_HOLD);
       break;
+    case STATE_FINISH_CAPPING:
+      if (this->below_vel_threshold(1, 25)) {
+        this->hold = false;
+        this->set_state(STATE_HOLD);
+      }
+      break;
   }
 
   this->last_velocity = this->velocity;
@@ -90,6 +103,10 @@ void Capper::move_to_velocity(double target, uint8_t velocity, bool hold, uint8_
   this->set_state(STATE_AUTO_CONTROL);
 }
 
+void Capper::wait_for_target_reach() {
+  while (this->state == STATE_AUTO_CONTROL) pros::delay(2);
+}
+
 void Capper::move_to_pickup() {
   this->move_to_velocity(Capper::PICKUP_POSITION, 200);
 }
@@ -105,8 +122,9 @@ void Capper::move_to_flag_flip(double velocity) {
   this->move_to_velocity(FLAG_FLIP_POSITION, velocity);
 }
 
-void Capper::pickup_cap() {
-  this->move_to_velocity(Capper::CARRY_POSITION, 65);
+void Capper::pickup_cap(bool expansion_zone) {
+  if (expansion_zone) this->move_to_velocity(100 * Capper::GEAR_RATIO, 80);
+  else this->move_to_velocity(Capper::CARRY_POSITION + 9 * Capper::GEAR_RATIO, 65);
 }
 
 void Capper::start_capping() {
@@ -115,7 +133,7 @@ void Capper::start_capping() {
 
 void Capper::finish_capping() {
   while(this->state == STATE_CAPPING) pros::delay(2);
-  this->move_to_power(CAPPING_END_POSIITON, 105, false);
+  this->set_state(STATE_FINISH_CAPPING);
 }
 
 bool Capper::capping() {

@@ -58,7 +58,7 @@ double Subsystem::get_target() {
 }
 
 double Subsystem::get_error() {
-  return RAD_TO_DEG(this->error);
+  return this->error;
 }
 
 double Subsystem::get_velocity() {
