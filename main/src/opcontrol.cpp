@@ -10,8 +10,12 @@ void opcontrol() {
 	log_ln(LOG_AUTO, "   --- %d START OPCONTROL --- \n", pros::millis());
 	pilons::Task::stop_all_tasks();
 	Subsystem::enable_all();
+	enc_r.reset();
+	enc_l.reset();
 
 	while (true) {
+		// printf("R: %d, L: %d\n", enc_r.get_value() % 360, enc_l.get_value() % 360);
+
 		pos.update();
 		master.update();
 		partner.update();
