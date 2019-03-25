@@ -48,13 +48,13 @@ void climb_on_platform() {
   drive.set_power(55, 15, 0);
   while (right_platform_sensor.get_value() < 2000) pros::delay(5);
   drive.set_power(-55, 15,0);
-  while (right_platform_sensor.get_value() > 1500) pros::delay(5);
+  while (right_platform_sensor.get_value() > 1900) pros::delay(5);
   drive.set_power(0, 0, 0);
   gyro.reset();
   angler.move_to(0);
   drive.br_motor.tare_position();
-  for (int i = 40; i < 100; i++) {
-    drive.set_side_power(i + 20, i);
+  for (int i = 40; i < 120; i++) {
+    drive.set_side_power(i, i);
     pros::delay(3);
   }
   while (fabs(gyro.get_value()) < 150) pros::delay(5);

@@ -15,7 +15,8 @@ void opcontrol() {
 
 	while (true) {
 		// printf("R: %d, L: %d\n", enc_r.get_value() % 360, enc_l.get_value() % 360);
-
+		//printf("Light sensor:%d\n",right_platform_sensor.get_value());
+		printf("gyro: %f\n",gyro.get_value());
 		pos.update();
 		master.update();
 		partner.update();
