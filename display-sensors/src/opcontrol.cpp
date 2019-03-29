@@ -1,4 +1,5 @@
 #include "main.h"
+#include "config.hpp"
 
 /**
  * Runs the operator control code. This function will be started in its own task
@@ -15,17 +16,22 @@
  */
 void opcontrol() {
 	pros::Controller master(pros::E_CONTROLLER_MASTER);
-	pros::Motor left_mtr(1);
-	pros::Motor right_mtr(2);
+	int screen_num = 0;
 	while (true) {
-		pros::lcd::print(0, "%d %d %d", (pros::lcd::read_buttons() & LCD_BTN_LEFT) >> 2,
-		                 (pros::lcd::read_buttons() & LCD_BTN_CENTER) >> 1,
-		                 (pros::lcd::read_buttons() & LCD_BTN_RIGHT) >> 0);
-		int left = master.get_analog(ANALOG_LEFT_Y);
-		int right = master.get_analog(ANALOG_RIGHT_Y);
-
-		left_mtr = left;
-		right_mtr = right;
-		pros::delay(20);
+		switch (screen_num) {
+			case 0:
+				master.print(2, 0, "drive:%d %d %d %d               ", m_drive_bl.get_actual_position(), m_drive_br.get_actual_position(), m_drive_fl.get_actual_position(), m_drive_fr.get_actual_position());
+				break;
+			case 1:
+				master.print(2, 0, "intake:%d angler:%d               ", m_intake.get_actual_position(), m_angler.get_actual_position());
+				break;
+			case 2:
+				master.print(2, 0, "pun:%d b_d:%d               ", m_puncher.get_actual_position(), s_ball_detector.get_value());
+				break;
+			case 3:
+				master.print(2, 0, "capper:%d pole_ptoi:%d               ", m_capper.get_actual_position(), s_pole_poti.get_value());
+				break;
+			}
+			if (master.
 	}
 }

@@ -1,9 +1,6 @@
 #pragma once
 #include "main.h"
 
-extern pilons::Controller master;
-extern pilons::Controller partner;
-
 extern pros::ADIEncoder enc_s;
 extern pros::Motor m_intake;
 extern pros::Motor m_drive_fl;
