@@ -75,7 +75,7 @@ void drive_move(void* _params) {
   drive_move_params* params = (drive_move_params*)_params;
   double dist_target = params->dist_target;
   double angle_target = params->angle_target;
-  bool brake = params-brake;
+  bool brake = params->brake;
   uint8_t max_power = params->max_power;
   int8_t start_power = params->start_power;
   bool decel = params->decel;
