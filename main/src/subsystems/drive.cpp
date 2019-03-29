@@ -144,21 +144,30 @@ void Drive::flatten_against_wall(bool forward, bool hold, uint8_t hold_power) {
 
 void Drive::align_with_pole(uint16_t poti_zero) {
   //2820
+  uint8_t left = -1;
   uint8_t deadzone = 80;
   this->flatten_against_wall(false, true);
 
   int16_t poti_val = this->pole_poti.get_value();
   int16_t poti_val_last = poti_val;
 
-  if (poti_val > poti_zero + deadzone) this->set_power(55, -15, 0);
-  else if (poti_val < poti_zero - deadzone) this->set_power(-55, -15, 0);
+  if (poti_val > poti_zero + deadzone)
+  {
+    this->set_power(55, -15, 0);
+    left = -1;
+  }
+  else if (poti_val < poti_zero - deadzone)
+  {
+    this->set_power(-55, -15, 0);
+    left = 1;
+  }
 
-  while (abs(poti_val - poti_zero) > deadzone && sgn(poti_val - poti_zero) == sgn(poti_val_last - poti_zero)) {
+  while (abs(poti_val - poti_zero) > deadzone) {
     poti_val_last = poti_val;
     poti_val = this->pole_poti.get_value();
     pros::delay(3);
   }
-
+  this->set_power(15*sgn(left),0,0);
   this->flatten_against_wall(false, true);
   this->reset_global_angle();
   printf("err: %d", this->pole_poti.get_value() - poti_zero);
