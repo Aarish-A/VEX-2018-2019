@@ -45,6 +45,8 @@ private:
   friend void drive_move_async(double dist_target, double angle_target, bool brake, uint8_t max_power, int8_t start_power, bool decel);
   friend void drive_turn_async(const AngleTarget& target);
   friend void sweep_turn(const AngleTarget& target, double radius, bool forwards, double post_distance, bool clockwise, bool brake, int max_power);
+  friend void drive_turn_side(const AngleTarget& target, double kP, double offset, bool forwards);
+  friend void shot_queue_handle(void* param);
 
 public:
   /* Constructor */

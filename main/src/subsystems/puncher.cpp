@@ -37,6 +37,7 @@ void Puncher::set_state(uint8_t new_state) {
       this->target = (this->OFFSET + (this->shot_number * this->TPR) + this->HOLD);
       break;
     case STATE_LOADED:
+      this->cancelling_shot = false;
       this->set_power(this->HOLD_POWER);
       break;
     case STATE_PULLBACK:

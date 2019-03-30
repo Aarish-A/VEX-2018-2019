@@ -51,6 +51,7 @@ void drive_turn_async(const AngleTarget& target);
 void drive_turn_sync(const AngleTarget& target);
 
 void sweep_turn(const AngleTarget& target, double radius, bool forwards, double post_distance = 8_in, bool clockwise = true, bool brake = true, int max_power = 200);
+void drive_turn_side(const AngleTarget& target, double kP, double offset, bool forwards);
 
 void auto_update_task_stop_function();
 void drive_task_stop_function();

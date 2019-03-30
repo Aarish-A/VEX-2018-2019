@@ -372,6 +372,110 @@ void sweep_turn(const AngleTarget& target, double radius, bool forwards, double 
   drive_move_sync(post_distance, max_power, brake, target_angle);
 }
 
+void drive_turn_side(const AngleTarget& target, double kP, double offset, bool forwards) {
+  drive.set_state(Drive::STATE_AUTO_CONTROL);
+  int t_start = pros::millis();
+	double dA = target.getTarget() - drive.get_global_angle() + offset;
+  drive.fl_motor.tare_position();
+  drive.bl_motor.tare_position();
+  drive.br_motor.tare_position();
+  drive.fr_motor.tare_position();
+  double ticks_targ = dA/SPN_TO_IN_L*(WHL_DIS_L+WHL_DIS_R);
+  printf("ticks targ: %f", ticks_targ);
+  log_ln(LOG_AUTO, "%d Turning to %f | DeltaA: %f", pros::millis(), RAD_TO_DEG(target.getTarget()), RAD_TO_DEG(dA) );
+  printf("Da is %f", dA);
+	if (forwards) {
+		while (fabs(dA) > 0.8_deg) {
+			dA = target.getTarget() - drive.get_global_angle() + offset;
+			//log("%d Pos:%f DeltaA:%f Pow:%f \n", pros::millis(), RAD_TO_DEG(pos.a), RAD_TO_DEG(dA), kP*fabs(dA));
+			if (dA > 0) {
+				drive.bl_motor.move_velocity(kP*fabs(dA));
+				drive.fl_motor.move_velocity(kP*fabs(dA));
+				drive.br_motor.move_relative(0,200);
+				drive.fr_motor.move_relative(0,200);
+			} else {
+				drive.br_motor.move_velocity(kP*fabs(dA));
+				drive.fr_motor.move_velocity(kP*fabs(dA));
+				drive.bl_motor.move_velocity(0);
+				drive.fl_motor.move_velocity(0);
+			}
+			pros::delay(5);
+		}
+	} else {
+    if(dA < 0_deg) {
+      double left_per = -1;
+      double right_per = -0.3;
+      double kP = 350;
+      double error;
+
+      do {
+        dA = target.getTarget() - drive.get_global_angle() + offset;
+        error = fabs(dA);
+        double base_pow = error * kP + 10;
+        if (base_pow > 60) base_pow = 60;
+        int left_pow = round(base_pow * left_per);
+        int right_pow = round(base_pow * right_per);
+
+        drive.fl_motor.move(left_pow);
+        drive.bl_motor.move(left_pow);
+        drive.fr_motor.move(right_pow);
+        drive.br_motor.move(right_pow);
+
+        printf("%f %f\n", RAD_TO_DEG(error), base_pow);
+
+        pros::delay(1);
+      } while (fabs(error) > 0.6_deg);
+
+      double left = -15 * left_per;
+      if (fabs(left) < 5) left = 5 * sgn(left);
+      double right = -15 * right_per;
+      if (fabs(right) < 5) right = 5 * sgn(right);
+      drive.fl_motor.move(left);
+      drive.bl_motor.move(left);
+      drive.fr_motor.move(right);
+      drive.br_motor.move(right);
+      pros::delay(100);
+    } else {
+      double left_per = -0.3;
+      double right_per = -1;
+      double kP = 350;
+      double error;
+
+      do {
+        dA = target.getTarget() - drive.get_global_angle() + offset;
+        error = fabs(dA);
+        double base_pow = error * kP + 10;
+        if (base_pow > 60) base_pow = 60;
+        int left_pow = round(base_pow * left_per);
+        int right_pow = round(base_pow * right_per);
+
+        drive.fl_motor.move(left_pow);
+        drive.bl_motor.move(left_pow);
+        drive.fr_motor.move(right_pow);
+        drive.br_motor.move(right_pow);
+
+        printf("%f %f\n", RAD_TO_DEG(error), base_pow);
+
+        pros::delay(1);
+      } while (fabs(error) > 0.6_deg);
+
+      double left = -15 * left_per;
+      if (fabs(left) < 5) left = 5 * sgn(left);
+      double right = -15 * right_per;
+      if (fabs(right) < 5) right = 5 * sgn(right);
+      drive.fl_motor.move(left);
+      drive.bl_motor.move(left);
+      drive.fr_motor.move(right);
+      drive.br_motor.move(right);
+      pros::delay(100);
+  }
+  drive.set_power(0);
+	drive.brake();
+  log_ln(LOG_AUTO, "%d Turned to %f in %d Vel:%f | FL: %f, BL: %f, FR: %f, BR %f", pros::millis(), RAD_TO_DEG(drive.get_global_angle()), pros::millis()-t_start, pos.aVel, drive.fl_motor.get_position(), drive.bl_motor.get_position(), drive.fr_motor.get_position(), drive.br_motor.get_position());
+  }
+  drive.set_state(Drive::STATE_DRIVER_CONTROL);
+}
+
 void auto_update_task_stop_function() {
   puncher.set_holding();
   drive.driver_set(0, 0, 0);

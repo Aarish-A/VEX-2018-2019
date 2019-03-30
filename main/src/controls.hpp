@@ -33,6 +33,10 @@ constexpr int BTN_SHOT_L_T = GET_BTN_INDEX(pros::E_CONTROLLER_DIGITAL_L1);
 constexpr int BTN_SHOT_L_M = GET_BTN_INDEX(pros::E_CONTROLLER_DIGITAL_L2);
 constexpr int BTN_SHOT_R_T = GET_BTN_INDEX(pros::E_CONTROLLER_DIGITAL_R1);
 constexpr int BTN_SHOT_R_M = GET_BTN_INDEX(pros::E_CONTROLLER_DIGITAL_R2);
+constexpr int BTN_FIELD_FRONT = GET_BTN_INDEX(pros::E_CONTROLLER_DIGITAL_X);
+constexpr int BTN_FIELD_RED_PF = GET_BTN_INDEX(pros::E_CONTROLLER_DIGITAL_Y);
+constexpr int BTN_FIELD_BLUE_PF = GET_BTN_INDEX(pros::E_CONTROLLER_DIGITAL_A);
+
 
 
 /* Partner Controller Dependent Controls */

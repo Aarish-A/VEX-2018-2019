@@ -4,9 +4,10 @@
 #include "../gui.hpp"
 #include "../libraries/task.hpp"
 #include "../libraries/util.hpp"
+#include "auto.hpp"
 #include <deque>
 
-constexpr double FLAG_WIDTH = 16.50;
+constexpr double FLAG_WIDTH = 12.0;
 
 extern pilons::Task shot_queue_handle_task;
 

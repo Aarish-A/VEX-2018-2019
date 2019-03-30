@@ -3,6 +3,7 @@
 #include "config.hpp"
 #include "controls.hpp"
 #include "macros/shot_queueing.hpp"
+#include "gui.hpp"
 #include "libraries/util.hpp"
 #include "libraries/task.hpp"
 
@@ -17,7 +18,16 @@ void opcontrol() {
 		// printf("R: %d, L: %d\n", enc_r.get_value(), enc_l.get_value());
 		//printf("Light sensor:%d\n",right_platform_sensor.get_value());
 		//printf("poti: %d\n",s_pole_poti.get_value());
-		master.print(2,0,"%d %d                 ",enc_l.get_value(), enc_r.get_value());
+		// master.print(2,0,"%d %d                 ",enc_l.get_value(), enc_r.get_value());
+		std::string fps = "";
+		switch(field_position) {
+			case Field_Position::FRONT: fps = "Front      "; break;
+			case Field_Position::RED_PF: fps = "RedPF     "; break;
+			case Field_Position::BLUE_PF: fps = "BluePF   "; break;
+			case Field_Position::BACK: fps = "Back        "; break;
+		}
+		master.print(2, 0, "%c %s", game_side, fps.c_str());
+
 		pos.update();
 		master.update();
 		partner.update();
@@ -26,12 +36,6 @@ void opcontrol() {
 		angler.update();
 		puncher.update();
 		capper.update();
-
-		if (master.check_single_press(BTN_DECAPPER_UP)) {
-		} else if (master.check_single_press(BTN_DECAPPER_DOWN)) {
-			capper.move_to_velocity(0, 100, false);
-		}
-
 
 		/* Drive */
 		int8_t drive_y = master.get_analog(JOY_DRIVE_THROTTLE, 10);
@@ -48,8 +52,8 @@ void opcontrol() {
 		else if (master.check_single_press(BTN_INTAKE_DOWN)) intake.off() ? intake.outtake() : intake.stop();
 
 		/* Puncher */
-		if (master.check_single_press(BTN_SHOT_CANCEL)) puncher.cancel_shot();
-		else if (master.check_single_press(BTN_SHOT_R_T)) puncher.shoot();
+		// if (master.check_single_press(BTN_SHOT_CANCEL)) puncher.cancel_shot();
+		// else if (master.check_single_press(BTN_SHOT_R_T)) puncher.shoot();
 
 		/* Macros */
 		if (master.check_single_press(BTN_GROUND_PICKUP)) {
@@ -67,14 +71,33 @@ void opcontrol() {
 			intake.outtake();
 		}
 
-		// if (master.check_single_press(BTN_SHOT_R_T)) {
-		// 	make_shot_request(front_SP.top, Turn_Direction::STRAIGHT, Field_Position::FRONT, true);
-		// }
-		//
-		// else if (master.check_single_press(BTN_SHOT_R_M)) {
-		// 	make_shot_request(front_SP.mid, Turn_Direction::STRAIGHT, Field_Position::FRONT, true);
-		// }
-		//
+		if (master.check_single_press(BTN_SHOT_R_T)) {
+			make_shot_request(front_SP.top, Turn_Direction::STRAIGHT, Field_Position::FRONT, true);
+			make_shot_request(front_SP.top - 30, Turn_Direction::RIGHT, Field_Position::RED_PF, true);
+			make_shot_request(0, Turn_Direction::RIGHT, Field_Position::BLUE_PF, true);
+		}
+		else if (master.check_single_press(BTN_SHOT_R_M)) {
+			make_shot_request(front_SP.mid, Turn_Direction::STRAIGHT, Field_Position::FRONT, true);
+		}
+		else if (master.check_single_press(BTN_SHOT_L_T)) {
+			make_shot_request(front_SP.top, Turn_Direction::STRAIGHT, Field_Position::FRONT, true);
+			make_shot_request(front_SP.top - 30, Turn_Direction::LEFT, Field_Position::RED_PF, true);
+			make_shot_request(0, Turn_Direction::LEFT, Field_Position::BLUE_PF, true);
+		}
+		else if (master.check_single_press(BTN_SHOT_CANCEL)) {
+			shot_queue_handle_task.stop_task();
+		}
+
+		if (master.check_single_press(BTN_FIELD_FRONT)) {
+			field_position = Field_Position::FRONT;
+		}
+		else if (master.check_single_press(BTN_FIELD_RED_PF)) {
+			field_position = Field_Position::RED_PF;
+		}
+		else if (master.check_single_press(BTN_FIELD_BLUE_PF)) {
+			field_position = Field_Position::BLUE_PF;
+		}
+
 		// if (partner.check_single_press(BTN_SHOT_L_T)) {
 		// 	make_shot_request(platform_SP.top, Turn_Direction::LEFT, Field_Position::BLUE_PF);
 		// 	make_shot_request(platform_SP.top, Turn_Direction::LEFT, Field_Position::RED_PF);

@@ -14,7 +14,7 @@ void pilons::Task::start_task(void* params) {
     if ((this->task)->get_state() != pros::E_TASK_STATE_DELETED) (this->task)->remove();
     delete this->task;
     this->task = nullptr;
-    log_ln(LOG_TASKS, "Stopped %s task", (this->task_name).c_str());
+    log_ln(LOG_TASKS, "Stopped %s task from task start", (this->task_name).c_str());
   }
 
   log_ln(LOG_TASKS, "Started %s task", (this->task_name).c_str());
@@ -27,12 +27,12 @@ void pilons::Task::stop_task() {
     if ((this->task)->get_state() != pros::E_TASK_STATE_DELETED) (this->task)->remove();
     delete this->task;
     this->task = nullptr;
-    log_ln(LOG_TASKS, "Stopped %s task", (this->task_name).c_str());
+    log_ln(LOG_TASKS, "Stopped %s task from task end (shouldn't get here lol)", (this->task_name).c_str());
   }
 }
 
 bool pilons::Task::running() {
-  return (this->task != nullptr);
+  return !(this->task == nullptr || this->task->get_state() == pros::E_TASK_STATE_DELETED);
 }
 
 void pilons::Task::stop_all_tasks() {
