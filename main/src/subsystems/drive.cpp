@@ -193,7 +193,7 @@ void Drive::wait_for_stop() {
 void Drive::wait_for_distance(double target_distance) {
   bool forwards;
   target_distance > 0 ? forwards = true : forwards = false;
-  if (forwards) while (this->target - this->error < target_distance) pros::delay(2);
+  if (forwards) while (this->target - this->error < target_distance) pros::delay(2); 
   else while(this->target - this->error > target_distance) pros::delay(2);
 }
 

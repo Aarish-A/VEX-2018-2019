@@ -30,6 +30,9 @@ constexpr double DEG_TO_RAD(double deg) { return deg *  M_PI / 180; }
 constexpr double operator"" _in(long double val) { return val; }
 constexpr double operator"" _in(unsigned long long val) { return val; }
 
+constexpr double operator"" _tile(long double val) { return val * 24_in; }
+constexpr double operator"" _tile(unsigned long long val) { return val * 24_in; }
+
 constexpr double operator"" _rad(long double val) { return val; }
 constexpr double operator"" _rad(unsigned long long val) { return val; }
 

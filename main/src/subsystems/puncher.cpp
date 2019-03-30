@@ -59,6 +59,7 @@ void Puncher::update() {
   this->error = this->target - this->position;
   this->ball_sensor_value = this->ball_sensor.get_value();
 
+  //ball_on = true; // DELETE
   if (this->ball_sensor_value < BALL_THRESHOLD) {
     this->ball_on_time = pros::millis();
     if (!ball_on) log_ln(LOG_PUNCHER, "Ball has gotten on the puncher");

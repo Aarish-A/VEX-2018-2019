@@ -29,12 +29,79 @@ void driver_skills();
 
 void autonomous() {
   // Auto Start
-  printf("Started Auto!\n");
+  printf("%d Started Auto!\n", pros::millis());
   uint32_t autonomous_time = pros::millis();
   Subsystem::enable_all();
   auto_update_task.start_task();
   drive.reset_global_angle();
 
+  auto_red_back();
+
+  // Auto End
+  uint32_t auto_finished_time = pros::millis() - autonomous_time;
+  master.print(2, 0, "Time: %d\n", auto_finished_time);
+  pros::delay(60);
+  pilons::Task::stop_all_tasks();
+}
+
+
+void auto_red_front() {
+
+}
+
+void auto_red_back() {
+  int cap_dis = 47_in;
+  //Pickup
+  intake.intake();
+  angler.move_to(Angler::PICKUP_POSITION);
+  drive_move_sync(cap_dis, 0_deg);
+
+  //Shoot
+  drive_move_sync(-(cap_dis-12_in), 0_deg);
+  drive_turn_sync(FixedAngleTarget(-65_deg));
+  double_shot(70, 140);
+
+
+  //Flatten wall
+  drive_turn_sync(FixedAngleTarget(-90_deg));
+  drive_move_sync(-0.75_tile, -90_deg, false, false);
+  printf(" \n\n >>>> %d auto done back up | %d %d \n", pros::millis(), enc_l.get_value(), enc_r.get_value());
+  drive.flatten_against_wall(false, false, 0);
+  drive.reset_global_angle();
+  printf("%d auto RESET: %d %d\n", pros::millis(), enc_l.get_value(), enc_r.get_value());
+  /*
+  //Get balls off back cap
+
+  drive_move_sync(10_in, 0_deg);
+  angler.move_to(Angler::CAP_PICKUP_POSITION);
+  drive_turn_sync(FixedAngleTarget(90_deg));
+  drive_move_sync(2_tile, 90_deg);
+  drive_move_sync(-10_in, 90_deg);
+
+  //Shoot
+  drive_turn_sync(FixedAngleTarget(-50_deg));
+  double_shot(50, 90);
+  */
+  printf("%d Stopped | red\n", pros::millis());
+}
+
+void auto_red_back_no_second_shot() {
+
+}
+
+void auto_blue_front() {
+
+}
+
+void auto_blue_back() {
+
+}
+
+void auto_blue_back_no_second_shot() {
+
+}
+
+void programming_skills_29_points() {
   drive_move_async(38_in, 0_deg);
   capper.move_to_velocity(Capper::CAP_FLIP_POSITION + 12 * Capper::GEAR_RATIO, 120);
   drive.wait_for_distance(15_in);
@@ -171,37 +238,6 @@ void autonomous() {
   climb_on_platform();
   drive_turn_sync(FixedAngleTarget(-90_deg));
   climb_on_platform();
-
-  // Auto End
-  uint32_t auto_finished_time = pros::millis() - autonomous_time;
-  master.print(2, 0, "Time: %d", auto_finished_time);
-  pros::delay(60);
-  pilons::Task::stop_all_tasks();
-}
-
-
-void auto_red_front() {
-
-}
-
-void auto_red_back() {
-
-}
-
-void auto_red_back_no_second_shot() {
-
-}
-
-void auto_blue_front() {
-
-}
-
-void auto_blue_back() {
-
-}
-
-void auto_blue_back_no_second_shot() {
-
 }
 
 void programming_skills_28_points() {

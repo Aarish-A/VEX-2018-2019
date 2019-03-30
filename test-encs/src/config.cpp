@@ -10,8 +10,8 @@ pros::Motor intake(2, pros::E_MOTOR_GEARSET_18, false, pros::E_MOTOR_ENCODER_DEG
 pros::Motor decapper(6, pros::E_MOTOR_GEARSET_18, false, pros::E_MOTOR_ENCODER_DEGREES);
 pros::Motor puncherLeft(3, pros::E_MOTOR_GEARSET_18, false, pros::E_MOTOR_ENCODER_DEGREES);
 pros::Motor puncherRight(5, pros::E_MOTOR_GEARSET_18, false, pros::E_MOTOR_ENCODER_DEGREES);
-pros::ADIEncoder enc_r(1, 2, false);
-pros::ADIEncoder enc_l(7, 8, false);
+pros::ADIEncoder enc_r(7, 8, false);
+pros::ADIEncoder enc_l(1, 2, false);
 pros::ADIEncoder enc_s(5, 6, true);
 //pros::ADIAnalogIn autoPoti (8);
 pros::ADILineSensor ball_sensor(5);
