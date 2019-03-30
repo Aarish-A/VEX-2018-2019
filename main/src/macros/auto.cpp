@@ -3,6 +3,7 @@
 pilons::Task auto_update_task("Auto Update", auto_update, auto_update_task_stop_function);
 pilons::Task drive_move_task("Drive Move", drive_move, drive_task_stop_function);
 pilons::Task drive_turn_task("Drive Turn", drive_turn, drive_task_stop_function);
+pilons::Task cap_on_pole_task("Cap on Pole", cap_on_pole_task_function, cap_on_pole_stop_function);
 
 drive_move_params* drive_move_param = nullptr;
 drive_turn_params* drive_turn_param = nullptr;
@@ -33,12 +34,26 @@ void double_shot(double targ1, double targ2, bool wait) {
 /* Capping */
 void cap_on_pole() {
   drive.flatten_against_wall(false, true);
+  printf("started cap on pole func\n");
+  capper.start_capping();
+  printf("started capping\n");
+  drive.align_with_pole();
+  capper.finish_capping();
+  drive.flatten_against_wall(false,true);
+  drive.reset_global_angle();
+  while(capper.capping()) pros::delay(2);
+}
+
+void cap_on_pole_task_function(void* _param) {
+  drive.flatten_against_wall(false, true);
   capper.start_capping();
   drive.align_with_pole();
   capper.finish_capping();
   drive.flatten_against_wall(false,true);
   drive.reset_global_angle();
   while(capper.capping()) pros::delay(2);
+  drive_move_sync(5_in);
+  capper.move_to_pickup();
 }
 
 /* Drive */
@@ -492,4 +507,9 @@ void drive_task_stop_function() {
     delete drive_move_param;
     drive_move_param = nullptr;
   }
+}
+
+void cap_on_pole_stop_function() {
+  drive.set_power(0);
+  drive.set_state(Drive::STATE_DRIVER_CONTROL);
 }

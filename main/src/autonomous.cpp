@@ -35,7 +35,27 @@ void autonomous() {
   auto_update_task.start_task();
   drive.reset_global_angle();
 
-  auto_red_back();
+  capper.move_to_velocity(62 * Capper::GEAR_RATIO, 200);
+  angler.move_to(Angler::PICKUP_POSITION);
+  intake.intake();
+  drive_move_async(43_in, 0_deg);
+  drive.wait_for_distance(42_in);
+  capper.move_to_velocity(28 * Capper::GEAR_RATIO, -100);
+  pros::delay(100);
+  drive_move_async(-2_in, 0_deg, true, 80);
+  drive.wait_for_stop();
+  pros::delay(100);
+  drive_move_sync(-5_in, 0_deg);
+  intake.stop();
+  capper.move_to_pickup();
+  drive_move_async(10_in, 0_deg);
+  drive.wait_for_distance(6.0_in);
+  capper.pickup_cap();
+  pros::delay(75);
+  intake.intake();
+  drive.wait_for_stop();
+  drive_turn_sync(FixedAngleTarget(-56_deg));
+  double_shot(front_SP.mid, front_SP.top);
 
   // Auto End
   uint32_t auto_finished_time = pros::millis() - autonomous_time;

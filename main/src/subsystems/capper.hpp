@@ -49,4 +49,5 @@ public:
   void start_capping();
   void finish_capping();
   bool capping();
+  bool at_pickup_position();
 };

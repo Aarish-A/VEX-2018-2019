@@ -67,6 +67,7 @@ void Capper::update() {
     case STATE_HOLD:
       break;
     case STATE_CAPPING:
+      printf("in capping\n");
       if (this->position < 90 * Capper::GEAR_RATIO) this->capper_motor.move_velocity(200);
       else if (this->position < 115 * Capper::GEAR_RATIO) this->capper_motor.move_velocity(110);
       else if (this->position < 145 * Capper::GEAR_RATIO) this->capper_motor.move_velocity(85);
@@ -138,4 +139,8 @@ void Capper::finish_capping() {
 
 bool Capper::capping() {
   return this->state != STATE_HOLD;
+}
+
+bool Capper::at_pickup_position() {
+  return (fabs(this->position) - Capper::PICKUP_POSITION) < 10 * Capper::GEAR_RATIO;
 }

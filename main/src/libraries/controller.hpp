@@ -3,9 +3,12 @@
 #include "../logs.hpp"
 #include "../libraries/util.hpp"
 #include <stdarg.h>
+#include <deque>
 
 namespace pilons {
   class Controller final : public pros::Controller {
+  public:
+    int8_t single_pressed = -1;
 
   private:
     std::string controller_name;
@@ -25,6 +28,7 @@ namespace pilons {
     };
 
     button buttons[12];
+    std::deque<uint8_t> single_pressed_queue;
 
     bool check_rising(int button);
     bool check_falling(int button);
