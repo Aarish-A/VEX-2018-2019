@@ -67,18 +67,15 @@ void opcontrol() {
 			case BTN_INTAKE_UP:
 				(intake.off() && !capper.at_pickup_position()) ? intake.intake() : intake.stop();
 				break;
-
 			case BTN_INTAKE_DOWN:
 				(intake.off() && !capper.at_pickup_position()) ? intake.outtake() : intake.stop();
 				break;
 
-			// Macros
 			// Angler
 			case BTN_GROUND_PICKUP:
 				angler.move_to(Angler::PICKUP_POSITION);
 				intake.intake();
 				break;
-
 			case BTN_CAP_PICKUP:
 				angler.move_to(Angler::CAP_PICKUP_POSITION);
 				intake.intake();
@@ -88,7 +85,6 @@ void opcontrol() {
 			case BTN_SHOT_R_T:
 				make_shot_request(front_SP.top, Turn_Direction::STRAIGHT, Field_Position::FRONT, true);
 				break;
-
 			case BTN_SHOT_R_M:
 				make_shot_request(front_SP.mid, Turn_Direction::STRAIGHT, Field_Position::FRONT, true);
 				break;
@@ -98,12 +94,10 @@ void opcontrol() {
 				capper.move_to_pickup();
 				intake.stop();
 				break;
-
 			case BTN_CAPPER_UP:
 				if (capper.at_pickup_position()) capper.pickup_cap();
 				else cap_on_pole_task.start_task();
 				break;
-
 			case BTN_CAP_FLIP:
 				capper_move_to_cap_flip_task.start_task();
 				break;
