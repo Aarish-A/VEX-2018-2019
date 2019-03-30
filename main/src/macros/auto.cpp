@@ -226,6 +226,7 @@ void drive_move_sync(double dist_target, double angle_target, bool brake, uint8_
 }
 
 void drive_turn(void *_params) {
+  log_ln(LOG_AUTO, "%d Drive Turn Start: angle is %f\n", pros::millis(), RAD_TO_DEG(drive.get_global_angle()));
   drive.set_state(Drive::STATE_AUTO_CONTROL);
   drive_turn_params* params = (drive_turn_params*)_params;
   const AngleTarget& target = params->target;
@@ -281,7 +282,7 @@ void drive_turn(void *_params) {
   drive.set_power(0);
   drive.brake();
   pros::delay(50);
-  log_ln(LOG_AUTO, "End angle is %f\n", RAD_TO_DEG(drive.get_global_angle()));
+  log_ln(LOG_AUTO, "%d Drive Turn Done: End angle is %f\n", pros::millis(), RAD_TO_DEG(drive.get_global_angle()));
   drive_turn_task.stop_task();
 }
 

@@ -57,32 +57,43 @@ void auto_red_back() {
   drive_move_sync(cap_dis, 0_deg);
 
   //Shoot
-  drive_move_sync(-(cap_dis-12_in), 0_deg);
-  drive_turn_sync(FixedAngleTarget(-65_deg));
-  double_shot(70, 140);
-
+  drive_move_sync(-(cap_dis-14_in), 0_deg);
+  drive_turn_sync(FixedAngleTarget(-64.5_deg));
+  double_shot(70, 125);
 
   //Flatten wall
   drive_turn_sync(FixedAngleTarget(-90_deg));
-  drive_move_sync(-0.75_tile, -90_deg, false, false);
+  drive_move_sync(-0.75_tile, -90_deg, false, 200, 0, false);
   printf(" \n\n >>>> %d auto done back up | %d %d \n", pros::millis(), enc_l.get_value(), enc_r.get_value());
-  drive.flatten_against_wall(false, false, 0);
+  drive.flatten_against_wall_base(false, -30, true, 10);
   drive.reset_global_angle();
   printf("%d auto RESET: %d %d\n", pros::millis(), enc_l.get_value(), enc_r.get_value());
-  /*
-  //Get balls off back cap
 
-  drive_move_sync(10_in, 0_deg);
+  //Get balls off back cap
+  double mid_flag_pos = 110;
+  drive_move_sync(6_in, 0_deg);
   angler.move_to(Angler::CAP_PICKUP_POSITION);
   drive_turn_sync(FixedAngleTarget(90_deg));
-  drive_move_sync(2_tile, 90_deg);
-  drive_move_sync(-10_in, 90_deg);
+  drive_move_sync(27.6_in, 90_deg);
+  pros::delay(800);
+  drive_move_sync(-9_in, 90_deg);
+  intake.outtake();
+  angler.move_to(Angler::CAP_FLIP_POSITION);
+  drive_move_async(17_in, 90_deg);
+  drive.wait_for_distance(12_in);
+  angler.move_to(mid_flag_pos);
+  drive.wait_for_stop();
+  printf("%d Done cap flip drive\n", pros::millis());
+  while(angler.moving_to_target()) pros::delay(2);
+  printf("%d Done Cap flip angler wait \n", pros::millis());
+  //drive_move_sync(-5_in, 90_deg);
 
   //Shoot
-  drive_turn_sync(FixedAngleTarget(-50_deg));
-  double_shot(50, 90);
-  */
+  drive_turn_sync(FixedAngleTarget(24_deg));
+  double_shot(mid_flag_pos, 220);
+
   printf("%d Stopped | red\n", pros::millis());
+
 }
 
 void auto_red_back_no_second_shot() {

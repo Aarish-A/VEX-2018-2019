@@ -112,31 +112,37 @@ void Drive::reset_global_angle() {
   this->enc_r.reset();
 }
 
-void Drive::flatten_against_wall(bool forward, bool hold, uint8_t hold_power) {
+void Drive::flatten_against_wall(bool forward, bool hold, int8_t hold_power) {
+  flatten_against_wall_base(forward, forward? 40 : 60, hold, hold_power);
+}
+
+void Drive::flatten_against_wall_base(bool forward, int8_t power, bool hold, int8_t hold_power) {
+  power = abs(power);
+  hold_power = abs(hold_power);
   this->set_state(STATE_AUTO_CONTROL);
   bool right_done = false;
   bool left_done = false;
 
   if (forward) {
-    this->set_power(0, 40, 0);
+    this->set_power(0, power, 0);
     pros::delay(200);
     do {
       pros::delay(2);
     } while (fabs(this->br_motor.get_actual_velocity()) > 1);
     if (hold) this->set_power(0, hold_power, 0);
   } else {
-    this->set_power(0, -60, 0);
+    this->set_power(0, -power, 0);
     pros::delay(200);
     do {
       if (fabs(this->fl_motor.get_actual_velocity()) < 2) left_done = true;
       if (fabs(this->fr_motor.get_actual_velocity()) < 2) right_done = true;
 
-      if (left_done && !right_done) this->set_side_power(-15, -60);
-      else if (!left_done && right_done) this->set_side_power(-60, -15);
+      if (left_done && !right_done) this->set_side_power(-15, -power);
+      else if (!left_done && right_done) this->set_side_power(-power, -15);
       else if (left_done && right_done) break;
       pros::delay(2);
     } while(true);
-    if (hold) this->set_power(0, -hold_power, 0);
+    if (hold) this->set_power(0, -power, 0);
     else this->set_power(0);
   }
   log_ln(LOG_AUTO, "Done flatten against wall");
@@ -193,7 +199,7 @@ void Drive::wait_for_stop() {
 void Drive::wait_for_distance(double target_distance) {
   bool forwards;
   target_distance > 0 ? forwards = true : forwards = false;
-  if (forwards) while (this->target - this->error < target_distance) pros::delay(2); 
+  if (forwards) while (this->target - this->error < target_distance) pros::delay(2);
   else while(this->target - this->error > target_distance) pros::delay(2);
 }
 
