@@ -3,6 +3,7 @@
 #include "../config.hpp"
 #include "../logs.hpp"
 #include "../libraries/task.hpp"
+#include "shot_queueing.hpp"
 
 constexpr double MECANUM_DRIVE_WIDTH = 13.20;
 constexpr double EDGE_TO_TRACKING_WHEEL = 1.25;
@@ -10,6 +11,7 @@ constexpr double DRIVE_EDGE_TO_MECANUM = 2.50;
 
 extern pilons::Task auto_update_task;
 extern pilons::Task move_alg_task;
+extern pilons::Task cap_on_pole_task;
 
 void start_auto_update_task();
 void stop_auto_update_task();
@@ -23,6 +25,8 @@ void double_shot(double targ1, double targ2, bool wait = true);
 
 /* Capping */
 void cap_on_pole();
+void cap_on_pole_task_function(void* _param);
+void cap_on_pole_stop_function();
 
 /* Drive */
 void climb_on_platform();

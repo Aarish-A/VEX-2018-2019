@@ -2,7 +2,7 @@
 
 pilons::Task shot_queue_handle_task("Shot Request Handle", shot_queue_handle, shot_task_cleanup);
 
-volatile Shot_Pos front_SP = {140, 60, 0};
+volatile Shot_Pos front_SP = {160, 60, 0};
 volatile Shot_Pos platform_SP = {0, 0, 0};
 volatile Shot_Pos back_SP = {0, 0, 0};
 
@@ -55,7 +55,7 @@ void shot_queue_handle(void* param) {
   Field_Position temp_field_pos = field_position;
   for (int i = 0; i < shot_queue.size(); i++) {
     Shot_Target temp_target = shot_queue[i];
-    
+
     if (temp_field_pos != Field_Position::FRONT) {
       if (i == 0) {
         drive.set_power(0, 10, 0);

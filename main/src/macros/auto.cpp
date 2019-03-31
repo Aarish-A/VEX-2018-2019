@@ -3,6 +3,7 @@
 pilons::Task auto_update_task("Auto Update", auto_update, auto_update_task_stop_function);
 pilons::Task drive_move_task("Drive Move", drive_move, drive_task_stop_function);
 pilons::Task drive_turn_task("Drive Turn", drive_turn, drive_task_stop_function);
+pilons::Task cap_on_pole_task("Cap on Pole", cap_on_pole_task_function, cap_on_pole_stop_function);
 
 drive_move_params* drive_move_param = nullptr;
 drive_turn_params* drive_turn_param = nullptr;
@@ -33,12 +34,95 @@ void double_shot(double targ1, double targ2, bool wait) {
 /* Capping */
 void cap_on_pole() {
   drive.flatten_against_wall(false, true);
+  printf("started cap on pole func\n");
   capper.start_capping();
+  printf("started capping\n");
   drive.align_with_pole();
   capper.finish_capping();
   drive.flatten_against_wall(false,true);
   drive.reset_global_angle();
   while(capper.capping()) pros::delay(2);
+}
+
+void cap_on_pole_task_function(void* _param) {
+  cap_on_pole();
+  angler.move_to(Angler::CAP_PICKUP_POSITION);
+  intake.intake();
+  drive_move_sync(26_in, 0_deg);
+  drive_turn_sync(FixedAngleTarget(28_deg));
+  capper.move_to_velocity(47.5 * Capper::GEAR_RATIO, 180);
+  drive_move_sync(15_in, 28_deg);
+  drive_move_async(-12_in, 28_deg);
+  drive.wait_for_distance(-8_in);
+  angler.move_to(Angler::PICKUP_POSITION);
+  intake.stop();
+  capper.move_to_pickup();
+  drive.wait_for_stop();
+  drive_move_async(10_in, 28_deg);
+  drive.wait_for_distance(8_in);
+  capper.pickup_cap(true);
+  drive.wait_for_stop();
+  drive_move_sync(-17_in, 28_deg);
+  pros::delay(250);
+  drive_turn_sync(FixedAngleTarget(-90_deg));
+  intake.intake();
+  drive_move_sync(-6_in, -90_deg, false, 200, -30, false);
+  cap_on_pole();
+  angler.move_to(25);
+  drive_move_async(5_in);
+  drive.wait_for_distance(4_in);
+  capper.move_to_pickup();
+  drive.wait_for_stop();
+  drive_turn_async(FixedAngleTarget(12_deg));
+  double_shot(front_SP.top, front_SP.mid + 20);
+  drive_turn_sync(FixedAngleTarget(91.5_deg));
+  angler.move_to(20);
+  intake.stop();
+  drive_move_async(45_in, 91.5_deg);
+  drive.wait_for_distance(38_in);
+  capper.pickup_cap(true);
+  drive.wait_for_stop();
+  intake.intake();
+
+  drive_turn_sync(FixedAngleTarget(75_deg));
+  drive_move_sync(24_in, 75_deg);
+  drive_turn_sync(FixedAngleTarget(0_deg));
+  cap_on_pole();
+
+  drive_move_sync(5_in,0_deg);
+  angler.move_to(Angler::CAP_PICKUP_POSITION);
+  intake.intake();
+  drive_move_async(24.5_in, 0_deg);
+  drive.wait_for_distance(7_in);
+  capper.move_to_velocity(30 * Capper::GEAR_RATIO, 200);
+  drive.wait_for_stop();
+  drive_move_sync(-7_in,0_deg);
+  //drive_move_sync(18.5_in,4.5_deg);
+  //  angler.move_to(Angler::CAP_PICKUP_POSITION);
+
+  drive_turn_sync(FixedAngleTarget(-88_deg));
+
+  capper.move_to_velocity(56 * Capper::GEAR_RATIO, 200);
+  angler.move_to(Angler::PICKUP_POSITION);
+  intake.intake();
+  drive_move_async(15.5_in, -88_deg);
+  drive.wait_for_distance(14.5_in);
+  drive_move_async(-2.5_in, -88_deg, true, 80);
+  capper.move_to_power(28 * Capper::GEAR_RATIO, -100);
+  drive.wait_for_stop();
+  pros::delay(50);
+  drive_move_sync(-5_in, -88_deg);
+  intake.stop();
+  capper.move_to_pickup();
+  drive_move_async(9.5_in, -88_deg);
+  drive.wait_for_distance(5.0_in);
+  capper.pickup_cap();
+  pros::delay(250);
+  drive.wait_for_stop();
+  intake.intake();
+  drive_turn_sync(FixedAngleTarget(-79_deg));
+  drive_move_sync(-33_in, -82_deg, false);
+  cap_on_pole();
 }
 
 /* Drive */
@@ -492,4 +576,9 @@ void drive_task_stop_function() {
     delete drive_move_param;
     drive_move_param = nullptr;
   }
+}
+
+void cap_on_pole_stop_function() {
+  drive.set_power(0);
+  drive.set_state(Drive::STATE_DRIVER_CONTROL);
 }
