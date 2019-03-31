@@ -55,7 +55,7 @@ void shot_queue_handle(void* param) {
   Field_Position temp_field_pos = field_position;
   for (int i = 0; i < shot_queue.size(); i++) {
     Shot_Target temp_target = shot_queue[i];
-    
+
     if (temp_field_pos != Field_Position::FRONT) {
       if (i == 0) {
         drive.set_power(0, 10, 0);

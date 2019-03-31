@@ -105,7 +105,7 @@ void drive_move(void* _params) {
 
   // Distance correction PID Values
   double dist_kP = 127 / 25.0_in;
-  double dist_kD = 53.0;
+  double dist_kD = 65.0;//53.0;
   double dist_kI = 0.015;
   double dist_p_val = 0;
   double dist_i_val = 0;
@@ -113,7 +113,7 @@ void drive_move(void* _params) {
 
   // Angle Correction PID Values
   double angle_kP = 5.0 / 2.0_deg;
-  double angle_kD = 69.00;
+  double angle_kD = 80.00;//69.00;
   double angle_kI = 0.0350;
   double angle_p_val = 0;
   double angle_i_val = 0;
@@ -209,8 +209,16 @@ void drive_move(void* _params) {
     drive.fr_motor.move_absolute(targetFR, 25);
     drive.br_motor.move_absolute(targetBR, 25);
     log_ln(LOG_AUTO, "%d Stopping from FL: %f, BL: %f, FR: %f, BR %f", pros::millis(), drive.fl_motor.get_position(), drive.bl_motor.get_position(), drive.fr_motor.get_position(), drive.br_motor.get_position());
-    while (fabs(drive.fl_motor.get_position() - targetFL) > 3 || fabs(drive.bl_motor.get_position() - targetBL) > 3 || fabs(drive.fr_motor.get_position() - targetFR) > 3 || fabs(drive.br_motor.get_position() - targetBR) > 3) pros::delay(1);
-    pros::delay(100);
+    uint32_t temp = pros::millis();
+    while (fabs(drive.fl_motor.get_position() - targetFL) > 4 || fabs(drive.bl_motor.get_position() - targetBL) > 4 || fabs(drive.fr_motor.get_position() - targetFR) > 4 || fabs(drive.br_motor.get_position() - targetBR) > 4) {
+      // printf("Spent %d millis in this stupid loop\n", pros::millis() - temp);
+      // printf("Errors: FL: %f, BL: %f, FR: %f, BR: %f\n", fabs(drive.fl_motor.get_position() - targetFL), fabs(drive.bl_motor.get_position() - targetBL), fabs(drive.fr_motor.get_position() - targetFR), fabs(drive.br_motor.get_position() - targetBR));
+      // printf("Velocities: FL: %f, BL: %f, FR: %f, BR: %f\n", drive.fl_motor.get_actual_velocity(), drive.bl_motor.get_actual_velocity(), drive.fr_motor.get_actual_velocity(), drive.br_motor.get_actual_velocity());
+      pros::delay(1);
+    }
+    // printf("Finished the loop at %d millis\n", pros::millis() - temp);
+    // pros::delay(100);
+    printf("Finally finished at %d millis\n", pros::millis() - temp);
   } else drive.set_vel(0, 0, 0);
 
   dist_current = ((drive.enc_l.get_value() - enc_l_start) * SPN_TO_IN_L + (drive.enc_r.get_value() - enc_r_start) * SPN_TO_IN_R) / 2.0;
@@ -220,6 +228,16 @@ void drive_move(void* _params) {
   angle_error = angle_target - angle_current;
 
   log_ln(LOG_AUTO, "%d FINISHED MOVE >>>> Took %d ms, Ended At: %f, Distance Error: %f, Angle Error: %f", pros::millis(), pros::millis() - start_time, dist_current, dist_error, RAD_TO_DEG(angle_error));
+
+  // pros::delay(100);
+
+  // dist_current = ((drive.enc_l.get_value() - enc_l_start) * SPN_TO_IN_L + (drive.enc_r.get_value() - enc_r_start) * SPN_TO_IN_R) / 2.0;
+  // angle_current = drive.get_global_angle();
+
+  // dist_error = dist_target - dist_current;
+  // angle_error = angle_target - angle_current;
+
+  // log_ln(LOG_AUTO, "%d FINISHED MOVE SECOND ONE >>>> Took %d ms, Ended At: %f, Distance Error: %f, Angle Error: %f", pros::millis(), pros::millis() - start_time, dist_current, dist_error, RAD_TO_DEG(angle_error));
   drive_move_task.stop_task();
 }
 
