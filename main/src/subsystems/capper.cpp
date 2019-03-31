@@ -1,5 +1,4 @@
 #include "capper.hpp"
-
 /* Constructor */
 Capper::Capper(std::string subsystem_name, uint8_t default_state, pros::Motor& capper_motor) : Subsystem(subsystem_name, default_state), capper_motor(capper_motor) {
   this->state_names[STATE_AUTO_CONTROL] = "Auto Control";
@@ -125,7 +124,7 @@ void Capper::move_to_flag_flip(double velocity) {
 
 void Capper::pickup_cap(bool expansion_zone) {
   if (expansion_zone) this->move_to_velocity(100 * Capper::GEAR_RATIO, 80);
-  else this->move_to_velocity(Capper::CARRY_POSITION + 9 * Capper::GEAR_RATIO, 65);
+  else this->move_to_velocity(Capper::CARRY_POSITION + 4 * Capper::GEAR_RATIO, 65);
 }
 
 void Capper::start_capping() {

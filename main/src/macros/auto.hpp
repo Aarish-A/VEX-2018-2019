@@ -3,6 +3,7 @@
 #include "../config.hpp"
 #include "../logs.hpp"
 #include "../libraries/task.hpp"
+#include "shot_queueing.hpp"
 
 constexpr double MECANUM_DRIVE_WIDTH = 13.20;
 constexpr double EDGE_TO_TRACKING_WHEEL = 1.25;

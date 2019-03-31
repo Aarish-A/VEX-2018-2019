@@ -14,14 +14,15 @@ void capper_move_to_cap_flip_macro(void* _params) {
 }
 
 pilons::Task capper_move_to_cap_flip_task("Capper Cap Flip", [](void* param) {
-	capper.move_to_velocity(45 * Capper::GEAR_RATIO, 200);
+	capper.move_to_velocity(43 * Capper::GEAR_RATIO, 200);
 	pros::delay(200);
 	intake.intake();
+	angler.move_to(Angler::PICKUP_POSITION);
 });
 
 void opcontrol() {
 	log_ln(LOG_AUTO, "   --- %d START OPCONTROL --- \n", pros::millis());
-	//autonomous();
+	autonomous();
 	pilons::Task::stop_all_tasks();
 	Subsystem::enable_all();
 	enc_r.reset();
@@ -92,11 +93,15 @@ void opcontrol() {
 			// Capper
 			case BTN_CAPPER_DOWN:
 				capper.move_to_pickup();
+				angler.move_to(Angler::PICKUP_POSITION);
 				intake.stop();
 				break;
 			case BTN_CAPPER_UP:
 				if (capper.at_pickup_position()) capper.pickup_cap();
-				else cap_on_pole_task.start_task();
+				else {
+					printf("attempted 2 start task\n");
+					cap_on_pole_task.start_task();
+				}
 				break;
 			case BTN_CAP_FLIP:
 				capper_move_to_cap_flip_task.start_task();
