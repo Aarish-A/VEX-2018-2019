@@ -13,7 +13,7 @@ public:
   static constexpr double GEAR_RATIO = 5.0 / 1.0;
 
   static constexpr uint16_t PICKUP_POSITION = 7 * Capper::GEAR_RATIO;
-  static constexpr uint16_t CAP_FLIP_POSITION = 32 * Capper::GEAR_RATIO;
+  static constexpr uint16_t CAP_FLIP_POSITION = 37 * Capper::GEAR_RATIO;
   static constexpr uint16_t CARRY_POSITION = 55 * Capper::GEAR_RATIO;
   static constexpr uint16_t FLAG_FLIP_POSITION = 60 * Capper::GEAR_RATIO;
   static constexpr uint16_t CAPPING_HOLD_POSITION = 190 * Capper::GEAR_RATIO;

@@ -52,6 +52,9 @@ void Drive::set_state(uint8_t new_state) {
     case STATE_DRIVER_CONTROL:
       break;
     case STATE_AUTO_CONTROL:
+      this->x = 0;
+      this->y = 0;
+      this->a = 0;
       break;
   }
 }
