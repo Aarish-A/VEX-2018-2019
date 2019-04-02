@@ -34,28 +34,6 @@ void autonomous() {
   Subsystem::enable_all();
   auto_update_task.start_task();
   drive.reset_global_angle();
-
-  // capper.move_to_velocity(62 * Capper::GEAR_RATIO, 200);
-  // angler.move_to(Angler::PICKUP_POSITION);
-  // intake.intake();
-  // drive_move_async(43_in, 0_deg);
-  // drive.wait_for_distance(42_in);
-  // capper.move_to_velocity(28 * Capper::GEAR_RATIO, -100);
-  // pros::delay(100);
-  // drive_move_async(-2_in, 0_deg, true, 80);
-  // drive.wait_for_stop();
-  // pros::delay(100);
-  // drive_move_sync(-5_in, 0_deg);
-  // intake.stop();
-  // capper.move_to_pickup();
-  // drive_move_async(10_in, 0_deg);
-  // drive.wait_for_distance(6.0_in);
-  // capper.pickup_cap();
-  // pros::delay(75);
-  // intake.intake();
-  // drive.wait_for_stop();
-  // drive_turn_sync(FixedAngleTarget(-56_deg));
-  // double_shot(front_SP.mid, front_SP.top);
   angler.move_to(Angler::PICKUP_POSITION);
   capper.move_to_cap_flip(true,200);
   drive_move_async(43.0_in,0_deg);
@@ -67,6 +45,7 @@ void autonomous() {
   double_shot(front_SP.top,front_SP.mid);
   capper.move_to_velocity(75 * Capper::GEAR_RATIO, 200);
   master.rumble("-");
+  // auto_red_back();
 
   // Auto End
   uint32_t auto_finished_time = pros::millis() - autonomous_time;
@@ -94,10 +73,11 @@ void auto_red_back() {
 
   //Flatten wall
   drive_turn_sync(FixedAngleTarget(-90_deg));
-  drive_move_sync(-0.75_tile, -90_deg, false, 200, 0, false);
+  drive_move_sync(-0.75_tile, -90_deg, false, 150, 0, false);
   printf(" \n\n >>>> %d auto done back up | %d %d \n", pros::millis(), enc_l.get_value(), enc_r.get_value());
   drive.flatten_against_wall_base(false, -30, true, 10);
   drive.reset_global_angle();
+  pros::delay(250);
   printf("%d auto RESET: %d %d\n", pros::millis(), enc_l.get_value(), enc_r.get_value());
 
   //Get balls off back cap
