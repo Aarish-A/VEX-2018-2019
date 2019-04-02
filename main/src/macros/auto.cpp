@@ -1,5 +1,6 @@
 #include "auto.hpp"
 
+int capper_count = 0;
 pilons::Task auto_update_task("Auto Update", auto_update, auto_update_task_stop_function);
 pilons::Task drive_move_task("Drive Move", drive_move, drive_task_stop_function);
 pilons::Task drive_turn_task("Drive Turn", drive_turn, drive_task_stop_function);
@@ -45,6 +46,8 @@ void cap_on_pole() {
 }
 
 void cap_on_pole_task_function(void* _param) {
+if(capper_count==0)
+{
   cap_on_pole();
   angler.move_to(Angler::CAP_PICKUP_POSITION);
   intake.intake();
@@ -73,56 +76,70 @@ void cap_on_pole_task_function(void* _param) {
   drive.wait_for_distance(4_in);
   capper.move_to_pickup();
   drive.wait_for_stop();
-  drive_turn_async(FixedAngleTarget(12_deg));
+  drive_turn_async(FixedAngleTarget(15_deg));
   double_shot(front_SP.top, front_SP.mid + 20);
+  capper.move_to_velocity(60 * Capper::GEAR_RATIO, 200);
   drive_turn_sync(FixedAngleTarget(91.5_deg));
-  angler.move_to(20);
+  angler.move_to(Angler::CAP_PICKUP_POSITION);
+  intake.outtake();
+  drive_move_sync(16_in, 91.5_deg); //39
+  drive_turn_sync(FixedAngleTarget(30_deg));
+  drive_move_sync(19_in, 30_deg);
+  drive_move_sync(-19_in, 30_deg);
+  angler.move_to(Angler::PICKUP_POSITION);
+  drive_turn_sync(FixedAngleTarget(91.5_deg));
+  capper.move_to_pickup();
   intake.stop();
-  drive_move_async(45_in, 91.5_deg);
-  drive.wait_for_distance(38_in);
+  drive_move_async(23_in,91.5_deg);
+  drive.wait_for_distance(21_in);
   capper.pickup_cap(true);
   drive.wait_for_stop();
   intake.intake();
 
   drive_turn_sync(FixedAngleTarget(75_deg));
-  drive_move_sync(24_in, 75_deg);
+  drive_move_sync(31_in, 75_deg);
   drive_turn_sync(FixedAngleTarget(0_deg));
   cap_on_pole();
-
-  drive_move_sync(5_in,0_deg);
-  angler.move_to(Angler::CAP_PICKUP_POSITION);
-  intake.intake();
-  drive_move_async(24.5_in, 0_deg);
-  drive.wait_for_distance(7_in);
-  capper.move_to_velocity(30 * Capper::GEAR_RATIO, 200);
-  drive.wait_for_stop();
-  drive_move_sync(-7_in,0_deg);
-  //drive_move_sync(18.5_in,4.5_deg);
-  //  angler.move_to(Angler::CAP_PICKUP_POSITION);
-
-  drive_turn_sync(FixedAngleTarget(-88_deg));
-
-  capper.move_to_velocity(56 * Capper::GEAR_RATIO, 200);
-  angler.move_to(Angler::PICKUP_POSITION);
-  intake.intake();
-  drive_move_async(15.5_in, -88_deg);
-  drive.wait_for_distance(14.5_in);
-  drive_move_async(-2.5_in, -88_deg, true, 80);
-  capper.move_to_power(28 * Capper::GEAR_RATIO, -100);
-  drive.wait_for_stop();
-  pros::delay(50);
-  drive_move_sync(-5_in, -88_deg);
-  intake.stop();
-  capper.move_to_pickup();
-  drive_move_async(9.5_in, -88_deg);
-  drive.wait_for_distance(5.0_in);
-  capper.pickup_cap();
-  pros::delay(250);
-  drive.wait_for_stop();
-  intake.intake();
-  drive_turn_sync(FixedAngleTarget(-79_deg));
-  drive_move_sync(-33_in, -82_deg, false);
+  capper_count++;
+}
+else
+{
   cap_on_pole();
+}
+  // drive_move_sync(5_in,0_deg);
+  // angler.move_to(Angler::CAP_PICKUP_POSITION);
+  // intake.intake();
+  // drive_move_async(24.5_in, 0_deg);
+  // drive.wait_for_distance(7_in);
+  // capper.move_to_velocity(30 * Capper::GEAR_RATIO, 200);
+  // drive.wait_for_stop();
+  // drive_move_sync(-7_in,0_deg);
+  // //drive_move_sync(18.5_in,4.5_deg);
+  // //  angler.move_to(Angler::CAP_PICKUP_POSITION);
+  //
+  // drive_turn_sync(FixedAngleTarget(-88_deg));
+  //
+  // capper.move_to_velocity(56 * Capper::GEAR_RATIO, 200);
+  // angler.move_to(Angler::CAP_FLIP_POSITION);
+  // intake.intake();
+  // drive_move_async(15.5_in, -88_deg);
+  // drive.wait_for_distance(14.5_in);
+  // drive_move_async(-2.5_in, -88_deg, true, 80);
+  // capper.move_to_power(28 * Capper::GEAR_RATIO, -100);
+  // drive.wait_for_stop();
+  // pros::delay(50);
+  // drive_move_sync(-5_in, -88_deg);
+  // intake.stop();
+  // capper.move_to_pickup();
+  // drive_move_async(9.5_in, -88_deg);
+  // drive.wait_for_distance(5.0_in);
+  // capper.pickup_cap();
+  // pros::delay(250);
+  // drive.wait_for_stop();
+  // intake.intake();
+  // drive_turn_sync(FixedAngleTarget(-79_deg));
+  // drive_move_sync(-33_in, -82_deg, false);
+  // cap_on_pole();
 }
 
 /* Drive */
@@ -174,7 +191,7 @@ void drive_move(void* _params) {
 
   // Distance correction PID Values
   double dist_kP = 127 / 25.0_in;
-  double dist_kD = 65.0;//53.0;
+  double dist_kD = 53.0;
   double dist_kI = 0.015;
   double dist_p_val = 0;
   double dist_i_val = 0;
@@ -182,7 +199,7 @@ void drive_move(void* _params) {
 
   // Angle Correction PID Values
   double angle_kP = 5.0 / 2.0_deg;
-  double angle_kD = 80.00;//69.00;
+  double angle_kD = 69.00;
   double angle_kI = 0.0350;
   double angle_p_val = 0;
   double angle_i_val = 0;
@@ -286,7 +303,7 @@ void drive_move(void* _params) {
       pros::delay(1);
     }
     // printf("Finished the loop at %d millis\n", pros::millis() - temp);
-    // pros::delay(100);
+    pros::delay(100);
     printf("Finally finished at %d millis\n", pros::millis() - temp);
   } else drive.set_vel(0, 0, 0);
 

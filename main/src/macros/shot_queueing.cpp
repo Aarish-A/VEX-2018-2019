@@ -20,32 +20,44 @@ void make_shot_request(uint8_t shot_height, Turn_Direction direction, Field_Posi
   if (target_field_pos == field_position) {
     if (shot_queue.size() == 2) shot_queue.pop_back();
 
+    vector flag_position = {0, 0};
+    bool turning = true;
+
     switch(field_position) {
       case Field_Position::FRONT:
-        if (direction == Turn_Direction::STRAIGHT) shot_queue.push_back({shot_height});
+        if (direction == Turn_Direction::STRAIGHT) turning = false; //shot_queue.push_back({shot_height});
         break;
       case Field_Position::RED_PF:
         if (game_side == 'R') {
-          if (direction == Turn_Direction::LEFT) shot_queue.push_back({shot_height, {-31, 94}});
-          else if (direction == Turn_Direction::RIGHT) shot_queue.push_back({shot_height, {18, 94}});
+          if (direction == Turn_Direction::LEFT) flag_position = {-31, 94}; //shot_queue.push_back({shot_height, {-31, 94}});
+          else if (direction == Turn_Direction::RIGHT) flag_position = {18, 94}; //shot_queue.push_back({shot_height, {18, 94}});
         } else if (game_side == 'B') {
-          if (direction == Turn_Direction::LEFT) shot_queue.push_back({shot_height, {-31 + FLAG_WIDTH, 94}});
-          else if (direction == Turn_Direction::RIGHT) shot_queue.push_back({shot_height, {18 + FLAG_WIDTH, 94}});
+          if (direction == Turn_Direction::LEFT) flag_position = {-31 + FLAG_WIDTH, 94}; //shot_queue.push_back({shot_height, {-31 + FLAG_WIDTH, 94}});
+          else if (direction == Turn_Direction::RIGHT) flag_position = {18 + FLAG_WIDTH, 94}; //shot_queue.push_back({shot_height, {18 + FLAG_WIDTH, 94}});
         }
         break;
       case Field_Position::BLUE_PF:
         if (game_side == 'R') {
-          if (direction == Turn_Direction::LEFT) shot_queue.push_back({shot_height, {-27.5, 94}});
-          else if (direction == Turn_Direction::RIGHT) shot_queue.push_back({shot_height, {19.5, 94}});
+          if (direction == Turn_Direction::LEFT) flag_position = {-27.5, 94}; // shot_queue.push_back({shot_height, {-27.5, 94}});
+          else if (direction == Turn_Direction::RIGHT) flag_position = {19.5, 24}; //shot_queue.push_back({shot_height, {19.5, 94}});
         } else if (game_side == 'B') {
-          if (direction == Turn_Direction::LEFT) shot_queue.push_back({shot_height, {-27.5 + FLAG_WIDTH, 94}});
-          else if (direction == Turn_Direction::RIGHT) shot_queue.push_back({shot_height, {19.5 + FLAG_WIDTH, 94}});
+          if (direction == Turn_Direction::LEFT) flag_position = {-27.5 + FLAG_WIDTH, 94}; //shot_queue.push_back({shot_height, {-27.5 + FLAG_WIDTH, 94}});
+          else if (direction == Turn_Direction::RIGHT) flag_position = {19.5 + FLAG_WIDTH, 94}; //shot_queue.push_back({shot_height, {19.5 + FLAG_WIDTH, 94}});
         }
         break;
       case Field_Position::BACK:
-        if (direction == Turn_Direction::STRAIGHT) shot_queue.push_back({shot_height});
+        if (direction == Turn_Direction::STRAIGHT) turning = false; //shot_queue.push_back({shot_height});
+        else if (game_side == 'R') {
+          if (direction == Turn_Direction::LEFT) flag_position = {-27.5, 94}; // shot_queue.push_back({shot_height, {-27.5, 94}});
+          else if (direction == Turn_Direction::RIGHT) flag_position = {19.5, 24}; //shot_queue.push_back({shot_height, {19.5, 94}});
+        } else if (game_side == 'B') {
+          if (direction == Turn_Direction::LEFT) flag_position = {-27.5, 94}; // shot_queue.push_back({shot_height, {-27.5, 94}});
+          else if (direction == Turn_Direction::RIGHT) flag_position = {19.5, 24}; //shot_queue.push_back({shot_height, {19.5, 94}});
+        }
         break;
     }
+
+    shot_queue.push_back({shot_height, flag_position, turning});
   }
 
   if (trigger_shot) trigger_shot_queue();
@@ -56,7 +68,7 @@ void shot_queue_handle(void* param) {
   for (int i = 0; i < shot_queue.size(); i++) {
     Shot_Target temp_target = shot_queue[i];
 
-    if (temp_field_pos != Field_Position::FRONT) {
+    if (temp_target.turning) {
       if (i == 0) {
         drive.set_power(0, 10, 0);
 			  pros::delay(150);

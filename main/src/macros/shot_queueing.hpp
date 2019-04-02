@@ -57,6 +57,7 @@ extern Field_Position field_position;
 struct Shot_Target {
   uint8_t angler_target;
   vector flag_position = {0, 0};
+  bool turning = false;
 };
 
 extern std::deque<Shot_Target> shot_queue;
