@@ -29,6 +29,7 @@ void single_shot(double targ, bool wait) {
 
 void double_shot(double targ1, double targ2, bool wait) {
   single_shot(targ1);
+  pros::delay(75);
   single_shot(targ2, wait);
 }
 
@@ -54,8 +55,8 @@ if(capper_count==0)
   drive_move_sync(26_in, 0_deg);
   drive_turn_sync(FixedAngleTarget(28_deg));
   capper.move_to_velocity(47.5 * Capper::GEAR_RATIO, 180);
-  drive_move_sync(15_in, 28_deg);
-  drive_move_async(-12_in, 28_deg);
+  drive_move_sync(16_in, 28_deg);
+  drive_move_async(-13_in, 28_deg);
   drive.wait_for_distance(-8_in);
   angler.move_to(Angler::PICKUP_POSITION);
   intake.stop();
@@ -161,11 +162,11 @@ void climb_on_platform() {
   while (fabs(gyro.get_value()) < 150) pros::delay(5);
   while (fabs(gyro.get_value()) > 60) pros::delay(5);
 
-  drive_move_sync(10_in);
+  drive_move_sync(8.5_in);
   angler.move_to(Angler::CAP_PICKUP_POSITION);
   drive.set_state(Drive::STATE_AUTO_CONTROL);
-  drive.set_power(0, -20, 0);
-  pros::delay(150);
+  // drive.set_power(0, -20, 0);
+  // pros::delay(150);
   drive.set_power(0, 0, 0);
   drive.reset_global_angle();
 }
