@@ -24,11 +24,11 @@ void opcontrol() {
 	// autonomous();
 	pilons::Task::stop_all_tasks();
 	Subsystem::enable_all();
-	enc_r.reset();
-	enc_l.reset();
+	//enc_r.reset();
+	//enc_l.reset();
 		while (true) {
-		// printf("R: %d, L: %d\n", enc_r.get_value(), enc_l.get_value());
-		printf("Light sensor:%f\n",gyro.get_value());
+		printf("R: %d, L: %d, %f\n", enc_r.get_value(), enc_l.get_value(), RAD_TO_DEG(drive.read_global_angle()));
+		//printf("Light sensor:%f\n",gyro.get_value());
 		//printf("poti: %d\n",s_pole_poti.get_value());
 		// master.print(2,0,"%d %d                 ",enc_l.get_value(), enc_r.get_value());
 		std::string fps = "";
