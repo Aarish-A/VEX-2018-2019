@@ -21,7 +21,7 @@ pilons::Task capper_move_to_cap_flip_task("Capper Cap Flip", [](void* param) {
 
 void opcontrol() {
 	log_ln(LOG_AUTO, "   --- %d START OPCONTROL --- \n", pros::millis());
-	autonomous();
+	// autonomous();
 	pilons::Task::stop_all_tasks();
 	Subsystem::enable_all();
 	enc_r.reset();
@@ -58,56 +58,134 @@ void opcontrol() {
 		/* Angler */
 		int8_t angler_power = master.get_analog(JOY_ANGLER, 40);
 		angler.driver_set(angler_power);
+		if(partner.is_connected())
+		{
+			switch(master.single_pressed) {
+				// Intake
+				case BTN_INTAKE_UP:
+					(intake.off() && !capper.at_pickup_position()) ? intake.intake() : intake.stop();
+					break;
+				case BTN_INTAKE_DOWN:
+					(intake.off() && !capper.at_pickup_position()) ? intake.outtake() : intake.stop();
+					break;
 
-		switch(master.single_pressed) {
-			// Intake
-			case BTN_INTAKE_UP:
-				(intake.off() && !capper.at_pickup_position()) ? intake.intake() : intake.stop();
-				break;
-			case BTN_INTAKE_DOWN:
-				(intake.off() && !capper.at_pickup_position()) ? intake.outtake() : intake.stop();
-				break;
+				// Angler
+				case BTN_GROUND_PICKUP:
+					angler.move_to(Angler::PICKUP_POSITION);
+					intake.intake();
+					break;
+				case BTN_CAP_PICKUP:
+					angler.move_to(Angler::CAP_PICKUP_POSITION);
+					intake.intake();
+					break;
 
-			// Angler
-			case BTN_GROUND_PICKUP:
-				angler.move_to(Angler::PICKUP_POSITION);
-				intake.intake();
-				break;
-			case BTN_CAP_PICKUP:
-				angler.move_to(Angler::CAP_PICKUP_POSITION);
-				intake.intake();
-				break;
+				// Shot Queueing
+				case BTN_SHOT_R_T:
+					make_shot_request(front_SP.top, Turn_Direction::STRAIGHT, Field_Position::FRONT, true);
+					break;
+				case BTN_SHOT_R_M:
+					make_shot_request(front_SP.mid, Turn_Direction::STRAIGHT, Field_Position::FRONT, true);
+					break;
+				// case BTN_SHOT_CANCEL:
+				// 	shot_queue_handle_task.stop_task();
+				// 	break;
 
-			// Shot Queueing
-			case BTN_SHOT_R_T:
-				make_shot_request(front_SP.top, Turn_Direction::STRAIGHT, Field_Position::FRONT, true);
-				break;
-			case BTN_SHOT_R_M:
-				make_shot_request(front_SP.mid, Turn_Direction::STRAIGHT, Field_Position::FRONT, true);
-				break;
+				// Capper
+				case BTN_CAPPER_DOWN:
+					capper.move_to_pickup();
+					angler.move_to(Angler::PICKUP_POSITION);
+					intake.stop();
+					break;
+				case BTN_CAPPER_UP:
+					if (capper.at_pickup_position()) capper.pickup_cap();
+					else if (cap_on_pole_task.running()) cap_on_pole_task.stop_task();
+					else cap_on_pole_task.start_task();
+					break;
+				case BTN_CAP_FLIP:
+					capper_move_to_cap_flip_task.start_task();
+					break;
+			}
 
-			// Capper
-			case BTN_CAPPER_DOWN:
-				capper.move_to_pickup();
-				angler.move_to(Angler::PICKUP_POSITION);
-				intake.stop();
-				break;
-			case BTN_CAPPER_UP:
-				if (capper.at_pickup_position()) capper.pickup_cap();
-				else if (cap_on_pole_task.running()) cap_on_pole_task.stop_task();
-				else cap_on_pole_task.start_task();
-				break;
-			case BTN_CAP_FLIP:
-				capper_move_to_cap_flip_task.start_task();
-				break;
+			switch(partner.single_pressed) {
+				case BTN_SHOT_R_T:
+					make_shot_request(front_SP.top, Turn_Direction::RIGHT, field_position);
+					break;
+				case BTN_SHOT_R_M:
+					make_shot_request(front_SP.mid, Turn_Direction::RIGHT, field_position);
+					break;
+				case BTN_SHOT_L_T:
+					make_shot_request(front_SP.top, Turn_Direction::LEFT, field_position);
+					break;
+				case BTN_SHOT_L_M:
+					make_shot_request(front_SP.mid, Turn_Direction::LEFT, field_position);
+					break;
+				case BTN_FIELD_RED_PF:
+					field_position = Field_Position::RED_PF;
+					break;
+				case BTN_FIELD_BLUE_PF:
+					field_position = Field_Position::BLUE_PF;
+					break;
+				case BTN_FIELD_FRONT:
+					field_position = Field_Position::FRONT;
+					break;
+			}
+
+
+			if (master.check_double_press(BTN_GROUND_PICKUP, BTN_CAP_PICKUP)) {
+				angler.move_to(Angler::CAP_FLIP_POSITION);
+				intake.outtake();
+			}
 		}
+		else {
+			switch(master.single_pressed) {
+				// Intake
+				case BTN_INTAKE_UP:
+					(intake.off() && !capper.at_pickup_position()) ? intake.intake() : intake.stop();
+					break;
+				case BTN_INTAKE_DOWN:
+					(intake.off() && !capper.at_pickup_position()) ? intake.outtake() : intake.stop();
+					break;
+
+				// Angler
+				case BTN_GROUND_PICKUP:
+					angler.move_to(Angler::PICKUP_POSITION);
+					intake.intake();
+					break;
+				case BTN_CAP_PICKUP:
+					angler.move_to(Angler::CAP_PICKUP_POSITION);
+					intake.intake();
+					break;
+
+				// Shot Queueing
+				case BTN_SHOT_R_T:
+					make_shot_request(front_SP.top, Turn_Direction::STRAIGHT, Field_Position::FRONT, true);
+					break;
+				case BTN_SHOT_R_M:
+					make_shot_request(front_SP.mid, Turn_Direction::STRAIGHT, Field_Position::FRONT, true);
+					break;
+
+				// Capper
+				case BTN_CAPPER_DOWN:
+					capper.move_to_pickup();
+					angler.move_to(Angler::PICKUP_POSITION);
+					intake.stop();
+					break;
+				case BTN_CAPPER_UP:
+					if (capper.at_pickup_position()) capper.pickup_cap();
+					else if (cap_on_pole_task.running()) cap_on_pole_task.stop_task();
+					else cap_on_pole_task.start_task();
+					break;
+				case BTN_CAP_FLIP:
+					capper_move_to_cap_flip_task.start_task();
+					break;
+			}
 
 
-		if (master.check_double_press(BTN_GROUND_PICKUP, BTN_CAP_PICKUP)) {
-			angler.move_to(Angler::CAP_FLIP_POSITION);
-			intake.outtake();
+			if (master.check_double_press(BTN_GROUND_PICKUP, BTN_CAP_PICKUP)) {
+				angler.move_to(Angler::CAP_FLIP_POSITION);
+				intake.outtake();
+			}
 		}
-
-		pros::delay(5);
+			pros::delay(5);
+		}
 	}
-}
