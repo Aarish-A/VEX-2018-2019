@@ -48,11 +48,15 @@ void autonomous() {
   // double_shot(front_SP.top,front_SP.mid);
   // capper.move_to_velocity(75 * Capper::GEAR_RATIO, 200);
   // master.rumble("-");
-  auto_red_front();
+  auto_red_back();
   // Auto End
   uint32_t auto_finished_time = pros::millis() - autonomous_time;
-  master.print(2, 0, "Time: %d\n", auto_finished_time);
+  master.print(2, 0, "%d|%.2f\n", auto_finished_time/100, RAD_TO_DEG(drive.read_global_angle()));
   pros::delay(60);
+  /* Turn off Motors */
+  intake.off();
+  drive.set_power(0);
+  // Kill all tasks
   pilons::Task::stop_all_tasks();
 }
 
@@ -138,6 +142,8 @@ void auto_red_back() {
   drive_turn_sync(FixedAngleTarget(-64.5_deg));
   double_shot(70, 125);
 
+  //pros::delay(50000);
+
   //Flatten wall
   drive_turn_sync(FixedAngleTarget(-90_deg));
   drive_move_sync(-0.6_tile, -90_deg, false, 200, 0, false);
@@ -147,28 +153,30 @@ void auto_red_back() {
   printf("%d auto RESET: %d %d\n", pros::millis(), enc_l.get_value(), enc_r.get_value());
 
   //Get balls off back cap
-  double mid_flag_pos = 110;
+  double mid_flag_pos = 140, top_flag_pos = 215;
   drive_move_sync(6_in, 0_deg);
   angler.move_to(Angler::CAP_PICKUP_POSITION);
   drive_turn_sync(FixedAngleTarget(90_deg));
   drive_move_sync(27.6_in, 90_deg);
   pros::delay(200);
   drive_move_sync(-9_in, 90_deg);
-  pros::delay(600);
-  intake.outtake();
+  pros::delay(700);
+
+  /* Cap flip - caused the robot to end up in an inconsistent spot +-1In (making the next shot fail), and sometimes the base of the cap would land on top of the blue cap (not scored)
+  printf("\n%d Pick cap balls \n", pros::millis());
+  pros::delay(200);
+  printf("\n%d Pick cap balls | WAIT1 \n", pros::millis());
+  drive_move_sync(-9_in, 90_deg);
   angler.move_to(Angler::CAP_FLIP_POSITION+10);
-  drive_move_sync(17_in, 90_deg);
-  // drive.wait_for_distance(12_in);
-  // angler.move_to(mid_flag_pos);
-  // drive.wait_for_stop();
-  printf("%d Done cap flip drive\n", pros::millis());
-  while(angler.moving_to_target()) pros::delay(2);
-  printf("%d Done Cap flip angler wait \n", pros::millis());
-  //drive_move_sync(-5_in, 90_deg);
+  pros::delay(700);
+  printf("\n%d Pick cap balls | WAIT2 \n", pros::millis());
+  intake.outtake();
+  drive_move_sync(18_in, 90_deg);
+  */
 
   //Shoot
-  drive_turn_sync(FixedAngleTarget(22_deg));
-  double_shot(mid_flag_pos, 220);
+  drive_turn_sync(FixedAngleTarget(30.5_deg));
+  double_shot(mid_flag_pos, top_flag_pos);
 
   printf("%d Stopped | red\n", pros::millis());
 
