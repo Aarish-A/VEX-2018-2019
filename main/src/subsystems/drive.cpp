@@ -211,7 +211,3 @@ void Drive::wait_for_angle(double target_angle) {
   if (clockwise) while (this->get_global_angle() < target_angle) pros::delay(1);
   else while (this->get_global_angle() > target_angle) pros::delay(1);
 }
-
-double Drive::read_global_angle() {
-  return this->get_global_angle();
-}

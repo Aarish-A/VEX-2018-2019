@@ -48,7 +48,7 @@ void autonomous() {
   // double_shot(front_SP.top,front_SP.mid);
   // capper.move_to_velocity(75 * Capper::GEAR_RATIO, 200);
   // master.rumble("-");
-  auto_red_front();
+  auto_blue_front_park();
   // Auto End
   uint32_t auto_finished_time = pros::millis() - autonomous_time;
   master.print(2, 0, "Time: %d\n", auto_finished_time);
@@ -98,32 +98,10 @@ void auto_red_front() {
   drive_move_sync(-8.5_in,30_deg);
   drive_turn_sync(FixedAngleTarget(-68_deg));
   drive_move_sync(25_in,-68_deg);
-  printf("%d Picked ball off cap \n", pros::millis());
+  drive_move_sync(-20_in,-68_deg);
+  drive_turn_sync(FixedAngleTarget(-50_deg));
+  double_shot(front_SP.top-10, front_SP.mid-10);
 
-  //Flip
-  pros::delay(100);
-  drive_move_sync(-9_in, -68_deg);
-  angler.move_to(Angler::CAP_FLIP_POSITION+10);
-  pros::delay(500);
-  printf("%d Done ball raise wait \n", pros::millis());
-  intake.outtake();
-  drive_move_sync(18_in, -68_deg);
-  double top_flag_pos = front_SP.top+20;
-  angler.move_to(top_flag_pos+20);
-
-  //Turn and shoot
-  drive_turn_sync(FixedAngleTarget(-39_deg));
-  double_shot(top_flag_pos, front_SP.mid+25);
-  /*
-  drive_turn_sync(FixedAngleTarget(-38_deg));
-  drive_move_sync(-28_in, -68_deg);
-  // drive.wait_for_distance(12_in);
-  // angler.move_to(mid_flag_pos);
-  // drive.wait_for_stop();
-  printf("%d Done cap flip drive\n", pros::millis());
-
-  drive_turn_sync(FixedAngleTarget(-51_deg));
-  double_shot(front_SP.top-10, front_SP.mid-10);*/
 }
 
 void auto_red_back() {
@@ -268,7 +246,7 @@ void auto_blue_front() {
   drive_turn_sync(FixedAngleTarget(52_deg));
   double_shot(front_SP.top-10, front_SP.mid-10);
 }
-void auto_blue_front_park() {
+void auto_blue_front_park(){
   intake.intake();
   angler.move_to(Angler::PICKUP_POSITION);
   drive_move_async(43_in, 0_deg);
