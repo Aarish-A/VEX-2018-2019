@@ -6,7 +6,7 @@ Subsystem* Subsystem::subsystems[8] = { nullptr, nullptr, nullptr, nullptr, null
 /* Protected Non-Virtual Functions */
 bool Subsystem::timed_out(uint32_t timeout) {
   if (pros::millis() - this->state_change_time > timeout) {
-    log_ln(LOG_ERROR, "%s timed out in %s state due to taking more than %d ms", (this->subsystem_name).c_str(), (this->state_names[this->state]).c_str(), timeout);
+    log_ln(SAFETY, "%s timed out in %s state due to taking more than %d ms", (this->subsystem_name).c_str(), (this->state_names[this->state]).c_str(), timeout);
     return true;
   } else return false;
 }
@@ -16,7 +16,7 @@ bool Subsystem::above_vel_threshold(double velocity, uint32_t timeout) {
   else if (fabs(this->velocity) < fabs(velocity) && fabs(this->last_velocity) > fabs(velocity)) this->velocity_exceeded_time = 0;
 
   if (fabs(this->velocity) > fabs(velocity) && pros::millis() - this->velocity_exceeded_time > timeout && this->velocity_exceeded_time != 0) {
-    log_ln(LOG_ERROR, "%s timed out in %s state due to having a velocity greater than %f for %d ms. Velocity Was %f", (this->subsystem_name).c_str(), (this->state_names[this->state]).c_str(), velocity, timeout, this->velocity);
+    log_ln(SAFETY, "%s timed out in %s state due to having a velocity greater than %f for %d ms. Velocity Was %f", (this->subsystem_name).c_str(), (this->state_names[this->state]).c_str(), velocity, timeout, this->velocity);
     return true;
   } else return false;
 }
@@ -26,7 +26,7 @@ bool Subsystem::below_vel_threshold(double velocity, uint32_t timeout) {
   else if (fabs(this->velocity) > fabs(velocity) && fabs(this->last_velocity) < fabs(velocity)) this->velocity_exceeded_time = 0;
 
   if (fabs(this->velocity) < fabs(velocity) && pros::millis() - this->velocity_exceeded_time > timeout && this->velocity_exceeded_time != 0) {
-    log_ln(LOG_ERROR, "%s timed out due in %s state to having a velocity less than %f for %d ms. Velocity Was %f", (this->subsystem_name).c_str(), (this->state_names[this->state]).c_str(), velocity, timeout, this->velocity);
+    log_ln(SAFETY, "%s timed out due in %s state to having a velocity less than %f for %d ms. Velocity Was %f", (this->subsystem_name).c_str(), (this->state_names[this->state]).c_str(), velocity, timeout, this->velocity);
     return true;
   } else return false;
 }
@@ -37,7 +37,7 @@ void Subsystem::set_state(uint8_t new_state) {
   this->state = new_state;
   this->state_change_time = pros::millis();
   this->velocity_exceeded_time = 0;
-  if (this->last_state != this->state) log_ln(LOG_STATES, "Switching %s to %s state from %s state", (this->subsystem_name).c_str(), (this->state_names[state]).c_str(), (this->state_names[last_state]).c_str());
+  if (this->last_state != this->state) log_ln(STATE_CHANGE, "Switching %s to %s state from %s state", (this->subsystem_name).c_str(), (this->state_names[state]).c_str(), (this->state_names[last_state]).c_str());
 }
 
 /* Constructor */
@@ -67,7 +67,7 @@ double Subsystem::get_velocity() {
 
 void Subsystem::disable() {
   if (this->state != STATE_DISABLED) {
-    log_ln(LOG_ERROR, "Disabled %s subsystem", (this->subsystem_name).c_str());
+    log_ln(STATE_CHANGE, "Disabled %s subsystem", (this->subsystem_name).c_str());
     set_state(STATE_DISABLED);
   }
 }
@@ -81,14 +81,14 @@ bool Subsystem::disabled() {
 }
 
 void Subsystem::reset() {
-  log_ln(LOG_ERROR, "Resetting %s subsystem", (this->subsystem_name).c_str());
+  log_ln(STATE_CHANGE, "Resetting %s subsystem", (this->subsystem_name).c_str());
   this->set_state(STATE_RESET);
 }
 
 /* Public Virtual Functions */
 void Subsystem::enable() {
   if (this->state == STATE_DISABLED) {
-    log_ln(LOG_SUBSYSTEMS, "Enabled %s subsystem", (this->subsystem_name).c_str());
+    log_ln(STATE_CHANGE, "Enabled %s subsystem", (this->subsystem_name).c_str());
     set_state(this->DEFAULT_STATE);
   }
 }
@@ -98,7 +98,7 @@ void Subsystem::update_all() {
   for(int i = 0; i < Subsystem::number_of_subsystems; i++) {
     if (subsystems[i] != nullptr) {
       subsystems[i]->update();
-    } else log_ln(LOG_ERROR, "Could not update subsystem %d", i);
+    } else log_ln(FATAL_ERROR, "Could not update subsystem %d", i);
   }
 }
 
@@ -106,18 +106,18 @@ void Subsystem::enable_all() {
   for(int i = 0; i < Subsystem::number_of_subsystems; i++) {
     if (subsystems[i] != nullptr) {
       subsystems[i]->enable();
-    } else log_ln(LOG_ERROR, "Could not enable subsystem %d", i);
+    } else log_ln(FATAL_ERROR, "Could not enable subsystem %d", i);
   }
-  log_ln(LOG_SUBSYSTEMS, "Enabled all subsystems!");
+  log_ln(PROGRAM_FLOW, "Enabled all subsystems!");
 }
 
 void Subsystem::disable_all() {
   for(int i = 0; i < Subsystem::number_of_subsystems; i++) {
     if (subsystems[i] != nullptr) {
       subsystems[i]->disable();
-    } else log_ln(LOG_ERROR, "Could not disable subsystem %d", i);
+    } else log_ln(FATAL_ERROR, "Could not disable subsystem %d", i);
   }
-  log_ln(LOG_SUBSYSTEMS, "Disabled all subsystems!");
+  log_ln(PROGRAM_FLOW, "Disabled all subsystems!");
 }
 
 void Subsystem::reset_all() {
@@ -125,9 +125,9 @@ void Subsystem::reset_all() {
     if (subsystems[i] != nullptr) {
       subsystems[i]->reset();
       printf("reset %d\n", i);
-    } else log_ln(LOG_ERROR, "Could not reset subsystem %d", i);
+    } else log_ln(FATAL_ERROR, "Could not reset subsystem %d", i);
   }
-  log_ln(LOG_SUBSYSTEMS, "Reset all subsystems!");
+  log_ln(PROGRAM_FLOW, "Reset all subsystems!");
 }
 
 bool Subsystem::any_resetting() {
