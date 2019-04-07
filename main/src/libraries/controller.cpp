@@ -18,12 +18,27 @@ bool pilons::Controller::check_falling(int button) {
 
 /* Public Functions */
 void pilons::Controller::update() {
+  if (pros::millis() > this->last_screen_update_time + Controller::SCREEN_UPDATE_INTERVAL) {
+    this->print(this->update_line_number, 0, (screen_lines[this->update_line_number]).c_str());
+    // else printf("%d PRINT ERROR\n", pros::millis());
+
+    this->last_screen_update_time = pros::millis();
+    if (this->update_line_number < 2) this->update_line_number++;
+    else this->update_line_number = 0;
+  }
+
   for(int i = 0; i < 12; i++) {
     this->buttons[i].last_pressed = this->buttons[i].pressed;
     this->buttons[i].pressed = this->get_digital((pros::controller_digital_e_t)(i + pros::E_CONTROLLER_DIGITAL_L1));
     if (this->check_rising(i)) this->buttons[i].last_pressed_time = pros::millis();
     else if (this->check_falling(i)) this->buttons[i].last_pressed_time = 0;
+
+    if (this->check_single_press(i)) this->single_pressed_queue.push_back(i);
   }
+  if (this->single_pressed_queue.size() > 0) {
+    this->single_pressed = this->single_pressed_queue[0];
+    this->single_pressed_queue.pop_front();
+  } else single_pressed = -1;
 }
 
 int8_t pilons::Controller::get_analog(pros::controller_analog_e_t joystick, uint8_t deadzone) {
@@ -53,4 +68,16 @@ bool pilons::Controller::check_double_press(int button1, int button2) {
     this->buttons[button2].last_pressed_time = 0;
     return true;
   } else return false;
+}
+
+void pilons::Controller::write_line(uint8_t line, const char* format, ...) {
+  va_list args;
+  va_start(args, format);
+  char buffer[64];
+  vsprintf(buffer, format, args);
+  screen_lines[line] = buffer;
+  while (screen_lines[line].size() < 16) {
+    screen_lines[line] += " ";
+  }
+  va_end(args);
 }

@@ -21,5 +21,7 @@ namespace pilons {
     bool running();
 
     static void stop_all_tasks();
+
+    int get_state();
   };
 }

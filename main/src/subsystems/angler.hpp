@@ -10,8 +10,8 @@ public:
   static const uint8_t STATE_HOLD = 0x12;
 
   static const uint16_t PICKUP_POSITION = 85;
-  static const uint16_t CAP_PICKUP_POSITION = 220;
-  static const uint16_t CAP_FLIP_POSITION = 50;
+  static const uint16_t CAP_PICKUP_POSITION = 224;
+  static const uint16_t CAP_FLIP_POSITION = 40;
 
 private:
   pros::Motor& angler_motor;

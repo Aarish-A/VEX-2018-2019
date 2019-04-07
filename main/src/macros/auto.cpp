@@ -1,12 +1,19 @@
 #include "auto.hpp"
 
+int capper_count = 0;
 pilons::Task auto_update_task("Auto Update", auto_update, auto_update_task_stop_function);
 pilons::Task drive_move_task("Drive Move", drive_move, drive_task_stop_function);
 pilons::Task drive_turn_task("Drive Turn", drive_turn, drive_task_stop_function);
+pilons::Task cap_on_pole_task("Cap on Pole", cap_on_pole_task_function, cap_on_pole_stop_function);
+
+drive_move_params* drive_move_param = nullptr;
+drive_turn_params* drive_turn_param = nullptr;
 
 void auto_update(void* _params) {
+  uint32_t timer = pros::millis() + 1250;
   while(true) {
     Subsystem::update_all();
+    master.update();
     pros::delay(10);
   }
 }
@@ -17,26 +24,163 @@ void single_shot(double targ, bool wait) {
   while(angler.moving_to_target()) pros::delay(2);
   puncher.shoot();
   if (wait) while(puncher.shooting()) pros::delay(2);
+  printf("Angle error at shot is %f\n", RAD_TO_DEG(drive.get_error()));
 }
 
 void double_shot(double targ1, double targ2, bool wait) {
   single_shot(targ1);
+  pros::delay(75);
   single_shot(targ2, wait);
 }
 
 /* Capping */
 void cap_on_pole() {
+  drive.flatten_against_wall(false, true);
+  printf("started cap on pole func\n");
+  capper.start_capping();
+  printf("started capping\n");
+  drive.align_with_pole();
+  capper.finish_capping();
+  drive.flatten_against_wall(false,true);
+  drive.reset_global_angle();
+  while(capper.capping()) pros::delay(2);
+}
+
+void cap_on_pole_task_function(void* _param) {
+if(capper_count==0)
+{
+  cap_on_pole();
+  angler.move_to(Angler::CAP_PICKUP_POSITION);
+  intake.intake();
+  drive_move_sync(26_in, 0_deg);
+  drive_turn_sync(FixedAngleTarget(28_deg));
+  capper.move_to_velocity(47.5 * Capper::GEAR_RATIO, 180);
+  drive_move_sync(16_in, 28_deg);
+  drive_move_async(-13_in, 28_deg);
+  drive.wait_for_distance(-8_in);
+  angler.move_to(Angler::PICKUP_POSITION);
+  intake.stop();
+  capper.move_to_pickup();
+  drive.wait_for_stop();
+  drive_move_async(10_in, 28_deg);
+  drive.wait_for_distance(8_in);
+  capper.pickup_cap(true);
+  drive.wait_for_stop();
+  drive_move_sync(-17_in, 28_deg);
+  pros::delay(250);
+  drive_turn_sync(FixedAngleTarget(-90_deg));
+  intake.intake();
+  drive_move_sync(-6_in, -90_deg, false, 200, -30, false);
+  cap_on_pole();
+  angler.move_to(25);
+  drive_move_async(5_in);
+  drive.wait_for_distance(4_in);
+  capper.move_to_pickup();
+  drive.wait_for_stop();
+  drive_turn_async(FixedAngleTarget(15_deg));
+  double_shot(front_SP.top, front_SP.mid + 20);
+  capper.move_to_velocity(60 * Capper::GEAR_RATIO, 200);
+  drive_turn_sync(FixedAngleTarget(91.5_deg));
+  angler.move_to(Angler::CAP_PICKUP_POSITION);
+  intake.outtake();
+  drive_move_sync(16_in, 91.5_deg); //39
+  drive_turn_sync(FixedAngleTarget(30_deg));
+  drive_move_sync(19_in, 30_deg);
+  drive_move_sync(-19_in, 30_deg);
+  angler.move_to(Angler::PICKUP_POSITION);
+  drive_turn_sync(FixedAngleTarget(91.5_deg));
+  capper.move_to_pickup();
+  intake.stop();
+  drive_move_async(23_in,91.5_deg);
+  drive.wait_for_distance(21_in);
+  capper.pickup_cap(true);
+  drive.wait_for_stop();
+  intake.intake();
+
+  drive_turn_sync(FixedAngleTarget(75_deg));
+  drive_move_sync(31_in, 75_deg);
+  drive_turn_sync(FixedAngleTarget(0_deg));
+  cap_on_pole();
+  capper_count++;
+}
+else
+{
+  cap_on_pole();
+}
+  // drive_move_sync(5_in,0_deg);
+  // angler.move_to(Angler::CAP_PICKUP_POSITION);
+  // intake.intake();
+  // drive_move_async(24.5_in, 0_deg);
+  // drive.wait_for_distance(7_in);
+  // capper.move_to_velocity(30 * Capper::GEAR_RATIO, 200);
+  // drive.wait_for_stop();
+  // drive_move_sync(-7_in,0_deg);
+  // //drive_move_sync(18.5_in,4.5_deg);
+  // //  angler.move_to(Angler::CAP_PICKUP_POSITION);
+  //
+  // drive_turn_sync(FixedAngleTarget(-88_deg));
+  //
+  // capper.move_to_velocity(56 * Capper::GEAR_RATIO, 200);
+  // angler.move_to(Angler::CAP_FLIP_POSITION);
+  // intake.intake();
+  // drive_move_async(15.5_in, -88_deg);
+  // drive.wait_for_distance(14.5_in);
+  // drive_move_async(-2.5_in, -88_deg, true, 80);
+  // capper.move_to_power(28 * Capper::GEAR_RATIO, -100);
+  // drive.wait_for_stop();
+  // pros::delay(50);
+  // drive_move_sync(-5_in, -88_deg);
+  // intake.stop();
+  // capper.move_to_pickup();
+  // drive_move_async(9.5_in, -88_deg);
+  // drive.wait_for_distance(5.0_in);
+  // capper.pickup_cap();
+  // pros::delay(250);
+  // drive.wait_for_stop();
+  // intake.intake();
+  // drive_turn_sync(FixedAngleTarget(-79_deg));
+  // drive_move_sync(-33_in, -82_deg, false);
+  // cap_on_pole();
 }
 
 /* Drive */
+void climb_on_platform() {
+  drive.flatten_against_wall(true, true);
+  drive.set_state(Drive::STATE_AUTO_CONTROL);
+  drive.set_power(55, 15, 0);
+  while (right_platform_sensor.get_value() < 2000) pros::delay(5);
+  drive.set_power(-55, 15,0);
+  while (right_platform_sensor.get_value() > 1900) pros::delay(5);
+  drive.set_power(0, 0, 0);
+  gyro.reset();
+  angler.move_to(0);
+  drive.br_motor.tare_position();
+  for (int i = 40; i < 120; i++) {
+    drive.set_side_power(i, i);
+    pros::delay(3);
+  }
+  while (fabs(gyro.get_value()) < 150) pros::delay(5);
+  while (fabs(gyro.get_value()) > 60) pros::delay(5);
+
+  drive_move_sync(8.5_in);
+  angler.move_to(Angler::CAP_PICKUP_POSITION);
+  drive.set_state(Drive::STATE_AUTO_CONTROL);
+  // drive.set_power(0, -20, 0);
+  // pros::delay(150);
+  drive.set_power(0, 0, 0);
+  drive.reset_global_angle();
+}
+
 void drive_move(void* _params) {
   drive.set_state(Drive::STATE_AUTO_CONTROL);
 
   drive_move_params* params = (drive_move_params*)_params;
   double dist_target = params->dist_target;
   double angle_target = params->angle_target;
-  bool brake = params-brake;
+  bool brake = params->brake;
   uint8_t max_power = params->max_power;
+  int8_t start_power = params->start_power;
+  bool decel = params->decel;
   drive.target = dist_target;
 
   // If the correct angle is default, the correct angle should be the starting angle
@@ -80,7 +224,7 @@ void drive_move(void* _params) {
   bool angle_correcting = false;
 
   // Power variables
-  double power = 0;
+  double power = start_power;
   double angle_power = 0;
 
   do {
@@ -100,7 +244,7 @@ void drive_move(void* _params) {
     if (fabs(dist_current) < fabs(dist_target) * 0.30) {
       power += 0.40 * sgn(dist_target);
       log_ln(MOVE, AUTO, "%d Ramping up...", pros::millis(), power, dist_current, dist_error, angle_current, angle_error);
-    } else {
+    } else if (decel) {
       // Calculate PID values for distance
       dist_p_val = dist_error * dist_kP;
 
@@ -126,13 +270,14 @@ void drive_move(void* _params) {
       angle_power = angle_p_val + angle_i_val + angle_d_val;
 
       log_ln(MOVE, AUTO, "%d In PID...", pros::millis());
-    }
+    } else { }
 
 
     log_ln(MOVE, AUTO, "%d Distance | Current: %f in, Error: %f in, Power: %f, P: %f, I: %f, D: %f", pros::millis(), dist_current, dist_error, power, dist_p_val, dist_i_val, dist_d_val);
     log_ln(MOVE, AUTO, "%d Angle    | Current: %f deg, Error: %f deg, Angle Power: %f, P: %f, I: %f, D: %f", pros::millis(), RAD_TO_DEG(angle_current), RAD_TO_DEG(angle_error), angle_power, angle_p_val, angle_i_val, angle_d_val);
     log_ln(MOVE, AUTO, "----------------------------------------------------------------");
 
+    if (fabs(power) > max_power) power = max_power * sgn(power);
     drive.set_power(0, power, angle_power);
 
     dist_last_error = dist_error;
@@ -140,7 +285,7 @@ void drive_move(void* _params) {
     pros::delay(1);
   } while (fabs(dist_error) > 0.3_in && sgn(dist_error) == sgn(dist_last_error));
 
-  if (brake) {
+  if (brake && decel) {
     double targetFL = drive.fl_motor.get_position() + (dist_error) * (drive.TPR / (drive.WHEEL_DIAMETER * M_PI));
     double targetBL = drive.bl_motor.get_position() + (dist_error) * (drive.TPR / (drive.WHEEL_DIAMETER * M_PI));
     double targetFR = drive.fr_motor.get_position() + (dist_error) * (drive.TPR / (drive.WHEEL_DIAMETER * M_PI));
@@ -151,8 +296,16 @@ void drive_move(void* _params) {
     drive.fr_motor.move_absolute(targetFR, 25);
     drive.br_motor.move_absolute(targetBR, 25);
     log_ln(MOVE, AUTO, "%d Stopping from FL: %f, BL: %f, FR: %f, BR %f", pros::millis(), drive.fl_motor.get_position(), drive.bl_motor.get_position(), drive.fr_motor.get_position(), drive.br_motor.get_position());
-    while (fabs(drive.fl_motor.get_position() - targetFL) > 3 || fabs(drive.bl_motor.get_position() - targetBL) > 3 || fabs(drive.fr_motor.get_position() - targetFR) > 3 || fabs(drive.br_motor.get_position() - targetBR) > 3) pros::delay(1);
+    uint32_t temp = pros::millis();
+    while (fabs(drive.fl_motor.get_position() - targetFL) > 4 || fabs(drive.bl_motor.get_position() - targetBL) > 4 || fabs(drive.fr_motor.get_position() - targetFR) > 4 || fabs(drive.br_motor.get_position() - targetBR) > 4) {
+      // printf("Spent %d millis in this stupid loop\n", pros::millis() - temp);
+      // printf("Errors: FL: %f, BL: %f, FR: %f, BR: %f\n", fabs(drive.fl_motor.get_position() - targetFL), fabs(drive.bl_motor.get_position() - targetBL), fabs(drive.fr_motor.get_position() - targetFR), fabs(drive.br_motor.get_position() - targetBR));
+      // printf("Velocities: FL: %f, BL: %f, FR: %f, BR: %f\n", drive.fl_motor.get_actual_velocity(), drive.bl_motor.get_actual_velocity(), drive.fr_motor.get_actual_velocity(), drive.br_motor.get_actual_velocity());
+      pros::delay(1);
+    }
+    // printf("Finished the loop at %d millis\n", pros::millis() - temp);
     pros::delay(100);
+    printf("Finally finished at %d millis\n", pros::millis() - temp);
   } else drive.set_vel(0, 0, 0);
 
   dist_current = ((drive.enc_l.get_value() - enc_l_start) * SPN_TO_IN_L + (drive.enc_r.get_value() - enc_r_start) * SPN_TO_IN_R) / 2.0;
@@ -162,24 +315,38 @@ void drive_move(void* _params) {
   angle_error = angle_target - angle_current;
 
   log_ln(MOVE, AUTO, "%d FINISHED MOVE >>>> Took %d ms, Ended At: %f, Distance Error: %f, Angle Error: %f", pros::millis(), pros::millis() - start_time, dist_current, dist_error, RAD_TO_DEG(angle_error));
+
+  // pros::delay(100);
+
+  // dist_current = ((drive.enc_l.get_value() - enc_l_start) * SPN_TO_IN_L + (drive.enc_r.get_value() - enc_r_start) * SPN_TO_IN_R) / 2.0;
+  // angle_current = drive.get_global_angle();
+
+  // dist_error = dist_target - dist_current;
+  // angle_error = angle_target - angle_current;
+
+  // log_ln(LOG_AUTO, "%d FINISHED MOVE SECOND ONE >>>> Took %d ms, Ended At: %f, Distance Error: %f, Angle Error: %f", pros::millis(), pros::millis() - start_time, dist_current, dist_error, RAD_TO_DEG(angle_error));
   drive_move_task.stop_task();
 }
 
-void drive_move_async(double dist_target, double angle_target, bool brake, uint8_t max_power) {
-  drive_move_params* params = new drive_move_params{dist_target, angle_target, brake, max_power};
-  drive.set_error(params->dist_target);
-  drive.set_target(params->dist_target);
-  drive_move_task.start_task((void*)(params));
-  // pros::delay(100);
-  // delete params;
+void drive_move_async(double dist_target, double angle_target, bool brake, uint8_t max_power, int8_t start_power, bool decel) {
+  drive.set_state(Drive::STATE_AUTO_CONTROL);
+  if (drive_move_param != nullptr) {
+    delete drive_turn_param;
+    drive_move_param = nullptr;
+  }
+  drive_move_param = new drive_move_params{dist_target, angle_target, brake, max_power, start_power, decel};
+  drive.set_error(drive_move_param->dist_target);
+  drive.set_target(drive_move_param->dist_target);
+  drive_move_task.start_task((void*)(drive_move_param));
 }
 
-void drive_move_sync(double dist_target, double angle_target, bool brake, uint8_t max_power) {
-  drive_move_params params = {dist_target, angle_target, brake, max_power};
+void drive_move_sync(double dist_target, double angle_target, bool brake, uint8_t max_power, int8_t start_power, bool decel) {
+  drive_move_params params = {dist_target, angle_target, brake, max_power, start_power, decel};
   drive_move((void*)(&params));
 }
 
 void drive_turn(void *_params) {
+  log_ln(MOVE, AUTO, "%d Drive Turn Start: angle is %f\n", pros::millis(), RAD_TO_DEG(drive.get_global_angle()));
   drive.set_state(Drive::STATE_AUTO_CONTROL);
   drive_turn_params* params = (drive_turn_params*)_params;
   const AngleTarget& target = params->target;
@@ -199,6 +366,11 @@ void drive_turn(void *_params) {
     dA = target.getTarget() - drive.get_global_angle();
     drive.error = dA;
     drive_volt = RAD_TO_DEG(dA) * kP;
+
+    if (fabs(fixeddA) < 15_deg && fabs(drive_volt) < 30) {
+      drive_volt = sgn(drive_volt) * 30;
+    }
+
     drive.set_power(0, 0, drive_volt);
     pros::delay(1);
   }
@@ -218,6 +390,11 @@ void drive_turn(void *_params) {
     dA = target.getTarget() - drive.get_global_angle();
     drive.error = dA;
     drive_volt = RAD_TO_DEG(dA) * kP + iVal;
+
+    if (fabs(fixeddA) < 15_deg && fabs(drive_volt) < 25) {
+      drive_volt = sgn(drive_volt) * 25;
+    }
+
     drive.set_power(0, 0, drive_volt);
     log_ln(MOVE, AUTO, "%d Drive voltage is: %f and iVal is %f dA is %f", pros::millis(),drive_volt, iVal, RAD_TO_DEG(dA));
     pros::delay(1);
@@ -225,28 +402,219 @@ void drive_turn(void *_params) {
   drive.set_power(0);
   drive.brake();
   pros::delay(50);
-  log_ln(MOVE, AUTO, "End angle is %f\n", RAD_TO_DEG(drive.get_global_angle()));
+  log_ln(MOVE, AUTO, "%d Drive Turn Done: End angle is %f\n", pros::millis(), RAD_TO_DEG(drive.get_global_angle()));
   drive_turn_task.stop_task();
 }
 
 void drive_turn_async(const AngleTarget& target) {
-  drive_turn_params params = {target};
-  drive.set_error(params.target.getTarget());
-  drive.set_target(params.target.getTarget());
-  drive_turn_task.start_task((void*)(&params));
+  drive.set_state(Drive::STATE_AUTO_CONTROL);
+  if (drive_turn_param != nullptr) {
+    delete drive_turn_param;
+    drive_turn_param = nullptr;
+  }
+  drive_turn_param = new drive_turn_params{target};
+  drive.set_error(drive_turn_param->target.getTarget());
+  drive.set_target(drive_turn_param->target.getTarget());
+  drive_turn_task.start_task((void*)(drive_turn_param));
 }
 
-void drive_move_sync(const AngleTarget& target) {
+void drive_turn_sync(const AngleTarget& target) {
   drive_turn_params params = {target};
   drive_turn((void*)(&params));
 }
 
+void sweep_turn(const AngleTarget& target, double radius, bool forwards, double post_distance, bool clockwise, bool brake, int max_power) {
+  drive.set_state(Drive::STATE_AUTO_CONTROL);
+  double kP = 200/90;
+  double kD = 00.0;
+  double kI = 0.02;
+  double p_val = 0;
+  double d_val = 0;
+  double i_val = 0;
+
+  uint32_t start_time = pros::millis();
+  double start_angle = drive.get_global_angle();
+  double target_angle = target.getTarget();
+  double angle_error = target_angle - start_angle;
+  double dA = target.getTarget() - drive.get_global_angle();
+  double target_half = angle_error/2;
+
+  double enc_l_start = enc_l.get_value();
+  double enc_r_start = enc_r.get_value();
+  double delta_enc_l = 0;
+  double delta_enc_r = 0;
+  double current_pos = 0;
+
+  double distance;
+  double distance_right;
+  double distance_left;
+  double mecanum_distance_right;
+  double mecanum_distance_left;
+  double power_ratio;
+  double power = 0;
+
+  double error = 0;
+  double last_error = 0;
+
+  if (clockwise) {
+    distance_right = angle_error * (radius + EDGE_TO_TRACKING_WHEEL);
+    distance_left = angle_error * (radius + EDGE_TO_TRACKING_WHEEL + WHL_DIS_R * 2);
+    mecanum_distance_left = radius + DRIVE_EDGE_TO_MECANUM + MECANUM_DRIVE_WIDTH;
+    mecanum_distance_right = radius + DRIVE_EDGE_TO_MECANUM;
+    power_ratio = mecanum_distance_right / mecanum_distance_left;
+  } else {
+    distance_left = angle_error * (radius + EDGE_TO_TRACKING_WHEEL);
+    distance_right = angle_error * (radius + EDGE_TO_TRACKING_WHEEL + WHL_DIS_R * 2);
+    mecanum_distance_right = radius + DRIVE_EDGE_TO_MECANUM + MECANUM_DRIVE_WIDTH;
+    mecanum_distance_left = radius + DRIVE_EDGE_TO_MECANUM;
+    power_ratio = mecanum_distance_left / mecanum_distance_right;
+  }
+  if(forwards) {
+    power = 170;
+    for(int i = 20; i < power; i++) {
+      drive.set_side_vel(i, i * power_ratio);
+      pros::delay(2);
+    }
+  }
+  else {
+    power = -170;
+    for(int i = -20; i > power; i--) {
+      drive.set_side_vel(i, i * power_ratio);
+      pros::delay(2);
+    }
+  }
+  while(fabs(dA)>0.8_deg)
+  {
+    dA = target.getTarget() - drive.get_global_angle();
+    drive.set_side_vel(power, power * power_ratio);
+    printf("fl: %f, bl: %f, fr: %f, br: %f\n", drive.fl_motor.get_actual_velocity(), drive.bl_motor.get_actual_velocity(), drive.fr_motor.get_actual_velocity(), drive.br_motor.get_actual_velocity());
+  }
+  drive_move_sync(post_distance, max_power, brake, target_angle);
+}
+
+void drive_turn_side(const AngleTarget& target, double kP, double offset, bool forwards) {
+  drive.set_state(Drive::STATE_AUTO_CONTROL);
+  int t_start = pros::millis();
+	double dA = target.getTarget() - drive.get_global_angle() + offset;
+  drive.fl_motor.tare_position();
+  drive.bl_motor.tare_position();
+  drive.br_motor.tare_position();
+  drive.fr_motor.tare_position();
+  double ticks_targ = dA/SPN_TO_IN_L*(WHL_DIS_L+WHL_DIS_R);
+  printf("ticks targ: %f", ticks_targ);
+  log_ln(MOVE, AUTO, "%d Turning to %f | DeltaA: %f", pros::millis(), RAD_TO_DEG(target.getTarget()), RAD_TO_DEG(dA) );
+  printf("Da is %f", dA);
+	if (forwards) {
+		while (fabs(dA) > 0.8_deg) {
+			dA = target.getTarget() - drive.get_global_angle() + offset;
+			//log("%d Pos:%f DeltaA:%f Pow:%f \n", pros::millis(), RAD_TO_DEG(pos.a), RAD_TO_DEG(dA), kP*fabs(dA));
+			if (dA > 0) {
+				drive.bl_motor.move_velocity(kP*fabs(dA));
+				drive.fl_motor.move_velocity(kP*fabs(dA));
+				drive.br_motor.move_relative(0,200);
+				drive.fr_motor.move_relative(0,200);
+			} else {
+				drive.br_motor.move_velocity(kP*fabs(dA));
+				drive.fr_motor.move_velocity(kP*fabs(dA));
+				drive.bl_motor.move_velocity(0);
+				drive.fl_motor.move_velocity(0);
+			}
+			pros::delay(5);
+		}
+	} else {
+    if(dA < 0_deg) {
+      double left_per = -1;
+      double right_per = -0.3;
+      double kP = 350;
+      double error;
+
+      do {
+        dA = target.getTarget() - drive.get_global_angle() + offset;
+        error = fabs(dA);
+        double base_pow = error * kP + 10;
+        if (base_pow > 60) base_pow = 60;
+        int left_pow = round(base_pow * left_per);
+        int right_pow = round(base_pow * right_per);
+
+        drive.fl_motor.move(left_pow);
+        drive.bl_motor.move(left_pow);
+        drive.fr_motor.move(right_pow);
+        drive.br_motor.move(right_pow);
+
+        printf("%f %f\n", RAD_TO_DEG(error), base_pow);
+
+        pros::delay(1);
+      } while (fabs(error) > 0.6_deg);
+
+      double left = -15 * left_per;
+      if (fabs(left) < 5) left = 5 * sgn(left);
+      double right = -15 * right_per;
+      if (fabs(right) < 5) right = 5 * sgn(right);
+      drive.fl_motor.move(left);
+      drive.bl_motor.move(left);
+      drive.fr_motor.move(right);
+      drive.br_motor.move(right);
+      pros::delay(100);
+    } else {
+      double left_per = -0.3;
+      double right_per = -1;
+      double kP = 350;
+      double error;
+
+      do {
+        dA = target.getTarget() - drive.get_global_angle() + offset;
+        error = fabs(dA);
+        double base_pow = error * kP + 10;
+        if (base_pow > 60) base_pow = 60;
+        int left_pow = round(base_pow * left_per);
+        int right_pow = round(base_pow * right_per);
+
+        drive.fl_motor.move(left_pow);
+        drive.bl_motor.move(left_pow);
+        drive.fr_motor.move(right_pow);
+        drive.br_motor.move(right_pow);
+
+        printf("%f %f\n", RAD_TO_DEG(error), base_pow);
+
+        pros::delay(1);
+      } while (fabs(error) > 0.6_deg);
+
+      double left = -15 * left_per;
+      if (fabs(left) < 5) left = 5 * sgn(left);
+      double right = -15 * right_per;
+      if (fabs(right) < 5) right = 5 * sgn(right);
+      drive.fl_motor.move(left);
+      drive.bl_motor.move(left);
+      drive.fr_motor.move(right);
+      drive.br_motor.move(right);
+      pros::delay(100);
+  }
+  drive.set_power(0);
+	drive.brake();
+  log_ln(MOVE, AUTO, "%d Turned to %f in %d Vel:%f | FL: %f, BL: %f, FR: %f, BR %f", pros::millis(), RAD_TO_DEG(drive.get_global_angle()), pros::millis()-t_start, pos.aVel, drive.fl_motor.get_position(), drive.bl_motor.get_position(), drive.fr_motor.get_position(), drive.br_motor.get_position());
+  }
+  drive.set_state(Drive::STATE_DRIVER_CONTROL);
+}
+
 void auto_update_task_stop_function() {
-  // Subsystem::disable_all();
   puncher.set_holding();
+  drive.driver_set(0, 0, 0);
 }
 
 void drive_task_stop_function() {
   drive.set_state(Drive::STATE_DRIVER_CONTROL);
   drive.set_power(0);
+  if (drive_turn_param != nullptr) {
+    delete drive_turn_param;
+    drive_turn_param = nullptr;
+  }
+  if (drive_move_param != nullptr) {
+    delete drive_move_param;
+    drive_move_param = nullptr;
+  }
+}
+
+void cap_on_pole_stop_function() {
+  drive.set_power(0);
+  drive.set_state(Drive::STATE_DRIVER_CONTROL);
 }

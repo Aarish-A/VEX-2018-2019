@@ -37,6 +37,7 @@ void Puncher::set_state(uint8_t new_state) {
       this->target = (this->OFFSET + (this->shot_number * this->TPR) + this->HOLD);
       break;
     case STATE_LOADED:
+      this->cancelling_shot = false;
       this->set_power(this->HOLD_POWER);
       break;
     case STATE_PULLBACK:
@@ -59,14 +60,15 @@ void Puncher::update() {
   this->error = this->target - this->position;
   this->ball_sensor_value = this->ball_sensor.get_value();
 
+  //ball_on = true; // DELETE
   if (this->ball_sensor_value < BALL_THRESHOLD) {
     this->ball_on_time = pros::millis();
-    if (!ball_on) log_ln(SENSOR, "Ball has gotten on the puncher");
+    if (!ball_on) log_ln(SENSOR, "%d Ball has gotten on the puncher", pros::millis());
     ball_on = true;
   }
 
   if (pros::millis() >= this->ball_on_time + BALL_OFF_TIME) {
-    if (ball_on) log_ln(SENSOR, "Ball has gotten off the puncher");
+    if (ball_on) log_ln(SENSOR, "%d Ball has gotten off the puncher", pros::millis());
     ball_on = false;
   }
 
