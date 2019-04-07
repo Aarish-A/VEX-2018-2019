@@ -75,9 +75,9 @@ void pilons::Controller::write_line(uint8_t line, const char* format, ...) {
   va_start(args, format);
   char buffer[64];
   vsprintf(buffer, format, args);
-  screen_lines[line] = buffer;
-  while (screen_lines[line].size() < 16) {
-    screen_lines[line] += " ";
+  this->screen_lines[line] = buffer;
+  while (this->screen_lines[line].size() < 16) {
+    this->screen_lines[line] += " ";
   }
   va_end(args);
 }

@@ -8,7 +8,7 @@ volatile Shot_Pos back_SP = {0, 0, 0};
 
 volatile Shot_Pos auto_back_mid_SP = {0, 0, 0};
 volatile Shot_Pos auto_back_far_SP = {0, 0, 0};
-
+uint32_t time_start = pros::millis();
 Field_Position field_position = Field_Position::FRONT;
 std::deque<Shot_Target> shot_queue;
 
@@ -67,7 +67,10 @@ void shot_queue_handle(void* param) {
   Field_Position temp_field_pos = field_position;
   for (int i = 0; i < shot_queue.size(); i++) {
     Shot_Target temp_target = shot_queue[i];
-
+    uint32_t start_time = pros::millis();
+    printf(">>>>>Started queue handle: %d\n", start_time);
+    // printf("\n%d Start Shot Queue handle \n\n", pros::millis());
+    time_start = pros::millis();
     if (temp_target.turning) {
       if (i == 0) {
         drive.set_power(0, 10, 0);
@@ -76,7 +79,9 @@ void shot_queue_handle(void* param) {
         drive.set_vel(0);
         pros::delay(20);
         printf("target: x: %f, y: %f\n", temp_target.flag_position.x, temp_target.flag_position.y);
-        drive_turn_side(PointAngleTarget(temp_target.flag_position), (200/60_deg), 0, false);
+        drive_move_sync(-4_in);
+        drive_turn_sync(PointAngleTarget(temp_target.flag_position));
+        // drive_turn_side(PointAngleTarget(temp_target.flag_position), (200/60_deg), 0, false);
       } else if (i == 1) {
         drive_turn_sync(PointAngleTarget(temp_target.flag_position));
       }
@@ -85,6 +90,8 @@ void shot_queue_handle(void* param) {
     angler.wait_for_target_reach();
     puncher.shoot();
     puncher.wait_for_shot_finish();
+    // drive.wait_for_stop();
+    printf(">>>>>>%d Stop Shot Queue handle %d\n", pros::millis(), pros::millis() - start_time);
   }
   shot_queue_handle_task.stop_task();
 }
@@ -92,6 +99,7 @@ void shot_queue_handle(void* param) {
 void shot_task_cleanup() {
   if (puncher.shooting()) puncher.cancel_shot();
   shot_queue.clear();
+  printf("Time taken: %d\n",pros::millis()-time_start);
   angler.move_to(Angler::PICKUP_POSITION);
   intake.intake();
 }

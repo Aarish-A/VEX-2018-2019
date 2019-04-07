@@ -351,7 +351,7 @@ void drive_turn(void *_params) {
   drive_turn_params* params = (drive_turn_params*)_params;
   const AngleTarget& target = params->target;
   drive.target = target.getTarget();
-
+  // printf("%f", RAD_TO_DEG(target.getTarget()));
   double dA = target.getTarget() - drive.get_global_angle();
   double fixeddA = dA;
   double drive_volt = 0;
@@ -501,9 +501,9 @@ void drive_turn_side(const AngleTarget& target, double kP, double offset, bool f
   drive.br_motor.tare_position();
   drive.fr_motor.tare_position();
   double ticks_targ = dA/SPN_TO_IN_L*(WHL_DIS_L+WHL_DIS_R);
-  printf("ticks targ: %f", ticks_targ);
+  // printf("ticks targ: %f", ticks_targ);
   log_ln(LOG_AUTO, "%d Turning to %f | DeltaA: %f", pros::millis(), RAD_TO_DEG(target.getTarget()), RAD_TO_DEG(dA) );
-  printf("Da is %f", dA);
+  // printf("Da is %f", dA);
 	if (forwards) {
 		while (fabs(dA) > 0.8_deg) {
 			dA = target.getTarget() - drive.get_global_angle() + offset;
@@ -541,7 +541,7 @@ void drive_turn_side(const AngleTarget& target, double kP, double offset, bool f
         drive.fr_motor.move(right_pow);
         drive.br_motor.move(right_pow);
 
-        printf("%f %f\n", RAD_TO_DEG(error), base_pow);
+        // printf("%f %f\n", RAD_TO_DEG(error), base_pow);
 
         pros::delay(1);
       } while (fabs(error) > 0.6_deg);
@@ -574,7 +574,7 @@ void drive_turn_side(const AngleTarget& target, double kP, double offset, bool f
         drive.fr_motor.move(right_pow);
         drive.br_motor.move(right_pow);
 
-        printf("%f %f\n", RAD_TO_DEG(error), base_pow);
+        // printf("%f %f\n", RAD_TO_DEG(error), base_pow);
 
         pros::delay(1);
       } while (fabs(error) > 0.6_deg);
