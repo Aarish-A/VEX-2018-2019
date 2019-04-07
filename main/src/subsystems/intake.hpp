@@ -16,7 +16,7 @@ private:
 
   /* Private Functions */
   void set_power(int8_t power);
-
+  
   void set_state(uint8_t new_state) override;
 
 public:

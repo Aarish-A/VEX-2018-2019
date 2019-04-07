@@ -59,7 +59,7 @@ void Capper::update() {
       //   this->disable();
       // }
       if (fabs(this->error) < this->error_threshold) {
-        log_ln(MOVE, CAPPER, "Capper move finished at %f, target was %f", this->position / this->GEAR_RATIO, this->target / this->GEAR_RATIO);
+        log_ln(LOG_STATES, "Capper move finished at %f, target was %f", this->position / this->GEAR_RATIO, this->target / this->GEAR_RATIO);
         this->set_state(STATE_HOLD);
       }
       break;

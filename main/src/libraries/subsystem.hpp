@@ -1,7 +1,7 @@
 #pragma once
 #include "main.h"
 #include "tracking.hpp"
-#include "logs.hpp"
+#include "../logs.hpp"
 
 class Subsystem {
 public:

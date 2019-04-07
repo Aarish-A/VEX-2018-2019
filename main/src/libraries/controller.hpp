@@ -1,6 +1,6 @@
 #pragma once
 #include "main.h"
-#include "logs.hpp"
+#include "../logs.hpp"
 #include "../libraries/util.hpp"
 #include <stdarg.h>
 #include <deque>

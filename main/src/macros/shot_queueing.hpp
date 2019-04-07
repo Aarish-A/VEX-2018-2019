@@ -1,5 +1,4 @@
 #pragma once
-
 #include "main.h"
 #include "../config.hpp"
 #include "../menu.hpp"

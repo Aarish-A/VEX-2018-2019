@@ -63,12 +63,12 @@ void Puncher::update() {
   //ball_on = true; // DELETE
   if (this->ball_sensor_value < BALL_THRESHOLD) {
     this->ball_on_time = pros::millis();
-    if (!ball_on) log_ln(SENSOR, "%d Ball has gotten on the puncher", pros::millis());
+    if (!ball_on) log_ln(LOG_PUNCHER, "%d Ball has gotten on the puncher", pros::millis());
     ball_on = true;
   }
 
   if (pros::millis() >= this->ball_on_time + BALL_OFF_TIME) {
-    if (ball_on) log_ln(SENSOR, "%d Ball has gotten off the puncher", pros::millis());
+    if (ball_on) log_ln(LOG_PUNCHER, "%d Ball has gotten off the puncher", pros::millis());
     ball_on = false;
   }
 
@@ -110,7 +110,7 @@ void Puncher::update() {
 
 void Puncher::enable() {
   if (this->state == STATE_DISABLED && this->reset_finished) {
-    log_ln(PROGRAM_FLOW, "Enabled %s subsystem", (this->subsystem_name).c_str());
+    log_ln(LOG_SUBSYSTEMS, "Enabled %s subsystem", (this->subsystem_name).c_str());
     set_state(this->DEFAULT_STATE);
   }
 }

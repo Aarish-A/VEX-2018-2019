@@ -1,6 +1,6 @@
 #pragma once
 #include "main.h"
-#include "../libraries/logs.hpp"
+#include "../logs.hpp"
 #include "../libraries/subsystem.hpp"
 
 class Puncher final : public Subsystem {

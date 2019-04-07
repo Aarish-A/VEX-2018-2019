@@ -1,6 +1,6 @@
 #pragma once
 #include "main.h"
-#include "../libraries/logs.hpp"
+#include "../logs.hpp"
 #include "../libraries/subsystem.hpp"
 #include "../libraries/angle_target.hpp"
 #include "../libraries/tracking.hpp"

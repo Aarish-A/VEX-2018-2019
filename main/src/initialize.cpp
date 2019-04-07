@@ -1,6 +1,6 @@
 #include "main.h"
 #include "controls.hpp"
-#include "libraries/logs.hpp"
+#include "logs.hpp"
 #include "config.hpp"
 #include "menu.hpp"
 #include "subsystems/intake.hpp"
@@ -16,7 +16,7 @@ void initialize() {
 		Subsystem::update_all();
 		pros::delay(2);
 	}
-  log_ln(PROGRAM_FLOW, "%d Finished Init", pros::millis());
+  log_ln(LOG_DRIVE, "%d Finished Init", pros::millis());
 }
 
 /**
