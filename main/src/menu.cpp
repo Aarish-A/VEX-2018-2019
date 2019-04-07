@@ -29,8 +29,8 @@ void menu_init() {
       uint32_t temp;
       fscanf(flag_config_file, "%d ", &temp);
       flag_config[i] = static_cast<Flags>(temp);
-      log_ln(LOG_IO, "Successfully read %d from /usd/flag_config.txt", temp);
-    } else log_ln(LOG_IO, "Could not read from /usd/flag_config.txt");
+      log_ln(IO, "Successfully read %d from /usd/flag_config.txt", temp);
+    } else log_ln(IO, "Could not read from /usd/flag_config.txt");
   }
   if (flag_config_file != nullptr) fclose(flag_config_file);
 
@@ -41,8 +41,8 @@ void menu_init() {
       uint32_t temp;
       fscanf(shot_positions_file, "%d ", &temp);
       shot_positions[i] = temp;
-      log_ln(LOG_IO, "Successfully read %d from /usd/shot_positions.txt", temp);
-    } else log_ln(LOG_IO, "Could not read from /usd/shot_positions.txt");
+      log_ln(IO, "Successfully read %d from /usd/shot_positions.txt", temp);
+    } else log_ln(IO, "Could not read from /usd/shot_positions.txt");
   }
   if (shot_positions_file != nullptr) fclose(shot_positions_file);
   else for(int i = 0; i < (int)SP::NUM_OF_ELEMENTS; i++) shot_positions[i] = 0;
@@ -213,8 +213,8 @@ void menu_save() {
       for (int i = 0; i < (int)SP::NUM_OF_ELEMENTS; i++) {
         if (shot_positions_file != nullptr) {
           fprintf(shot_positions_file, "%d ", shot_positions[i]);
-          log_ln(LOG_IO, "Successfully wrote %d to /usd/shot_positions.txt", shot_positions[i]);
-        } else log_ln(LOG_IO, "Could not write to /usd/shot_positions.txt");
+          log_ln(IO, "Successfully wrote %d to /usd/shot_positions.txt", shot_positions[i]);
+        } else log_ln(IO, "Could not write to /usd/shot_positions.txt");
       }
       if (shot_positions_file != nullptr) {
         fclose(shot_positions_file);
@@ -239,8 +239,8 @@ void menu_save() {
       for (int i = 0; i < MAX_NUMBER_OF_SHOTS; i++) {
         if (flag_config_file != nullptr) {
           fprintf(flag_config_file, "%d ", static_cast<int>(flag_config[i]));
-          log_ln(LOG_IO, "Successfully wrote %d to /usd/flag_config.txt", static_cast<int>(flag_config[i]));
-        } else log_ln(LOG_IO, "Could not write to /usd/flag_config.txt");
+          log_ln(IO, "Successfully wrote %d to /usd/flag_config.txt", static_cast<int>(flag_config[i]));
+        } else log_ln(IO, "Could not write to /usd/flag_config.txt");
       }
       if (flag_config_file != nullptr) {
         fclose(flag_config_file);
@@ -276,10 +276,10 @@ void write_to_file(const char* file_name, const char* file_mode, const char* for
     vfprintf(file, format, args);
     char temp[128];
     vsprintf(temp, format, args2);
-    log_ln(LOG_IO, "Successfully wrote %c to %s", temp, file_name);
+    log_ln(IO, "Successfully wrote %c to %s", temp, file_name);
     fclose(file);
     master.rumble("--");
-  } else log_ln(LOG_ERROR, "Could not write to %s", file_name);
+  } else log_ln(FATAL_ERROR, "Could not write to %s", file_name);
   va_end(args);
   va_end(args2);
 }
@@ -297,10 +297,10 @@ void read_from_file(const char* file_name, const char* file_mode, const char* fo
     vfscanf(file, format, args);
     char temp[128];
     vsprintf(temp, format, args2);
-    log_ln(LOG_IO, "Successfully read %c from %s", temp, file_name);
+    log_ln(IO, "Successfully read %c from %s", temp, file_name);
     fclose(file);
     master.rumble("--");
-  } else log_ln(LOG_ERROR, "Could not read from %s", file_name);
+  } else log_ln(FATAL_ERROR, "Could not read from %s", file_name);
   va_end(args);
   va_end(args2);
 }

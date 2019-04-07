@@ -14,6 +14,7 @@ public:
 };
 /* Log_Info Categories */
 const Log_Info PROGRAM_FLOW("PROGRAM_FLOW", true);
+const Log_Info IO("IO", true);
 const Log_Info STATE_CHANGE("STATE_CHANGE", true);
 const Log_Info MOVE("MOVE", true);
 const Log_Info USER_IN("USER_IN", true);
