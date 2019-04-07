@@ -1,5 +1,5 @@
 #include "main.h"
-#include "libraries/logs.hpp"
+#include "logs.hpp"
 #include "config.hpp"
 #include "controls.hpp"
 #include "macros/shot_queueing.hpp"
@@ -21,7 +21,7 @@ pilons::Task capper_move_to_cap_flip_task("Capper Cap Flip", [](void* param) {
 
 
 void opcontrol() {
-	log_ln(PROGRAM_FLOW, "   --- %d START OPCONTROL --- \n", pros::millis());
+	log_ln(LOG_AUTO, "   --- %d START OPCONTROL --- \n", pros::millis());
 	// autonomous();
 	pilons::Task::stop_all_tasks();
 	Subsystem::enable_all();
@@ -181,5 +181,4 @@ void opcontrol() {
 
 		pros::delay(5);
 	}
-}
 }
