@@ -1,7 +1,7 @@
 #pragma once
 #include "main.h"
 #include "../config.hpp"
-#include "../gui.hpp"
+#include "../menu.hpp"
 #include "../libraries/task.hpp"
 #include "../libraries/util.hpp"
 #include "auto.hpp"

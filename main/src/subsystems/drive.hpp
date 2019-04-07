@@ -9,6 +9,7 @@ class Drive final : public Subsystem {
 public:
   static const uint8_t STATE_DRIVER_CONTROL = 0x10;
   static const uint8_t STATE_AUTO_CONTROL = 0x11;
+  static const uint8_t STATE_DRIVE_LOCK = 0x12;
 
 private:
   pros::Motor& fl_motor;
@@ -70,4 +71,7 @@ public:
   void wait_for_stop();
   void wait_for_distance(double target_distance);
   void wait_for_angle(double target_angle);
+
+  void lock();
+  void unlock();
 };

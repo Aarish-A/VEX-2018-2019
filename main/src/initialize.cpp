@@ -2,6 +2,7 @@
 #include "controls.hpp"
 #include "logs.hpp"
 #include "config.hpp"
+#include "menu.hpp"
 #include "subsystems/intake.hpp"
 #include "subsystems/drive.hpp"
 #include "subsystems/angler.hpp"
@@ -9,6 +10,7 @@
 
 void initialize() {
 	log_init();
+	menu_init();
 	Subsystem::reset_all();
 	while(Subsystem::any_resetting()) {
 		Subsystem::update_all();

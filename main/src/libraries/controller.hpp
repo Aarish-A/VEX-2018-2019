@@ -13,7 +13,7 @@ namespace pilons {
   private:
     std::string controller_name;
 
-    static const uint32_t SCREEN_UPDATE_INTERVAL = 60;
+    static const uint32_t SCREEN_UPDATE_INTERVAL = 85;
     std::string screen_lines[3] = {"               ", "               ", "               "};
     std::uint8_t update_line_number = 0;
     uint32_t last_screen_update_time = 0;

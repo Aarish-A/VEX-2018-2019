@@ -36,51 +36,53 @@ void autonomous() {
   auto_update_task.start_task();
   drive.reset_global_angle();
 
-  // programming_skills_30_points();
+  auto_red_back();
 
-  // capper.move_to_velocity(62 * Capper::GEAR_RATIO, 200);
+  // // programming_skills_30_points();
+  //
+  // // capper.move_to_velocity(62 * Capper::GEAR_RATIO, 200);
+  // // angler.move_to(Angler::PICKUP_POSITION);
+  // // intake.intake();
+  // // drive_move_async(43_ in, 0_deg);
+  // // drive.wait_for_distance(42_in);
+  // // capper.move_to_velocity(28 * Capper::GEAR_RATIO, -100);
+  // // pros::delay(100);
+  // // drive_move_async(-2_in, 0_deg, true, 80);
+  // // drive.wait_for_stop();
+  // // pros::delay(100);
+  // // drive_move_sync(-5_in, 0_deg);
+  // // intake.stop();
+  // // capper.move_to_pickup();
+  // // drive_move_async(10_in, 0_deg);
+  // // drive.wait_for_distance(6.0_in);
+  // // capper.pickup_cap();
+  // // pros::delay(75);
+  // // intake.intake();
+  // // drive.wait_for_stop();
+  // // drive_turn_sync(FixedAngleTarget(-56_deg));
+  // // double_shot(front_SP.mid, front_SP.top);
+  //
+  // drive_move_async(38_in, 0_deg);
+  // capper.move_to_velocity(32 * Capper::GEAR_RATIO, 120);
+  // drive.wait_for_distance(15_in);
   // angler.move_to(Angler::PICKUP_POSITION);
+  // drive.wait_for_distance(36_in);
   // intake.intake();
-  // drive_move_async(43_ in, 0_deg);
-  // drive.wait_for_distance(42_in);
-  // capper.move_to_velocity(28 * Capper::GEAR_RATIO, -100);
-  // pros::delay(100);
-  // drive_move_async(-2_in, 0_deg, true, 80);
-  // drive.wait_for_stop();
-  // pros::delay(100);
-  // drive_move_sync(-5_in, 0_deg);
-  // intake.stop();
-  // capper.move_to_pickup();
-  // drive_move_async(10_in, 0_deg);
-  // drive.wait_for_distance(6.0_in);
-  // capper.pickup_cap();
-  // pros::delay(75);
-  // intake.intake();
-  // drive.wait_for_stop();
-  // drive_turn_sync(FixedAngleTarget(-56_deg));
-  // double_shot(front_SP.mid, front_SP.top);
-
-  drive_move_async(38_in, 0_deg);
-  capper.move_to_velocity(32 * Capper::GEAR_RATIO, 120);
-  drive.wait_for_distance(15_in);
-  angler.move_to(Angler::PICKUP_POSITION);
-  drive.wait_for_distance(36_in);
-  intake.intake();
-  drive_move_sync(9_in, 0_deg, true, 50);
-  // drive_move_sync(-27_in, 0_deg);
-
-  // angler.move_to(Angler::PICKUP_POSITION);
-  // capper.move_to_cap_flip(true,200);
-  // drive_move_async(44.5_in,0_deg);
-  // drive.wait_for_distance(5_in);
-  // intake.intake();
-  // drive.wait_for_stop();
-  // pros::delay(100);
-  drive_move_sync(-40.0_in,0_deg);
-  drive_turn_async(FixedAngleTarget(-84.5_deg));
-  double_shot(front_SP.top,front_SP.mid);
-  capper.move_to_velocity(75 * Capper::GEAR_RATIO, 200);
-  master.rumble("-");
+  // drive_move_sync(9_in, 0_deg, true, 50);
+  // // drive_move_sync(-27_in, 0_deg);
+  //
+  // // angler.move_to(Angler::PICKUP_POSITION);
+  // // capper.move_to_cap_flip(true,200);
+  // // drive_move_async(44.5_in,0_deg);
+  // // drive.wait_for_distance(5_in);
+  // // intake.intake();
+  // // drive.wait_for_stop();
+  // // pros::delay(100);
+  // drive_move_sync(-40.0_in,0_deg);
+  // drive_turn_async(FixedAngleTarget(-84.5_deg));
+  // double_shot(front_SP.top,front_SP.mid);
+  // capper.move_to_velocity(75 * Capper::GEAR_RATIO, 200);
+  // master.rumble("-");
 
   // Auto End
   uint32_t auto_finished_time = pros::millis() - autonomous_time;
@@ -137,6 +139,51 @@ void auto_red_front() {
 }
 
 void auto_red_back() {
+  // int cap_dis = 47_in;
+  // //Pickup
+  // intake.intake();
+  // angler.move_to(Angler::PICKUP_POSITION);
+  // drive_move_sync(cap_dis, 0_deg);
+  //
+  // //Shoot
+  // drive_move_sync(-(cap_dis-14_in), 0_deg);
+  // drive_turn_sync(FixedAngleTarget(-64.5_deg));
+  // double_shot(70, 125);
+  //
+  // //Flatten wall
+  // drive_turn_sync(FixedAngleTarget(-90_deg));
+  // drive_move_sync(-0.6_tile, -90_deg, false, 200, 0, false);
+  // printf(" \n\n >>>> %d auto done back up | %d %d \n", pros::millis(), enc_l.get_value(), enc_r.get_value());
+  // drive.flatten_against_wall_base(false, -30, true, 10);
+  // drive.reset_global_angle();
+  // printf("%d auto RESET: %d %d\n", pros::millis(), enc_l.get_value(), enc_r.get_value());
+  //
+  // //Get balls off back cap
+  // double mid_flag_pos = 110;
+  // drive_move_sync(6_in, 0_deg);
+  // angler.move_to(Angler::CAP_PICKUP_POSITION);
+  // drive_turn_sync(FixedAngleTarget(90_deg));
+  // drive_move_sync(27.6_in, 90_deg);
+  // pros::delay(200);
+  // drive_move_sync(-9_in, 90_deg);
+  // pros::delay(600);
+  // intake.outtake();
+  // angler.move_to(Angler::CAP_FLIP_POSITION+10);
+  // drive_move_sync(17_in, 90_deg);
+  // // drive.wait_for_distance(12_in);
+  // // angler.move_to(mid_flag_pos);
+  // // drive.wait_for_stop();
+  // printf("%d Done cap flip drive\n", pros::millis());
+  // while(angler.moving_to_target()) pros::delay(2);
+  // printf("%d Done Cap flip angler wait \n", pros::millis());
+  // //drive_move_sync(-5_in, 90_deg);
+  //
+  // //Shoot
+  // drive_turn_sync(FixedAngleTarget(22_deg));
+  // double_shot(mid_flag_pos, 220);
+  //
+  // printf("%d Stopped | red\n", pros::millis());
+
   int cap_dis = 47_in;
   //Pickup
   intake.intake();
@@ -148,6 +195,7 @@ void auto_red_back() {
   drive_turn_sync(FixedAngleTarget(-64.5_deg));
   double_shot(70, 125);
 
+
   //Flatten wall
   drive_turn_sync(FixedAngleTarget(-90_deg));
   drive_move_sync(-0.6_tile, -90_deg, false, 200, 0, false);
@@ -157,28 +205,30 @@ void auto_red_back() {
   printf("%d auto RESET: %d %d\n", pros::millis(), enc_l.get_value(), enc_r.get_value());
 
   //Get balls off back cap
-  double mid_flag_pos = 110;
+  double mid_flag_pos = 140, top_flag_pos = 215;
   drive_move_sync(6_in, 0_deg);
   angler.move_to(Angler::CAP_PICKUP_POSITION);
   drive_turn_sync(FixedAngleTarget(90_deg));
   drive_move_sync(27.6_in, 90_deg);
   pros::delay(200);
   drive_move_sync(-9_in, 90_deg);
-  pros::delay(600);
-  intake.outtake();
+  pros::delay(700);
+
+  /* Cap flip - caused the robot to end up in an inconsistent spot +-1In (making the next shot fail), and sometimes the base of the cap would land on top of the blue cap (not scored)
+  printf("\n%d Pick cap balls \n", pros::millis());
+  pros::delay(200);
+  printf("\n%d Pick cap balls | WAIT1 \n", pros::millis());
+  drive_move_sync(-9_in, 90_deg);
   angler.move_to(Angler::CAP_FLIP_POSITION+10);
-  drive_move_sync(17_in, 90_deg);
-  // drive.wait_for_distance(12_in);
-  // angler.move_to(mid_flag_pos);
-  // drive.wait_for_stop();
-  printf("%d Done cap flip drive\n", pros::millis());
-  while(angler.moving_to_target()) pros::delay(2);
-  printf("%d Done Cap flip angler wait \n", pros::millis());
-  //drive_move_sync(-5_in, 90_deg);
+  pros::delay(700);
+  printf("\n%d Pick cap balls | WAIT2 \n", pros::millis());
+  intake.outtake();
+  drive_move_sync(18_in, 90_deg);
+  */
 
   //Shoot
-  drive_turn_sync(FixedAngleTarget(22_deg));
-  double_shot(mid_flag_pos, 220);
+  drive_turn_sync(FixedAngleTarget(30.5_deg));
+  double_shot(mid_flag_pos, top_flag_pos);
 
   printf("%d Stopped | red\n", pros::millis());
 

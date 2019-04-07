@@ -56,6 +56,14 @@ void Drive::set_state(uint8_t new_state) {
       this->y = 0;
       this->a = 0;
       break;
+    case STATE_DRIVE_LOCK:
+      this->x = 0;
+      this->y = 0;
+      this->a = 0;
+      this->fl_motor.move(-30);
+      this->bl_motor.move(30);
+      this->fr_motor.move(-30);
+      this->br_motor.move(30);
   }
 }
 
@@ -90,8 +98,21 @@ void Drive::update() {
       break;
     case STATE_AUTO_CONTROL:
       if (this->x || this->a || this->y) {
-        this->set_state(STATE_DRIVER_CONTROL);
         printf("Drive move interrupted by driver\n");
+        this->set_state(STATE_DRIVER_CONTROL);
+      }
+      break;
+    case STATE_DRIVE_LOCK:
+      if (this->x || this->a || this->y) {
+        printf("Drive lock interrupted by driver\n");
+        this->set_state(STATE_DRIVER_CONTROL);
+      } else if (timed_out(1000)) {
+        this->set_state(STATE_DRIVER_CONTROL);
+      } else if (pros::millis() - this->state_change_time > 200) {
+        this->fl_motor.move(-25);
+        this->bl_motor.move(25);
+        this->fr_motor.move(-25);
+        this->br_motor.move(25);
       }
       break;
   }
@@ -210,4 +231,12 @@ void Drive::wait_for_angle(double target_angle) {
   bool clockwise = (this->target - this->get_global_angle() > 0 ? true : false);
   if (clockwise) while (this->get_global_angle() < target_angle) pros::delay(1);
   else while (this->get_global_angle() > target_angle) pros::delay(1);
+}
+
+void Drive::lock() {
+  this->set_state(STATE_DRIVE_LOCK);
+}
+
+void Drive::unlock() {
+  if (this->state == STATE_DRIVE_LOCK) this->set_state(STATE_DRIVER_CONTROL);
 }
