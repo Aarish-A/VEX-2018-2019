@@ -60,6 +60,7 @@ public:
   void driver_set(int8_t x, int8_t y, int8_t a);
 
   void reset_global_angle();
+  double read_global_angle();
   void flatten_against_wall(bool forward = true, bool hold = true, int8_t hold_power = 15);
   void flatten_against_wall_base(bool forward, int8_t power, bool hold, int8_t hold_power);
   void align_with_pole(uint16_t poti_zero = 2820);

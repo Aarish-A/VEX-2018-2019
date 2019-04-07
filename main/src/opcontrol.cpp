@@ -19,15 +19,6 @@ pilons::Task capper_move_to_cap_flip_task("Capper Cap Flip", [](void* param) {
 	angler.move_to(Angler::PICKUP_POSITION);
 });
 
-double get_angle(double distance) {
-	double a = 0.00398849;
-	double b = -0.687933;
-	double c = 61.0893;
-
-	double angle = a * distance * distance + b * distance + c;
-	double offset = shot_positions[0];
-	return (angle - 24.2) * 7.0 + offset;
-}
 
 void opcontrol() {
 	log_ln(LOG_AUTO, "   --- %d START OPCONTROL --- \n", pros::millis());
@@ -71,7 +62,6 @@ void opcontrol() {
 		/* Angler */
 		int8_t angler_power = master.get_analog(JOY_ANGLER, 40);
 		angler.driver_set(angler_power);
-
 		// printf("%f\n", m_angler.get_position() / 7.0);
 		// 24.2
 
@@ -101,22 +91,14 @@ void opcontrol() {
 
 				// Shot Queueing
 				case BTN_SHOT_R_T:
-					puncher.shoot();
-					// printf("angle: %f\n", m_angler.get_position() / 7.0 + 24.20);
-				// case BTN_SHOT_R_T:
-					// make_shot_request(front_SP.top, Turn_Direction::STRAIGHT, Field_Position::FRONT, true);
-				// 	break;
-				// case BTN_SHOT_R_M:
-				// 	make_shot_request(front_SP.mid, Turn_Direction::STRAIGHT, Field_Position::FRONT, true);
-				// 	break;
+					make_shot_request(front_SP.top, Turn_Direction::STRAIGHT, Field_Position::FRONT, true);
+					break;
+				case BTN_SHOT_R_M:
+					make_shot_request(front_SP.mid, Turn_Direction::STRAIGHT, Field_Position::FRONT, true);
+					break;
 				// case BTN_SHOT_CANCEL:
 				// 	shot_queue_handle_task.stop_task();
 				// 	break;
-					break;
-				case BTN_SHOT_R_M:
-					// angler.move_to(get_angle(123.0));
-					angler.move_to(get_angle(shot_positions[1]));
-					break;
 
 				// Capper
 				case BTN_CAPPER_DOWN:
@@ -156,34 +138,38 @@ void opcontrol() {
 			menu_enabled = !menu_enabled;
 		}
 
-
-		// constexpr int BTN_ENTER_MENU = GET_BTN_INDEX(pros::E_CONTROLLER_DIGITAL_UP);
-		// constexpr int BTN_EXIT_MENU = GET_BTN_INDEX(pros::E_CONTROLLER_DIGITAL_B);
-		// constexpr int BTN_SAVE = GET_BTN_INDEX(pros::E_CONTROLLER_DIGITAL_A);
-		// constexpr int BTN_NEXT_MENU_SCREEN = GET_BTN_INDEX(pros::E_CONTROLLER_DIGITAL_R2);
-		// constexpr int BTN_PREV_MENU_SCREEN = GET_BTN_INDEX(pros::E_CONTROLLER_DIGITAL_L2);
-		//
-		//
-		// constexpr int BTN_INCREMENT_SHOT_SLIDER = GET_BTN_INDEX(pros::E_CONTROLLER_DIGITAL_RIGHT);
-		// constexpr int BTN_DECREMENT_SHOT_SLIDER = GET_BTN_INDEX(pros::E_CONTROLLER_DIGITAL_LEFT);
-		// constexpr int BTN_PREVIOUS_SHOT_SLIDER = GET_BTN_INDEX(pros::E_CONTROLLER_DIGITAL_UP);
-		// constexpr int BTN_NEXT_SHOT_SLIDER = GET_BTN_INDEX(pros::E_CONTROLLER_DIGITAL_DOWN);
-		// constexpr int BTN_TEST_SHOT_POSITION = GET_BTN_INDEX(pros::E_CONTROLLER_DIGITAL_R1); //2
-
-		// CONTROLS WHEN PARTNER CONTROLLER IS CONNECTED -- ONLY PUT CONTROLS THAT SWITCH BASED ON PARTNER CONTROLLER HERE
 		if (partner.is_connected()) {
+			switch(partner.single_pressed) {
+				case BTN_SHOT_R_T:
+					make_shot_request(front_SP.top, Turn_Direction::RIGHT, field_position);
+					break;
+				case BTN_SHOT_R_M:
+					make_shot_request(front_SP.mid, Turn_Direction::RIGHT, field_position);
+					break;
+				case BTN_SHOT_L_T:
+					make_shot_request(front_SP.top, Turn_Direction::LEFT, field_position);
+					break;
+				case BTN_SHOT_L_M:
+					make_shot_request(front_SP.mid, Turn_Direction::LEFT, field_position);
+					break;
+				case BTN_FIELD_RED_PF:
+					field_position = Field_Position::RED_PF;
+					break;
+				case BTN_FIELD_BLUE_PF:
+					field_position = Field_Position::BLUE_PF;
+					break;
+				case BTN_FIELD_FRONT:
+					field_position = Field_Position::FRONT;
+					break;
+			}
 
 
-
-
-
-
+			if (master.check_double_press(BTN_GROUND_PICKUP, BTN_CAP_PICKUP)) {
+				angler.move_to(Angler::CAP_FLIP_POSITION);
+				intake.outtake();
+			}
 		}
 
-		// CONTROLS WHEN PARTNER CONTROLLER IS DISCONNECTED -- ONLY PUT CONTROLS THAT SWITCH BASED ON PARTNER CONTROLLER HERE
-		else {
-
-		}
 
 
 		if (master.check_double_press(BTN_GROUND_PICKUP, BTN_CAP_PICKUP)) {

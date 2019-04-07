@@ -21,6 +21,7 @@ void auto_red_front();
 void auto_red_back();
 void auto_red_back_no_second_shot();
 void auto_blue_front();
+void auto_blue_front_park();
 void auto_blue_back();
 void auto_blue_back_no_second_shot();
 void programming_skills_29_points();
@@ -86,8 +87,12 @@ void autonomous() {
 
   // Auto End
   uint32_t auto_finished_time = pros::millis() - autonomous_time;
-  master.print(2, 0, "Time: %d\n", auto_finished_time);
+  master.print(2, 0, "Time: %d", auto_finished_time);
   pros::delay(60);
+  /* Turn off Motors */
+  intake.off();
+  drive.set_power(0);
+  // Kill all tasks
   pilons::Task::stop_all_tasks();
 }
 
@@ -99,7 +104,8 @@ void auto_red_front_park()
   drive.wait_for_distance(40_in);
   drive_move_sync(-36_in,0_deg,true);
   angler.move_to(front_SP.top);
-  drive_turn_sync(FixedAngleTarget(-81_deg));
+  drive_turn_async(FixedAngleTarget(-81_deg));
+  drive.wait_for_angle(-20_deg);
   double_shot(front_SP.top, front_SP.mid);
   angler.move_to(Angler::CAP_PICKUP_POSITION);
   drive_turn_sync(FixedAngleTarget(30_deg));
@@ -107,7 +113,7 @@ void auto_red_front_park()
   drive.wait_for_distance(21_in);
   drive_move_sync(-20_in,30_deg);
   drive_turn_sync(FixedAngleTarget(90_deg));
-  drive_move_sync(20_in,90_deg);
+  drive_move_sync(23.5_in,90_deg);
   drive_turn_sync(FixedAngleTarget(0_deg));
   drive_move_sync(16.5_in,0_deg,false);
   climb_on_platform();
@@ -127,15 +133,37 @@ void auto_red_front() {
   double_shot(front_SP.top, front_SP.mid);
   angler.move_to(Angler::CAP_PICKUP_POSITION);
   drive_turn_sync(FixedAngleTarget(30_deg));
-  drive_move_sync(20_in,30_deg);
+  drive_move_sync(21.5_in,30_deg);
   pros::delay(100);
-  drive_move_sync(-7_in,30_deg);
+  drive_move_sync(-8.5_in,30_deg);
   drive_turn_sync(FixedAngleTarget(-68_deg));
   drive_move_sync(25_in,-68_deg);
-  drive_move_sync(-20_in,-68_deg);
-  drive_turn_sync(FixedAngleTarget(-50_deg));
-  double_shot(front_SP.top-10, front_SP.mid-10);
+  printf("%d Picked ball off cap \n", pros::millis());
 
+  //Flip
+  pros::delay(100);
+  drive_move_sync(-9_in, -68_deg);
+  angler.move_to(Angler::CAP_FLIP_POSITION+10);
+  pros::delay(500);
+  printf("%d Done ball raise wait \n", pros::millis());
+  intake.outtake();
+  drive_move_sync(18_in, -68_deg);
+  double top_flag_pos = front_SP.top+20;
+  angler.move_to(top_flag_pos+20);
+
+  //Turn and shoot
+  drive_turn_sync(FixedAngleTarget(-39_deg));
+  double_shot(top_flag_pos, front_SP.mid+25);
+  /*
+  drive_turn_sync(FixedAngleTarget(-38_deg));
+  drive_move_sync(-28_in, -68_deg);
+  // drive.wait_for_distance(12_in);
+  // angler.move_to(mid_flag_pos);
+  // drive.wait_for_stop();
+  printf("%d Done cap flip drive\n", pros::millis());
+
+  drive_turn_sync(FixedAngleTarget(-51_deg));
+  double_shot(front_SP.top-10, front_SP.mid-10);*/
 }
 
 void auto_red_back() {
@@ -309,9 +337,50 @@ void auto_red_back_no_second_shot() {
 }
 
 void auto_blue_front() {
-
+  intake.intake();
+  angler.move_to(Angler::PICKUP_POSITION);
+  drive_move_sync(43_in, 0_deg);
+  pros::delay(50);
+  drive_move_sync(-38_in,0_deg,false);
+  angler.move_to(front_SP.top);
+  drive_turn_sync(FixedAngleTarget(83_deg));
+  double_shot(front_SP.top, front_SP.mid);
+  angler.move_to(Angler::CAP_PICKUP_POSITION);
+  drive_turn_sync(FixedAngleTarget(-30_deg));
+  drive_move_sync(23_in,-30_deg);
+  pros::delay(100);
+  drive_move_sync(-10_in,-30_deg);
+  drive_turn_sync(FixedAngleTarget(68_deg));
+  drive_move_sync(23_in,68_deg);
+  drive_move_sync(-18_in,68_deg);
+  drive_turn_sync(FixedAngleTarget(52_deg));
+  double_shot(front_SP.top-10, front_SP.mid-10);
 }
-
+void auto_blue_front_park() {
+  intake.intake();
+  angler.move_to(Angler::PICKUP_POSITION);
+  drive_move_async(43_in, 0_deg);
+  drive.wait_for_distance(40_in);
+  drive_move_sync(-36_in,0_deg,true);
+  angler.move_to(front_SP.top);
+  drive_turn_async(FixedAngleTarget(83_deg));
+  drive.wait_for_angle(25_deg);
+  double_shot(front_SP.top, front_SP.mid);
+  angler.move_to(Angler::CAP_PICKUP_POSITION);
+  drive_turn_sync(FixedAngleTarget(-30_deg));
+  drive_move_async(23_in,-30_deg);
+  drive.wait_for_distance(21_in);
+  drive_move_sync(-20_in,-30_deg);
+  drive_turn_sync(FixedAngleTarget(-90_deg));
+  drive_move_sync(24_in,-90_deg);
+  drive_turn_sync(FixedAngleTarget(0_deg));
+  drive_move_sync(16.5_in,0_deg,false);
+  climb_on_platform();
+  drive.flatten_against_wall(true, true);
+  drive.reset_global_angle();
+  drive_turn_sync(FixedAngleTarget(53_deg));
+  single_shot(front_SP.top-50);
+}
 void auto_blue_back() {
 
 }
