@@ -133,11 +133,11 @@ void auto_red_front() {
   double_shot(shot_positions[(int)SP::G_FRONT_TOP], shot_positions[(int)SP::G_FRONT_MID]);
   angler.move_to(Angler::CAP_PICKUP_POSITION);
   drive_turn_sync(FixedAngleTarget(30_deg));
-  drive_move_sync(21.5_in,30_deg);
+  drive_move_sync(23.5_in,30_deg);
   pros::delay(100);
-  drive_move_sync(-8.5_in,30_deg);
+  drive_move_sync(-10.5_in,30_deg);
   drive_turn_sync(FixedAngleTarget(-68_deg));
-  drive_move_sync(25_in,-68_deg);
+  drive_move_sync(23_in,-68_deg);
   printf("%d Picked ball off cap \n", pros::millis());
 
   //Flip

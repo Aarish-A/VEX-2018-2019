@@ -139,30 +139,30 @@ void opcontrol() {
 			menu_enabled = !menu_enabled;
 		}
 
-		// if (partner.is_connected()) {
-		// 	switch(partner.single_pressed) {
-		// 		case BTN_SHOT_R_T:
-		// 			make_shot_request(shot_positions[(int)SP::G_FRONT_TOP], Turn_Direction::RIGHT, field_position);
-		// 			break;
-		// 		case BTN_SHOT_R_M:
-		// 			make_shot_request(front_SP.mid, Turn_Direction::RIGHT, field_position);
-		// 			break;
-		// 		case BTN_SHOT_L_T:
-		// 			make_shot_request(front_SP.top, Turn_Direction::LEFT, field_position);
-		// 			break;
-		// 		case BTN_SHOT_L_M:
-		// 			make_shot_request(front_SP.mid, Turn_Direction::LEFT, field_position);
-		// 			break;
-		// 		case BTN_FIELD_RED_PF:
-		// 			field_position = Field_Position::RED_PF;
-		// 			break;
-		// 		case BTN_FIELD_BLUE_PF:
-		// 			field_position = Field_Position::BLUE_PF;
-		// 			break;
-		// 		case BTN_FIELD_FRONT:
-		// 			field_position = Field_Position::FRONT;
-		// 			break;
-		// 	}
+		if (partner.is_connected()) {
+			switch(partner.single_pressed) {
+				case BTN_SHOT_R_T:
+					make_shot_request(shot_positions[(int)SP::G_FRONT_TOP], Turn_Direction::RIGHT, field_position);
+					break;
+				case BTN_SHOT_R_M:
+					make_shot_request(front_SP.mid, Turn_Direction::RIGHT, field_position);
+					break;
+				case BTN_SHOT_L_T:
+					make_shot_request(front_SP.top, Turn_Direction::LEFT, field_position);
+					break;
+				case BTN_SHOT_L_M:
+					make_shot_request(front_SP.mid, Turn_Direction::LEFT, field_position);
+					break;
+				case BTN_FIELD_RED_PF:
+					field_position = Field_Position::RED_PF;
+					break;
+				case BTN_FIELD_BLUE_PF:
+					field_position = Field_Position::BLUE_PF;
+					break;
+				case BTN_FIELD_FRONT:
+					field_position = Field_Position::FRONT;
+					break;
+			}
 		//
 		//
 		// 	if (master.check_double_press(BTN_GROUND_PICKUP, BTN_CAP_PICKUP)) {
