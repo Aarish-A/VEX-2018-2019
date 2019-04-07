@@ -182,4 +182,3 @@ void opcontrol() {
 		pros::delay(5);
 	}
 }
-}
