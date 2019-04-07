@@ -14,11 +14,13 @@ vector flag_select_index = {0, 0};
 Flags flag_config[MAX_NUMBER_OF_SHOTS] = {Flags::NO_FLAG, Flags::NO_FLAG, Flags::NO_FLAG, Flags::NO_FLAG, Flags::NO_FLAG};
 
 void menu_init() {
-  uint32_t temp;
+
+  uint32_t temp = 0;
   read_from_file("/usd/auto_routine.txt", "r", "%d ", &temp);
   auto_routine = static_cast<Auto_Routines>(temp);
 
-  char temp2;
+
+  char temp2 = 'R';
   read_from_file("/usd/game_side.txt", "r", &temp2);
   game_side = temp2;
 
@@ -29,8 +31,8 @@ void menu_init() {
       uint32_t temp;
       fscanf(flag_config_file, "%d ", &temp);
       flag_config[i] = static_cast<Flags>(temp);
-      log_ln(IO, "Successfully read %d from /usd/flag_config.txt", temp);
-    } else log_ln(IO, "Could not read from /usd/flag_config.txt");
+      log_ln(IO, "%d Successfully read %d from /usd/flag_config.txt", pros::millis(),temp);
+    } else log_ln(IO, "%d Could not read from /usd/flag_config.txt",pros::millis());
   }
   if (flag_config_file != nullptr) fclose(flag_config_file);
 
@@ -42,7 +44,7 @@ void menu_init() {
       fscanf(shot_positions_file, "%d ", &temp);
       shot_positions[i] = temp;
       log_ln(IO, "Successfully read %d from /usd/shot_positions.txt", temp);
-    } else log_ln(IO, "Could not read from /usd/shot_positions.txt");
+    } else log_ln(IO, "Could not read from /usd/shot_positions.txt", pros::millis());
   }
   if (shot_positions_file != nullptr) fclose(shot_positions_file);
   else for(int i = 0; i < (int)SP::NUM_OF_ELEMENTS; i++) shot_positions[i] = 0;
@@ -51,21 +53,21 @@ void menu_init() {
 void menu_update() {
   master.write_line(0, menu_screen_strings[(int)menu_screen].c_str());
 
-  printf("------------------------------\n");
-  printf("FC: ");
-  for(int i = 0; i < MAX_NUMBER_OF_SHOTS; i++) {
-    printf("%d ", static_cast<int>(flag_config[i]));
-    if (i == MAX_NUMBER_OF_SHOTS - 1) printf("\n");
-  }
-
-  printf("SP: ");
-  for (int i = 0; i < static_cast<int>(SP::NUM_OF_ELEMENTS); i++) {
-    printf("%d ", shot_positions[i]);
-    if (i == static_cast<int>(SP::NUM_OF_ELEMENTS) - 1) printf("\n");
-  }
-
-  printf("GS: %c\n", game_side);
-  printf("AR: %d\n", static_cast<int>(auto_routine));
+  // printf("------------------------------\n");
+  // printf("FC: ");
+  // for(int i = 0; i < MAX_NUMBER_OF_SHOTS; i++) {
+  //   printf("%d ", static_cast<int>(flag_config[i]));
+  //   if (i == MAX_NUMBER_OF_SHOTS - 1) printf("\n");
+  // }
+  //
+  // printf("SP: ");
+  // for (int i = 0; i < static_cast<int>(SP::NUM_OF_ELEMENTS); i++) {
+  //   printf("%d ", shot_positions[i]);
+  //   if (i == static_cast<int>(SP::NUM_OF_ELEMENTS) - 1) printf("\n");
+  // }
+  //
+  // printf("GS: %c\n", game_side);
+  // printf("AR: %d\n", (int)auto_routine);
 
   switch(menu_screen) {
     case Menu_Screens::SHOT_TUNING:
@@ -269,38 +271,27 @@ void write_to_file(const char* file_name, const char* file_mode, const char* for
 
   va_list args;
   va_start(args, format);
-  va_list args2;
-  va_copy(args2, args);
 
   if (file != nullptr) {
     vfprintf(file, format, args);
-    char temp[128];
-    vsprintf(temp, format, args2);
-    log_ln(IO, "Successfully wrote %c to %s", temp, file_name);
+    log_ln(IO, "Successfully wrote to %s", file_name);
     fclose(file);
     master.rumble("--");
   } else log_ln(FATAL_ERROR, "Could not write to %s", file_name);
   va_end(args);
-  va_end(args2);
 }
 
 void read_from_file(const char* file_name, const char* file_mode, const char* format, ...) {
   FILE* file = nullptr;
   file = fopen(file_name, file_mode);
 
-  va_list args;
-  va_start(args, format);
-  va_list args2;
-  va_copy(args2, args);
-
   if (file != nullptr) {
+    va_list args;
+    va_start(args, format);
     vfscanf(file, format, args);
-    char temp[128];
-    vsprintf(temp, format, args2);
-    log_ln(IO, "Successfully read %c from %s", temp, file_name);
+    log_ln(IO, "Successfully read from %s", file_name);
     fclose(file);
     master.rumble("--");
-  } else log_ln(FATAL_ERROR, "Could not read from %s", file_name);
-  va_end(args);
-  va_end(args2);
+    va_end(args);
+  } else log_ln(FATAL_ERROR, "%d Could not read from %s", pros::millis(),file_name);
 }

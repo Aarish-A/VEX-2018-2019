@@ -41,6 +41,7 @@ void opcontrol() {
 		// 	case Field_Position::BACK: fps    = "Back           "; break;
 		// }
 		// master.print(2, 0, "%c %s", game_side, fps.c_str());
+		// printf("%d running\n",pros::millis());
 
 		pos.update();
 		master.update();
@@ -91,10 +92,10 @@ void opcontrol() {
 
 				// Shot Queueing
 				case BTN_SHOT_R_T:
-					make_shot_request(front_SP.top, Turn_Direction::STRAIGHT, Field_Position::FRONT, true);
+					make_shot_request(shot_positions[(int)SP::G_FRONT_TOP], Turn_Direction::STRAIGHT, Field_Position::FRONT, true);
 					break;
 				case BTN_SHOT_R_M:
-					make_shot_request(front_SP.mid, Turn_Direction::STRAIGHT, Field_Position::FRONT, true);
+					make_shot_request(shot_positions[(int)SP::G_FRONT_MID], Turn_Direction::STRAIGHT, Field_Position::FRONT, true);
 					break;
 				// case BTN_SHOT_CANCEL:
 				// 	shot_queue_handle_task.stop_task();
@@ -141,7 +142,7 @@ void opcontrol() {
 		if (partner.is_connected()) {
 			switch(partner.single_pressed) {
 				case BTN_SHOT_R_T:
-					make_shot_request(front_SP.top, Turn_Direction::RIGHT, field_position);
+					make_shot_request(shot_positions[(int)SP::G_FRONT_TOP], Turn_Direction::RIGHT, field_position);
 					break;
 				case BTN_SHOT_R_M:
 					make_shot_request(front_SP.mid, Turn_Direction::RIGHT, field_position);
@@ -162,21 +163,22 @@ void opcontrol() {
 					field_position = Field_Position::FRONT;
 					break;
 			}
-
-
-			if (master.check_double_press(BTN_GROUND_PICKUP, BTN_CAP_PICKUP)) {
-				angler.move_to(Angler::CAP_FLIP_POSITION);
-				intake.outtake();
-			}
-		}
-
-
-
-		if (master.check_double_press(BTN_GROUND_PICKUP, BTN_CAP_PICKUP)) {
-			angler.move_to(Angler::CAP_FLIP_POSITION);
-			intake.outtake();
-		}
+		//
+		//
+		// 	if (master.check_double_press(BTN_GROUND_PICKUP, BTN_CAP_PICKUP)) {
+		// 		angler.move_to(Angler::CAP_FLIP_POSITION);
+		// 		intake.outtake();
+		// 	}
+		// }
+		//
+		//
+		//
+		// if (master.check_double_press(BTN_GROUND_PICKUP, BTN_CAP_PICKUP)) {
+		// 	angler.move_to(Angler::CAP_FLIP_POSITION);
+		// 	intake.outtake();
+		// }
 
 		pros::delay(5);
 	}
+}
 }
