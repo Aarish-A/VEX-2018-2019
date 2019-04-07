@@ -33,14 +33,14 @@ void opcontrol() {
 		// printf("Light sensor:%f\n",gyro.get_value());
 		//printf("poti: %d\n",s_pole_poti.get_value());
 		// master.print(2,0,"%d %d                 ",enc_l.get_value(), enc_r.get_value());
-		std::string fps = "";
-		switch(field_position) {
-			case Field_Position::FRONT: fps   = "Front          "; break;
-			case Field_Position::RED_PF: fps  = "RedPF          "; break;
-			case Field_Position::BLUE_PF: fps = "BluePF         "; break;
-			case Field_Position::BACK: fps    = "Back           "; break;
-		}
-		partner.write_line(2, 0, "%c %s", game_side, fps.c_str());
+		// std::string fps = "";
+		// switch(field_position) {
+		// 	case Field_Position::FRONT: fps   = "Front          "; break;
+		// 	case Field_Position::RED_PF: fps  = "RedPF          "; break;
+		// 	case Field_Position::BLUE_PF: fps = "BluePF         "; break;
+		// 	case Field_Position::BACK: fps    = "Back           "; break;
+		// }
+		// master.print(2, 0, "%c %s", game_side, fps.c_str());
 		// printf("%d running\n",pros::millis());
 
 		pos.update();
@@ -69,7 +69,7 @@ void opcontrol() {
 		if (!menu_enabled) {
 			master.write_line(0, " ");
 			master.write_line(1, " ");
-			master.write_line(2, 0, "%c %s", game_side, fps.c_str());
+			master.write_line(2, "not in menu");
 
 			switch(master.single_pressed) {
 				// Intake
@@ -142,16 +142,16 @@ void opcontrol() {
 		if (partner.is_connected()) {
 			switch(partner.single_pressed) {
 				case BTN_SHOT_R_T:
-					make_shot_request(shot_positions[(int)SP::G_PLATFORM_TOP], Turn_Direction::RIGHT, field_position);
+					make_shot_request(shot_positions[(int)SP::G_FRONT_TOP], Turn_Direction::RIGHT, field_position);
 					break;
 				case BTN_SHOT_R_M:
-					make_shot_request(shot_positions[(int)SP::G_PLATFORM_MID], Turn_Direction::RIGHT, field_position);
+					make_shot_request(front_SP.mid, Turn_Direction::RIGHT, field_position);
 					break;
 				case BTN_SHOT_L_T:
-					make_shot_request(shot_positions[(int)SP::G_PLATFORM_TOP], Turn_Direction::LEFT, field_position);
+					make_shot_request(front_SP.top, Turn_Direction::LEFT, field_position);
 					break;
 				case BTN_SHOT_L_M:
-					make_shot_request(shot_positions[(int)SP::G_PLATFORM_MID], Turn_Direction::LEFT, field_position);
+					make_shot_request(front_SP.mid, Turn_Direction::LEFT, field_position);
 					break;
 				case BTN_FIELD_RED_PF:
 					field_position = Field_Position::RED_PF;
@@ -163,7 +163,6 @@ void opcontrol() {
 					field_position = Field_Position::FRONT;
 					break;
 			}
-		}
 		//
 		//
 		// 	if (master.check_double_press(BTN_GROUND_PICKUP, BTN_CAP_PICKUP)) {
