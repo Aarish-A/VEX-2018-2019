@@ -54,10 +54,10 @@ void Angler::update() {
       if (timed_out(this->move_timeout) || below_vel_threshold(1, 400)) {
         this->disable();
       } else if (this->power) {
-        log_ln(LOG_STATES, "Angler move interrupted by driver");
+        log_ln(MOVE, ANGLER, "Angler move interrupted by driver");
         this->set_state(STATE_DRIVER_CONTROL);
       } else if (fabs(this->error) < this->error_threshold) {
-        log_ln(LOG_STATES, "Angler move finished at %f, target was %f", this->position, this->target);
+        log_ln(MOVE, ANGLER, "Angler move finished at %f, target was %f", this->position, this->target);
         this->set_state(STATE_HOLD);
       }
       break;
@@ -82,7 +82,7 @@ void Angler::move_to(double target, uint32_t move_timeout, uint8_t error_thresho
   this->move_timeout = move_timeout;
   this->error_threshold = error_threshold;
   this->set_state(STATE_AUTO_CONTROL);
-  log_ln(LOG_SUBSYSTEMS, "Moving Angler to %f, started at %f", this->target, this->position);
+  log_ln(MOVE, "Moving Angler to %f, started at %f", this->target, this->position);
 }
 
 bool Angler::moving_to_target() {

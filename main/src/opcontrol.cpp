@@ -1,5 +1,5 @@
 #include "main.h"
-#include "logs.hpp"
+#include "libraries/logs.hpp"
 #include "config.hpp"
 #include "controls.hpp"
 #include "macros/shot_queueing.hpp"
@@ -21,7 +21,7 @@ pilons::Task capper_move_to_cap_flip_task("Capper Cap Flip", [](void* param) {
 
 
 void opcontrol() {
-	log_ln(LOG_AUTO, "   --- %d START OPCONTROL --- \n", pros::millis());
+	log_ln(PROGRAM_FLOW, "   --- %d START OPCONTROL --- \n", pros::millis());
 	// autonomous();
 	pilons::Task::stop_all_tasks();
 	Subsystem::enable_all();
@@ -109,10 +109,13 @@ void opcontrol() {
 					intake.stop();
 					break;
 				case BTN_CAPPER_UP:
+				if(partner.is_connected()) field_position = Field_Position::FRONT;
+				else {
 					if (capper.at_pickup_position()) capper.pickup_cap();
 					else if (cap_on_pole_task.running()) cap_on_pole_task.stop_task();
 					else cap_on_pole_task.start_task();
-					break;
+				}
+				break;
 				case BTN_CAP_FLIP:
 					capper_move_to_cap_flip_task.start_task();
 					break;
@@ -163,6 +166,9 @@ void opcontrol() {
 				case BTN_FIELD_FRONT:
 					field_position = Field_Position::FRONT;
 					break;
+				case BTN_SHOT_CANCEL:
+					field_position = Field_Position::BACK;
+					break;
 			}
 		//
 		//
@@ -173,7 +179,14 @@ void opcontrol() {
 		// }
 		//
 		//
-		//
+			if(partner.check_double_press(BTN_SHOT_R_M, BTN_SHOT_L_M))
+			{
+				make_shot_request(shot_positions[(int)SP::G_BACK_MID], Turn_Direction::STRAIGHT, field_position);
+			}
+			if(partner.check_double_press(BTN_SHOT_R_T, BTN_SHOT_L_T))
+			{
+				make_shot_request(shot_positions[(int)SP::G_BACK_TOP], Turn_Direction::STRAIGHT, field_position);
+			}
 		// if (master.check_double_press(BTN_GROUND_PICKUP, BTN_CAP_PICKUP)) {
 		// 	angler.move_to(Angler::CAP_FLIP_POSITION);
 		// 	intake.outtake();

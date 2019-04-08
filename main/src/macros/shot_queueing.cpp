@@ -39,7 +39,7 @@ void make_shot_request(uint8_t shot_height, Turn_Direction direction, Field_Posi
       case Field_Position::BLUE_PF:
         if (game_side == 'R') {
           if (direction == Turn_Direction::LEFT) flag_position = {-27.5, 94}; // shot_queue.push_back({shot_height, {-27.5, 94}});
-          else if (direction == Turn_Direction::RIGHT) flag_position = {19.5, 24}; //shot_queue.push_back({shot_height, {19.5, 94}});
+          else if (direction == Turn_Direction::RIGHT) flag_position = {19.5, 94}; //shot_queue.push_back({shot_height, {19.5, 94}});
         } else if (game_side == 'B') {
           if (direction == Turn_Direction::LEFT) flag_position = {-27.5 + FLAG_WIDTH, 94}; //shot_queue.push_back({shot_height, {-27.5 + FLAG_WIDTH, 94}});
           else if (direction == Turn_Direction::RIGHT) flag_position = {19.5 + FLAG_WIDTH, 94}; //shot_queue.push_back({shot_height, {19.5 + FLAG_WIDTH, 94}});
@@ -49,10 +49,10 @@ void make_shot_request(uint8_t shot_height, Turn_Direction direction, Field_Posi
         if (direction == Turn_Direction::STRAIGHT) turning = false; //shot_queue.push_back({shot_height});
         else if (game_side == 'R') {
           if (direction == Turn_Direction::LEFT) flag_position = {-27.5, 94}; // shot_queue.push_back({shot_height, {-27.5, 94}});
-          else if (direction == Turn_Direction::RIGHT) flag_position = {19.5, 24}; //shot_queue.push_back({shot_height, {19.5, 94}});
+          else if (direction == Turn_Direction::RIGHT) flag_position = {19.5, 94}; //shot_queue.push_back({shot_height, {19.5, 94}});
         } else if (game_side == 'B') {
           if (direction == Turn_Direction::LEFT) flag_position = {-27.5, 94}; // shot_queue.push_back({shot_height, {-27.5, 94}});
-          else if (direction == Turn_Direction::RIGHT) flag_position = {19.5, 24}; //shot_queue.push_back({shot_height, {19.5, 94}});
+          else if (direction == Turn_Direction::RIGHT) flag_position = {19.5, 94}; //shot_queue.push_back({shot_height, {19.5, 94}});
         }
         break;
     }
@@ -86,6 +86,7 @@ void shot_queue_handle(void* param) {
         drive_turn_sync(PointAngleTarget(temp_target.flag_position));
       }
     }
+    if(field_position == Field_Position::BACK) drive_move_sync(2_in);
     angler.move_to(temp_target.angler_target);
     angler.wait_for_target_reach();
     puncher.shoot();
