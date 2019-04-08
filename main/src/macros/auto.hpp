@@ -1,7 +1,7 @@
 #pragma once
 #include "main.h"
 #include "../config.hpp"
-#include "../logs.hpp"
+#include "../libraries/logs.hpp"
 #include "../libraries/task.hpp"
 #include "shot_queueing.hpp"
 #include "../subsystems/drive.hpp"
