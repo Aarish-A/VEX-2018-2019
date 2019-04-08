@@ -65,5 +65,6 @@ extern std::deque<Shot_Target> shot_queue;
 
 void trigger_shot_queue();
 void make_shot_request(uint8_t shot_height, Turn_Direction direction, Field_Position target_field_pos, bool trigger_shot = false);
+void change_field_position(Field_Position new_field_pos);
 void shot_queue_handle(void* param);
 void shot_task_cleanup();

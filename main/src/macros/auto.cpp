@@ -79,20 +79,26 @@ if(capper_count==0)
   drive.wait_for_stop();
   drive_turn_async(FixedAngleTarget(15_deg));
   double_shot(front_SP.top, front_SP.mid + 20);
-  capper.move_to_velocity(60 * Capper::GEAR_RATIO, 200);
+  capper.move_to_velocity(60 * Capper::GEAR_RATIO, 180);
   drive_turn_sync(FixedAngleTarget(91.5_deg));
   angler.move_to(Angler::CAP_PICKUP_POSITION);
   intake.outtake();
   drive_move_sync(16_in, 91.5_deg); //39
   drive_turn_sync(FixedAngleTarget(30_deg));
-  drive_move_sync(19_in, 30_deg);
-  drive_move_sync(-19_in, 30_deg);
-  angler.move_to(Angler::PICKUP_POSITION);
+  drive_move_sync(18_in, 30_deg);
+  drive_move_sync(-19.5_in, 30_deg);
   drive_turn_sync(FixedAngleTarget(91.5_deg));
-  capper.move_to_pickup();
   intake.stop();
-  drive_move_async(23_in,91.5_deg);
-  drive.wait_for_distance(21_in);
+  angler.move_to(Angler::PICKUP_POSITION);
+  intake.stop();
+  capper.move_to_pickup();
+  drive_move_sync(23_in,91.5_deg);
+  angler.move_to(Angler::PICKUP_POSITION);
+  intake.stop();
+  capper.move_to_pickup();
+  drive.wait_for_stop();
+  drive_move_async(11_in, 92.5_deg);
+  drive.wait_for_distance(9_in);
   capper.pickup_cap(true);
   drive.wait_for_stop();
   intake.intake();
@@ -501,15 +507,12 @@ void drive_turn_side(const AngleTarget& target, double kP, double offset, bool f
   drive.br_motor.tare_position();
   drive.fr_motor.tare_position();
   double ticks_targ = dA/SPN_TO_IN_L*(WHL_DIS_L+WHL_DIS_R);
-<<<<<<< HEAD
   // printf("ticks targ: %f", ticks_targ);
-  log_ln(LOG_AUTO, "%d Turning to %f | DeltaA: %f", pros::millis(), RAD_TO_DEG(target.getTarget()), RAD_TO_DEG(dA) );
+  log_ln(MOVE, AUTO, "%d Turning to %f | DeltaA: %f", pros::millis(), RAD_TO_DEG(target.getTarget()), RAD_TO_DEG(dA) );
   // printf("Da is %f", dA);
-=======
   printf("ticks targ: %f", ticks_targ);
   log_ln(MOVE, AUTO, "%d Turning to %f | DeltaA: %f", pros::millis(), RAD_TO_DEG(target.getTarget()), RAD_TO_DEG(dA) );
   printf("Da is %f", dA);
->>>>>>> parent of f1227cc... Revert "Merge remote-tracking branch 'origin/main-and-logging' into subsystem-classes-rewrite"
 	if (forwards) {
 		while (fabs(dA) > 0.8_deg) {
 			dA = target.getTarget() - drive.get_global_angle() + offset;

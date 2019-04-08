@@ -22,7 +22,7 @@ pilons::Task capper_move_to_cap_flip_task("Capper Cap Flip", [](void* param) {
 
 void opcontrol() {
 	log_ln(PROGRAM_FLOW, "   --- %d START OPCONTROL --- \n", pros::millis());
-	// autonomous();
+	//autonomous();
 	pilons::Task::stop_all_tasks();
 	Subsystem::enable_all();
 	enc_r.reset();
@@ -40,20 +40,20 @@ void opcontrol() {
 			case Field_Position::BLUE_PF: fps = "BluePF   "; break;
 			case Field_Position::BACK: fps    = "Back     "; break;
 		}
-		if (partner.is_connected()) partner.write_line(2, "%c %s", game_side, fps.c_str());
-
-		// printf("%d running\n",pros::millis());
 
 		pos.update();
 		master.update();
-		if (partner.is_connected()) partner.update();
+		if (partner.is_connected()) {
+			partner.write_line(0, " ");
+			partner.write_line(1, " ");
+			partner.write_line(2, "%c %s", game_side, fps.c_str());
+			partner.update();
+		}
 		intake.update();
 		drive.update();
 		angler.update();
 		puncher.update();
 		capper.update();
-
-		// printf("X: %f, Y: %f, A: %f\n", pos.x, pos.y, pos.a);
 
 		/* Drive */
 		int8_t drive_y = master.get_analog(JOY_DRIVE_THROTTLE, 10);
@@ -109,7 +109,7 @@ void opcontrol() {
 					intake.stop();
 					break;
 				case BTN_CAPPER_UP:
-				if(partner.is_connected()) field_position = Field_Position::FRONT;
+				if(partner.is_connected()) change_field_position(Field_Position::FRONT);
 				else {
 					if (capper.at_pickup_position()) capper.pickup_cap();
 					else if (cap_on_pole_task.running()) cap_on_pole_task.stop_task();
@@ -158,16 +158,16 @@ void opcontrol() {
 					make_shot_request(shot_positions[(int)SP::G_PLATFORM_MID], Turn_Direction::LEFT, field_position);
 					break;
 				case BTN_FIELD_RED_PF:
-					field_position = Field_Position::RED_PF;
+					change_field_position(Field_Position::RED_PF);
 					break;
 				case BTN_FIELD_BLUE_PF:
-					field_position = Field_Position::BLUE_PF;
+					change_field_position(Field_Position::BLUE_PF);
 					break;
 				case BTN_FIELD_FRONT:
-					field_position = Field_Position::FRONT;
+					change_field_position(Field_Position::FRONT);
 					break;
 				case BTN_SHOT_CANCEL:
-					field_position = Field_Position::BACK;
+					change_field_position(Field_Position::BACK);
 					break;
 			}
 		//

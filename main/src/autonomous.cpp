@@ -37,57 +37,55 @@ void autonomous() {
   auto_update_task.start_task();
   drive.reset_global_angle();
 
-  auto_red_front();
 
-  // // programming_skills_30_points();
-  //
-  // // capper.move_to_velocity(62 * Capper::GEAR_RATIO, 200);
-  // // angler.move_to(Angler::PICKUP_POSITION);
-  // // intake.intake();
-  // // drive_move_async(43_ in, 0_deg);
-  // // drive.wait_for_distance(42_in);
-  // // capper.move_to_velocity(28 * Capper::GEAR_RATIO, -100);
-  // // pros::delay(100);
-  // // drive_move_async(-2_in, 0_deg, true, 80);
-  // // drive.wait_for_stop();
-  // // pros::delay(100);
-  // // drive_move_sync(-5_in, 0_deg);
-  // // intake.stop();
-  // // capper.move_to_pickup();
-  // // drive_move_async(10_in, 0_deg);
-  // // drive.wait_for_distance(6.0_in);
-  // // capper.pickup_cap();
-  // // pros::delay(75);
-  // // intake.intake();
-  // // drive.wait_for_stop();
-  // // drive_turn_sync(FixedAngleTarget(-56_deg));
-  // // double_shot(front_SP.mid, front_SP.top);
-  //
-  // drive_move_async(38_in, 0_deg);
-  // capper.move_to_velocity(32 * Capper::GEAR_RATIO, 120);
-  // drive.wait_for_distance(15_in);
+  // programming_skills_30_points();
+
+  // capper.move_to_velocity(62 * Capper::GEAR_RATIO, 200);
   // angler.move_to(Angler::PICKUP_POSITION);
-  // drive.wait_for_distance(36_in);
   // intake.intake();
-  // drive_move_sync(9_in, 0_deg, true, 50);
-  // // drive_move_sync(-27_in, 0_deg);
-  //
-  // // angler.move_to(Angler::PICKUP_POSITION);
-  // // capper.move_to_cap_flip(true,200);
-  // // drive_move_async(44.5_in,0_deg);
-  // // drive.wait_for_distance(5_in);
-  // // intake.intake();
-  // // drive.wait_for_stop();
-  // // pros::delay(100);
-  // drive_move_sync(-40.0_in,0_deg);
-  // drive_turn_async(FixedAngleTarget(-84.5_deg));
-  // double_shot(front_SP.top,front_SP.mid);
-  // capper.move_to_velocity(75 * Capper::GEAR_RATIO, 200);
-  // master.rumble("-");
+  // drive_move_async(43_ in, 0_deg);
+  // drive.wait_for_distance(42_in);
+  // capper.move_to_velocity(28 * Capper::GEAR_RATIO, -100);
+  // pros::delay(100);
+  // drive_move_async(-2_in, 0_deg, true, 80);
+  // drive.wait_for_stop();
+  // pros::delay(100);
+  // drive_move_sync(-5_in, 0_deg);
+  // intake.stop();
+  // capper.move_to_pickup();
+  // drive_move_async(10_in, 0_deg);
+  // drive.wait_for_distance(6.0_in);
+  // capper.pickup_cap();
+  // pros::delay(75);
+  // intake.intake();
+  // drive.wait_for_stop();
+  // drive_turn_sync(FixedAngleTarget(-56_deg));
+  // double_shot(front_SP.mid, front_SP.top);
+
+  drive_move_async(43_in, 0_deg);
+  capper.move_to_velocity(34 * Capper::GEAR_RATIO, 120);
+  angler.move_to(Angler::PICKUP_POSITION);
+  intake.intake();
+  drive.wait_for_stop();
+  // drive_move_sync(-27_in, 0_deg);
+
+  // angler.move_to(Angler::PICKUP_POSITION);
+  // capper.move_to_cap_flip(true,200);
+  // drive_move_async(44.5_in,0_deg);
+  // drive.wait_for_distance(5_in);
+  // intake.intake();
+  // drive.wait_for_stop();
+  // pros::delay(100);
+  drive_move_sync(-40.0_in,0_deg);
+  drive_turn_async(FixedAngleTarget(-84.5_deg));
+  double_shot(front_SP.top,front_SP.mid);
+  capper.move_to_velocity(75 * Capper::GEAR_RATIO, 200);
+  master.rumble("-");
 
   // Auto End
   uint32_t auto_finished_time = pros::millis() - autonomous_time;
   master.print(2, 0, "Time: %d", auto_finished_time);
+  log_ln(AUTO,"Auto Time %d", auto_finished_time);
   pros::delay(60);
   /* Turn off Motors */
   intake.off();
@@ -656,24 +654,24 @@ void programming_skills_30_points() {
   drive_move_sync(-27_in, 0_deg);
   drive_turn_async(FixedAngleTarget(-50_deg));
   drive.wait_for_angle(-30_deg);
-  double_shot(front_SP.top, front_SP.mid);
+  double_shot(shot_positions[(int)SP::G_FRONT_TOP], shot_positions[(int)SP::G_FRONT_MID]);
   drive.wait_for_stop();
   angler.move_to(Angler::PICKUP_POSITION);
-  drive_turn_sync(FixedAngleTarget(-74.0_deg));
+  drive_turn_sync(FixedAngleTarget(-73.0_deg));
   capper.move_to_flag_flip(180);
   angler.move_to(Angler::CAP_PICKUP_POSITION);
-  drive_move_sync(14_in, -74.0_deg);
-  drive_move_async(-10_in, -74.0_deg);
+  drive_move_sync(14_in, -73.0_deg);
+  drive_move_async(-10_in, -73.0_deg);
   drive.wait_for_distance(-6);
   intake.stop();
   angler.move_to(Angler::PICKUP_POSITION);
   capper.move_to_pickup();
-  drive_move_sync(6_in, -74.0_deg);
+  drive_move_sync(6_in, -73.0_deg);
   drive.wait_for_distance(4.0_in);
   capper.pickup_cap();
   drive.wait_for_stop();
   pros::delay(200);
-  drive_move_sync(-30_in, -74.0_deg);
+  drive_move_sync(-30_in, -73.0_deg);
   drive_turn_sync(FixedAngleTarget(-90_deg));
   drive_move_sync(-49.0_in, -90_deg, true, 200, -90);
   drive_turn_sync(FixedAngleTarget(0_deg));
@@ -704,7 +702,7 @@ void programming_skills_30_points() {
 
   drive_move_sync(5_in, 0_deg);
   drive_turn_async(FixedAngleTarget(-7.8_deg));
-  double_shot(front_SP.top, front_SP.mid + 20);
+  double_shot(shot_positions[(int)SP::G_FRONT_TOP], shot_positions[(int)SP::G_FRONT_MID]+20);
   drive.wait_for_stop();
   capper.move_to_velocity(60 * Capper::GEAR_RATIO, 180);
   drive_turn_sync(FixedAngleTarget(91.5_deg));
@@ -735,9 +733,9 @@ void programming_skills_30_points() {
   cap_on_pole();
 //
   drive_move_sync(5_in,0_deg);
-  angler.move_to(front_SP.top - 15);
+  angler.move_to(shot_positions[(int)SP::G_FRONT_TOP]- 15);
   drive_turn_async(FixedAngleTarget(4.5_deg));
-  double_shot(front_SP.top - 15, 0);
+  double_shot(shot_positions[(int)SP::G_FRONT_TOP] - 15, 0);
   drive.wait_for_stop();
   drive_turn_sync(FixedAngleTarget(0_deg));
   angler.move_to(Angler::CAP_PICKUP_POSITION);
@@ -777,7 +775,7 @@ void programming_skills_30_points() {
   drive_turn_sync(FixedAngleTarget(55_deg));
   single_shot(30);
   drive_turn_sync(FixedAngleTarget(101.5_deg));
-  single_shot(front_SP.mid);
+  single_shot(shot_positions[(int)SP::G_FRONT_MID]);
   drive_turn_sync(FixedAngleTarget(90_deg));
   angler.move_to(Angler::CAP_PICKUP_POSITION);
   drive_move_sync(15_in, 90_deg);
