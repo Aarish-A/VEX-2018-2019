@@ -60,11 +60,7 @@ double get_shot_angle(long double x, long double _y) {
 
 void opcontrol() {
 	log_ln(PROGRAM_FLOW, "   --- %d START OPCONTROL --- \n", pros::millis());
-<<<<<<< HEAD
 	if (auto_routine == Auto_Routines::DRIVER_SKILLS) autonomous();
-=======
-	//autonomous();
->>>>>>> f0758f749a6f845cea5e9be6e90d189ab163b933
 	pilons::Task::stop_all_tasks();
 	Subsystem::enable_all();
 	enc_r.reset();
