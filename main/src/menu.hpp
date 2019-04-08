@@ -57,10 +57,10 @@ const std::string menu_shot_position_strings[] = {
   "G BACK TOP",
   "G BACK MID",
 
-  "A BACK MID F TOP",
-  "A BACK MID F MID",
-  "A BACK FAR F TOP",
-  "A BACK FAR F MID",
+  "A BACK MID TOP",
+  "A BACK MID MID",
+  "A BACK FAR TOP",
+  "A BACK FAR MID",
 };
 
 enum class Auto_Routines {
@@ -75,8 +75,8 @@ enum class Auto_Routines {
 const std::string auto_routine_strings[] = {
   "Front",
   "Back",
-  "Programming Skills",
-  "Driver Skills"
+  "Prog. Skills",
+  "Driv. Skills"
 };
 
 enum class Flags {

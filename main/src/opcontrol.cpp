@@ -6,6 +6,7 @@
 #include "menu.hpp"
 #include "libraries/util.hpp"
 #include "libraries/task.hpp"
+
 void capper_move_to_cap_flip_macro(void* _params) {
 	capper.move_to_velocity(39 * Capper::GEAR_RATIO, 200);
 	pros::delay(200);
@@ -19,10 +20,47 @@ pilons::Task capper_move_to_cap_flip_task("Capper Cap Flip", [](void* param) {
 	angler.move_to(Angler::PICKUP_POSITION);
 });
 
+double get_shot_angle(long double x, long double _y) {
+	constexpr long double ANGLER_MIN_ANGLE = 24.2;
+	constexpr long double ANGLER_MAX_ANGLE = 120.0;
+	constexpr long double ANGLER_HEIGHT = 18_in;
+	constexpr long double DX = 5.0_in;
+	constexpr long double M_BOLT = 54.3;
+	constexpr long double M_BALL = 56.0;
+	constexpr long double G = 9.80665;
+
+	long double y = _y - ANGLER_HEIGHT;
+
+	long double k = 100.0; // N / in
+	long double v_bolt = sqrt(k * DX * DX / M_BOLT);
+	long double v_ball = (2 * M_BOLT) / (M_BOLT + M_BALL) * v_bolt;
+
+	long double t1 = pow(v_ball, 2.0);
+
+	long double temp = pow(v_ball, 4.0) - G * (G * x * x + 2 * y * v_ball * v_ball);
+	long double t2 = 0;
+	if (temp >= 0) t2 = sqrt(temp);
+	else return 0;
+	long double t3 = G * x;
+
+	long double angle_1 = (atan((t1 + t2) / t3) * 180 / M_PI) - ANGLER_MIN_ANGLE;
+	long double angle_2 = (atan((t1 - t2) / t3) * 180 / M_PI) - ANGLER_MIN_ANGLE;
+
+	bool angle_1_valid = false;
+	bool angle_2_valid = false;
+
+	if (angle_1 >= 0 && angle_1 <= ANGLER_MAX_ANGLE) angle_1_valid = true;
+	if (angle_2 >= 0 && angle_2 <= ANGLER_MAX_ANGLE) angle_2_valid = true;
+
+	if (angle_1_valid && !angle_2_valid) return angle_1;
+	else if (!angle_1_valid && angle_2_valid) return angle_2;
+	else return fminl(angle_1, angle_2);
+}
+
 
 void opcontrol() {
 	log_ln(PROGRAM_FLOW, "   --- %d START OPCONTROL --- \n", pros::millis());
-	// autonomous();
+	if (auto_routine == Auto_Routines::DRIVER_SKILLS) autonomous();
 	pilons::Task::stop_all_tasks();
 	Subsystem::enable_all();
 	enc_r.reset();
