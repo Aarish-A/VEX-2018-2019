@@ -1,6 +1,7 @@
 #include "shot_queueing.hpp"
 
 pilons::Task shot_queue_handle_task("Shot Request Handle", shot_queue_handle, shot_task_cleanup);
+pros::Mutex shot_mutex;
 
 volatile Shot_Pos front_SP = {160, 60, 0};
 volatile Shot_Pos platform_SP = {0, 0, 0};
@@ -18,6 +19,7 @@ void trigger_shot_queue() {
 
 void make_shot_request(uint8_t shot_height, Turn_Direction direction, Field_Position target_field_pos, bool trigger_shot) {
   if (target_field_pos == field_position) {
+    shot_mutex.take(TIMEOUT_MAX);
     if (shot_queue.size() == 2) shot_queue.pop_back();
 
     vector flag_position = {0, 0};
@@ -59,6 +61,7 @@ void make_shot_request(uint8_t shot_height, Turn_Direction direction, Field_Posi
 
     shot_queue.push_back({shot_height, flag_position, turning});
   }
+  shot_mutex.give();
 
   if (trigger_shot) trigger_shot_queue();
 }
@@ -71,7 +74,9 @@ void change_field_position(Field_Position new_field_pos) {
 void shot_queue_handle(void* param) {
   Field_Position temp_field_pos = field_position;
   for (int i = 0; i < shot_queue.size(); i++) {
-    Shot_Target temp_target = shot_queue[i];
+    shot_mutex.take(TIMEOUT_MAX);
+    Shot_Target temp_target = shot_queue.at(i);
+    shot_mutex.give();
     uint32_t start_time = pros::millis();
     printf(">>>>>Started queue handle: %d\n", start_time);
     // printf("\n%d Start Shot Queue handle \n\n", pros::millis());
@@ -91,7 +96,7 @@ void shot_queue_handle(void* param) {
         drive_turn_sync(PointAngleTarget(temp_target.flag_position));
       }
     }
-    if(field_position == Field_Position::BACK) drive_move_sync(2_in);
+    if (temp_field_pos == Field_Position::BACK && !temp_target.turning) drive_move_sync(2_in);
     angler.move_to(temp_target.angler_target);
     angler.wait_for_target_reach();
     puncher.shoot();

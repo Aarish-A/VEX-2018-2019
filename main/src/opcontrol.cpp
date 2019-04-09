@@ -180,7 +180,10 @@ void opcontrol() {
 			printf("Menu enabled/renabled\n");
 			menu_enabled = !menu_enabled;
 		}
-
+		if (master.check_double_press(BTN_GROUND_PICKUP, BTN_CAP_PICKUP)) {
+			angler.move_to(Angler::CAP_FLIP_POSITION);
+			intake.outtake();
+		}
 		if (partner.is_connected()) {
 			switch(partner.single_pressed) {
 				case BTN_SHOT_R_T:
@@ -210,10 +213,6 @@ void opcontrol() {
 			}
 		//
 		//
-		// 	if (master.check_double_press(BTN_GROUND_PICKUP, BTN_CAP_PICKUP)) {
-		// 		angler.move_to(Angler::CAP_FLIP_POSITION);
-		// 		intake.outtake();
-		// 	}
 		// }
 		//
 		//
@@ -225,10 +224,6 @@ void opcontrol() {
 			{
 				make_shot_request(shot_positions[(int)SP::G_BACK_TOP], Turn_Direction::STRAIGHT, field_position);
 			}
-		// if (master.check_double_press(BTN_GROUND_PICKUP, BTN_CAP_PICKUP)) {
-		// 	angler.move_to(Angler::CAP_FLIP_POSITION);
-		// 	intake.outtake();
-		// }
 
 		pros::delay(5);
 	}
