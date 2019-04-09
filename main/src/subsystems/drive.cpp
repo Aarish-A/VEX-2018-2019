@@ -60,10 +60,18 @@ void Drive::set_state(uint8_t new_state) {
       this->x = 0;
       this->y = 0;
       this->a = 0;
-      this->fl_motor.move(-30);
-      this->bl_motor.move(30);
-      this->fr_motor.move(-30);
-      this->br_motor.move(30);
+      this->fr_motor.tare_position();
+      this->fl_motor.tare_position();
+      this->br_motor.tare_position();
+      this->bl_motor.tare_position();
+      this->fl_motor.move_absolute(0,200);
+      this->bl_motor.move_absolute(0,200);
+      this->fr_motor.move_absolute(0,200);
+      this->br_motor.move_absolute(0,200);
+      // this->fl_motor.move(-30);
+      // this->bl_motor.move(30);
+      // this->fr_motor.move(-30);
+      // this->br_motor.move(30);
   }
 }
 
@@ -109,10 +117,10 @@ void Drive::update() {
       } else if (timed_out(1000)) {
         this->set_state(STATE_DRIVER_CONTROL);
       } else if (pros::millis() - this->state_change_time > 200) {
-        this->fl_motor.move(-25);
-        this->bl_motor.move(25);
-        this->fr_motor.move(-25);
-        this->br_motor.move(25);
+        // this->fl_motor.move(-25);
+        // this->bl_motor.move(25);
+        // this->fr_motor.move(-25);
+        // this->br_motor.move(25);
       }
       break;
   }

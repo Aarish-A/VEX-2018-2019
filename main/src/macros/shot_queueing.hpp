@@ -11,6 +11,7 @@
 constexpr double FLAG_WIDTH = 12.0;
 
 extern pilons::Task shot_queue_handle_task;
+extern pros::Mutex shot_mutex;
 
 struct Shot_Pos {
   uint8_t top;
