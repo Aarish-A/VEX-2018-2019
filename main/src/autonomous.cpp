@@ -15,7 +15,6 @@
  * from where it left off.
  */
 
-uint32_t autoStartTime;
 void auto_red_front_park();
 void auto_red_front();
 void auto_red_back();

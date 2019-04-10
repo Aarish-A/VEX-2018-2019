@@ -18,21 +18,6 @@ const std::string menu_screen_strings[] = {
   "Flag Select"
 };
 
-// enum class Menu_Shot_Positions {
-//   PF_MID,
-//   PF_TOP,
-//   FRONT_MID,
-//   FRONT_TOP,
-//   BACK_MID,
-//   BACK_TOP,
-//
-//   A_MID_FLAG_MID,
-//   A_MID_FLAG_TOP,
-//   A_FAR_FLAG_MID,
-//   A_FAR_FLAG_TOP,
-//   NUM_OF_ELEMENTS
-// };
-
 enum class SP {
   G_FRONT_TOP,
   G_FRONT_MID,
@@ -75,6 +60,7 @@ enum class Auto_Routines {
 const std::string auto_routine_strings[] = {
   "Front",
   "Back",
+  
   "Prog. Skills",
   "Driv. Skills"
 };

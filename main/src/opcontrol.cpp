@@ -54,6 +54,7 @@ double get_shot_angle(long double x, long double _y) {
 
 	if (angle_1_valid && !angle_2_valid) return angle_1;
 	else if (!angle_1_valid && angle_2_valid) return angle_2;
+	else if (!angle_1_valid && !angle_2_valid) return 0.0;
 	else return fminl(angle_1, angle_2);
 }
 
@@ -216,11 +217,11 @@ void opcontrol() {
 		// }
 		//
 		//
-			if(partner.check_double_press(BTN_SHOT_R_M, BTN_SHOT_L_M))
+			if (partner.check_double_press(BTN_SHOT_R_M, BTN_SHOT_L_M))
 			{
 				make_shot_request(shot_positions[(int)SP::G_BACK_MID], Turn_Direction::STRAIGHT, field_position);
 			}
-			if(partner.check_double_press(BTN_SHOT_R_T, BTN_SHOT_L_T))
+			if (partner.check_double_press(BTN_SHOT_R_T, BTN_SHOT_L_T))
 			{
 				make_shot_request(shot_positions[(int)SP::G_BACK_TOP], Turn_Direction::STRAIGHT, field_position);
 			}

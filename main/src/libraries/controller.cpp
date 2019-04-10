@@ -1,9 +1,6 @@
 #include "controller.hpp"
 
 const std::string pilons::Controller::button_names[12] = {"L1", "L2", "R1", "R2", "UP", "DOWN", "LEFT", "RIGHT", "X", "B", "Y", "A"};
-uint32_t pilons::Controller::print_number = 0;
-uint32_t pilons::Controller::last_screen_update_time = 1;
-
 
 /* Constructor */
 pilons::Controller::Controller(pros::controller_id_e_t id, std::string controller_name) : pros::Controller(id), controller_name(controller_name) {
@@ -20,19 +17,10 @@ bool pilons::Controller::check_falling(int button) {
 
 /* Public Functions */
 void pilons::Controller::update() {
-  if (pros::millis() > pilons::Controller::last_screen_update_time + pilons::Controller::SCREEN_UPDATE_INTERVAL) {
-    // else printf("%d PRINT ERROR\n", pros::millis());
-    printf("NUMBER IS: %d, NAME IS: %s\n", pilons::Controller::print_number % 2, this->controller_name.c_str());
-    if ((this->controller_name == "Master") && ((pilons::Controller::print_number % 2) == 0)) {
-      this->print(this->update_line_number, 0, (this->screen_lines[this->update_line_number]).c_str());
-      printf("%d Printed %s on %s\n", pros::millis(), (this->screen_lines[this->update_line_number]).c_str(), this->controller_name.c_str());
-    } else if ((this->controller_name == "Partner") && ((pilons::Controller::print_number % 2) == 1)) {
-      this->print(this->update_line_number, 0, (this->screen_lines[this->update_line_number]).c_str());
-      printf("%d Printed %s on %s\n", pros::millis(), (this->screen_lines[this->update_line_number]).c_str(), this->controller_name.c_str());
-    }
+  if (pros::millis() > this->last_screen_update_time + pilons::Controller::SCREEN_UPDATE_INTERVAL) {
+    this->print(this->update_line_number, 0, (this->screen_lines[this->update_line_number]).c_str());
 
-    pilons::Controller::last_screen_update_time = pros::millis();
-    pilons::Controller::print_number++;
+    this->last_screen_update_time = pros::millis();
     if (this->update_line_number < 2) this->update_line_number++;
     else this->update_line_number = 0;
   }
