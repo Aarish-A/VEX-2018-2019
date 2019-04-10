@@ -19,7 +19,6 @@ void trigger_shot_queue() {
 
 void make_shot_request(uint8_t shot_height, Turn_Direction direction, Field_Position target_field_pos, bool trigger_shot) {
   if (target_field_pos == field_position) {
-    shot_mutex.take(TIMEOUT_MAX);
     if (shot_queue.size() == 2) shot_queue.pop_back();
 
     vector flag_position = {0, 0};
@@ -59,9 +58,10 @@ void make_shot_request(uint8_t shot_height, Turn_Direction direction, Field_Posi
         break;
     }
 
-    shot_queue.push_back({shot_height, flag_position, turning});
+    if (shot_mutex.take(3)) shot_queue.push_back({shot_height, flag_position, turning});
+    shot_mutex.give();
   }
-  shot_mutex.give();
+  // shot_mutex.give();
 
   if (trigger_shot) trigger_shot_queue();
 }
@@ -74,35 +74,72 @@ void change_field_position(Field_Position new_field_pos) {
 void shot_queue_handle(void* param) {
   Field_Position temp_field_pos = field_position;
   for (int i = 0; i < shot_queue.size(); i++) {
-    shot_mutex.take(TIMEOUT_MAX);
-    Shot_Target temp_target = shot_queue.at(i);
-    shot_mutex.give();
-    uint32_t start_time = pros::millis();
-    printf(">>>>>Started queue handle: %d\n", start_time);
-    // printf("\n%d Start Shot Queue handle \n\n", pros::millis());
-    time_start = pros::millis();
-    if (temp_target.turning) {
-      if (i == 0) {
-        drive.set_power(0, 10, 0);
-			  pros::delay(150);
-        pos.reset(0, 0, 0);
-        drive.set_vel(0);
-        pros::delay(20);
-        printf("target: x: %f, y: %f\n", temp_target.flag_position.x, temp_target.flag_position.y);
-        drive_move_sync(-4_in);
-        drive_turn_sync(PointAngleTarget(temp_target.flag_position));
-        // drive_turn_side(PointAngleTarget(temp_target.flag_position), (200/60_deg), 0, false);
-      } else if (i == 1) {
-        drive_turn_sync(PointAngleTarget(temp_target.flag_position));
+      while(!shot_mutex.take(3)) pros::delay(1);
+    // if (shot_mutex.take(5)) {
+      Shot_Target temp_target;
+      if (i < shot_queue.size() && i >= 0) temp_target = shot_queue.at(i);
+      else break;
+      shot_mutex.give();
+      uint32_t start_time = pros::millis();
+      printf(">>>>>Started queue handle: %d\n", start_time);
+      // printf("\n%d Start Shot Queue handle \n\n", pros::millis());
+      time_start = pros::millis();
+      if (temp_target.turning) {
+        if (i == 0) {
+          drive.set_power(0, 10, 0);
+          pros::delay(150);
+          pos.reset(0, 0, 0);
+          drive.set_vel(0);
+          pros::delay(20);
+          printf("target: x: %f, y: %f\n", temp_target.flag_position.x, temp_target.flag_position.y);
+          drive_move_sync(-4_in);
+          drive_turn_sync(PointAngleTarget(temp_target.flag_position));
+          // drive_turn_side(PointAngleTarget(temp_target.flag_position), (200/60_deg), 0, false);
+        } else if (i == 1) {
+          drive_turn_sync(PointAngleTarget(temp_target.flag_position));
+        }
       }
-    }
-    if (temp_field_pos == Field_Position::BACK && !temp_target.turning) drive_move_sync(2_in);
-    angler.move_to(temp_target.angler_target);
-    angler.wait_for_target_reach();
-    puncher.shoot();
-    puncher.wait_for_shot_finish();
-    // drive.wait_for_stop();
-    printf(">>>>>>%d Stop Shot Queue handle %d\n", pros::millis(), pros::millis() - start_time);
+      if (temp_field_pos == Field_Position::BACK && !temp_target.turning) drive_move_sync(2_in);
+      angler.move_to(temp_target.angler_target);
+    //  drive.lock();
+      angler.wait_for_target_reach();
+      puncher.shoot();
+      puncher.wait_for_shot_finish();
+      //drive.unlock();
+      // drive.wait_for_stop();
+      printf(">>>>>>%d Stop Shot Queue handle %d\n", pros::millis(), pros::millis() - start_time);
+    // }
+
+
+    // shot_mutex.take(TIMEOUT_MAX);
+    // Shot_Target temp_target = shot_queue.at(i);
+    // shot_mutex.give();
+    // uint32_t start_time = pros::millis();
+    // printf(">>>>>Started queue handle: %d\n", start_time);
+    // // printf("\n%d Start Shot Queue handle \n\n", pros::millis());
+    // time_start = pros::millis();
+    // if (temp_target.turning) {
+    //   if (i == 0) {
+    //     drive.set_power(0, 10, 0);
+		// 	  pros::delay(150);
+    //     pos.reset(0, 0, 0);
+    //     drive.set_vel(0);
+    //     pros::delay(20);
+    //     printf("target: x: %f, y: %f\n", temp_target.flag_position.x, temp_target.flag_position.y);
+    //     drive_move_sync(-4_in);
+    //     drive_turn_sync(PointAngleTarget(temp_target.flag_position));
+    //     // drive_turn_side(PointAngleTarget(temp_target.flag_position), (200/60_deg), 0, false);
+    //   } else if (i == 1) {
+    //     drive_turn_sync(PointAngleTarget(temp_target.flag_position));
+    //   }
+    // }
+    // if (temp_field_pos == Field_Position::BACK && !temp_target.turning) drive_move_sync(2_in);
+    // angler.move_to(temp_target.angler_target);
+    // angler.wait_for_target_reach();
+    // puncher.shoot();
+    // puncher.wait_for_shot_finish();
+    // // drive.wait_for_stop();
+    // printf(">>>>>>%d Stop Shot Queue handle %d\n", pros::millis(), pros::millis() - start_time);
   }
   shot_queue_handle_task.stop_task();
 }
