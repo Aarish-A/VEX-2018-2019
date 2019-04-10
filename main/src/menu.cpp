@@ -28,9 +28,20 @@ void menu_init() {
   flag_config_file = fopen("/usd/flag_config.txt", "r");
   for (int i = 0; i < MAX_NUMBER_OF_SHOTS; i++) {
     if (flag_config_file != nullptr) {
-      uint32_t temp;
+      int32_t temp = -1;
       fscanf(flag_config_file, "%d ", &temp);
       flag_config[i] = static_cast<Flags>(temp);
+
+      int8_t index1 = -1;
+      int8_t index2 = -1;
+      if (temp == 0) { index1 = 0; index2 = 0; }
+      else if (temp == 1) { index1 = 0; index2 = 1; }
+      else if (temp == 2) { index1 = 1; index2 = 0; }
+      else if (temp == 3) { index1 = 1; index2 = 1; }
+      else if (temp == 4) { index1 = 2; index2 = 0; }
+      else if (temp == 4) { index1 = 2; index2 = 1; }
+
+      if (index1 != -1 && index2 != -1) flag_set[index1][index2][2] = i + '0';
       log_ln(IO, "%d Successfully read %d from /usd/flag_config.txt", pros::millis(),temp);
     } else log_ln(IO, "%d Could not read from /usd/flag_config.txt",pros::millis());
   }
