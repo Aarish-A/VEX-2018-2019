@@ -51,7 +51,7 @@ void make_shot_request(uint8_t shot_height, Turn_Direction direction, Field_Posi
         }
         break;
       case Field_Position::BACK:
-        if (direction == Turn_Direction::STRAIGHT) turning = false; //shot_queue.push_back({shot_height});
+        if (direction == Turn_Direction::STRAIGHT) flag_position = {0,123}; //shot_queue.push_back({shot_height});
         else if (game_side == 'R') {
           if (direction == Turn_Direction::LEFT) flag_position = {-45, 123}; // shot_queue.push_back({shot_height, {-27.5, 94}});
           else if (direction == Turn_Direction::RIGHT) flag_position = {45, 123}; //shot_queue.push_back({shot_height, {19.5, 94}});
@@ -118,7 +118,6 @@ void shot_queue_handle(void* param) {
           drive_turn_sync(PointAngleTarget(temp_target.flag_position));
         }
       }
-      if (temp_field_pos == Field_Position::BACK && !temp_target.turning) drive_move_sync(4_in);
       angler.move_to(temp_target.angler_target);
     //  drive.lock();
       angler.wait_for_target_reach();
