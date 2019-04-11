@@ -145,14 +145,14 @@ void opcontrol() {
 
 					// 66 in x
 					// 9.71 + 24.2 (33.91) deg
-					puncher.shoot();
-					// make_shot_request(shot_positions[(int)SP::G_FRONT_TOP], Turn_Direction::STRAIGHT, Field_Position::FRONT, true);
+					// puncher.shoot();
+					make_shot_request(shot_positions[(int)SP::G_FRONT_TOP], Turn_Direction::STRAIGHT, Field_Position::FRONT, true);
 					break;
 				case BTN_SHOT_R_M:
-					temp = get_shot_angle(67.25, 29.25);
-					printf("CALC ANGLE: %f, %f", (temp / 7) + 24.2, temp);
-					angler.move_to(temp);
-					// make_shot_request(shot_positions[(int)SP::G_FRONT_MID], Turn_Direction::STRAIGHT, Field_Position::FRONT, true);
+					// temp = get_shot_angle(67.25, 29.25);
+					// printf("CALC ANGLE: %f, %f", (temp / 7) + 24.2, temp);
+					// angler.move_to(temp);
+					make_shot_request(shot_positions[(int)SP::G_FRONT_MID], Turn_Direction::STRAIGHT, Field_Position::FRONT, true);
 					break;
 				// case BTN_SHOT_CANCEL:
 				// 	shot_queue_handle_task.stop_task();
@@ -243,7 +243,8 @@ void opcontrol() {
 				make_shot_request(shot_positions[(int)SP::G_BACK_TOP], Turn_Direction::STRAIGHT, field_position);
 			}
 
-		pros::delay(5);
 	}
-}
+	log_ln(IO, "running");
+	pros::delay(5);
+	}
 }
