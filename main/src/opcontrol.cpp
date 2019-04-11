@@ -205,16 +205,16 @@ void opcontrol() {
 		if (partner.is_connected()) {
 			switch(partner.single_pressed) {
 				case BTN_SHOT_R_T:
-					make_shot_request(shot_positions[(int)SP::G_PLATFORM_TOP], Turn_Direction::RIGHT, field_position);
+					make_shot_request(field_position==Field_Position::RED_PF || field_position==Field_Position::BLUE_PF ? shot_positions[(int)SP::G_PLATFORM_TOP]:shot_positions[(int)SP::G_BACK_TURN_TOP], Turn_Direction::RIGHT, field_position);
 					break;
 				case BTN_SHOT_R_M:
-					make_shot_request(shot_positions[(int)SP::G_PLATFORM_MID], Turn_Direction::RIGHT, field_position);
+					make_shot_request(field_position==Field_Position::RED_PF || field_position==Field_Position::BLUE_PF ? shot_positions[(int)SP::G_PLATFORM_MID]:shot_positions[(int)SP::G_BACK_TURN_MID], Turn_Direction::RIGHT, field_position);
 					break;
 				case BTN_SHOT_L_T:
-					make_shot_request(shot_positions[(int)SP::G_PLATFORM_TOP], Turn_Direction::LEFT, field_position);
+					make_shot_request(field_position==Field_Position::RED_PF || field_position==Field_Position::BLUE_PF ? shot_positions[(int)SP::G_PLATFORM_TOP]:shot_positions[(int)SP::G_BACK_TURN_TOP], Turn_Direction::LEFT, field_position);
 					break;
 				case BTN_SHOT_L_M:
-					make_shot_request(shot_positions[(int)SP::G_PLATFORM_MID], Turn_Direction::LEFT, field_position);
+					make_shot_request(field_position==Field_Position::RED_PF || field_position==Field_Position::BLUE_PF ? shot_positions[(int)SP::G_PLATFORM_MID]:shot_positions[(int)SP::G_BACK_TURN_MID], Turn_Direction::LEFT, field_position);
 					break;
 				case BTN_FIELD_RED_PF:
 					change_field_position(Field_Position::RED_PF);

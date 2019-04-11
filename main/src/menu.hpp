@@ -23,6 +23,8 @@ enum class SP {
   G_FRONT_MID,
   G_PLATFORM_TOP,
   G_PLATFORM_MID,
+  G_BACK_TURN_TOP,
+  G_BACK_TURN_MID,
   G_BACK_TOP,
   G_BACK_MID,
 
@@ -39,6 +41,8 @@ const std::string menu_shot_position_strings[] = {
   "G FRONT MID",
   "G PF TOP",
   "G PF MID",
+  "G BACK TURN TOP",
+  "G BACK TURN MID",
   "G BACK TOP",
   "G BACK MID",
 
@@ -60,7 +64,7 @@ enum class Auto_Routines {
 const std::string auto_routine_strings[] = {
   "Front",
   "Back",
-  
+
   "Prog. Skills",
   "Driv. Skills"
 };

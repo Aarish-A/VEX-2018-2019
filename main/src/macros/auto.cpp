@@ -14,6 +14,7 @@ void auto_update(void* _params) {
   while(true) {
     Subsystem::update_all();
     master.update();
+    pos.update();
     pros::delay(10);
   }
 }
@@ -367,7 +368,8 @@ void drive_turn(void *_params) {
   double iVal = 0;
   double last_error = 0;
   double dVal = 0;
-
+if(fabs(dA)>1_deg)
+{
   while (fabs(dA) > fabs(0.4 * fixeddA)) {
     dA = target.getTarget() - drive.get_global_angle();
     drive.error = dA;
@@ -405,6 +407,7 @@ void drive_turn(void *_params) {
     log_ln(MOVE, AUTO, "%d Drive voltage is: %f and iVal is %f dA is %f", pros::millis(),drive_volt, iVal, RAD_TO_DEG(dA));
     pros::delay(1);
   }
+}
   drive.set_power(0);
   drive.brake();
   pros::delay(50);

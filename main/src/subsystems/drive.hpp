@@ -10,6 +10,7 @@ public:
   static const uint8_t STATE_DRIVER_CONTROL = 0x10;
   static const uint8_t STATE_AUTO_CONTROL = 0x11;
   static const uint8_t STATE_DRIVE_LOCK = 0x12;
+  double get_global_angle();
 
 private:
   pros::Motor& fl_motor;
@@ -34,8 +35,6 @@ private:
   void set_side_power(double left, double right);
   void set_side_vel(double left, double right);
   void brake();
-  double get_global_angle();
-
   void set_state(uint8_t new_state) override;
 
   friend void autonomous();
