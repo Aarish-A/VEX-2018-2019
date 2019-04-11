@@ -39,7 +39,7 @@ void menu_init() {
       else if (temp == 2) { index1 = 1; index2 = 0; }
       else if (temp == 3) { index1 = 1; index2 = 1; }
       else if (temp == 4) { index1 = 2; index2 = 0; }
-      else if (temp == 4) { index1 = 2; index2 = 1; }
+      else if (temp == 5) { index1 = 2; index2 = 1; }
 
       if (index1 != -1 && index2 != -1) flag_set[index1][index2][2] = i + '0';
       log_ln(IO, "%d Successfully read %d from /usd/flag_config.txt", pros::millis(),temp);
