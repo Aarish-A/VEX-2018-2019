@@ -7,6 +7,7 @@
 #include "../libraries/util.hpp"
 #include "auto.hpp"
 #include <deque>
+#include <vector>
 
 constexpr double FLAG_WIDTH = 12.0;
 
@@ -60,10 +61,13 @@ struct Shot_Target {
   uint8_t angler_target;
   vector flag_position = {0, 0};
   bool turning = false;
+  Shot_Target(uint8_t a_t, vector f_p = {0, 0}, bool t = false) : angler_target(a_t), flag_position(f_p), turning(t) {};
 };
 
-extern std::deque<Shot_Target> shot_queue;
+// extern std::deque<Shot_Target> shot_queue;
+extern std::vector<Shot_Target> shot_queue;
 
+void shot_queue_init();
 void trigger_shot_queue();
 void make_shot_request(uint8_t shot_height, Turn_Direction direction, Field_Position target_field_pos, bool trigger_shot = false);
 void change_field_position(Field_Position new_field_pos);

@@ -11,7 +11,11 @@ volatile Shot_Pos auto_back_mid_SP = {0, 0, 0};
 volatile Shot_Pos auto_back_far_SP = {0, 0, 0};
 uint32_t time_start = pros::millis();
 Field_Position field_position = Field_Position::FRONT;
-std::deque<Shot_Target> shot_queue;
+std::vector<Shot_Target> shot_queue;
+
+void shot_queue_init() {
+  shot_queue.reserve(5);
+}
 
 void trigger_shot_queue() {
   if (!shot_queue_handle_task.running()) shot_queue_handle_task.start_task();
@@ -58,7 +62,8 @@ void make_shot_request(uint8_t shot_height, Turn_Direction direction, Field_Posi
         break;
     }
 
-    if (shot_mutex.take(3)) shot_queue.push_back({shot_height, flag_position, turning});
+    // Shot_Target temp = {shot_height, flag_position, turning};
+    if (shot_mutex.take(3)) shot_queue.emplace_back(shot_height, flag_position, turning);//shot_queue.push_back(temp);
     shot_mutex.give();
   }
   // shot_mutex.give();
@@ -76,9 +81,12 @@ void shot_queue_handle(void* param) {
   for (int i = 0; i < shot_queue.size(); i++) {
       while(!shot_mutex.take(3)) pros::delay(1);
     // if (shot_mutex.take(5)) {
-      Shot_Target temp_target;
+      Shot_Target temp_target(0);
       if (i < shot_queue.size() && i >= 0) temp_target = shot_queue.at(i);
-      else break;
+      else {
+        shot_mutex.give();
+        break;
+      }
       shot_mutex.give();
       uint32_t start_time = pros::millis();
       printf(">>>>>Started queue handle: %d\n", start_time);
@@ -147,7 +155,7 @@ void shot_queue_handle(void* param) {
 void shot_task_cleanup() {
   if (puncher.shooting()) puncher.cancel_shot();
   shot_queue.clear();
-  printf("Time taken: %d\n",pros::millis()-time_start);
+  printf("Time taken: %d\n",pros::millis() - time_start);
   angler.move_to(Angler::PICKUP_POSITION);
   intake.intake();
 }

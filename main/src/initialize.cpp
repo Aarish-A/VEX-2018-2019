@@ -7,10 +7,12 @@
 #include "subsystems/drive.hpp"
 #include "subsystems/angler.hpp"
 #include "libraries/task.hpp"
+#include "macros/shot_queueing.hpp"
 
 void initialize() {
 	log_init();
 	menu_init();
+	shot_queue_init();
 	Subsystem::reset_all();
 	while(Subsystem::any_resetting()) {
 		Subsystem::update_all();
