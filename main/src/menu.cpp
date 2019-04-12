@@ -41,7 +41,7 @@ void menu_init() {
       else if (temp == 4) { index1 = 2; index2 = 0; }
       else if (temp == 5) { index1 = 2; index2 = 1; }
 
-      if (index1 != -1 && index2 != -1) flag_set[index1][index2][2] = i + '0';
+      if (index1 != -1 && index2 != -1) flag_set[index1][index2][2] = (i + 1) + '0';
       log_ln(IO, "%d Successfully read %d from /usd/flag_config.txt", pros::millis(),temp);
     } else log_ln(IO, "%d Could not read from /usd/flag_config.txt",pros::millis());
   }
