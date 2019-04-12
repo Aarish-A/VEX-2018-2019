@@ -1,6 +1,7 @@
 #include "controller.hpp"
 
-uint8_t pilons::Controller::print_count = 1;
+uint32_t pilons::Controller::last_screen_update_time = 0;
+bool pilons::Controller::master_printing = true;
 const std::string pilons::Controller::button_names[12] = {"L1", "L2", "R1", "R2", "UP", "DOWN", "LEFT", "RIGHT", "X", "B", "Y", "A"};
 
 /* Constructor */
@@ -22,27 +23,21 @@ bool pilons::Controller::check_falling(int button) {
 
 /* Public Functions */
 void pilons::Controller::update() {
-  // log_ln(IO, "num: %d", pilons::Controller::print_count % 2 == 1);
-  if ((this->controller_name == "Master" && pilons::Controller::print_count % 2 == 1) || (this->controller_name == "Partner" && pilons::Controller::print_count % 3 == 0)) {
-    if (pros::millis() > this->last_screen_update_time + pilons::Controller::SCREEN_UPDATE_INTERVAL) {
-      if (this->Controller::print(this->update_line_number, 0, (this->screen_lines[this->update_line_number]).c_str()) == 1) {
-        // log_ln(IO, "Line: %d on %s: %s", this->update_line_number, this->controller_name.c_str(), this->screen_lines[this->update_line_number].c_str());
-      } else {
-        // log_ln(IO, "Error printing on %s", this->controller_name.c_str());
-      }
-
-      this->last_screen_update_time = pros::millis();
+  if (pros::millis() > pilons::Controller::last_screen_update_time + pilons::Controller::SCREEN_UPDATE_INTERVAL) {
+    if ((this->controller_name == "Master" && pilons::Controller::master_printing) || (this->controller_name == "Partner" && !pilons::Controller::master_printing)) {
+      this->Controller::print(this->update_line_number, 0, (this->screen_lines[this->update_line_number]).c_str());
       if (this->update_line_number < 2) this->update_line_number++;
       else this->update_line_number = 0;
     }
-  } else pilons::Controller::print_count++;
+    pilons::Controller::master_printing = !pilons::Controller::master_printing;
+    pilons::Controller::last_screen_update_time = pros::millis();
+  }
 
   for(int i = 0; i < 12; i++) {
     this->buttons[i].last_pressed = this->buttons[i].pressed;
     this->buttons[i].pressed = this->get_digital((pros::controller_digital_e_t)(i + pros::E_CONTROLLER_DIGITAL_L1));
     if (this->check_rising(i)) this->buttons[i].last_pressed_time = pros::millis();
     else if (this->check_falling(i)) this->buttons[i].last_pressed_time = 0;
-
     if (this->check_single_press(i)) this->single_pressed_queue.push_back(i);
   }
   if (this->single_pressed_queue.size() > 0) {

@@ -94,16 +94,15 @@ void shot_queue_handle(void* param) {
       time_start = pros::millis();
       if (temp_target.turning) {
         if (i == 0) {
-          if(field_position==Field_Position::RED_PF || field_position==Field_Position::BLUE_PF){
-          drive.set_power(0, 10, 0);
-          pros::delay(150);
-          pos.reset(0, 0, 0);
-          drive.set_power(0);
-          pros::delay(20);
-          printf("target: x: %f, y: %f\n", temp_target.flag_position.x, temp_target.flag_position.y);
-          drive_move_sync(-4_in);
-          }
-          else {
+          if (field_position == Field_Position::RED_PF || field_position == Field_Position::BLUE_PF) {
+            drive.set_power(0, 10, 0);
+            pros::delay(150);
+            pos.reset(0, 0, 0);
+            drive.set_power(0);
+            pros::delay(20);
+            printf("target: x: %f, y: %f\n", temp_target.flag_position.x, temp_target.flag_position.y);
+            drive_move_sync(-4_in);
+          } else {
             drive.set_power(0, -10, 0);
             pros::delay(150);
             pos.reset(0, 0, 0);

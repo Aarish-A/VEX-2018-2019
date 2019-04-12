@@ -17,8 +17,8 @@ namespace pilons {
     static const uint32_t SCREEN_UPDATE_INTERVAL = 85;
     std::string screen_lines[3] = {"               ", "               ", "               "};
     std::uint8_t update_line_number = 0;
-    uint32_t last_screen_update_time = 0;
-    static uint8_t print_count;
+    static uint32_t last_screen_update_time;
+    static bool master_printing;
 
     static const uint32_t BUTTON_PRESS_TIME = 50;
     static const std::string button_names[12];
