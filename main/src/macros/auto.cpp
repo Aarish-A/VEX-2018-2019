@@ -358,13 +358,13 @@ void drive_turn(void *_params) {
   drive_turn_params* params = (drive_turn_params*)_params;
   const AngleTarget& target = params->target;
   drive.target = target.getTarget();
-  // printf("%f", RAD_TO_DEG(target.getTarget()));
+  printf("angle target is: %f", RAD_TO_DEG(target.getTarget()));
   double dA = target.getTarget() - drive.get_global_angle();
   double fixeddA = dA;
   double drive_volt = 0;
   double kP = 200/50;
   double kI = 0.02;
-  double kD = 70;
+  double kD = 700;
   double iVal = 0;
   double last_error = 0;
   double dVal = 0;
@@ -382,29 +382,31 @@ if(fabs(dA)>1_deg)
     drive.set_power(0, 0, drive_volt);
     pros::delay(1);
   }
-
   kP = 200/100;
-  while (fabs(dA) > 0.5_deg) {
+  if(fabs(fixeddA)<30_deg) kP = 200/200;
+  while (fabs(dA) > 0.8_deg) {
     if (fabs(fixeddA)<25_deg) {
       iVal += RAD_TO_DEG(dA) * kI;
+      dVal = (dA - last_error)*kD;
       if (fabs(iVal) > 25) iVal = 25 * sgn(iVal);
     } else {
+      dVal = (dA - last_error)*kD;
       if (fabs(dA) < (0.17 * fabs(fixeddA))) {
         iVal += RAD_TO_DEG(dA)*kI;
         if (fabs(iVal) > 25) iVal = 25 * sgn(iVal);
       } else iVal = 0;
     }
-
+    last_error = dA;
     dA = target.getTarget() - drive.get_global_angle();
     drive.error = dA;
-    drive_volt = RAD_TO_DEG(dA) * kP + iVal;
+    drive_volt = RAD_TO_DEG(dA) * kP + iVal + dVal;
 
     if (fabs(fixeddA) < 15_deg && fabs(drive_volt) < 25) {
       drive_volt = sgn(drive_volt) * 25;
     }
 
     drive.set_power(0, 0, drive_volt);
-    log_ln(MOVE, AUTO, "%d Drive voltage is: %f and iVal is %f dA is %f", pros::millis(),drive_volt, iVal, RAD_TO_DEG(dA));
+    log_ln(MOVE, AUTO, "%d Drive voltage is: %f and iVal is %f dA is %f, dval is %f", pros::millis(),drive_volt, iVal, RAD_TO_DEG(dA), dVal);
     pros::delay(1);
   }
 }

@@ -65,7 +65,7 @@ struct Shot_Target {
 };
 
 // extern std::deque<Shot_Target> shot_queue;
-extern std::vector<Shot_Target> shot_queue;
+extern std::deque<Shot_Target> shot_queue;
 
 void shot_queue_init();
 void trigger_shot_queue();

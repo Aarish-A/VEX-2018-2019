@@ -88,10 +88,10 @@ void opcontrol() {
 		pos.update();
 		master.update();
 		if (partner.is_connected()) {
+			partner.update();
 			partner.write_line(0, " ");
 			partner.write_line(1, " ");
 			partner.write_line(2, "%c %s", game_side, fps.c_str());
-			partner.update();
 		}
 		intake.update();
 		drive.update();
@@ -173,7 +173,8 @@ void opcontrol() {
 				}
 				break;
 				case BTN_CAP_FLIP:
-					capper_move_to_cap_flip_task.start_task();
+					// capper_move_to_cap_flip_task.start_task();
+					shot_queue_handle_task.stop_task();
 					break;
 				case BTN_DRIVE_LOCK:
 					drive.lock();
@@ -225,8 +226,11 @@ void opcontrol() {
 				case BTN_FIELD_FRONT:
 					change_field_position(Field_Position::FRONT);
 					break;
-				case BTN_SHOT_CANCEL:
+				case BTN_FIELD_BACK:
 					change_field_position(Field_Position::BACK);
+					break;
+				case BTN_SHOT_CANCEL_PARTNER:
+					shot_queue_handle_task.stop_task();
 					break;
 			}
 		//
@@ -244,7 +248,7 @@ void opcontrol() {
 			}
 
 	}
-	log_ln(IO, "running");
+	// log_ln(IO, "running");
 	pros::delay(5);
 	}
 }

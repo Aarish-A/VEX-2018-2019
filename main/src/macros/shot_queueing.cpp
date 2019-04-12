@@ -11,10 +11,10 @@ volatile Shot_Pos auto_back_mid_SP = {0, 0, 0};
 volatile Shot_Pos auto_back_far_SP = {0, 0, 0};
 uint32_t time_start = pros::millis();
 Field_Position field_position = Field_Position::FRONT;
-std::vector<Shot_Target> shot_queue;
+std::deque<Shot_Target> shot_queue;
 
 void shot_queue_init() {
-  shot_queue.reserve(5);
+  // shot_queue.reserve(5);
 }
 
 void trigger_shot_queue() {
@@ -53,8 +53,8 @@ void make_shot_request(uint8_t shot_height, Turn_Direction direction, Field_Posi
       case Field_Position::BACK:
         if (direction == Turn_Direction::STRAIGHT) flag_position = {0,123}; //shot_queue.push_back({shot_height});
         else if (game_side == 'R') {
-          if (direction == Turn_Direction::LEFT) flag_position = {-45, 123}; // shot_queue.push_back({shot_height, {-27.5, 94}});
-          else if (direction == Turn_Direction::RIGHT) flag_position = {45, 123}; //shot_queue.push_back({shot_height, {19.5, 94}});
+          if (direction == Turn_Direction::LEFT) flag_position = {-52, 123}; // shot_queue.push_back({shot_height, {-27.5, 94}});
+          else if (direction == Turn_Direction::RIGHT) flag_position = {52, 123}; //shot_queue.push_back({shot_height, {19.5, 94}});
         } else if (game_side == 'B') {
           if (direction == Turn_Direction::LEFT) flag_position = {-27.5, 123}; // shot_queue.push_back({shot_height, {-27.5, 94}});
           else if (direction == Turn_Direction::RIGHT) flag_position = {19.5, 123}; //shot_queue.push_back({shot_height, {19.5, 94}});
@@ -98,7 +98,7 @@ void shot_queue_handle(void* param) {
           drive.set_power(0, 10, 0);
           pros::delay(150);
           pos.reset(0, 0, 0);
-          drive.set_vel(0);
+          drive.set_power(0);
           pros::delay(20);
           printf("target: x: %f, y: %f\n", temp_target.flag_position.x, temp_target.flag_position.y);
           drive_move_sync(-4_in);
@@ -107,7 +107,7 @@ void shot_queue_handle(void* param) {
             drive.set_power(0, -10, 0);
             pros::delay(150);
             pos.reset(0, 0, 0);
-            drive.set_vel(0);
+            drive.set_power(0,0,0);
             pros::delay(20);
             printf("target: x: %f, y: %f\n", temp_target.flag_position.x, temp_target.flag_position.y);
             drive_move_sync(4_in);
@@ -120,11 +120,13 @@ void shot_queue_handle(void* param) {
       }
       angler.move_to(temp_target.angler_target);
     //  drive.lock();
-      angler.wait_for_target_reach();
-      uint32_t puncher_time = pros::millis();
       puncher.shoot();
+      angler.wait_for_target_reach();
+      // while(fabs(angler.get_error()) / 7 > 15) pros::delay(1);
+      uint32_t puncher_time = pros::millis();
       puncher.wait_for_shot_finish();
       printf("shot time: %d", (pros::millis()-puncher_time));
+      drive.set_power(0,0,0);
       //drive.unlock();
       // drive.wait_for_stop();
       printf(">>>>>>%d Stop Shot Queue handle %d\n", pros::millis(), pros::millis() - start_time);

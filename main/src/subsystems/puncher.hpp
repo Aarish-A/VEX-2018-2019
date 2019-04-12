@@ -22,7 +22,7 @@ private:
   static constexpr double TPR = 360 * GEAR_RATIO;
   static constexpr double NO_RETURN = 50 * GEAR_RATIO;
   static constexpr double BALL_CHECK_START = TPR - (HOLD + 150);
-  static constexpr uint32_t BOLT_WAIT_TIME = 100;
+  static constexpr uint32_t BOLT_WAIT_TIME = 50;
   static constexpr uint32_t BALL_THRESHOLD = 2700;
   static constexpr uint32_t BALL_OFF_TIME = 100;
   static constexpr int8_t HOLD_POWER = 5;
