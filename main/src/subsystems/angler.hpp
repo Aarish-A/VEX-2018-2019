@@ -8,6 +8,7 @@ public:
   static const uint8_t STATE_DRIVER_CONTROL = 0x10;
   static const uint8_t STATE_AUTO_CONTROL = 0x11;
   static const uint8_t STATE_HOLD = 0x12;
+  static const uint8_t STATE_MOVE_HOLD = 0x13;
 
   static const uint16_t PICKUP_POSITION = 85;
   static const uint16_t CAP_PICKUP_POSITION = 224;
@@ -20,6 +21,7 @@ private:
   static const uint16_t BOTTOM_LIMIT_POSITION = 40;
 
   int8_t power;
+  uint8_t hold_velocity = 200;
   uint8_t error_threshold = 5;
   uint32_t move_timeout = 800;
 
@@ -34,7 +36,7 @@ public:
   void update() override;
 
   void driver_set(int8_t power);
-  void move_to(double target, uint32_t timeout = 1200, uint8_t error_threshold = 3);
+  void move_to(double target, uint8_t hold_velocity = 200, uint32_t timeout = 1200, uint8_t error_threshold = 3);
   bool moving_to_target();
   void wait_for_target_reach();
 };
