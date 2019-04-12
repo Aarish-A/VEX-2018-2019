@@ -72,6 +72,10 @@ void Drive::set_state(uint8_t new_state) {
       // this->bl_motor.move(30);
       // this->fr_motor.move(-30);
       // this->br_motor.move(30);
+      break;
+    case STATE_TURN_BRAKE:
+      this->set_power(0, 0, sgn(this->last_a) * -1 * this->DRIVE_TURN_BRAKE_POWER);
+      break;
   }
 }
 
@@ -91,6 +95,8 @@ double Drive::get_global_angle() {
 Drive::Drive(std::string subsystem_name, uint8_t default_state, pros::Motor& fl_motor, pros::Motor& fr_motor, pros::Motor& bl_motor, pros::Motor& br_motor, pros::ADIAnalogIn& pole_poti, pros::ADIEncoder& enc_l, pros::ADIEncoder& enc_r) : Subsystem(subsystem_name, default_state), fl_motor(fl_motor), fr_motor(fr_motor), bl_motor(bl_motor), br_motor(br_motor), pole_poti(pole_poti), enc_l(enc_l), enc_r(enc_r) {
   state_names[STATE_DRIVER_CONTROL] = "Driver Control";
   state_names[STATE_AUTO_CONTROL] = "Auto Control";
+  state_names[STATE_DRIVE_LOCK] = "Drive Lock";
+  state_names[STATE_TURN_BRAKE] = "Drive Brake";
 }
 
 /* Public Functions */
@@ -102,7 +108,10 @@ void Drive::update() {
     case STATE_DISABLED:
       break;
     case STATE_DRIVER_CONTROL:
-      this->set_power(x, y, a);
+      this->set_power(this->x, this->y, this->a);
+      if (this->x == 0 && this->y == 0 && this->a == 0 && pros::millis() - this->above_turn_brake_threshold < 400) {
+        this->set_state(STATE_TURN_BRAKE);
+      }
       break;
     case STATE_AUTO_CONTROL:
       if (this->x || this->a || this->y) {
@@ -123,7 +132,12 @@ void Drive::update() {
         // this->br_motor.move(25);
       }
       break;
+    case STATE_TURN_BRAKE:
+      if (this->timed_out(300)) this->set_state(STATE_DRIVER_CONTROL);
+      break;
   }
+  if (abs(this->a) > 20) this->above_turn_brake_threshold = pros::millis();
+  this->last_a = this->a;
 }
 
 void Drive::driver_set(int8_t x, int8_t y, int8_t a) {

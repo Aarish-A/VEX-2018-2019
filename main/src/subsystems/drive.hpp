@@ -10,6 +10,7 @@ public:
   static const uint8_t STATE_DRIVER_CONTROL = 0x10;
   static const uint8_t STATE_AUTO_CONTROL = 0x11;
   static const uint8_t STATE_DRIVE_LOCK = 0x12;
+  static const uint8_t STATE_TURN_BRAKE = 0x13;
   double get_global_angle();
 
 private:
@@ -24,8 +25,10 @@ private:
   static constexpr double GEAR_RATIO = 60.0 / 84.0;
   static constexpr double TPR = 360.0 * GEAR_RATIO;
   static constexpr double WHEEL_DIAMETER = 3.95;
+  const uint8_t DRIVE_TURN_BRAKE_POWER = 15;
+  uint32_t above_turn_brake_threshold = 0;
 
-  int8_t x, y, a;
+  int8_t x, y, a, last_a;
 
   /* Private Functions */
   void set_power(double x, double y, double a);
