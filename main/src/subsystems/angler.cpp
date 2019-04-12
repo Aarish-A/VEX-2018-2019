@@ -63,7 +63,7 @@ void Angler::update() {
         this->set_state(STATE_DRIVER_CONTROL);
       } else if (fabs(this->error) < this->error_threshold) {
         log_ln(MOVE, ANGLER, "Angler move finished at %f, target was %f", this->position, this->target);
-        this->set_state(STATE_HOLD);
+        this->set_state(STATE_MOVE_HOLD);
       }
       break;
     case STATE_HOLD:
