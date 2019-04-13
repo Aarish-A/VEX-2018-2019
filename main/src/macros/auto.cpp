@@ -368,7 +368,7 @@ void drive_turn(void *_params) {
   double iVal = 0;
   double last_error = 0;
   double dVal = 0;
-if(fabs(dA)>1_deg)
+if(fabs(dA)>1.5_deg)
 {
   while (fabs(dA) > fabs(0.4 * fixeddA)) {
     dA = target.getTarget() - drive.get_global_angle();

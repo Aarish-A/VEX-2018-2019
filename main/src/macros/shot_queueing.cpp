@@ -36,6 +36,7 @@ void make_shot_request(uint8_t shot_height, Turn_Direction direction, Field_Posi
         if (game_side == 'R') {
           if (direction == Turn_Direction::LEFT) flag_position = {-31, 94}; //shot_queue.push_back({shot_height, {-31, 94}});
           else if (direction == Turn_Direction::RIGHT) flag_position = {18, 94}; //shot_queue.push_back({shot_height, {18, 94}});
+          else if (direction == Turn_Direction::STRAIGHT) flag_position = {78, 94};
         } else if (game_side == 'B') {
           if (direction == Turn_Direction::LEFT) flag_position = {-31 + FLAG_WIDTH, 94}; //shot_queue.push_back({shot_height, {-31 + FLAG_WIDTH, 94}});
           else if (direction == Turn_Direction::RIGHT) flag_position = {18 + FLAG_WIDTH, 94}; //shot_queue.push_back({shot_height, {18 + FLAG_WIDTH, 94}});
@@ -43,8 +44,9 @@ void make_shot_request(uint8_t shot_height, Turn_Direction direction, Field_Posi
         break;
       case Field_Position::BLUE_PF:
         if (game_side == 'R') {
-          if (direction == Turn_Direction::LEFT) flag_position = {-27.5, 94}; // shot_queue.push_back({shot_height, {-27.5, 94}});
+          if (direction == Turn_Direction::LEFT) flag_position = {-27.5, 94}; //78 shot_queue.push_back({shot_height, {-27.5, 94}});
           else if (direction == Turn_Direction::RIGHT) flag_position = {19.5, 94}; //shot_queue.push_back({shot_height, {19.5, 94}});
+          else if (direction == Turn_Direction::STRAIGHT) flag_position = {-78,94};
         } else if (game_side == 'B') {
           if (direction == Turn_Direction::LEFT) flag_position = {-27.5 + FLAG_WIDTH, 94}; //shot_queue.push_back({shot_height, {-27.5 + FLAG_WIDTH, 94}});
           else if (direction == Turn_Direction::RIGHT) flag_position = {19.5 + FLAG_WIDTH, 94}; //shot_queue.push_back({shot_height, {19.5 + FLAG_WIDTH, 94}});
@@ -101,7 +103,7 @@ void shot_queue_handle(void* param) {
             drive.set_power(0);
             pros::delay(20);
             printf("target: x: %f, y: %f\n", temp_target.flag_position.x, temp_target.flag_position.y);
-            drive_move_sync(-4_in);
+            drive_move_sync(-6_in);
           } else {
             drive.set_power(0, -10, 0);
             pros::delay(150);
@@ -119,7 +121,8 @@ void shot_queue_handle(void* param) {
       }
       angler.move_to(temp_target.angler_target);
     //  drive.lock();
-      angler.wait_for_target_reach();
+      // angler.wait_for_target_reach();
+      // while(fabs(angler.get_error()) / 7 > 15) pros::delay(2);
       puncher.shoot();
       uint32_t puncher_time = pros::millis();
       puncher.wait_for_shot_finish();

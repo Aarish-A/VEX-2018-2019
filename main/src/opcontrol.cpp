@@ -99,6 +99,7 @@ void opcontrol() {
 		puncher.update();
 		capper.update();
 
+
 		/* Drive */
 		int8_t drive_y = master.get_analog(JOY_DRIVE_THROTTLE, 10);
 		int8_t drive_x = master.get_analog(JOY_DRIVE_STRAFE, 25);
@@ -226,9 +227,9 @@ void opcontrol() {
 			}
 
 			if (partner.check_double_press(BTN_SHOT_R_M, BTN_SHOT_L_M)) {
-				make_shot_request(shot_positions[(int)SP::G_BACK_MID], Turn_Direction::STRAIGHT, field_position);
+				make_shot_request(field_position == Field_Position::BACK ? shot_positions[(int)SP::G_BACK_MID]:shot_positions[(int)SP::G_PLATFORM_MID_FAR] , Turn_Direction::STRAIGHT, field_position);
 			} else if (partner.check_double_press(BTN_SHOT_R_T, BTN_SHOT_L_T)) {
-				make_shot_request(shot_positions[(int)SP::G_BACK_TOP], Turn_Direction::STRAIGHT, field_position);
+				make_shot_request(field_position == Field_Position::BACK ? shot_positions[(int)SP::G_BACK_TOP]:shot_positions[(int)SP::G_PLATFORM_TOP_FAR], Turn_Direction::STRAIGHT, field_position);
 			}
 		}
 	pros::delay(5);
