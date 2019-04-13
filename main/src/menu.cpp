@@ -24,9 +24,9 @@ void menu_init() {
   read_from_file("/usd/game_side.txt", "r", "%c", &temp2);
   game_side = temp2;
 
-  double temp3 = 0;
+  float temp3 = 0;
   read_from_file("/usd/turn_curve.txt", "r", "%f", &temp3);
-  Drive::drive_turn_coefficient = temp3;
+  Drive::drive_turn_coefficient = (double)temp3;
   for(int x = -127; x <= 127; x++) {
     double weight = exp(-0.1 * Drive::drive_turn_coefficient);
     double w = weight + exp(0.1 * (abs(x) - 127)) * (1 - weight);
@@ -74,22 +74,6 @@ void menu_init() {
 void menu_update() {
   master.write_line(0, menu_screen_strings[(int)menu_screen].c_str());
 
-  // printf("------------------------------\n");
-  // printf("FC: ");
-  // for(int i = 0; i < MAX_NUMBER_OF_SHOTS; i++) {
-  //   printf("%d ", static_cast<int>(flag_config[i]));
-  //   if (i == MAX_NUMBER_OF_SHOTS - 1) printf("\n");
-  // }
-  //
-  // printf("SP: ");
-  // for (int i = 0; i < static_cast<int>(SP::NUM_OF_ELEMENTS); i++) {
-  //   printf("%d ", shot_positions[i]);
-  //   if (i == static_cast<int>(SP::NUM_OF_ELEMENTS) - 1) printf("\n");
-  // }
-  //
-  // printf("GS: %c\n", game_side);
-  // printf("AR: %d\n", (int)auto_routine);
-
   switch(menu_screen) {
     case Menu_Screens::SHOT_TUNING:
       master.write_line(1, menu_shot_position_strings[(int)menu_shot_position].c_str());
@@ -104,7 +88,7 @@ void menu_update() {
       master.write_line(2, "%s   %s   %s", flag_set[0][1].c_str(), flag_set[1][1].c_str(), flag_set[2][1].c_str());
       break;
     case Menu_Screens::TURN_CURVE:
-      master.write_line(1, "%f", Drive::drive_turn_coefficient);
+      master.write_line(1, "%.2f", Drive::drive_turn_coefficient);
       master.write_line(2, " ");
       break;
     case Menu_Screens::NUM_OF_ELEMENTS:
