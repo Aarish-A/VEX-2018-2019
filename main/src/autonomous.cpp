@@ -36,7 +36,6 @@ void autonomous() {
   Subsystem::enable_all();
   auto_update_task.start_task();
   drive.reset_global_angle();
-
 switch(auto_routine) {
   case Auto_Routines::FRONT:
     if(game_side == 'R') auto_red_front();

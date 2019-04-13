@@ -119,9 +119,8 @@ void shot_queue_handle(void* param) {
       }
       angler.move_to(temp_target.angler_target);
     //  drive.lock();
-      puncher.shoot();
       angler.wait_for_target_reach();
-      while(fabs(angler.get_error()) / 7 > 15) pros::delay(1);
+      puncher.shoot();
       uint32_t puncher_time = pros::millis();
       puncher.wait_for_shot_finish();
       printf("shot time: %d", (pros::millis()-puncher_time));

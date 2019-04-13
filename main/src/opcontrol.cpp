@@ -73,7 +73,7 @@ void opcontrol() {
 	enc_l.reset();
 	pos.reset();
 	while (true) {
-		printf("R: %d, L: %d\n", enc_r.get_value(), enc_l.get_value());
+		// printf("R: %d, L: %d\n", enc_r.get_value(), enc_l.get_value());
 		// printf("Light sensor:%f\n",gyro.get_value());
 		//printf("poti: %d\n",s_pole_poti.get_value());
 		// master.print(2,0,"%d %d                 ",enc_l.get_value(), enc_r.get_value());
