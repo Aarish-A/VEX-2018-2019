@@ -58,8 +58,8 @@ void make_shot_request(uint8_t shot_height, Turn_Direction direction, Field_Posi
           if (direction == Turn_Direction::LEFT) flag_position = {-52, 123}; // shot_queue.push_back({shot_height, {-27.5, 94}});
           else if (direction == Turn_Direction::RIGHT) flag_position = {52, 123}; //shot_queue.push_back({shot_height, {19.5, 94}});
         } else if (game_side == 'B') {
-          if (direction == Turn_Direction::LEFT) flag_position = {-27.5, 123}; // shot_queue.push_back({shot_height, {-27.5, 94}});
-          else if (direction == Turn_Direction::RIGHT) flag_position = {19.5, 123}; //shot_queue.push_back({shot_height, {19.5, 94}});
+          if (direction == Turn_Direction::LEFT) flag_position = {-52 + FLAG_WIDTH, 123}; // shot_queue.push_back({shot_height, {-27.5, 94}});
+          else if (direction == Turn_Direction::RIGHT) flag_position = {52 + FLAG_WIDTH, 123}; //shot_queue.push_back({shot_height, {19.5, 94}});
         }
         break;
     }
