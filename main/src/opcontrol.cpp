@@ -73,7 +73,7 @@ void opcontrol() {
 	enc_l.reset();
 	pos.reset();
 	while (true) {
-		printf("R: %d, L: %d\n", enc_r.get_value(), enc_l.get_value());
+		// printf("R: %d, L: %d\n", enc_r.get_value(), enc_l.get_value());
 		// printf("Light sensor:%f\n",gyro.get_value());
 		//printf("poti: %d\n",s_pole_poti.get_value());
 		// master.print(2,0,"%d %d                 ",enc_l.get_value(), enc_r.get_value());
@@ -101,8 +101,8 @@ void opcontrol() {
 
 		/* Drive */
 		int8_t drive_y = master.get_analog(JOY_DRIVE_THROTTLE, 10);
-		int8_t drive_x = master.get_analog(JOY_DRIVE_STRAFE, 10);
-		int8_t drive_a = master.get_analog(JOY_DRIVE_TURN, 25);
+		int8_t drive_x = master.get_analog(JOY_DRIVE_STRAFE, 25);
+		int8_t drive_a = drive_y ? master.get_analog(JOY_DRIVE_TURN, 10) : Drive::turn_curve[master.get_analog(JOY_DRIVE_TURN, 10) + 127];
 		drive.driver_set(drive_x, drive_y, drive_a);
 
 		/* Angler */

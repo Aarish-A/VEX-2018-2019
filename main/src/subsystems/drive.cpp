@@ -1,5 +1,8 @@
 #include "drive.hpp"
 
+int8_t Drive::turn_curve[256];
+double Drive::drive_turn_coefficient = 3.50;
+
 /* Private Functions */
 void Drive::set_power(double x, double y, double a) {
   this->fl_motor.move(y + x + a);
@@ -97,6 +100,8 @@ Drive::Drive(std::string subsystem_name, uint8_t default_state, pros::Motor& fl_
   state_names[STATE_AUTO_CONTROL] = "Auto Control";
   state_names[STATE_DRIVE_LOCK] = "Drive Lock";
   state_names[STATE_TURN_BRAKE] = "Drive Brake";
+
+
 }
 
 /* Public Functions */
@@ -109,9 +114,10 @@ void Drive::update() {
       break;
     case STATE_DRIVER_CONTROL:
       this->set_power(this->x, this->y, this->a);
-      if (this->x == 0 && this->y == 0 && this->a == 0 && pros::millis() - this->above_turn_brake_threshold < 400) {
-        this->set_state(STATE_TURN_BRAKE);
-      }
+      // if (this->x == 0 && this->y == 0 && this->a == 0 && pros::millis() - this->above_turn_brake_threshold < 400) {
+      //   this->disable_state_change_log();
+      //   this->set_state(STATE_TURN_BRAKE);
+      // }
       break;
     case STATE_AUTO_CONTROL:
       if (this->x || this->a || this->y) {
@@ -133,7 +139,9 @@ void Drive::update() {
       }
       break;
     case STATE_TURN_BRAKE:
-      if (this->timed_out(300)) this->set_state(STATE_DRIVER_CONTROL);
+      this->disable_state_change_log();
+      if (pros::millis() - this->state_change_time > 100) this->set_state(STATE_DRIVER_CONTROL);
+      else if (this->x || this->a || this->y) this->set_state(STATE_DRIVER_CONTROL);
       break;
   }
   if (abs(this->a) > 20) this->above_turn_brake_threshold = pros::millis();

@@ -68,6 +68,7 @@ void Angler::update() {
       break;
     case STATE_HOLD:
       if (this->power) this->set_state(STATE_DRIVER_CONTROL);
+      else if (this->timed_out(30000)) this->disable();
       break;
     case STATE_MOVE_HOLD:
       if (this->timed_out(750)) this->set_state(STATE_HOLD);

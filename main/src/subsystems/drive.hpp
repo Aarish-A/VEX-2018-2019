@@ -13,6 +13,9 @@ public:
   static const uint8_t STATE_TURN_BRAKE = 0x13;
   double get_global_angle();
 
+  static int8_t turn_curve[256];
+  static double drive_turn_coefficient;
+
 private:
   pros::Motor& fl_motor;
   pros::Motor& fr_motor;
@@ -25,7 +28,7 @@ private:
   static constexpr double GEAR_RATIO = 60.0 / 84.0;
   static constexpr double TPR = 360.0 * GEAR_RATIO;
   static constexpr double WHEEL_DIAMETER = 3.95;
-  const uint8_t DRIVE_TURN_BRAKE_POWER = 15;
+  const uint8_t DRIVE_TURN_BRAKE_POWER = 10;
   uint32_t above_turn_brake_threshold = 0;
 
   int8_t x, y, a, last_a;

@@ -37,7 +37,7 @@ void pilons::Controller::update() {
     this->buttons[i].last_pressed = this->buttons[i].pressed;
     this->buttons[i].pressed = this->get_digital((pros::controller_digital_e_t)(i + pros::E_CONTROLLER_DIGITAL_L1));
     if (this->check_rising(i)) this->buttons[i].last_pressed_time = pros::millis();
-    else if (this->check_falling(i)) this->buttons[i].last_pressed_time = 0;
+    // else if (this->check_falling(i)) this->buttons[i].last_pressed_time = 0;
     if (this->check_single_press(i)) this->single_pressed_queue.push_back(i);
   }
   if (this->single_pressed_queue.size() > 0) {
