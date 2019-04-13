@@ -101,8 +101,8 @@ void opcontrol() {
 
 		/* Drive */
 		int8_t drive_y = master.get_analog(JOY_DRIVE_THROTTLE, 10);
-		int8_t drive_x = master.get_analog(JOY_DRIVE_STRAFE, 10);
-		int8_t drive_a = master.get_analog(JOY_DRIVE_TURN, 25);
+		int8_t drive_x = master.get_analog(JOY_DRIVE_STRAFE, 25);
+		int8_t drive_a = drive_y ? master.get_analog(JOY_DRIVE_TURN, 10) : Drive::turn_curve[master.get_analog(JOY_DRIVE_TURN, 10) + 127];
 		drive.driver_set(drive_x, drive_y, drive_a);
 
 		/* Angler */
@@ -118,15 +118,12 @@ void opcontrol() {
 			master.write_line(2, "%c %s", game_side, fps.c_str());
 
 			switch(master.single_pressed) {
-				// Intake
 				case BTN_INTAKE_UP:
 					(intake.off() && !capper.at_pickup_position()) ? intake.intake() : intake.stop();
 					break;
 				case BTN_INTAKE_DOWN:
 					(intake.off() && !capper.at_pickup_position()) ? intake.outtake() : intake.stop();
 					break;
-
-				// Angler
 				case BTN_GROUND_PICKUP:
 					angler.move_to(Angler::PICKUP_POSITION);
 					intake.intake();
@@ -135,8 +132,6 @@ void opcontrol() {
 					angler.move_to(Angler::CAP_PICKUP_POSITION);
 					intake.intake();
 					break;
-
-				// Shot Queueing
 				case BTN_SHOT_R_T:
 					// 41 in x
 					// 29.25 in y
@@ -154,27 +149,23 @@ void opcontrol() {
 					// angler.move_to(temp);
 					make_shot_request(shot_positions[(int)SP::G_FRONT_MID], Turn_Direction::STRAIGHT, Field_Position::FRONT, true);
 					break;
-				// case BTN_SHOT_CANCEL:
-				// 	shot_queue_handle_task.stop_task();
-				// 	break;
-
-				// Capper
 				case BTN_CAPPER_DOWN:
 					capper.move_to_pickup();
 					angler.move_to(Angler::PICKUP_POSITION);
 					intake.stop();
 					break;
 				case BTN_CAPPER_UP:
-				if(partner.is_connected()) change_field_position(Field_Position::FRONT);
-				else {
-					if (capper.at_pickup_position()) capper.pickup_cap();
-					else if (cap_on_pole_task.running()) cap_on_pole_task.stop_task();
-					else cap_on_pole_task.start_task();
-				}
+					if (auto_routine == Auto_Routines::DRIVER_SKILLS) {
+						if (capper.at_pickup_position()) capper.pickup_cap();
+						else if (cap_on_pole_task.running()) cap_on_pole_task.stop_task();
+						else cap_on_pole_task.start_task();
+					} else {
+						change_field_position(Field_Position::FRONT);
+					}
 				break;
 				case BTN_CAP_FLIP:
-					// capper_move_to_cap_flip_task.start_task();
-					shot_queue_handle_task.stop_task();
+					if (auto_routine == Auto_Routines::DRIVER_SKILLS) capper_move_to_cap_flip_task.start_task();
+					else shot_queue_handle_task.stop_task();
 					break;
 				case BTN_DRIVE_LOCK:
 					drive.lock();
@@ -233,22 +224,13 @@ void opcontrol() {
 					shot_queue_handle_task.stop_task();
 					break;
 			}
-		//
-		//
-		// }
-		//
-		//
-			if (partner.check_double_press(BTN_SHOT_R_M, BTN_SHOT_L_M))
-			{
+
+			if (partner.check_double_press(BTN_SHOT_R_M, BTN_SHOT_L_M)) {
 				make_shot_request(shot_positions[(int)SP::G_BACK_MID], Turn_Direction::STRAIGHT, field_position);
-			}
-			if (partner.check_double_press(BTN_SHOT_R_T, BTN_SHOT_L_T))
-			{
+			} else if (partner.check_double_press(BTN_SHOT_R_T, BTN_SHOT_L_T)) {
 				make_shot_request(shot_positions[(int)SP::G_BACK_TOP], Turn_Direction::STRAIGHT, field_position);
 			}
-
-	}
-	// log_ln(IO, "running");
+		}
 	pros::delay(5);
 	}
 }

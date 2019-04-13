@@ -4,18 +4,21 @@
 #include "libraries/util.hpp"
 #include "macros/shot_queueing.hpp"
 #include <string>
+#include "subsystems/drive.hpp"
 
 enum class Menu_Screens {
   SHOT_TUNING,
   AUTO_SELECT,
   FLAG_SELECT,
+  TURN_CURVE,
   NUM_OF_ELEMENTS
 };
 
 const std::string menu_screen_strings[] = {
   "Shot Tuning",
   "Auto Select",
-  "Flag Select"
+  "Flag Select",
+  "Turn Curve"
 };
 
 enum class SP {

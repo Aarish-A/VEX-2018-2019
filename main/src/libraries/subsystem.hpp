@@ -19,6 +19,7 @@ protected:
   uint8_t DEFAULT_STATE = STATE_DISABLED;
   uint32_t state_change_time = 0;
   uint32_t velocity_exceeded_time = 0;
+  bool state_change_log = true;
 
   double position;
   double target;
@@ -30,6 +31,7 @@ protected:
   bool timed_out(uint32_t timeout); // Return whether or not the subsystem has been in a state for longer than the timeout
   bool above_vel_threshold(double velocity, uint32_t timeout); // Return whether or not the subsystem has been above a velocity for longer than some duration
   bool below_vel_threshold(double velocity, uint32_t timeout); // Return whether or not the subsystem has been below a velocity for longer than some duration
+  void disable_state_change_log();
 
   /* Protected Virtual Functions */
   virtual void set_state(uint8_t new_state); // Changes the state and sets the state variables

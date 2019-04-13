@@ -25,11 +25,11 @@ void Angler::set_state(uint8_t new_state) {
       break;
     case STATE_HOLD:
       this->target = this->position;
-      this->angler_motor.move_relative(0, 75);
+      this->angler_motor.move_relative(0, 100);
       break;
     case STATE_MOVE_HOLD:
       this->target = this->position;
-      this->angler_motor.move_absolute(this->target, this->hold_velocity);
+      this->angler_motor.move_relative(0, this->hold_velocity);
       break;
   }
 }
@@ -63,11 +63,13 @@ void Angler::update() {
         this->set_state(STATE_DRIVER_CONTROL);
       } else if (fabs(this->error) < this->error_threshold) {
         log_ln(MOVE, ANGLER, "Angler move finished at %f, target was %f", this->position, this->target);
-        this->set_state(STATE_MOVE_HOLD);
+        // this->set_state(STATE_MOVE_HOLD);
+        this->set_state(STATE_HOLD);
       }
       break;
     case STATE_HOLD:
       if (this->power) this->set_state(STATE_DRIVER_CONTROL);
+      else if (this->timed_out(30000)) this->disable();
       break;
     case STATE_MOVE_HOLD:
       if (this->timed_out(750)) this->set_state(STATE_HOLD);

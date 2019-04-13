@@ -31,13 +31,18 @@ bool Subsystem::below_vel_threshold(double velocity, uint32_t timeout) {
   } else return false;
 }
 
+void Subsystem::disable_state_change_log() {
+  this->state_change_log = false;
+}
+
 /* Protected Virtual Functions */
 void Subsystem::set_state(uint8_t new_state) {
   this->last_state = state;
   this->state = new_state;
   this->state_change_time = pros::millis();
   this->velocity_exceeded_time = 0;
-  if (this->last_state != this->state) log_ln(STATE_CHANGE, "Switching %s to %s state from %s state", (this->subsystem_name).c_str(), (this->state_names[state]).c_str(), (this->state_names[last_state]).c_str());
+  if (this->last_state != this->state && this->state_change_log) log_ln(STATE_CHANGE, "Switching %s to %s state from %s state", (this->subsystem_name).c_str(), (this->state_names[state]).c_str(), (this->state_names[last_state]).c_str());
+  this->state_change_log = true;
 }
 
 /* Constructor */
