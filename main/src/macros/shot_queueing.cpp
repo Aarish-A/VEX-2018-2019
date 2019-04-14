@@ -34,7 +34,7 @@ void make_shot_request(uint8_t shot_height, Turn_Direction direction, Field_Posi
         break;
       case Field_Position::RED_PF:
         if (game_side == 'R') {
-          if (direction == Turn_Direction::LEFT) flag_position = {-31, 94}; //shot_queue.push_back({shot_height, {-31, 94}});
+          if (direction == Turn_Direction::LEFT) flag_position = {-33, 94}; //shot_queue.push_back({shot_height, {-31, 94}});
           else if (direction == Turn_Direction::RIGHT) flag_position = {18, 94}; //shot_queue.push_back({shot_height, {18, 94}});
           else if (direction == Turn_Direction::STRAIGHT) flag_position = {78, 94};
         } else if (game_side == 'B') {
@@ -45,7 +45,7 @@ void make_shot_request(uint8_t shot_height, Turn_Direction direction, Field_Posi
       case Field_Position::BLUE_PF:
         if (game_side == 'R') {
           if (direction == Turn_Direction::LEFT) flag_position = {-27.5, 94}; //78 shot_queue.push_back({shot_height, {-27.5, 94}});
-          else if (direction == Turn_Direction::RIGHT) flag_position = {19.5, 94}; //shot_queue.push_back({shot_height, {19.5, 94}});
+          else if (direction == Turn_Direction::RIGHT) flag_position = {21.5, 94}; //shot_queue.push_back({shot_height, {19.5, 94}});
           else if (direction == Turn_Direction::STRAIGHT) flag_position = {-78,94};
         } else if (game_side == 'B') {
           if (direction == Turn_Direction::LEFT) flag_position = {-27.5 + FLAG_WIDTH, 94}; //shot_queue.push_back({shot_height, {-27.5 + FLAG_WIDTH, 94}});

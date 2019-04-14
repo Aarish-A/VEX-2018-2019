@@ -36,24 +36,29 @@ void autonomous() {
   Subsystem::enable_all();
   auto_update_task.start_task();
   drive.reset_global_angle();
-switch(auto_routine) {
-  case Auto_Routines::FRONT:
-    if(game_side == 'R') auto_red_front();
-    if(game_side == 'B') auto_blue_front();
-  break;
-  case Auto_Routines::BACK:
-    if(game_side == 'R') auto_red_back();
-    if(game_side == 'B') auto_blue_back();
-  break;
-  case Auto_Routines::FRONT_PARK:
-    if(game_side == 'R') auto_red_front_park();
-    if(game_side == 'B') auto_blue_front_park();
-  break;
-  case Auto_Routines::PROGRAMMING_SKILLS:
-    if(game_side == 'R') programming_skills_29_points();
-    if(game_side == 'B') programming_skills_30_points();
-  break;
-}
+
+  switch(auto_routine) {
+    case Auto_Routines::FRONT:
+      if(game_side == 'R') auto_red_front();
+      if(game_side == 'B') auto_blue_front();
+      break;
+    case Auto_Routines::BACK:
+      if(game_side == 'R') auto_red_back();
+      if(game_side == 'B') auto_blue_back();
+      break;
+    case Auto_Routines::FRONT_PARK:
+      if(game_side == 'R') auto_red_front_park();
+      if(game_side == 'B') auto_blue_front_park();
+      break;
+    case Auto_Routines::PROGRAMMING_SKILLS:
+      if(game_side == 'R') programming_skills_29_points();
+      if(game_side == 'B') programming_skills_30_points();
+      break;
+    case Auto_Routines::DRIVER_SKILLS:
+      break;
+    case Auto_Routines::NUM_OF_ELEMENTS:
+      break;
+  }
 
 
   // drive_move_async(43_in, 0_deg);

@@ -3,6 +3,7 @@
 #include "../config.hpp"
 #include "../libraries/logs.hpp"
 #include "../libraries/task.hpp"
+#include "../libraries/util.hpp"
 #include "shot_queueing.hpp"
 #include "../subsystems/drive.hpp"
 
