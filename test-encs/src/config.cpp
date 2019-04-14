@@ -13,6 +13,12 @@ pros::Motor puncherRight(5, pros::E_MOTOR_GEARSET_18, false, pros::E_MOTOR_ENCOD
 pros::ADIEncoder enc_r(7, 8, false);
 pros::ADIEncoder enc_l(1, 2, false);
 pros::ADIEncoder enc_s(5, 6, true);
+
+pros::ADIEncoder enc_1(1, 2, false);
+pros::ADIEncoder enc_2(3, 4, false);
+pros::ADIEncoder enc_3(5, 6, false);
+pros::ADIEncoder enc_4(7, 8, false);
+
 //pros::ADIAnalogIn autoPoti (8);
 pros::ADILineSensor ball_sensor(5);
 pros::Vision vision_sensor(6);
