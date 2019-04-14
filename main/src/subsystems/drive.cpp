@@ -1,5 +1,8 @@
 #include "drive.hpp"
 
+int8_t Drive::turn_curve[256];
+double Drive::drive_turn_coefficient = 3.50;
+
 /* Private Functions */
 void Drive::set_power(double x, double y, double a) {
   this->fl_motor.move(y + x + a);
@@ -60,19 +63,31 @@ void Drive::set_state(uint8_t new_state) {
       this->x = 0;
       this->y = 0;
       this->a = 0;
-      this->fl_motor.move(-30);
-      this->bl_motor.move(30);
-      this->fr_motor.move(-30);
-      this->br_motor.move(30);
+      this->fr_motor.tare_position();
+      this->fl_motor.tare_position();
+      this->br_motor.tare_position();
+      this->bl_motor.tare_position();
+      this->fl_motor.move_absolute(0,200);
+      this->bl_motor.move_absolute(0,200);
+      this->fr_motor.move_absolute(0,200);
+      this->br_motor.move_absolute(0,200);
+      // this->fl_motor.move(-30);
+      // this->bl_motor.move(30);
+      // this->fr_motor.move(-30);
+      // this->br_motor.move(30);
+      break;
+    case STATE_TURN_BRAKE:
+      this->set_power(0, 0, sgn(this->last_a) * -1 * this->DRIVE_TURN_BRAKE_POWER);
+      break;
   }
 }
 
 void Drive::brake() {
   set_power(0);
-  this->fl_motor.move_relative(0, 20);
-  this->bl_motor.move_relative(0, 20);
-  this->fr_motor.move_relative(0, 20);
-  this->br_motor.move_relative(0, 20);
+  this->fl_motor.move_relative(0, 50);
+  this->bl_motor.move_relative(0, 50);
+  this->fr_motor.move_relative(0, 50);
+  this->br_motor.move_relative(0, 50);
 }
 
 double Drive::get_global_angle() {
@@ -83,6 +98,10 @@ double Drive::get_global_angle() {
 Drive::Drive(std::string subsystem_name, uint8_t default_state, pros::Motor& fl_motor, pros::Motor& fr_motor, pros::Motor& bl_motor, pros::Motor& br_motor, pros::ADIAnalogIn& pole_poti, pros::ADIEncoder& enc_l, pros::ADIEncoder& enc_r) : Subsystem(subsystem_name, default_state), fl_motor(fl_motor), fr_motor(fr_motor), bl_motor(bl_motor), br_motor(br_motor), pole_poti(pole_poti), enc_l(enc_l), enc_r(enc_r) {
   state_names[STATE_DRIVER_CONTROL] = "Driver Control";
   state_names[STATE_AUTO_CONTROL] = "Auto Control";
+  state_names[STATE_DRIVE_LOCK] = "Drive Lock";
+  state_names[STATE_TURN_BRAKE] = "Drive Brake";
+
+
 }
 
 /* Public Functions */
@@ -94,7 +113,11 @@ void Drive::update() {
     case STATE_DISABLED:
       break;
     case STATE_DRIVER_CONTROL:
-      this->set_power(x, y, a);
+      this->set_power(this->x, this->y, this->a);
+      // if (this->x == 0 && this->y == 0 && this->a == 0 && pros::millis() - this->above_turn_brake_threshold < 400) {
+      //   this->disable_state_change_log();
+      //   this->set_state(STATE_TURN_BRAKE);
+      // }
       break;
     case STATE_AUTO_CONTROL:
       if (this->x || this->a || this->y) {
@@ -109,13 +132,20 @@ void Drive::update() {
       } else if (timed_out(1000)) {
         this->set_state(STATE_DRIVER_CONTROL);
       } else if (pros::millis() - this->state_change_time > 200) {
-        this->fl_motor.move(-25);
-        this->bl_motor.move(25);
-        this->fr_motor.move(-25);
-        this->br_motor.move(25);
+        // this->fl_motor.move(-25);
+        // this->bl_motor.move(25);
+        // this->fr_motor.move(-25);
+        // this->br_motor.move(25);
       }
       break;
+    case STATE_TURN_BRAKE:
+      this->disable_state_change_log();
+      if (pros::millis() - this->state_change_time > 100) this->set_state(STATE_DRIVER_CONTROL);
+      else if (this->x || this->a || this->y) this->set_state(STATE_DRIVER_CONTROL);
+      break;
   }
+  if (abs(this->a) > 20) this->above_turn_brake_threshold = pros::millis();
+  this->last_a = this->a;
 }
 
 void Drive::driver_set(int8_t x, int8_t y, int8_t a) {

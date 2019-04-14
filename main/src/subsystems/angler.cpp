@@ -5,6 +5,7 @@ Angler::Angler(std::string subsystem_name, uint8_t default_state, pros::Motor& a
   this->state_names[STATE_DRIVER_CONTROL] = "Driver Control";
   this->state_names[STATE_AUTO_CONTROL] = "Auto Control";
   this->state_names[STATE_HOLD] = "Hold";
+  this->state_names[STATE_MOVE_HOLD] = "Move Hold";
 }
 
 /* Private Functions */
@@ -20,11 +21,16 @@ void Angler::set_state(uint8_t new_state) {
     case STATE_DRIVER_CONTROL:
       break;
     case STATE_AUTO_CONTROL:
-      this->angler_motor.move_absolute(this->target, 200);
+      this->angler_motor.move_absolute(this->target, 135);
       break;
     case STATE_HOLD:
-      this->target = this->position;
+      if (this->last_state == STATE_DRIVER_CONTROL) this->target = this->position;
+      // printf("Target : %f\n", this->target);
       this->angler_motor.move_absolute(this->target, 200);
+      break;
+    case STATE_MOVE_HOLD:
+      this->target = this->position;
+      this->angler_motor.move_relative(0, this->hold_velocity);
       break;
   }
 }
@@ -58,11 +64,17 @@ void Angler::update() {
         this->set_state(STATE_DRIVER_CONTROL);
       } else if (fabs(this->error) < this->error_threshold) {
         log_ln(MOVE, ANGLER, "Angler move finished at %f, target was %f", this->position, this->target);
+        // this->set_state(STATE_MOVE_HOLD);
         this->set_state(STATE_HOLD);
       }
       break;
     case STATE_HOLD:
       if (this->power) this->set_state(STATE_DRIVER_CONTROL);
+      else if (this->timed_out(30000)) this->disable();
+      break;
+    case STATE_MOVE_HOLD:
+      if (this->timed_out(750)) this->set_state(STATE_HOLD);
+      else if (this->power) this->set_state(STATE_DRIVER_CONTROL);
       break;
   }
 
@@ -77,10 +89,11 @@ void Angler::driver_set(int8_t power) {
   else this->power = 0;
 }
 
-void Angler::move_to(double target, uint32_t move_timeout, uint8_t error_threshold) {
+void Angler::move_to(double target, uint8_t hold_velocity, uint32_t move_timeout, uint8_t error_threshold) {
   this->target = target;
   this->move_timeout = move_timeout;
   this->error_threshold = error_threshold;
+  this->hold_velocity = hold_velocity;
   this->set_state(STATE_AUTO_CONTROL);
   log_ln(MOVE, "Moving Angler to %f, started at %f", this->target, this->position);
 }

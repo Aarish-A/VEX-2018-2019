@@ -1,10 +1,15 @@
 #include "controller.hpp"
 
+uint32_t pilons::Controller::last_screen_update_time = 0;
+bool pilons::Controller::master_printing = true;
 const std::string pilons::Controller::button_names[12] = {"L1", "L2", "R1", "R2", "UP", "DOWN", "LEFT", "RIGHT", "X", "B", "Y", "A"};
-
 
 /* Constructor */
 pilons::Controller::Controller(pros::controller_id_e_t id, std::string controller_name) : pros::Controller(id), controller_name(controller_name) {
+  this->buttons[BTN_SHOT_L_T].button_press_time = 100;
+	this->buttons[BTN_SHOT_L_M].button_press_time = 100;
+  this->buttons[BTN_SHOT_R_T].button_press_time = 100;
+  this->buttons[BTN_SHOT_R_M].button_press_time = 100;
 }
 
 /* Private Functions */
@@ -18,21 +23,21 @@ bool pilons::Controller::check_falling(int button) {
 
 /* Public Functions */
 void pilons::Controller::update() {
-  if (pros::millis() > this->last_screen_update_time + Controller::SCREEN_UPDATE_INTERVAL) {
-    this->print(this->update_line_number, 0, (screen_lines[this->update_line_number]).c_str());
-    // else printf("%d PRINT ERROR\n", pros::millis());
-
-    this->last_screen_update_time = pros::millis();
-    if (this->update_line_number < 2) this->update_line_number++;
-    else this->update_line_number = 0;
+  if (pros::millis() > pilons::Controller::last_screen_update_time + pilons::Controller::SCREEN_UPDATE_INTERVAL) {
+    if ((this->controller_name == "Master" && pilons::Controller::master_printing) || (this->controller_name == "Partner" && !pilons::Controller::master_printing)) {
+      this->Controller::print(this->update_line_number, 0, (this->screen_lines[this->update_line_number]).c_str());
+      if (this->update_line_number < 2) this->update_line_number++;
+      else this->update_line_number = 0;
+    }
+    pilons::Controller::master_printing = !pilons::Controller::master_printing;
+    pilons::Controller::last_screen_update_time = pros::millis();
   }
 
   for(int i = 0; i < 12; i++) {
     this->buttons[i].last_pressed = this->buttons[i].pressed;
     this->buttons[i].pressed = this->get_digital((pros::controller_digital_e_t)(i + pros::E_CONTROLLER_DIGITAL_L1));
     if (this->check_rising(i)) this->buttons[i].last_pressed_time = pros::millis();
-    else if (this->check_falling(i)) this->buttons[i].last_pressed_time = 0;
-
+    // else if (this->check_falling(i)) this->buttons[i].last_pressed_time = 0;
     if (this->check_single_press(i)) this->single_pressed_queue.push_back(i);
   }
   if (this->single_pressed_queue.size() > 0) {
@@ -51,7 +56,7 @@ int8_t pilons::Controller::get_analog(pros::controller_analog_e_t joystick, uint
 }
 
 bool pilons::Controller::check_single_press(int button) {
-  if (this->buttons[button].last_pressed_time && (pros::millis() - this->buttons[button].last_pressed_time >= pilons::Controller::BUTTON_PRESS_TIME)) {
+  if (this->buttons[button].last_pressed_time && (pros::millis() - this->buttons[button].last_pressed_time >= this->buttons[button].button_press_time)) {
     this->buttons[button].last_pressed_time = 0;
     log_ln(USER_IN, "Single Pressed %s on %s controller", (this->button_names[button]).c_str(), (this->controller_name).c_str());
     return true;
@@ -59,11 +64,11 @@ bool pilons::Controller::check_single_press(int button) {
 }
 
 bool pilons::Controller::check_double_press(int button1, int button2) {
-  if (pros::millis() - this->buttons[button1].last_pressed_time < pilons::Controller::BUTTON_PRESS_TIME && this->check_rising(button2)) {
+  if (pros::millis() - this->buttons[button1].last_pressed_time < this->buttons[button1].button_press_time && this->check_rising(button2)) {
     this->buttons[button1].last_pressed_time = 0;
     this->buttons[button2].last_pressed_time = 0;
     return true;
-  } else if (pros::millis() - this->buttons[button2].last_pressed_time < pilons::Controller::BUTTON_PRESS_TIME && this->check_rising(button1)) {
+  } else if (pros::millis() - this->buttons[button2].last_pressed_time < this->buttons[button2].button_press_time && this->check_rising(button1)) {
     this->buttons[button1].last_pressed_time = 0;
     this->buttons[button2].last_pressed_time = 0;
     return true;

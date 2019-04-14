@@ -4,40 +4,32 @@
 #include "libraries/util.hpp"
 #include "macros/shot_queueing.hpp"
 #include <string>
+#include "subsystems/drive.hpp"
 
 enum class Menu_Screens {
   SHOT_TUNING,
   AUTO_SELECT,
   FLAG_SELECT,
+  TURN_CURVE,
   NUM_OF_ELEMENTS
 };
 
 const std::string menu_screen_strings[] = {
   "Shot Tuning",
   "Auto Select",
-  "Flag Select"
+  "Flag Select",
+  "Turn Curve"
 };
-
-// enum class Menu_Shot_Positions {
-//   PF_MID,
-//   PF_TOP,
-//   FRONT_MID,
-//   FRONT_TOP,
-//   BACK_MID,
-//   BACK_TOP,
-//
-//   A_MID_FLAG_MID,
-//   A_MID_FLAG_TOP,
-//   A_FAR_FLAG_MID,
-//   A_FAR_FLAG_TOP,
-//   NUM_OF_ELEMENTS
-// };
 
 enum class SP {
   G_FRONT_TOP,
   G_FRONT_MID,
   G_PLATFORM_TOP,
   G_PLATFORM_MID,
+  G_PLATFORM_MID_FAR,
+  G_PLATFORM_TOP_FAR,
+  G_BACK_TURN_TOP,
+  G_BACK_TURN_MID,
   G_BACK_TOP,
   G_BACK_MID,
 
@@ -45,6 +37,7 @@ enum class SP {
   A_BACK_MID_FLAG_MID,
   A_BACK_FAR_FLAG_TOP,
   A_BACK_FAR_FLAG_MID,
+
 
   NUM_OF_ELEMENTS
 };
@@ -54,19 +47,23 @@ const std::string menu_shot_position_strings[] = {
   "G FRONT MID",
   "G PF TOP",
   "G PF MID",
+  "G PF MID FAR",
+  "G PF TOP FAR",
+  "G BACK TURN TOP",
+  "G BACK TURN MID",
   "G BACK TOP",
   "G BACK MID",
 
-  "A BACK MID F TOP",
-  "A BACK MID F MID",
-  "A BACK FAR F TOP",
-  "A BACK FAR F MID",
+  "A BACK MID TOP",
+  "A BACK MID MID",
+  "A BACK FAR TOP",
+  "A BACK FAR MID"
 };
 
 enum class Auto_Routines {
   FRONT,
   BACK,
-
+  FRONT_PARK,
   PROGRAMMING_SKILLS,
   DRIVER_SKILLS,
   NUM_OF_ELEMENTS
@@ -75,8 +72,9 @@ enum class Auto_Routines {
 const std::string auto_routine_strings[] = {
   "Front",
   "Back",
-  "Programming Skills",
-  "Driver Skills"
+  "Front Park",
+  "Prog. Skills",
+  "Driv. Skills"
 };
 
 enum class Flags {

@@ -4,6 +4,7 @@
 #include "../libraries/util.hpp"
 #include <stdarg.h>
 #include <deque>
+#include "../controls.hpp"
 
 namespace pilons {
   class Controller final : public pros::Controller {
@@ -16,7 +17,8 @@ namespace pilons {
     static const uint32_t SCREEN_UPDATE_INTERVAL = 85;
     std::string screen_lines[3] = {"               ", "               ", "               "};
     std::uint8_t update_line_number = 0;
-    uint32_t last_screen_update_time = 0;
+    static uint32_t last_screen_update_time;
+    static bool master_printing;
 
     static const uint32_t BUTTON_PRESS_TIME = 50;
     static const std::string button_names[12];
@@ -25,6 +27,7 @@ namespace pilons {
       bool pressed = 0;
       bool last_pressed;
       uint32_t last_pressed_time = 0;
+      uint32_t button_press_time = 0;
     };
 
     button buttons[12];

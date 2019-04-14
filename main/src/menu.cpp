@@ -21,16 +21,37 @@ void menu_init() {
 
 
   char temp2 = 'R';
-  read_from_file("/usd/game_side.txt", "r", &temp2);
+  read_from_file("/usd/game_side.txt", "r", "%c", &temp2);
   game_side = temp2;
+
+  float temp3 = 0;
+  read_from_file("/usd/turn_curve.txt", "r", "%f", &temp3);
+  Drive::drive_turn_coefficient = (double)temp3;
+  for(int x = -127; x <= 127; x++) {
+    double weight = exp(-0.1 * Drive::drive_turn_coefficient);
+    double w = weight + exp(0.1 * (abs(x) - 127)) * (1 - weight);
+    Drive::turn_curve[x + 127] = round(x * w);
+    // printf("%d: %d\n", x, Drive::turn_curve[x + 127]);
+  }
 
   FILE* flag_config_file = nullptr;
   flag_config_file = fopen("/usd/flag_config.txt", "r");
   for (int i = 0; i < MAX_NUMBER_OF_SHOTS; i++) {
     if (flag_config_file != nullptr) {
-      uint32_t temp;
+      int32_t temp = -1;
       fscanf(flag_config_file, "%d ", &temp);
       flag_config[i] = static_cast<Flags>(temp);
+
+      int8_t index1 = -1;
+      int8_t index2 = -1;
+      if (temp == 0) { index1 = 0; index2 = 0; }
+      else if (temp == 1) { index1 = 0; index2 = 1; }
+      else if (temp == 2) { index1 = 1; index2 = 0; }
+      else if (temp == 3) { index1 = 1; index2 = 1; }
+      else if (temp == 4) { index1 = 2; index2 = 0; }
+      else if (temp == 5) { index1 = 2; index2 = 1; }
+
+      if (index1 != -1 && index2 != -1) flag_set[index1][index2][2] = (i + 1) + '0';
       log_ln(IO, "%d Successfully read %d from /usd/flag_config.txt", pros::millis(),temp);
     } else log_ln(IO, "%d Could not read from /usd/flag_config.txt",pros::millis());
   }
@@ -53,22 +74,6 @@ void menu_init() {
 void menu_update() {
   master.write_line(0, menu_screen_strings[(int)menu_screen].c_str());
 
-  // printf("------------------------------\n");
-  // printf("FC: ");
-  // for(int i = 0; i < MAX_NUMBER_OF_SHOTS; i++) {
-  //   printf("%d ", static_cast<int>(flag_config[i]));
-  //   if (i == MAX_NUMBER_OF_SHOTS - 1) printf("\n");
-  // }
-  //
-  // printf("SP: ");
-  // for (int i = 0; i < static_cast<int>(SP::NUM_OF_ELEMENTS); i++) {
-  //   printf("%d ", shot_positions[i]);
-  //   if (i == static_cast<int>(SP::NUM_OF_ELEMENTS) - 1) printf("\n");
-  // }
-  //
-  // printf("GS: %c\n", game_side);
-  // printf("AR: %d\n", (int)auto_routine);
-
   switch(menu_screen) {
     case Menu_Screens::SHOT_TUNING:
       master.write_line(1, menu_shot_position_strings[(int)menu_shot_position].c_str());
@@ -81,6 +86,10 @@ void menu_update() {
     case Menu_Screens::FLAG_SELECT:
       master.write_line(1, "%s   %s   %s", flag_set[0][0].c_str(), flag_set[1][0].c_str(), flag_set[2][0].c_str());
       master.write_line(2, "%s   %s   %s", flag_set[0][1].c_str(), flag_set[1][1].c_str(), flag_set[2][1].c_str());
+      break;
+    case Menu_Screens::TURN_CURVE:
+      master.write_line(1, "%.2f", Drive::drive_turn_coefficient);
+      master.write_line(2, " ");
       break;
     case Menu_Screens::NUM_OF_ELEMENTS:
       break;
@@ -113,6 +122,8 @@ void menu_next_element() {
         update_flag_set();
       }
       break;
+    case Menu_Screens::TURN_CURVE:
+      break;
     case Menu_Screens::NUM_OF_ELEMENTS:
       break;
   }
@@ -132,6 +143,8 @@ void menu_previous_element() {
         update_flag_set();
       }
       break;
+    case Menu_Screens::TURN_CURVE:
+      break;
     case Menu_Screens::NUM_OF_ELEMENTS:
       break;
   }
@@ -150,6 +163,9 @@ void menu_element_increment_action() {
         update_flag_set();
       }
       break;
+    case Menu_Screens::TURN_CURVE:
+      Drive::drive_turn_coefficient += 0.25;
+      break;
     case Menu_Screens::NUM_OF_ELEMENTS:
       break;
   }
@@ -167,6 +183,9 @@ void menu_element_decrement_action() {
         flag_select_index.x--;
         update_flag_set();
       }
+      break;
+    case Menu_Screens::TURN_CURVE:
+      if (Drive::drive_turn_coefficient > 0) Drive::drive_turn_coefficient -= 0.25;
       break;
     case Menu_Screens::NUM_OF_ELEMENTS:
       break;
@@ -187,6 +206,8 @@ void menu_selected_action() {
         flag_set[(int)flag_select_index.x][(int)flag_select_index.y][2] = flag_shot_counter + '0';
       }
       break;
+    case Menu_Screens::TURN_CURVE:
+      break;
     case Menu_Screens::NUM_OF_ELEMENTS:
       break;
   }
@@ -201,6 +222,8 @@ void menu_clear() {
     case Menu_Screens::FLAG_SELECT:
       flag_shot_counter = 0;
       update_flag_set(true);
+      break;
+    case Menu_Screens::TURN_CURVE:
       break;
     case Menu_Screens::NUM_OF_ELEMENTS:
       break;
@@ -247,6 +270,16 @@ void menu_save() {
       if (flag_config_file != nullptr) {
         fclose(flag_config_file);
         master.rumble("--");
+      }
+      break;
+    }
+    case Menu_Screens::TURN_CURVE: {
+      write_to_file("/usd/turn_curve.txt", "w", "%f", Drive::drive_turn_coefficient);
+      for(int x = -127; x <= 127; x++) {
+        double weight = exp(-0.1 * Drive::drive_turn_coefficient);
+        double w = weight + exp(0.1 * (abs(x) - 127)) * (1 - weight);
+        Drive::turn_curve[x + 127] = round(x * w);
+        // printf("%d: %d\n", x, Drive::turn_curve[x + 127]);
       }
       break;
     }

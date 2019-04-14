@@ -7,10 +7,12 @@
 #include "subsystems/drive.hpp"
 #include "subsystems/angler.hpp"
 #include "libraries/task.hpp"
+#include "macros/shot_queueing.hpp"
 
 void initialize() {
 	log_init();
 	menu_init();
+	shot_queue_init();
 	Subsystem::reset_all();
 	while(Subsystem::any_resetting()) {
 		Subsystem::update_all();
@@ -31,7 +33,7 @@ void disabled() {
 	m_drive_br.move(0);
 	m_drive_fl.move(0);
 	m_drive_fr.move(0);
-	m_puncher.move(0);
+	m_puncher.move(5);
 	m_angler.move(0);
 	m_capper.move(0);
 	m_intake.move(0);

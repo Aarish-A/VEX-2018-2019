@@ -10,6 +10,11 @@ public:
   static const uint8_t STATE_DRIVER_CONTROL = 0x10;
   static const uint8_t STATE_AUTO_CONTROL = 0x11;
   static const uint8_t STATE_DRIVE_LOCK = 0x12;
+  static const uint8_t STATE_TURN_BRAKE = 0x13;
+  double get_global_angle();
+
+  static int8_t turn_curve[256];
+  static double drive_turn_coefficient;
 
 private:
   pros::Motor& fl_motor;
@@ -23,8 +28,10 @@ private:
   static constexpr double GEAR_RATIO = 60.0 / 84.0;
   static constexpr double TPR = 360.0 * GEAR_RATIO;
   static constexpr double WHEEL_DIAMETER = 3.95;
+  const uint8_t DRIVE_TURN_BRAKE_POWER = 10;
+  uint32_t above_turn_brake_threshold = 0;
 
-  int8_t x, y, a;
+  int8_t x, y, a, last_a;
 
   /* Private Functions */
   void set_power(double x, double y, double a);
@@ -34,8 +41,6 @@ private:
   void set_side_power(double left, double right);
   void set_side_vel(double left, double right);
   void brake();
-  double get_global_angle();
-
   void set_state(uint8_t new_state) override;
 
   friend void autonomous();
