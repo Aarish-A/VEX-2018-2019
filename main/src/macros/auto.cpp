@@ -21,11 +21,14 @@ void auto_update(void* _params) {
 
 /* Shots */
 void single_shot(double targ, bool wait) {
+  /*
   angler.move_to(targ);
+
   while(angler.moving_to_target()) pros::delay(2);
   puncher.shoot();
   if (wait) while(puncher.shooting()) pros::delay(2);
   printf("Angle error at shot is %f\n", RAD_TO_DEG(drive.get_error()));
+  */
 }
 
 void double_shot(double targ1, double targ2, bool wait) {
@@ -250,7 +253,7 @@ void drive_move(void* _params) {
     // if (abs(dist_current) < 8_in && dist_error > 2_in) {
     if (fabs(dist_current) < fabs(dist_target) * 0.30) {
       power += 0.40 * sgn(dist_target);
-      log_ln(MOVE_DEBUGGING, AUTO, "%d Ramping up...", pros::millis(), power, dist_current, dist_error, angle_current, angle_error);
+      log_ln(MOVE_DEBUGGING, "%d Ramping up...", pros::millis(), power, dist_current, dist_error, angle_current, angle_error);
     } else if (decel) {
       // Calculate PID values for distance
       dist_p_val = dist_error * dist_kP;
@@ -276,13 +279,13 @@ void drive_move(void* _params) {
       power = dist_p_val + dist_i_val + dist_d_val;
       angle_power = angle_p_val + angle_i_val + angle_d_val;
 
-      log_ln(MOVE_DEBUGGING, AUTO, "%d In PID...", pros::millis());
+      log_ln(MOVE_DEBUGGING, "%d In PID...", pros::millis());
     } else { }
 
 
-    log_ln(MOVE_DEBUGGING, AUTO, "%d Distance | Current: %f in, Error: %f in, Power: %f, P: %f, I: %f, D: %f", pros::millis(), dist_current, dist_error, power, dist_p_val, dist_i_val, dist_d_val);
-    log_ln(MOVE_DEBUGGING, AUTO, "%d Angle    | Current: %f deg, Error: %f deg, Angle Power: %f, P: %f, I: %f, D: %f", pros::millis(), RAD_TO_DEG(angle_current), RAD_TO_DEG(angle_error), angle_power, angle_p_val, angle_i_val, angle_d_val);
-    log_ln(MOVE_DEBUGGING, AUTO, "----------------------------------------------------------------");
+    log_ln(MOVE_DEBUGGING, "%d Distance | Current: %f in, Error: %f in, Power: %f, P: %f, I: %f, D: %f", pros::millis(), dist_current, dist_error, power, dist_p_val, dist_i_val, dist_d_val);
+    log_ln(MOVE_DEBUGGING,  "%d Angle    | Current: %f deg, Error: %f deg, Angle Power: %f, P: %f, I: %f, D: %f", pros::millis(), RAD_TO_DEG(angle_current), RAD_TO_DEG(angle_error), angle_power, angle_p_val, angle_i_val, angle_d_val);
+    log_ln(MOVE_DEBUGGING, "----------------------------------------------------------------");
 
     if (fabs(power) > max_power) power = max_power * sgn(power);
     drive.set_power(0, power, angle_power);
@@ -302,7 +305,7 @@ void drive_move(void* _params) {
     drive.bl_motor.move_absolute(targetBL, 25);
     drive.fr_motor.move_absolute(targetFR, 25);
     drive.br_motor.move_absolute(targetBR, 25);
-    log_ln(MOVE_DEBUGGING, AUTO, "%d Stopping from FL: %f, BL: %f, FR: %f, BR %f", pros::millis(), drive.fl_motor.get_position(), drive.bl_motor.get_position(), drive.fr_motor.get_position(), drive.br_motor.get_position());
+    log_ln(MOVE_DEBUGGING, "%d Stopping from FL: %f, BL: %f, FR: %f, BR %f", pros::millis(), drive.fl_motor.get_position(), drive.bl_motor.get_position(), drive.fr_motor.get_position(), drive.br_motor.get_position());
     uint32_t temp = pros::millis();
     while (fabs(drive.fl_motor.get_position() - targetFL) > 4 || fabs(drive.bl_motor.get_position() - targetBL) > 4 || fabs(drive.fr_motor.get_position() - targetFR) > 4 || fabs(drive.br_motor.get_position() - targetBR) > 4) {
       // printf("Spent %d millis in this stupid loop\n", pros::millis() - temp);
@@ -514,6 +517,7 @@ void drive_turn(void *_params) {
 //   pros::delay(50);
   // drive.brake();
   // log_ln(MOVE, AUTO, "%d Drive Turn Done: End angle is %f, Error is %f, Time is %d\n", pros::millis(), RAD_TO_DEG(drive.get_global_angle()), RAD_TO_DEG(fixeddA - drive.get_global_angle()), pros::millis() - start_time);
+  log_ln(MOVE, AUTO, "Drive Turn Done: End angle is %fdeg, Error is %fdeg, Time took %d\n", RAD_TO_DEG(drive.get_global_angle()), RAD_TO_DEG(error), pros::millis() - start_time);
   drive_turn_task.stop_task();
 }
 
@@ -530,6 +534,7 @@ void drive_turn_async(const AngleTarget& target) {
 }
 
 void drive_turn_sync(const AngleTarget& target) {
+  drive_turn_task.stop_task();
   drive_turn_params params = {target};
   drive_turn((void*)(&params));
 }

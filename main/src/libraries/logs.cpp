@@ -179,7 +179,7 @@ void log_ln(Log_Info info_category, const char * format, ...) {
 void log_ln(Log_Info info_category, Log_Info info_subsystem, const char * format, ...) {
   va_list args;
   va_start(args, format);
-  if (info_category.enabled || info_subsystem.enabled)
+  if (info_category.enabled && info_subsystem.enabled)
   {
     int size = ((int)strlen(format)) * 2 + 50;   // Initial str size
     std::string formatted_str;
@@ -195,7 +195,7 @@ void log_ln(Log_Info info_category, Log_Info info_subsystem, const char * format
       std::string new_str;
       new_str.resize(16 + formatted_len + info_category.name.length() + info_subsystem.name.length());
 
-      sprintf((char *)new_str.data(), "%07d | %s-%s | %s\r\n", pros::millis(), info_category.name.c_str(), info_subsystem.name.c_str(), formatted_str.c_str());
+      sprintf((char *)new_str.data(), "%07d | %s, %s | %s\r\n", pros::millis(), info_category.name.c_str(), info_subsystem.name.c_str(), formatted_str.c_str());
       log_ln_internal(new_str.c_str());
     }
   }
