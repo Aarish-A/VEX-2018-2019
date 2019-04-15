@@ -19,6 +19,8 @@ void initialize() {
 		pros::delay(2);
 	}
   log_ln(PROGRAM_FLOW, "%d Finished Init", pros::millis());
+	pros::delay(1000);
+	log_ln(PROGRAM_FLOW, "%d Finished Init Wait", pros::millis());
 }
 
 /**

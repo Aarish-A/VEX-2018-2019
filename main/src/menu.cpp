@@ -15,6 +15,23 @@ Flags flag_config[MAX_NUMBER_OF_SHOTS] = {Flags::NO_FLAG, Flags::NO_FLAG, Flags:
 
 void menu_init() {
 
+  /* ------ Set Default Shot Pos Vals ------- */
+  for(int i = 0; i < (int)SP::NUM_OF_ELEMENTS; i++) shot_positions[i] = 0;
+  shot_positions[(int)SP::A_BACK_1_NEAR_FLAG_TOP] = 0;
+  shot_positions[(int)SP::A_BACK_1_NEAR_FLAG_MID] = 0;
+  shot_positions[(int)SP::A_BACK_1_MID_FLAG_TOP] = 125;
+  shot_positions[(int)SP::A_BACK_1_MID_FLAG_MID] = 70;
+  shot_positions[(int)SP::A_BACK_1_FAR_FLAG_TOP] = 130;
+  shot_positions[(int)SP::A_BACK_1_FAR_FLAG_MID] = 190;
+
+  shot_positions[(int)SP::A_BACK_2_NEAR_FLAG_TOP] = 0;
+  shot_positions[(int)SP::A_BACK_2_NEAR_FLAG_MID] = 0;
+  shot_positions[(int)SP::A_BACK_2_MID_FLAG_TOP] = 215;
+  shot_positions[(int)SP::A_BACK_2_MID_FLAG_MID] = 140;
+  shot_positions[(int)SP::A_BACK_2_FAR_FLAG_TOP] = 100;
+  shot_positions[(int)SP::A_BACK_2_FAR_FLAG_MID] = 200;
+  /* ---------------------------------------- */
+
   uint32_t temp = 0;
   read_from_file("/usd/auto_routine.txt", "r", "%d ", &temp);
   auto_routine = static_cast<Auto_Routines>(temp);
@@ -65,10 +82,9 @@ void menu_init() {
       fscanf(shot_positions_file, "%d ", &temp);
       shot_positions[i] = temp;
       log_ln(IO, "Successfully read %d from /usd/shot_positions.txt", temp);
-    } else log_ln(IO, "Could not read from /usd/shot_positions.txt", pros::millis());
+    } else log_ln(IO, "Could not read from /usd/shot_positions.txt | i = %d val = %d", i, shot_positions[i]);
   }
   if (shot_positions_file != nullptr) fclose(shot_positions_file);
-  else for(int i = 0; i < (int)SP::NUM_OF_ELEMENTS; i++) shot_positions[i] = 0;
 }
 
 void menu_update() {
