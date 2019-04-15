@@ -384,6 +384,7 @@ void drive_turn(void *_params) {
   double power = 0;
   double ramp_up_power = fabs(error) >= 60_deg ? 0.75 : map(fabs(error), 0_deg, 60_deg, 0.20, 0.75);
 
+
   do {
     // Get current angle
     current = drive.get_global_angle();
@@ -431,7 +432,16 @@ void drive_turn(void *_params) {
   // pros::delay(50);
   drive.brake();
   pros::delay(25);
-  log_ln(MOVE, AUTO, "FINISHED TURN >>>> Took %d ms, Ended At: %f, Angle Error: %f", pros::millis() - start_time, RAD_TO_DEG(current), RAD_TO_DEG(error));
+
+  // log_ln(MOVE, AUTO, "FINISHED TURN >>>> Took %d ms, Ended At: %f, Angle Error: %f", pros::millis() - start_time, RAD_TO_DEG(current), RAD_TO_DEG(error));
+  // pros::delay(100);
+  // log_ln(MOVE, AUTO, "FINISHED TURN 2 >>>> Took %d ms, Ended At: %f, Angle Error: %f", pros::millis() - start_time, RAD_TO_DEG(current), RAD_TO_DEG(error));
+  // pros::delay(100);
+  // log_ln(MOVE, AUTO, "FINISHED TURN 3 >>>> Took %d ms, Ended At: %f, Angle Error: %f", pros::millis() - start_time, RAD_TO_DEG(current), RAD_TO_DEG(error));
+  // pros::delay(100);
+  // log_ln(MOVE, AUTO, "FINISHED TURN 4 >>>> Took %d ms, Ended At: %f, Angle Error: %f", pros::millis() - start_time, RAD_TO_DEG(current), RAD_TO_DEG(error));
+  // pros::delay(100);
+
   drive.set_state(Drive::STATE_DRIVER_CONTROL);
   drive_turn_task.stop_task();
   printf("\n\n>>>>GOT HERE\n\n");
@@ -443,7 +453,7 @@ void drive_turn_async(const AngleTarget& target) {
   //   delete drive_turn_param;
   //   drive_turn_param = nullptr;
   // }
-  log_ln(IO, "YEEEEEEAAA");
+  // log_ln(IO, "YEEEEEEAAA");
   drive_turn_param = new drive_turn_params{target};
   drive.set_error(drive_turn_param->target.getTarget() - drive.get_global_angle());
   drive.set_target(drive_turn_param->target.getTarget());
@@ -451,7 +461,7 @@ void drive_turn_async(const AngleTarget& target) {
 }
 
 void drive_turn_sync(const AngleTarget& target) {
-  log_ln(IO, "YEEEEEEAAA NUMBER 5");
+  // log_ln(IO, "YEEEEEEAAA NUMBER 5");
   drive_turn_param = new drive_turn_params{target};
   drive_turn(nullptr);
 }

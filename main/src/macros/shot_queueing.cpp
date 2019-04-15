@@ -57,11 +57,11 @@ void make_shot_request(uint8_t shot_height, Turn_Direction direction, Field_Posi
           turning = shot_queue.size() > 0 ? true : false;
         }
         else if (game_side == 'R') {
-          if (direction == Turn_Direction::LEFT) flag_position = {-52, 123}; // shot_queue.push_back({shot_height, {-27.5, 94}});
-          else if (direction == Turn_Direction::RIGHT) flag_position = {52, 123}; //shot_queue.push_back({shot_height, {19.5, 94}});
+          if (direction == Turn_Direction::LEFT) flag_position = {-48, 123}; // shot_queue.push_back({shot_height, {-27.5, 94}});
+          else if (direction == Turn_Direction::RIGHT) flag_position = {48, 123}; //shot_queue.push_back({shot_height, {19.5, 94}});
         } else if (game_side == 'B') {
-          if (direction == Turn_Direction::LEFT) flag_position = {-52 + FLAG_WIDTH, 123}; // shot_queue.push_back({shot_height, {-27.5, 94}});
-          else if (direction == Turn_Direction::RIGHT) flag_position = {52 + FLAG_WIDTH, 123}; //shot_queue.push_back({shot_height, {19.5, 94}});
+          if (direction == Turn_Direction::LEFT) flag_position = {-48 + FLAG_WIDTH, 123}; // shot_queue.push_back({shot_height, {-27.5, 94}});
+          else if (direction == Turn_Direction::RIGHT) flag_position = {48 + FLAG_WIDTH, 123}; //shot_queue.push_back({shot_height, {19.5, 94}});
         }
         break;
     }
