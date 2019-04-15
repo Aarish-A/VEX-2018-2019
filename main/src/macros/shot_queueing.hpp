@@ -45,7 +45,8 @@ extern volatile Shot_Pos auto_back_far_SP;
 enum class Turn_Direction {
   LEFT,
   STRAIGHT,
-  RIGHT
+  RIGHT,
+  FAR
 };
 
 enum class Field_Position {
@@ -61,7 +62,8 @@ struct Shot_Target {
   uint8_t angler_target;
   vector flag_position = {0, 0};
   bool turning = false;
-  Shot_Target(uint8_t a_t, vector f_p = {0, 0}, bool t = false) : angler_target(a_t), flag_position(f_p), turning(t) {};
+  Turn_Direction turn_direction = Turn_Direction::STRAIGHT;
+  Shot_Target(uint8_t a_t, vector f_p = {0, 0}, bool t = false, Turn_Direction t_d = Turn_Direction::STRAIGHT) : angler_target(a_t), flag_position(f_p), turning(t), turn_direction(t_d) {};
 };
 
 // extern std::deque<Shot_Target> shot_queue;

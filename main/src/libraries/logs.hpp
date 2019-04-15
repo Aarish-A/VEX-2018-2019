@@ -24,6 +24,7 @@ const Log_Info SAFETY("SAFETY", true);
 const Log_Info ACCESS_ERROR("ACCESS_ERROR", true);
 const Log_Info HARDWARE_ERROR("HARDWARE_ERROR", true);
 const Log_Info FATAL_ERROR("FATAL_ERROR", true);
+const Log_Info MACRO("MACRO", true);
 /* Log_Info Subsystems */
 const Log_Info ANGLER("ANGLER", true);
 const Log_Info DRIVE("USER", true);

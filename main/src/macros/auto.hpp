@@ -41,7 +41,7 @@ struct drive_move_params {
   int8_t start_power = 0;
   bool decel = true;
 };
-extern drive_move_params* drive_move_param;
+extern drive_move_params drive_move_param;
 
 void drive_move(void* _params);
 void drive_move_async(double dist_target, double angle_target = 1000, bool brake = true, uint8_t max_power = 200, int8_t start_power = 0, bool decel = true);

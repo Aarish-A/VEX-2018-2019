@@ -21,7 +21,7 @@ const std::string menu_screen_strings[] = {
   "Turn Curve"
 };
 
-enum class SP {
+enum SP {
   G_FRONT_TOP,
   G_FRONT_MID,
   G_PLATFORM_TOP,

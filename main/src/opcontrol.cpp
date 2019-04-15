@@ -195,19 +195,28 @@ void opcontrol() {
 			angler.move_to(Angler::CAP_FLIP_POSITION);
 			intake.outtake();
 		}
+
 		if (partner.is_connected()) {
 			switch(partner.single_pressed) {
 				case BTN_SHOT_R_T:
-					make_shot_request(field_position==Field_Position::RED_PF || field_position==Field_Position::BLUE_PF ? shot_positions[(int)SP::G_PLATFORM_TOP]:shot_positions[(int)SP::G_BACK_TURN_TOP], Turn_Direction::RIGHT, field_position);
+					make_shot_request(shot_positions[(int)SP::G_PLATFORM_TOP], Turn_Direction::RIGHT, Field_Position::RED_PF);
+					make_shot_request(shot_positions[(int)SP::G_PLATFORM_TOP], Turn_Direction::RIGHT, Field_Position::BLUE_PF);
+					make_shot_request(shot_positions[(int)SP::G_BACK_TURN_TOP], Turn_Direction::RIGHT, Field_Position::BACK);
 					break;
 				case BTN_SHOT_R_M:
-					make_shot_request(field_position==Field_Position::RED_PF || field_position==Field_Position::BLUE_PF ? shot_positions[(int)SP::G_PLATFORM_MID]:shot_positions[(int)SP::G_BACK_TURN_MID], Turn_Direction::RIGHT, field_position);
+					make_shot_request(shot_positions[(int)SP::G_PLATFORM_MID], Turn_Direction::RIGHT, Field_Position::RED_PF);
+					make_shot_request(shot_positions[(int)SP::G_PLATFORM_MID], Turn_Direction::RIGHT, Field_Position::BLUE_PF);
+					make_shot_request(shot_positions[(int)SP::G_BACK_TURN_MID], Turn_Direction::RIGHT, Field_Position::BACK);
 					break;
 				case BTN_SHOT_L_T:
-					make_shot_request(field_position==Field_Position::RED_PF || field_position==Field_Position::BLUE_PF ? shot_positions[(int)SP::G_PLATFORM_TOP]:shot_positions[(int)SP::G_BACK_TURN_TOP], Turn_Direction::LEFT, field_position);
+					make_shot_request(shot_positions[(int)SP::G_PLATFORM_TOP], Turn_Direction::LEFT, Field_Position::RED_PF);
+					make_shot_request(shot_positions[(int)SP::G_PLATFORM_TOP], Turn_Direction::LEFT, Field_Position::BLUE_PF);
+					make_shot_request(shot_positions[(int)SP::G_BACK_TURN_TOP], Turn_Direction::LEFT, Field_Position::BACK);
 					break;
 				case BTN_SHOT_L_M:
-					make_shot_request(field_position==Field_Position::RED_PF || field_position==Field_Position::BLUE_PF ? shot_positions[(int)SP::G_PLATFORM_MID]:shot_positions[(int)SP::G_BACK_TURN_MID], Turn_Direction::LEFT, field_position);
+					make_shot_request(shot_positions[(int)SP::G_PLATFORM_MID], Turn_Direction::LEFT, Field_Position::RED_PF);
+					make_shot_request(shot_positions[(int)SP::G_PLATFORM_MID], Turn_Direction::LEFT, Field_Position::BLUE_PF);
+					make_shot_request(shot_positions[(int)SP::G_BACK_TURN_MID], Turn_Direction::LEFT, Field_Position::BACK);
 					break;
 				case BTN_FIELD_RED_PF:
 					change_field_position(Field_Position::RED_PF);
@@ -226,10 +235,14 @@ void opcontrol() {
 					break;
 			}
 
-			if (partner.check_double_press(BTN_SHOT_R_M, BTN_SHOT_L_M)) {
-				make_shot_request(field_position == Field_Position::BACK ? shot_positions[(int)SP::G_BACK_MID]:shot_positions[(int)SP::G_PLATFORM_MID_FAR] , Turn_Direction::STRAIGHT, field_position);
-			} else if (partner.check_double_press(BTN_SHOT_R_T, BTN_SHOT_L_T)) {
-				make_shot_request(field_position == Field_Position::BACK ? shot_positions[(int)SP::G_BACK_TOP]:shot_positions[(int)SP::G_PLATFORM_TOP_FAR], Turn_Direction::STRAIGHT, field_position);
+			if (partner.check_double_press(BTN_SHOT_R_T, BTN_SHOT_L_T)) {
+				make_shot_request(shot_positions[G_BACK_TOP], Turn_Direction::STRAIGHT, Field_Position::BACK);
+				make_shot_request(shot_positions[G_PLATFORM_TOP_FAR], Turn_Direction::FAR, Field_Position::RED_PF);
+				make_shot_request(shot_positions[G_PLATFORM_TOP_FAR], Turn_Direction::FAR, Field_Position::BLUE_PF);
+			} else if (partner.check_double_press(BTN_SHOT_R_M, BTN_SHOT_L_M)) {
+				make_shot_request(shot_positions[G_BACK_MID], Turn_Direction::STRAIGHT, Field_Position::BACK);
+				make_shot_request(shot_positions[G_PLATFORM_MID_FAR], Turn_Direction::FAR, Field_Position::RED_PF);
+				make_shot_request(shot_positions[G_PLATFORM_MID_FAR], Turn_Direction::FAR, Field_Position::BLUE_PF);
 			}
 		}
 	pros::delay(5);

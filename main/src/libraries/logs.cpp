@@ -87,7 +87,7 @@ void log_init() {
 		printf("  >>>> %d COULD NOT OPEN SD LOG FILE \n", pros::millis());
 	}
   else { // If the log_file could be oppened
-    sd_logging_enabled = true;
+    sd_logging_enabled = false;
     printf(">>>> %d log_init(): Successfully opened SD log file \n", pros::millis());
   	fputs("\r\n\r\n--------------------------------------------------\r\n\r\n", log_file);
     fprintf(log_file, ">>>> %d Start Logging for Program \n", pros::millis());
@@ -179,7 +179,7 @@ void log_ln(Log_Info info_category, const char * format, ...) {
 void log_ln(Log_Info info_category, Log_Info info_subsystem, const char * format, ...) {
   va_list args;
   va_start(args, format);
-  if (info_category.enabled || info_subsystem.enabled)
+  if (info_category.enabled && info_subsystem.enabled)
   {
     int size = ((int)strlen(format)) * 2 + 50;   // Initial str size
     std::string formatted_str;
