@@ -79,8 +79,9 @@ void make_shot_request(uint8_t shot_height, Turn_Direction direction, Field_Posi
   // shot_mutex.give();
 
   if (trigger_shot) {
-    //trigger_shot_queue();
-    shot_queue_handle_intern();
+    trigger_shot_queue();
+    log_ln(MACRO, " >>>>>> TRIGGER SHOT \n\n\n");
+    //shot_queue_handle_intern();
   }
 }
 
@@ -90,6 +91,7 @@ void change_field_position(Field_Position new_field_pos) {
 }
 
 void shot_queue_handle_intern() {
+
   Field_Position temp_field_pos = field_position;
   uint32_t macro_start_time = pros::millis();
   Turn_Direction last_turn_direction = Turn_Direction::STRAIGHT;
@@ -116,7 +118,9 @@ void shot_queue_handle_intern() {
           pros::delay(100);
           pos.reset(0, 0, 0);
           drive.set_power(0);
-          if (temp_target.turning) drive_move_sync(4_in);
+          if (temp_target.turning) {
+             drive_move_sync(4_in);
+          }
           else {
             drive_move_sync(4_in);
             pros::delay(20); // DO NOT DELETE THIS DELAY THIS IS REALLY IMPORTANT, WILL DRY SHOOT IF U DELETE!!!! @ZAIN @ANJALEE @STRAUSS @ANYONE ELSE THAT READS THIS
@@ -134,30 +138,31 @@ void shot_queue_handle_intern() {
       // while(fabs(angler.get_error()) / 7 > 15) pros::delay(2);
       log_ln(MACRO, "Started shot %d", i + 1);
 
-      //puncher.shoot();
-      pros::delay(400);
-      //puncher.wait_for_shot_finish();
+      puncher.shoot();
+      // pros::delay(400);
+      puncher.wait_for_shot_finish();
       drive.wait_for_stop();
       log_ln(MACRO, "Finished shot %d", i + 1);
 
       //drive.unlock();
-      // drive.wait_for_stop();
+      drive.wait_for_stop();
       log_ln(MACRO, "FINISHED SHOT %d, TOOK %d MS", i + 1, pros::millis() - shot_start_time);
       last_turn_direction = temp_target.turn_direction;
     // }
   }
   // log_ln(MACRO, "FINISHED SHOT QUEUE HANDLING, TOOK %d MS", pros::millis() - macro_start_time);
+
   pros::delay(50);
-  shot_queue_handle_task.stop_task();
 }
 
 void shot_queue_handle(void* param) {
   shot_queue_handle_intern();
+  shot_queue_handle_task.stop_task();
 }
 
 void shot_task_cleanup() {
   if (puncher.shooting()) puncher.cancel_shot();
   shot_queue.clear();
   angler.move_to(Angler::PICKUP_POSITION);
-  intake.intake();
+  //intake.intake();
 }
