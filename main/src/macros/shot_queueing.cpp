@@ -17,12 +17,15 @@ void shot_queue_init() {
 }
 
 void trigger_shot_queue() {
-  if (!shot_queue_handle_task.running()) shot_queue_handle_task.start_task();
+  if (!shot_queue_handle_task.running())
+    shot_queue_handle_task.start_task();
 }
 
 void make_shot_request(uint8_t shot_height, Turn_Direction direction, Field_Position target_field_pos, bool trigger_shot) {
   if (target_field_pos == field_position) {
     if (shot_queue.size() == 2) shot_queue.pop_back();
+
+    log_ln(MACRO, " >>>> START MAKING SHOT REQUEST | SIZE: %d \n", shot_queue.size());
 
     vector flag_position = {0, 0};
     bool turning = true;
@@ -68,14 +71,17 @@ void make_shot_request(uint8_t shot_height, Turn_Direction direction, Field_Posi
 
     // Shot_Target temp = {shot_height, flag_position, turning};
     if (shot_mutex.take(3)) {
-      log_ln(MACRO, "Added to shot queue: %d, (%f, %f), %s", shot_height, flag_position.x, flag_position.y, turning ? "Turning" : "Not Turning");
       shot_queue.emplace_back(shot_height, flag_position, turning, direction);//shot_queue.push_back(temp);
+      log_ln(MACRO, "Added to shot queue: %d, (%f, %f), %s | Size: %d  \n\n\n >>>", shot_height, flag_position.x, flag_position.y, turning ? "Turning" : "Not Turning", shot_queue.size());
     }
     shot_mutex.give();
   }
   // shot_mutex.give();
 
-  if (trigger_shot) trigger_shot_queue();
+  if (trigger_shot) {
+    //trigger_shot_queue();
+    shot_queue_handle_intern();
+  }
 }
 
 void change_field_position(Field_Position new_field_pos) {
@@ -83,12 +89,13 @@ void change_field_position(Field_Position new_field_pos) {
   shot_queue.clear();
 }
 
-void shot_queue_handle(void* param) {
+void shot_queue_handle_intern() {
   Field_Position temp_field_pos = field_position;
   uint32_t macro_start_time = pros::millis();
   Turn_Direction last_turn_direction = Turn_Direction::STRAIGHT;
 
   for (int i = 0; i < shot_queue.size(); i++) {
+    log_ln(MACRO, "     >>>> shot_queue_handle_intern num: %d | size: %d", i, shot_queue.size());
       while(!shot_mutex.take(3)) pros::delay(1);
       Shot_Target temp_target(0);
       if (i < shot_queue.size() && i >= 0) temp_target = shot_queue.at(i);
@@ -127,8 +134,9 @@ void shot_queue_handle(void* param) {
       // while(fabs(angler.get_error()) / 7 > 15) pros::delay(2);
       log_ln(MACRO, "Started shot %d", i + 1);
 
-      puncher.shoot();
-      puncher.wait_for_shot_finish();
+      //puncher.shoot();
+      pros::delay(400);
+      //puncher.wait_for_shot_finish();
       drive.wait_for_stop();
       log_ln(MACRO, "Finished shot %d", i + 1);
 
@@ -141,6 +149,10 @@ void shot_queue_handle(void* param) {
   // log_ln(MACRO, "FINISHED SHOT QUEUE HANDLING, TOOK %d MS", pros::millis() - macro_start_time);
   pros::delay(50);
   shot_queue_handle_task.stop_task();
+}
+
+void shot_queue_handle(void* param) {
+  shot_queue_handle_intern();
 }
 
 void shot_task_cleanup() {
