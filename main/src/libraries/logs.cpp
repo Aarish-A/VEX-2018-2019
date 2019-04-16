@@ -87,7 +87,7 @@ void log_init() {
 		printf("  >>>> %d COULD NOT OPEN SD LOG FILE \n", pros::millis());
 	}
   else { // If the log_file could be oppened
-    sd_logging_enabled = true;
+    sd_logging_enabled = false;
     printf(">>>> %d log_init(): Successfully opened SD log file \n", pros::millis());
   	fputs("\r\n\r\n--------------------------------------------------\r\n\r\n", log_file);
     fprintf(log_file, ">>>> %d Start Logging for Program \n", pros::millis());
@@ -203,8 +203,6 @@ void log_ln(Log_Info info_category, Log_Info info_subsystem, const char * format
 }
 
 /* Buffer -> SD Functions */
-
-// !!!! PROBLEM IS HERE !!!!! ///
 void flush_to_sd(int given_amnt_to_flush, int pos_to_flush_to) {
   int amnt_to_flush = given_amnt_to_flush; // std::min(given_amnt_to_flush, MAX_AMNT_TO_FLUSH); // Lim num of indices to flush to MAX_AMNT_TO_FLUSH
   if (buffer_write_index >= LOG_BUFFER_SIZE || buffer_write_index < 0) {

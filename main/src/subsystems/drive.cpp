@@ -247,7 +247,9 @@ void Drive::set_target(double target) {
 }
 
 void Drive::wait_for_stop() {
+  log_ln(AUTO, "  > Start waiting for drive stop\n");
   while (this->state == STATE_AUTO_CONTROL) pros::delay(2);
+  log_ln(AUTO, "  > Done waiting for drive stop\n");
 }
 
 void Drive::wait_for_distance(double target_distance) {
