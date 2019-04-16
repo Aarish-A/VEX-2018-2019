@@ -80,6 +80,7 @@ void make_shot_request(uint8_t shot_height, Turn_Direction direction, Field_Posi
 
   if (trigger_shot) {
     trigger_shot_queue();
+    //pros::Task test_shot_task((pros::task_fn_t) shot_queue_handle);
     log_ln(MACRO, " >>>>>> TRIGGER SHOT \n\n\n");
     //shot_queue_handle_intern();
   }
@@ -91,7 +92,12 @@ void change_field_position(Field_Position new_field_pos) {
 }
 
 void shot_queue_handle_intern() {
-
+  pos.reset(0, 0, 0);
+  drive_move_sync(-6_in);
+  drive_turn_async(PointAngleTarget({10, 10}));
+  puncher.shoot();
+  drive.wait_for_stop();
+  /*
   Field_Position temp_field_pos = field_position;
   uint32_t macro_start_time = pros::millis();
   Turn_Direction last_turn_direction = Turn_Direction::STRAIGHT;
@@ -122,6 +128,7 @@ void shot_queue_handle_intern() {
              drive_move_sync(4_in);
           }
           else {
+            //log_ln(MOVE, "vexOS ");
             drive_move_sync(4_in);
             pros::delay(20); // DO NOT DELETE THIS DELAY THIS IS REALLY IMPORTANT, WILL DRY SHOOT IF U DELETE!!!! @ZAIN @ANJALEE @STRAUSS @ANYONE ELSE THAT READS THIS
           }
@@ -130,7 +137,8 @@ void shot_queue_handle_intern() {
       intake.stop();
       angler.move_to(temp_target.angler_target);
       if (temp_target.turning && (i == 1 ? temp_target.turn_direction != last_turn_direction : true)) {
-        drive_turn_async(PointAngleTarget(temp_target.flag_position));
+        drive_move_async(6_in);
+        //drive_turn_async(PointAngleTarget(temp_target.flag_position));
         pros::delay(20); // DO NOT DELETE THIS DELAY THIS IS REALLY IMPORTANT, WILL DRY SHOOT IF U DELETE!!!! @ZAIN @ANJALEE @STRAUSS @ANYONE ELSE THAT READS THIS
       }
       // drive.lock();
@@ -141,7 +149,6 @@ void shot_queue_handle_intern() {
       puncher.shoot();
       // pros::delay(400);
       puncher.wait_for_shot_finish();
-      drive.wait_for_stop();
       log_ln(MACRO, "Finished shot %d", i + 1);
 
       //drive.unlock();
@@ -151,7 +158,7 @@ void shot_queue_handle_intern() {
     // }
   }
   // log_ln(MACRO, "FINISHED SHOT QUEUE HANDLING, TOOK %d MS", pros::millis() - macro_start_time);
-
+*/
   pros::delay(50);
 }
 

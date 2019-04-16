@@ -359,12 +359,13 @@ void drive_move_sync(double dist_target, double angle_target, bool brake, uint8_
 void drive_turn(void *_params) {
   drive.set_state(Drive::STATE_AUTO_CONTROL);
   // drive_turn_params* params = static_cast<drive_turn_params*>(_params);
-  const AngleTarget& t = drive_turn_param->target;
-  drive.target = drive_turn_param->target.getTarget();
+  const AngleTarget& t(PointAngleTarget({10, 10})); //({10, 0};//drive_turn_param->target;
+  //PointAngleTarget t({10, 10});
+  drive.target = t.getTarget();// drive_turn_param->target.getTarget();
   uint32_t start_time = pros::millis();
 
   // Angle Variables
-  double target = drive_turn_param->target.getTarget();
+  double target = t.getTarget();//drive_turn_param->target.getTarget();
   double start = drive.get_global_angle();
   double current = drive.get_global_angle();
   double error = target - current;
@@ -454,15 +455,16 @@ void drive_turn_async(const AngleTarget& target) {
   //   drive_turn_param = nullptr;
   // }
   // log_ln(IO, "YEEEEEEAAA");
-  drive_turn_param = new drive_turn_params{target};
-  drive.set_error(drive_turn_param->target.getTarget() - drive.get_global_angle());
-  drive.set_target(drive_turn_param->target.getTarget());
+  //drive_turn_param = new drive_turn_params{target};
+  drive.reset_global_angle();
+  drive.set_error(5_deg);
+  drive.set_target(5_deg);
   drive_turn_task.start_task();
 }
 
 void drive_turn_sync(const AngleTarget& target) {
   // log_ln(IO, "YEEEEEEAAA NUMBER 5");
-  drive_turn_param = new drive_turn_params{target};
+  //drive_turn_param = new drive_turn_params{target};
   drive_turn(nullptr);
 }
 
@@ -649,11 +651,11 @@ void auto_update_task_stop_function() {
 
 void drive_task_stop_function() {
   drive.set_state(Drive::STATE_DRIVER_CONTROL);
-  drive.set_power(0);
+  drive.set_power(0);/*
   if (drive_turn_param != nullptr) {
     delete drive_turn_param;
     drive_turn_param = nullptr;
-  }
+  }*/
 }
 
 void cap_on_pole_stop_function() {

@@ -25,6 +25,13 @@ void pilons::Task::stop_task() {
   if (this->task != nullptr) {
     if (this->task_stop_function != nullptr) this->task_stop_function();
     if ((this->task)->get_state() != pros::E_TASK_STATE_DELETED) (this->task)->remove();
+    // pros::Task([](void* params) {
+    //   pros::Task* temp = (pros::Task*)params;
+    //   if (temp->get_state() != pros::E_TASK_STATE_DELETED) temp->remove();
+    //   delete temp;
+    //   temp = nullptr;
+    //   pros::delay(10);
+    // }, (void*)this->task);
     delete this->task;
     this->task = nullptr;
     log_ln(PROGRAM_FLOW, "Stopped %s task from task end (shouldn't get here lol)", (this->task_name).c_str());
