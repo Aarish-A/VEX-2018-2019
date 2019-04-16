@@ -49,8 +49,6 @@ void drive_move_sync(double dist_target, double angle_target = 1000, bool brake 
 
 struct drive_turn_params {
   const AngleTarget& target;
-  drive_turn_params& operator=(const drive_turn_params&) { return *this ; }
-	drive_turn_params& operator=(drive_turn_params&&) { return *this ; }
 };
 extern drive_turn_params* drive_turn_param;
 
