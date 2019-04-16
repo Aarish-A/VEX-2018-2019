@@ -84,10 +84,10 @@ void Drive::set_state(uint8_t new_state) {
 
 void Drive::brake() {
   set_power(0);
-  this->fl_motor.move_relative(0, 30);
-  this->bl_motor.move_relative(0, 30);
-  this->fr_motor.move_relative(0, 30);
-  this->br_motor.move_relative(0, 30);
+  this->fl_motor.move_relative(0, 50);
+  this->bl_motor.move_relative(0, 50);
+  this->fr_motor.move_relative(0, 50);
+  this->br_motor.move_relative(0, 50);
 }
 
 double Drive::get_global_angle() {

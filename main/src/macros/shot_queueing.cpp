@@ -67,11 +67,11 @@ void make_shot_request(uint8_t shot_height, Turn_Direction direction, Field_Posi
     }
 
     // Shot_Target temp = {shot_height, flag_position, turning};
-    // if (shot_mutex.take(3)) {
-    log_ln(MACRO, "Added to shot queue: %d, (%f, %f), %s", shot_height, flag_position.x, flag_position.y, turning ? "Turning" : "Not Turning");
-    shot_queue.emplace_back(shot_height, flag_position, turning, direction);//shot_queue.push_back(temp);
-    // }
-    // shot_mutex.give();
+    if (shot_mutex.take(3)) {
+      log_ln(MACRO, "Added to shot queue: %d, (%f, %f), %s", shot_height, flag_position.x, flag_position.y, turning ? "Turning" : "Not Turning");
+      shot_queue.emplace_back(shot_height, flag_position, turning, direction);//shot_queue.push_back(temp);
+    }
+    shot_mutex.give();
   }
   // shot_mutex.give();
 
@@ -89,12 +89,11 @@ void shot_queue_handle(void* param) {
   Turn_Direction last_turn_direction = Turn_Direction::STRAIGHT;
 
   for (int i = 0; i < shot_queue.size(); i++) {
-      Shot_Target temp_target = shot_queue.at(i);
-      // while(!shot_mutex.take(3)) pros::delay(1);
-      // Shot_Target temp_target(0);
-      // if (i < shot_queue.size() && i >= 0) temp_target = shot_queue.at(i);
-      // else { shot_mutex.give(); break; }
-      // shot_mutex.give();
+      while(!shot_mutex.take(3)) pros::delay(1);
+      Shot_Target temp_target(0);
+      if (i < shot_queue.size() && i >= 0) temp_target = shot_queue.at(i);
+      else { shot_mutex.give(); break; }
+      shot_mutex.give();
       uint32_t shot_start_time = pros::millis();
       log_ln(MACRO, "STARTED SHOT QUEUE HANDLING");
 
@@ -140,7 +139,7 @@ void shot_queue_handle(void* param) {
     // }
   }
   // log_ln(MACRO, "FINISHED SHOT QUEUE HANDLING, TOOK %d MS", pros::millis() - macro_start_time);
-  pros::delay(10);
+  pros::delay(50);
   shot_queue_handle_task.stop_task();
 }
 
