@@ -24,8 +24,6 @@ const std::string menu_screen_strings[] = {
 enum SP {
   G_FRONT_TOP,
   G_FRONT_MID,
-  G_FRONT_ANGLE_TOP,
-  G_FRONT_ANGLE_MID,
   G_PLATFORM_TOP,
   G_PLATFORM_MID,
   G_PLATFORM_MID_FAR,
@@ -55,8 +53,6 @@ enum SP {
 const std::string menu_shot_position_strings[] = {
   "G FRONT TOP",
   "G FRONT MID",
-  "G FRONT ANG TOP",
-  "G FRONT ANG MID",
   "G PF TOP",
   "G PF MID",
   "G PF MID FAR",

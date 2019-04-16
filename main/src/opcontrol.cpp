@@ -126,14 +126,12 @@ void opcontrol() {
 					(intake.off() && !capper.at_pickup_position()) ? intake.outtake() : intake.stop();
 					break;
 				case BTN_GROUND_PICKUP:
-					make_shot_request(shot_positions[G_FRONT_ANGLE_MID], Turn_Direction::STRAIGHT, Field_Position::FRONT, true);
-					// angler.move_to(Angler::PICKUP_POSITION);
-					// intake.intake();
+					angler.move_to(Angler::PICKUP_POSITION);
+					intake.intake();
 					break;
 				case BTN_CAP_PICKUP:
-					// angler.move_to(Angler::CAP_PICKUP_POSITION);
-					// intake.intake();
-					make_shot_request(shot_positions[G_FRONT_ANGLE_TOP], Turn_Direction::STRAIGHT, Field_Position::FRONT, true);
+					angler.move_to(Angler::CAP_PICKUP_POSITION);
+					intake.intake();
 					break;
 				case BTN_SHOT_R_T:
 					// 41 in x
@@ -199,7 +197,7 @@ void opcontrol() {
 		}
 		if (master.check_double_press(BTN_GROUND_PICKUP, BTN_CAP_PICKUP)) {
 			if (angler.at_cap_flip_position()) {
-				angler.move_to(Angler::PICKUP_POSITION);
+				angler.move_to(Angler::CAP_PICKUP_POSITION);
 				intake.intake();
 			} else {
 				angler.move_to(Angler::CAP_FLIP_POSITION);
