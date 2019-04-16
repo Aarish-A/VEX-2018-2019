@@ -105,3 +105,7 @@ bool Angler::moving_to_target() {
 void Angler::wait_for_target_reach() {
   while (this->moving_to_target()) pros::delay(2);
 }
+
+bool Angler::at_cap_flip_position() {
+  return (fabs(this->position) - Angler::CAP_FLIP_POSITION) < 40;
+}

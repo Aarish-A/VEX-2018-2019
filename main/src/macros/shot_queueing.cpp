@@ -111,7 +111,7 @@ void shot_queue_handle(void* param) {
           drive.set_power(0);
           if (temp_target.turning) drive_move_sync(4_in);
           else {
-            drive_move_async(4_in);
+            drive_move_sync(4_in);
             pros::delay(20); // DO NOT DELETE THIS DELAY THIS IS REALLY IMPORTANT, WILL DRY SHOOT IF U DELETE!!!! @ZAIN @ANJALEE @STRAUSS @ANYONE ELSE THAT READS THIS
           }
         }
@@ -119,7 +119,7 @@ void shot_queue_handle(void* param) {
       intake.stop();
       angler.move_to(temp_target.angler_target);
       if (temp_target.turning && (i == 1 ? temp_target.turn_direction != last_turn_direction : true)) {
-        drive_turn_async(PointAngleTarget(temp_target.flag_position));
+        drive_turn_sync(PointAngleTarget(temp_target.flag_position));
         pros::delay(20); // DO NOT DELETE THIS DELAY THIS IS REALLY IMPORTANT, WILL DRY SHOOT IF U DELETE!!!! @ZAIN @ANJALEE @STRAUSS @ANYONE ELSE THAT READS THIS
       }
       // drive.lock();

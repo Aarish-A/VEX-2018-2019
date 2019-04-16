@@ -39,4 +39,5 @@ public:
   void move_to(double target, uint8_t hold_velocity = 200, uint32_t timeout = 1200, uint8_t error_threshold = 4);
   bool moving_to_target();
   void wait_for_target_reach();
+  bool at_cap_flip_position();
 };

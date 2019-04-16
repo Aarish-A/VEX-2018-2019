@@ -142,18 +142,22 @@ void opcontrol() {
 					// 66 in x
 					// 9.71 + 24.2 (33.91) deg
 					// puncher.shoot();
-					make_shot_request(shot_positions[(int)SP::G_FRONT_TOP], Turn_Direction::STRAIGHT, Field_Position::FRONT, true);
+					make_shot_request(shot_positions[G_FRONT_TOP], Turn_Direction::STRAIGHT, Field_Position::FRONT, true);
+					make_shot_request(shot_positions[G_BACK_TOP], Turn_Direction::STRAIGHT, Field_Position::BACK, true);
 					break;
 				case BTN_SHOT_R_M:
 					// temp = get_shot_angle(67.25, 29.25);
 					// printf("CALC ANGLE: %f, %f", (temp / 7) + 24.2, temp);
 					// angler.move_to(temp);
-					make_shot_request(shot_positions[(int)SP::G_FRONT_MID], Turn_Direction::STRAIGHT, Field_Position::FRONT, true);
+					make_shot_request(shot_positions[G_FRONT_MID], Turn_Direction::STRAIGHT, Field_Position::FRONT, true);
+					make_shot_request(shot_positions[G_BACK_MID], Turn_Direction::STRAIGHT, Field_Position::BACK, true);
 					break;
 				case BTN_CAPPER_DOWN:
-					capper.move_to_pickup();
-					angler.move_to(Angler::PICKUP_POSITION);
-					intake.stop();
+					if (auto_routine == Auto_Routines::DRIVER_SKILLS) {
+						capper.move_to_pickup();
+						angler.move_to(Angler::PICKUP_POSITION);
+						intake.stop();
+					} else shot_queue_handle_task.stop_task();
 					break;
 				case BTN_CAPPER_UP:
 					if (auto_routine == Auto_Routines::DRIVER_SKILLS) {
@@ -166,7 +170,7 @@ void opcontrol() {
 				break;
 				case BTN_CAP_FLIP:
 					if (auto_routine == Auto_Routines::DRIVER_SKILLS) capper_move_to_cap_flip_task.start_task();
-					else shot_queue_handle_task.stop_task();
+					else change_field_position(Field_Position::BACK);
 					break;
 				case BTN_DRIVE_LOCK:
 					drive.lock();
@@ -192,8 +196,13 @@ void opcontrol() {
 			menu_enabled = !menu_enabled;
 		}
 		if (master.check_double_press(BTN_GROUND_PICKUP, BTN_CAP_PICKUP)) {
-			angler.move_to(Angler::CAP_FLIP_POSITION);
-			intake.outtake();
+			if (angler.at_cap_flip_position()) {
+				angler.move_to(Angler::CAP_PICKUP_POSITION);
+				intake.intake();
+			} else {
+				angler.move_to(Angler::CAP_FLIP_POSITION);
+				intake.outtake();
+			}
 		}
 
 		if (partner.is_connected()) {
@@ -201,22 +210,22 @@ void opcontrol() {
 				case BTN_SHOT_R_T:
 					make_shot_request(shot_positions[(int)SP::G_PLATFORM_TOP], Turn_Direction::RIGHT, Field_Position::RED_PF);
 					make_shot_request(shot_positions[(int)SP::G_PLATFORM_TOP], Turn_Direction::RIGHT, Field_Position::BLUE_PF);
-					make_shot_request(shot_positions[(int)SP::G_BACK_TURN_TOP], Turn_Direction::RIGHT, Field_Position::BACK);
+					// make_shot_request(shot_positions[(int)SP::G_BACK_TURN_TOP], Turn_Direction::RIGHT, Field_Position::BACK);
 					break;
 				case BTN_SHOT_R_M:
 					make_shot_request(shot_positions[(int)SP::G_PLATFORM_MID], Turn_Direction::RIGHT, Field_Position::RED_PF);
 					make_shot_request(shot_positions[(int)SP::G_PLATFORM_MID], Turn_Direction::RIGHT, Field_Position::BLUE_PF);
-					make_shot_request(shot_positions[(int)SP::G_BACK_TURN_MID], Turn_Direction::RIGHT, Field_Position::BACK);
+					// make_shot_request(shot_positions[(int)SP::G_BACK_TURN_MID], Turn_Direction::RIGHT, Field_Position::BACK);
 					break;
 				case BTN_SHOT_L_T:
 					make_shot_request(shot_positions[(int)SP::G_PLATFORM_TOP], Turn_Direction::LEFT, Field_Position::RED_PF);
 					make_shot_request(shot_positions[(int)SP::G_PLATFORM_TOP], Turn_Direction::LEFT, Field_Position::BLUE_PF);
-					make_shot_request(shot_positions[(int)SP::G_BACK_TURN_TOP], Turn_Direction::LEFT, Field_Position::BACK);
+					// make_shot_request(shot_positions[(int)SP::G_BACK_TURN_TOP], Turn_Direction::LEFT, Field_Position::BACK);
 					break;
 				case BTN_SHOT_L_M:
 					make_shot_request(shot_positions[(int)SP::G_PLATFORM_MID], Turn_Direction::LEFT, Field_Position::RED_PF);
 					make_shot_request(shot_positions[(int)SP::G_PLATFORM_MID], Turn_Direction::LEFT, Field_Position::BLUE_PF);
-					make_shot_request(shot_positions[(int)SP::G_BACK_TURN_MID], Turn_Direction::LEFT, Field_Position::BACK);
+					// make_shot_request(shot_positions[(int)SP::G_BACK_TURN_MID], Turn_Direction::LEFT, Field_Position::BACK);
 					break;
 				case BTN_FIELD_RED_PF:
 					change_field_position(Field_Position::RED_PF);
@@ -227,20 +236,15 @@ void opcontrol() {
 				case BTN_FIELD_FRONT:
 					change_field_position(Field_Position::FRONT);
 					break;
-				case BTN_FIELD_BACK:
-					change_field_position(Field_Position::BACK);
-					break;
 				case BTN_SHOT_CANCEL_PARTNER:
 					shot_queue_handle_task.stop_task();
 					break;
 			}
 
 			if (partner.check_double_press(BTN_SHOT_R_T, BTN_SHOT_L_T)) {
-				make_shot_request(shot_positions[G_BACK_TOP], Turn_Direction::STRAIGHT, Field_Position::BACK);
 				make_shot_request(shot_positions[G_PLATFORM_TOP_FAR], Turn_Direction::FAR, Field_Position::RED_PF);
 				make_shot_request(shot_positions[G_PLATFORM_TOP_FAR], Turn_Direction::FAR, Field_Position::BLUE_PF);
 			} else if (partner.check_double_press(BTN_SHOT_R_M, BTN_SHOT_L_M)) {
-				make_shot_request(shot_positions[G_BACK_MID], Turn_Direction::STRAIGHT, Field_Position::BACK);
 				make_shot_request(shot_positions[G_PLATFORM_MID_FAR], Turn_Direction::FAR, Field_Position::RED_PF);
 				make_shot_request(shot_positions[G_PLATFORM_MID_FAR], Turn_Direction::FAR, Field_Position::BLUE_PF);
 			}
