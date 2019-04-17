@@ -73,6 +73,7 @@ void opcontrol() {
 	enc_r.reset();
 	enc_l.reset();
 	pos.reset();
+
 	while (true) {
 		// printf("R: %d, L: %d\n", enc_r.get_value(), enc_l.get_value());
 		// printf("Light sensor:%f\n",gyro.get_value());
@@ -143,15 +144,17 @@ void opcontrol() {
 					// 66 in x
 					// 9.71 + 24.2 (33.91) deg
 					// puncher.shoot();
-					make_shot_request(shot_positions[G_FRONT_TOP], Turn_Direction::STRAIGHT, Field_Position::FRONT, true);
-					make_shot_request(shot_positions[G_BACK_TOP], Turn_Direction::STRAIGHT, Field_Position::BACK, true);
+					make_shot_request(shot_positions[G_FRONT_TOP], Turn_Direction::STRAIGHT, Field_Position::FRONT);
+					make_shot_request(shot_positions[G_BACK_TOP], Turn_Direction::STRAIGHT, Field_Position::BACK);
+					trigger_shot_queue();
 					break;
 				case BTN_SHOT_R_M:
 					// temp = get_shot_angle(67.25, 29.25);
 					// printf("CALC ANGLE: %f, %f", (temp / 7) + 24.2, temp);
 					// angler.move_to(temp);
-					make_shot_request(shot_positions[G_FRONT_MID], Turn_Direction::STRAIGHT, Field_Position::FRONT, true);
-					make_shot_request(shot_positions[G_BACK_MID], Turn_Direction::STRAIGHT, Field_Position::BACK, true);
+					make_shot_request(shot_positions[G_FRONT_MID], Turn_Direction::STRAIGHT, Field_Position::FRONT);
+					make_shot_request(shot_positions[G_BACK_MID], Turn_Direction::STRAIGHT, Field_Position::BACK);
+					trigger_shot_queue();
 					break;
 				case BTN_CAPPER_DOWN:
 					if (auto_routine == Auto_Routines::DRIVER_SKILLS) {
@@ -252,6 +255,14 @@ void opcontrol() {
 		}
 	pros::delay(5);
 	}
+	/*
+	for (int i = 0; i < 10000; i++) {
+    void* x = 0;
+    pros::Task* task = new pros::Task(dummy, x);
+    log_ln(MACRO, "%d", i);
+    pros::delay(100);
+  }
+	*/
 	/* Test Tasks
 	while (true) {
 		log_ln(MOVE, "Start f/w");

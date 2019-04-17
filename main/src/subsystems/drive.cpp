@@ -248,15 +248,15 @@ void Drive::set_target(double target) {
 
 void Drive::wait_for_stop() {
   log_ln(AUTO, "  > Start waiting for drive stop\n");
-  while (this->state == STATE_AUTO_CONTROL) pros::delay(2);
+  while (this->state == STATE_AUTO_CONTROL) pros::delay(1);
   log_ln(AUTO, "  > Done waiting for drive stop\n");
 }
 
 void Drive::wait_for_distance(double target_distance) {
   bool forwards;
   target_distance > 0 ? forwards = true : forwards = false;
-  if (forwards) while (this->target - this->error < target_distance) pros::delay(2);
-  else while(this->target - this->error > target_distance) pros::delay(2);
+  if (forwards) while (this->target - this->error < target_distance) pros::delay(1);
+  else while(this->target - this->error > target_distance) pros::delay(1);
 }
 
 void Drive::wait_for_angle(double target_angle) {

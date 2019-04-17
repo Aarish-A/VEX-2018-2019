@@ -52,9 +52,17 @@ struct drive_turn_params {
 };
 extern drive_turn_params* drive_turn_param;
 
+extern FixedAngleTarget fixed_angle_target;
+extern PointAngleTarget point_angle_target;
+extern bool fixed_target;
+
 void drive_turn(void* _params);
-void drive_turn_async(const AngleTarget& target);
-void drive_turn_sync(const AngleTarget& target);
+// void drive_turn_async(const AngleTarget& target);
+// void drive_turn_sync(const AngleTarget& target);
+void drive_turn_async(FixedAngleTarget target);
+void drive_turn_sync(FixedAngleTarget target);
+void drive_turn_async(PointAngleTarget target);
+void drive_turn_sync(PointAngleTarget target);
 
 void sweep_turn(const AngleTarget& target, double radius, bool forwards, double post_distance = 8_in, bool clockwise = true, bool brake = true, int max_power = 200);
 void drive_turn_side(const AngleTarget& target, double kP, double offset, bool forwards);

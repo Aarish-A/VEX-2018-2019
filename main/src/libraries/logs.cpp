@@ -155,23 +155,26 @@ void log_ln(Log_Info info_category, const char * format, ...) {
   va_start(args, format);
   if (info_category.enabled)
   {
-    int size = ((int)strlen(format)) * 2 + 50;   // Initial str size
-    std::string formatted_str;
-    formatted_str.resize(size);
-    int formatted_len = -1;
-    int copy_attempt_cnt = 0;
-    while (formatted_len < 0 && copy_attempt_cnt < 5) {
-      formatted_len = vsnprintf((char *)formatted_str.data(), size, format, args);
-      copy_attempt_cnt++;
-    }
-    if (formatted_len > 1) {
-      formatted_str.resize(formatted_len);
-      std::string new_str;
-      new_str.resize(15 + formatted_len + info_category.name.length());
-
-      sprintf((char *)new_str.data(), "%07d | %s | %s\r\n", pros::millis(), info_category.name.c_str(), formatted_str.c_str());
-      log_ln_internal(new_str.c_str());
-    }
+    printf("%d | %s | ", pros::millis(), info_category.name.c_str());
+    vprintf(format, args);
+    printf("\n");
+    // int size = ((int)strlen(format)) * 2 + 50;   // Initial str size
+    // std::string formatted_str;
+    // formatted_str.resize(size);
+    // int formatted_len = -1;
+    // int copy_attempt_cnt = 0;
+    // while (formatted_len < 0 && copy_attempt_cnt < 5) {
+    //   formatted_len = vsnprintf((char *)formatted_str.data(), size, format, args);
+    //   copy_attempt_cnt++;
+    // }
+    // if (formatted_len > 1) {
+    //   formatted_str.resize(formatted_len);
+    //   std::string new_str;
+    //   new_str.resize(15 + formatted_len + info_category.name.length());
+    //
+    //   sprintf((char *)new_str.data(), "%07d | %s | %s\r\n", pros::millis(), info_category.name.c_str(), formatted_str.c_str());
+    //   log_ln_internal(new_str.c_str());
+    // }
   }
   va_end (args);
 }
@@ -181,23 +184,26 @@ void log_ln(Log_Info info_category, Log_Info info_subsystem, const char * format
   va_start(args, format);
   if (info_category.enabled && info_subsystem.enabled)
   {
-    int size = ((int)strlen(format)) * 2 + 50;   // Initial str size
-    std::string formatted_str;
-    formatted_str.resize(size);
-    int formatted_len = -1;
-    int copy_attempt_cnt = 0;
-    while (formatted_len < 0 && copy_attempt_cnt < 5) {
-      formatted_len = vsnprintf((char *)formatted_str.data(), size, format, args);
-      copy_attempt_cnt++;
-    }
-    if (formatted_len > 1) {
-      formatted_str.resize(formatted_len);
-      std::string new_str;
-      new_str.resize(16 + formatted_len + info_category.name.length() + info_subsystem.name.length());
-
-      sprintf((char *)new_str.data(), "%07d | %s, %s | %s\r\n", pros::millis(), info_category.name.c_str(), info_subsystem.name.c_str(), formatted_str.c_str());
-      log_ln_internal(new_str.c_str());
-    }
+    printf("%d | %s | %s | ", pros::millis(), info_category.name.c_str(), info_subsystem.name.c_str());
+    vprintf(format, args);
+    printf("\n");
+    // int size = ((int)strlen(format)) * 2 + 50;   // Initial str size
+    // std::string formatted_str;
+    // formatted_str.resize(size);
+    // int formatted_len = -1;
+    // int copy_attempt_cnt = 0;
+    // while (formatted_len < 0 && copy_attempt_cnt < 5) {
+    //   formatted_len = vsnprintf((char *)formatted_str.data(), size, format, args);
+    //   copy_attempt_cnt++;
+    // }
+    // if (formatted_len > 1) {
+    //   formatted_str.resize(formatted_len);
+    //   std::string new_str;
+    //   new_str.resize(16 + formatted_len + info_category.name.length() + info_subsystem.name.length());
+    //
+    //   sprintf((char *)new_str.data(), "%07d | %s, %s | %s\r\n", pros::millis(), info_category.name.c_str(), info_subsystem.name.c_str(), formatted_str.c_str());
+    //   log_ln_internal(new_str.c_str());
+    // }
   }
   va_end (args);
 }
