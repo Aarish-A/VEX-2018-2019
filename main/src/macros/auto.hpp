@@ -11,6 +11,8 @@ constexpr double MECANUM_DRIVE_WIDTH = 13.20;
 constexpr double EDGE_TO_TRACKING_WHEEL = 1.25;
 constexpr double DRIVE_EDGE_TO_MECANUM = 2.50;
 
+extern pilons::Task drive_move_task;
+extern pilons::Task drive_turn_task;
 extern pilons::Task auto_update_task;
 extern pilons::Task move_alg_task;
 extern pilons::Task cap_on_pole_task;

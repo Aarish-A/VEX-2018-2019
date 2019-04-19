@@ -177,12 +177,11 @@ void climb_on_platform() {
   while (fabs(gyro.get_value()) < 150) pros::delay(5);
   while (fabs(gyro.get_value()) > 60) pros::delay(5);
 
-  drive_move_sync(8.5_in);
+  drive_move_async(8.5_in);
   angler.move_to(Angler::CAP_PICKUP_POSITION);
   drive.set_state(Drive::STATE_AUTO_CONTROL);
   // drive.set_power(0, -20, 0);
   // pros::delay(150);
-  drive.set_power(0, 0, 0);
   drive.reset_global_angle();
 }
 

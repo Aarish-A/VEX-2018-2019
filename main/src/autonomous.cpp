@@ -78,9 +78,9 @@ void autonomous() {
 
   // Auto End
   uint32_t auto_finished_time = pros::millis() - autonomous_time;
-  master.print(2, 0, "Time: %d", auto_finished_time);
+  master.write_line(2, "Time: %d", auto_finished_time);
   log_ln(AUTO,"Auto Time %d", auto_finished_time);
-  pros::delay(60);
+  pros::delay(1000);
   /* Turn off Motors */
   intake.off();
   drive.set_power(0);
@@ -673,14 +673,14 @@ void programming_skills_30_points() {
   drive.wait_for_distance(27_in);
   intake.intake();
   drive.wait_for_distance(31_in);
-  drive_move_async(13.5_in, 0_deg, true, 115);
+  drive_move_async(14.5_in, 0_deg, true, 140);
   drive.wait_for_stop();
 
-  drive_move_sync(-26.5_in, 0_deg);
-  drive_turn_async(FixedAngleTarget(-52_deg));
+  drive_move_sync(-27.5_in, 0_deg);
+  drive_turn_async(FixedAngleTarget(-50.5_deg));
   // drive.wait_for_angle(-30_deg);
-  drive.wait_for_angle(-20_deg);
-  double_shot(shot_positions[G_FRONT_TOP], shot_positions[G_FRONT_MID]);
+  drive.wait_for_angle(-27_deg);
+  double_shot(shot_positions[S_FRONT_TOP], shot_positions[S_FRONT_MID]);
   // drive.wait_for_stop();
   // angler.move_to(Angler::PICKUP_POSITION);
   capper.move_to_flag_flip(180);
@@ -699,7 +699,7 @@ void programming_skills_30_points() {
   drive.wait_for_stop();
   drive_move_sync(-20_in, -63_deg, false);
   drive_turn_sync(-90_deg);
-  drive_move_sync(-60.0_in, -90_deg);
+  drive_move_sync(-58.0_in, -90_deg);
   drive_turn_sync(0_deg);
   drive_move_sync(-7, 0_deg, false);
   cap_on_pole();
@@ -732,7 +732,7 @@ void programming_skills_30_points() {
 
   drive_move_sync(5_in, 0_deg);
   drive_turn_async(FixedAngleTarget(-10.0_deg));
-  double_shot(shot_positions[G_FRONT_TOP], shot_positions[G_FRONT_MID]+20);
+  double_shot(shot_positions[S_CLOSE_POLE_TOP], shot_positions[S_CLOSE_POLE_MID]);
   drive.wait_for_stop();
   capper.move_to_velocity(60 * Capper::GEAR_RATIO, 180);
   drive_turn_sync(FixedAngleTarget(94.0_deg));
@@ -763,14 +763,14 @@ void programming_skills_30_points() {
   cap_on_pole();
 //
   drive_move_sync(5_in,0_deg);
-  angler.move_to(shot_positions[G_FRONT_TOP]- 15);
-  drive_turn_async(FixedAngleTarget(2.0_deg));
-  double_shot(shot_positions[G_FRONT_TOP] - 15, 0);
+  angler.move_to(shot_positions[S_FAR_POLE_TOP]);
+  drive_turn_async(FixedAngleTarget(4.0_deg));
+  double_shot(shot_positions[S_FAR_POLE_TOP], shot_positions[S_FAR_POLE_LOW]);
   drive.wait_for_stop();
   drive_turn_sync(FixedAngleTarget(0_deg));
   angler.move_to(Angler::CAP_PICKUP_POSITION);
   intake.intake();
-  drive_move_async(24.5_in, 0_deg);
+  drive_move_async(25.3_in, 0_deg);
   drive.wait_for_distance(7_in);
   capper.move_to_velocity(30 * Capper::GEAR_RATIO, 200);
   drive.wait_for_stop();
@@ -783,12 +783,12 @@ void programming_skills_30_points() {
   capper.move_to_velocity(56 * Capper::GEAR_RATIO, 200);
   angler.move_to(Angler::CAP_FLIP_POSITION);
   intake.intake();
-  drive_move_async(15.5_in, -88_deg);
-  drive.wait_for_distance(14.5_in);
+  drive_move_async(14.5_in, -88_deg);
+  drive.wait_for_distance(13.5_in);
   drive_move_async(-2.5_in, -88_deg, true, 80);
   capper.move_to_power(28 * Capper::GEAR_RATIO, -100);
   drive.wait_for_stop();
-  pros::delay(50);
+  pros::delay(200);
   drive_move_sync(-5_in, -88_deg);
   intake.stop();
   capper.move_to_pickup();
@@ -802,18 +802,23 @@ void programming_skills_30_points() {
   drive_move_sync(-33_in, -82_deg, false);
   cap_on_pole();
   drive_move_sync(38_in,0_deg);
-  drive_turn_sync(FixedAngleTarget(55_deg));
-  single_shot(30);
-  drive_turn_sync(FixedAngleTarget(101.5_deg));
-  single_shot(shot_positions[(int)SP::G_FRONT_MID]);
+  drive_turn_sync(FixedAngleTarget(54_deg));
+  single_shot(shot_positions[S_FINAL_LOW]);
+  drive_turn_sync(FixedAngleTarget(100_deg));
+  single_shot(shot_positions[S_FINAL_MID]);
   drive_turn_sync(FixedAngleTarget(90_deg));
   angler.move_to(Angler::CAP_PICKUP_POSITION);
   drive_move_sync(15_in, 90_deg);
   angler.move_to(Angler::PICKUP_POSITION);
   capper.move_to_flag_flip();
   climb_on_platform();
+  drive.wait_for_distance(5.5);
+  printf("drive error:%f",drive.get_error());
+  drive_move_task.stop_task();
   drive_turn_sync(FixedAngleTarget(-90_deg));
   climb_on_platform();
+  drive.wait_for_distance(5.5);
+  // drive_move_task.stop_task();
 }
 
 void driver_skills() {
