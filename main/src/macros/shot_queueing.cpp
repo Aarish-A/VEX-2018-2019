@@ -36,21 +36,21 @@ void make_shot_request(uint8_t shot_height, Turn_Direction direction, Field_Posi
     case Field_Position::RED_PF:
       if (game_side == 'R') {
         if (direction == Turn_Direction::LEFT) flag_position = {-33, 94}; //shot_queue.push_back({shot_height, {-31, 94}});
-        else if (direction == Turn_Direction::RIGHT) flag_position = {18, 94}; //shot_queue.push_back({shot_height, {18, 94}});
+        else if (direction == Turn_Direction::RIGHT) flag_position = {12.5, 94}; //shot_queue.push_back({shot_height, {18, 94}});
         else if (direction == Turn_Direction::FAR) flag_position = {78, 94};
       } else if (game_side == 'B') {
         if (direction == Turn_Direction::LEFT) flag_position = {-31 + FLAG_WIDTH, 94}; //shot_queue.push_back({shot_height, {-31 + FLAG_WIDTH, 94}});
-        else if (direction == Turn_Direction::RIGHT) flag_position = {18 + FLAG_WIDTH, 94}; //shot_queue.push_back({shot_height, {18 + FLAG_WIDTH, 94}});
+        else if (direction == Turn_Direction::RIGHT) flag_position = {15.5 + FLAG_WIDTH, 94}; //shot_queue.push_back({shot_height, {18 + FLAG_WIDTH, 94}});
       }
       break;
     case Field_Position::BLUE_PF:
       if (game_side == 'R') {
         if (direction == Turn_Direction::LEFT) flag_position = {-27.5, 94}; //78 shot_queue.push_back({shot_height, {-27.5, 94}});
-        else if (direction == Turn_Direction::RIGHT) flag_position = {21.5, 94}; //shot_queue.push_back({shot_height, {19.5, 94}});
+        else if (direction == Turn_Direction::RIGHT) flag_position = {17.5, 94}; //shot_queue.push_back({shot_height, {19.5, 94}});
         else if (direction == Turn_Direction::FAR) flag_position = {-78,94};
       } else if (game_side == 'B') {
         if (direction == Turn_Direction::LEFT) flag_position = {-27.5 + FLAG_WIDTH, 94}; //shot_queue.push_back({shot_height, {-27.5 + FLAG_WIDTH, 94}});
-        else if (direction == Turn_Direction::RIGHT) flag_position = {19.5 + FLAG_WIDTH, 94}; //shot_queue.push_back({shot_height, {19.5 + FLAG_WIDTH, 94}});
+        else if (direction == Turn_Direction::RIGHT) flag_position = {17.5 + FLAG_WIDTH, 94}; //shot_queue.push_back({shot_height, {19.5 + FLAG_WIDTH, 94}});
       }
       break;
     case Field_Position::BACK:
@@ -130,13 +130,14 @@ void shot_queue_handle(void* param) {
     angler.move_to(temp_target.angler_target);
     if (temp_target.turning && (i == 1 ? temp_target.turn_direction != last_turn_direction : true)) {
       drive_turn_async(PointAngleTarget(temp_target.flag_position));
+      while(fabs(drive.get_error()) > 14.5_deg) pros::delay(2);
       pros::delay(20); // DO NOT DELETE THIS DELAY THIS IS REALLY IMPORTANT, WILL DRY SHOOT IF U DELETE!!!! @ZAIN @ANJALEE @STRAUSS @ANYONE ELSE THAT READS THIS
     }
     // drive.lock();
     // angler.wait_for_target_reach();
     // while(fabs(angler.get_error()) / 7 > 15) pros::delay(2);
     // log_ln(MACRO, "Started shot %d", i + 1);
-
+    while(fabs(angler.get_error()) / 7 > 20) pros::delay(2);
     puncher.shoot();
     puncher.wait_for_shot_finish();
     log_ln(MACRO, "Finished shot %d", i + 1);
@@ -155,5 +156,5 @@ void shot_task_cleanup() {
   if (puncher.shooting()) puncher.cancel_shot();
   shot_queue.clear();
   angler.move_to(Angler::PICKUP_POSITION);
-  //intake.intake();
+  intake.intake();
 }

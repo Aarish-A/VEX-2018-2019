@@ -12,6 +12,8 @@ public:
   static const uint8_t STATE_DRIVE_LOCK = 0x12;
   static const uint8_t STATE_TURN_BRAKE = 0x13;
   double get_global_angle();
+  void set_power(double x, double y, double a);
+  void set_power(double power);
 
   static int8_t turn_curve[256];
   static double drive_turn_coefficient;
@@ -34,8 +36,6 @@ private:
   int8_t x, y, a, last_a;
 
   /* Private Functions */
-  void set_power(double x, double y, double a);
-  void set_power(double power);
   void set_vel(double x, double y, double a);
   void set_vel(double velocity);
   void set_side_power(double left, double right);

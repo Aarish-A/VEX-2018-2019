@@ -128,12 +128,16 @@ void opcontrol() {
 					(intake.off() && !capper.at_pickup_position()) ? intake.outtake() : intake.stop();
 					break;
 				case BTN_GROUND_PICKUP:
-					angler.move_to(Angler::PICKUP_POSITION);
-					intake.intake();
+					make_shot_request(shot_positions[G_FRONT_ANGLE_MID], Turn_Direction::STRAIGHT, Field_Position::FRONT);
+					trigger_shot_queue();
+					// angler.move_to(Angler::PICKUP_POSITION);
+					// intake.intake();
 					break;
 				case BTN_CAP_PICKUP:
-					angler.move_to(Angler::CAP_PICKUP_POSITION);
-					intake.intake();
+				// angler.move_to(Angler::CAP_PICKUP_POSITION);
+				// intake.intake();
+					make_shot_request(shot_positions[G_FRONT_ANGLE_TOP], Turn_Direction::STRAIGHT, Field_Position::FRONT);
+					trigger_shot_queue();
 					break;
 				case BTN_SHOT_R_T:
 					// 41 in x
@@ -201,7 +205,7 @@ void opcontrol() {
 		}
 		if (master.check_double_press(BTN_GROUND_PICKUP, BTN_CAP_PICKUP)) {
 			if (angler.at_cap_flip_position()) {
-				angler.move_to(Angler::CAP_PICKUP_POSITION);
+				angler.move_to(Angler::PICKUP_POSITION);
 				intake.intake();
 			} else {
 				angler.move_to(Angler::CAP_FLIP_POSITION);
@@ -243,7 +247,13 @@ void opcontrol() {
 				case BTN_SHOT_CANCEL_PARTNER:
 					shot_queue_handle_task.stop_task();
 					break;
+				// case BTN_DRIVE_LOCK:
+					// drive.lock();
+					// break;
 			}
+
+			if (partner.check_rising(BTN_DRIVE_LOCK) && !(drive_y || drive_x || drive_a)) drive.lock();
+			else if (partner.check_falling(BTN_DRIVE_LOCK)) drive.unlock();
 
 			if (partner.check_double_press(BTN_SHOT_R_T, BTN_SHOT_L_T)) {
 				make_shot_request(shot_positions[G_PLATFORM_TOP_FAR], Turn_Direction::FAR, Field_Position::RED_PF);

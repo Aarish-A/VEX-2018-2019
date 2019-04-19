@@ -158,6 +158,7 @@ else
 }
 
 /* Drive */
+
 void climb_on_platform() {
   drive.flatten_against_wall(true, true);
   drive.set_state(Drive::STATE_AUTO_CONTROL);
@@ -376,17 +377,47 @@ void drive_turn(void *_params) {
   log_ln(MOVE, AUTO, "Drive Turn Start: Angle is %.3f, Moving to %.3f\n", RAD_TO_DEG(drive.get_global_angle()), RAD_TO_DEG(target));
 
   // Angle correction PID Values
-  double kP = fabs(error) > 55_deg ? map(fabs(error), 45_deg, 180_deg, 127 / 85.0_deg, 127 / 125.0_deg) : 127 / 85.0_deg;
-  double kD = fabs(error) <= 45_deg ? 700.0 : map(fabs(error), 50_deg, 180_deg, 700.0, 3000.0);
-  double kI = fabs(error) > 45_deg ? map(fabs(error), 45_deg, 180_deg, 0.280, 0.010) : fabs(error) >= 22.5_deg ? 0.280 : map(fabs(error), 0_deg, 22.5_deg, 2.450, 0.280);
-  double i_limit = 23.0;
+
+  // double kP = 127 / 119_deg;
+  // fabs(error) > 55_deg ? map(fabs(error), 45_deg, 180_deg, 127 / 85.0_deg, 127 / 125.0_deg) : 127 / 85.0_deg;
+  double kP = map_set(fabs(error), 0_deg, 180_deg, 127 / 50_deg, 127 / 119_deg,
+                      5_deg,    127 / 50_deg,
+                      15_deg,  127 / 93_deg,
+                      30_deg,  127 / 106_deg,
+                      45_deg,  127 / 107_deg,
+                      60_deg,  127 / 110_deg,
+                      90_deg,  127 / 119_deg,
+                      180_deg, 127 / 119_deg);
+
+  // fabs(error) <= 45_deg ? 700.0 : map(fabs(error), 50_deg, 180_deg, 700.0, 3000.0);
+  double kD = map_set(fabs(error), 0_deg, 180_deg, 1100.0, 2650.0,
+                      5_deg,   1100.0,
+                      15_deg,  1400.0,
+                      30_deg,  2000.0,
+                      45_deg,  2850.0,
+                      60_deg,  3305.0,
+                      90_deg,  2650.0,
+                      180_deg, 2650.0);
+
+  // fabs(error) > 45_deg ? map(fabs(error), 45_deg, 180_deg, 0.280, 0.010) : fabs(error) >= 22.5_deg ? 0.280 : map(fabs(error), 0_deg, 22.5_deg, 2.450, 0.280);
+  double kI = map_set(fabs(error), 0_deg, 180_deg, 1.45, 0.445,
+                      5_deg,   1.450,
+                      15_deg,  0.310,
+                      30_deg,  0.190,
+                      45_deg,  0.260,
+                      60_deg,  0.345,
+                      90_deg,  0.445,
+                      180_deg, 0.445);
+
+
+  double i_limit = 25.0;
   double p_val = 0;
   double i_val = 0;
   double d_val = 0;
 
   // Power Variables
   double power = 0;
-  double ramp_up_power = fabs(error) >= 60_deg ? 0.75 : map(fabs(error), 0_deg, 60_deg, 0.20, 0.80);
+  double ramp_up_power = fabs(error) >= 60_deg ? 0.75 : map(fabs(error), 0_deg, 60_deg, 0.125, 0.75);
 
 
   do {
@@ -403,14 +434,12 @@ void drive_turn(void *_params) {
       // printf("%d | Ramping up...", pros::millis());
     } else {
       // Calculate PID values for distance
-      if (fabs(target) - fabs(start) > 50_deg) p_val = error > 15.0_deg ? error * kP : error * kP * map(fabs(error), 0.0, 15_deg, 0.1, 0.55);
-      else p_val = error > 7.0_deg ? error * kP : error * kP * map(fabs(error), 0.0, 7_deg, 0.3, 0.75);
+      p_val = error * kP;
+      // if (fabs(target) - fabs(start) > 50_deg) p_val = error > 15.0_deg ? error * kP : error * kP * map(fabs(error), 0.0, 15_deg, 0.1, 0.55);
+      // else p_val = error > 7.0_deg ? error * kP : error * kP * map(fabs(error), 0.0, 7_deg, 0.3, 0.75);
 
       if (fabs(i_val) >= i_limit) i_val = i_limit * sgn(i_val);
-      else if (fabs(error) < 2_deg && sgn(error) == sgn(last_error)) i_val += error * kI * 2.5;
-      else if (fabs(error) < 5_deg && sgn(error) == sgn(last_error)) i_val += error * kI * 1.75;
-      else if (fabs(error) < 7.5_deg && sgn(error) == sgn(last_error)) i_val += error * kI * 1.4;
-      else if (fabs(error) < 12_deg && sgn(error) == sgn(last_error)) i_val += error * kI;
+      else if (fabs(error) < 15_deg) i_val += error * kI * map(fabs(error), 0.0, 15.0, 2.5, 0.5);
       else i_val = 0;
 
       if (fabs(error) < fabs(target - start) * 0.15 && (error - last_error) < 3.0_deg) d_val = (error - last_error) * kD * 1.75;
@@ -434,31 +463,31 @@ void drive_turn(void *_params) {
 
     last_error = error;
     pros::delay(1);
-  } while (fabs(error) > 0.50_deg);
+  } while (fabs(error) > 0.45_deg);
 
   // if (sgn(error) != sgn(last_error)) drive.set_power(0, 0, fabs(power) * 0.8 * sgn(error));
   // else drive.set_power(0, 0, fabs(power) * -0.8 * sgn(error));
   // pros::delay(50);
   drive.brake();
-  pros::delay(50);
-  log_ln(MOVE, AUTO, "FINISHED TURN >>>> Took %d ms, Ended At: %f, Angle Error: %f", pros::millis() - start_time, RAD_TO_DEG(current), RAD_TO_DEG(error));
+  pros::delay(25);
+  log_ln(MOVE, AUTO, "FINISHED TURN >>>> Took %d ms, Ended At: %f, Angle Error: %f, kP: %.3f, kI: %.3f, kD: %.3f, kP should be %.3f", pros::millis() - start_time, RAD_TO_DEG(current), RAD_TO_DEG(error), kP, kI, kD);
 
-  pros::delay(100);
-  current = drive.get_global_angle();
-  error = target - current;
-  log_ln(MOVE, AUTO, "FINISHED TURN 1 >>>> Took %d ms, Ended At: %f, Angle Error: %f", pros::millis() - start_time, RAD_TO_DEG(current), RAD_TO_DEG(error));
-  pros::delay(100);
-  current = drive.get_global_angle();
-  error = target - current;
-  log_ln(MOVE, AUTO, "FINISHED TURN 2 >>>> Took %d ms, Ended At: %f, Angle Error: %f", pros::millis() - start_time, RAD_TO_DEG(current), RAD_TO_DEG(error));
-  pros::delay(100);
-  current = drive.get_global_angle();
-  error = target - current;
-  log_ln(MOVE, AUTO, "FINISHED TURN 3 >>>> Took %d ms, Ended At: %f, Angle Error: %f", pros::millis() - start_time, RAD_TO_DEG(current), RAD_TO_DEG(error));
-  pros::delay(100);
-  current = drive.get_global_angle();
-  error = target - current;
-  log_ln(MOVE, AUTO, "FINISHED TURN 4 >>>> Took %d ms, Ended At: %f, Angle Error: %f", pros::millis() - start_time, RAD_TO_DEG(current), RAD_TO_DEG(error));
+  // pros::delay(100);
+  // current = drive.get_global_angle();
+  // error = target - current;
+  // log_ln(MOVE, AUTO, "FINISHED TURN 1 >>>> Took %d ms, Ended At: %f, Angle Error: %f", pros::millis() - start_time, RAD_TO_DEG(current), RAD_TO_DEG(error));
+  // pros::delay(100);
+  // current = drive.get_global_angle();
+  // error = target - current;
+  // log_ln(MOVE, AUTO, "FINISHED TURN 2 >>>> Took %d ms, Ended At: %f, Angle Error: %f", pros::millis() - start_time, RAD_TO_DEG(current), RAD_TO_DEG(error));
+  // pros::delay(100);
+  // current = drive.get_global_angle();
+  // error = target - current;
+  // log_ln(MOVE, AUTO, "FINISHED TURN 3 >>>> Took %d ms, Ended At: %f, Angle Error: %f", pros::millis() - start_time, RAD_TO_DEG(current), RAD_TO_DEG(error));
+  // pros::delay(100);
+  // current = drive.get_global_angle();
+  // error = target - current;
+  // log_ln(MOVE, AUTO, "FINISHED TURN 4 >>>> Took %d ms, Ended At: %f, Angle Error: %f", pros::millis() - start_time, RAD_TO_DEG(current), RAD_TO_DEG(error));
 
   drive.set_state(Drive::STATE_DRIVER_CONTROL);
   drive_turn_task.stop_task();

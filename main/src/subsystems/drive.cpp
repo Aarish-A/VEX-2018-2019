@@ -129,19 +129,20 @@ void Drive::update() {
       if (this->x || this->a || this->y) {
         printf("Drive lock interrupted by driver\n");
         this->set_state(STATE_DRIVER_CONTROL);
-      } else if (timed_out(1000)) {
-        this->set_state(STATE_DRIVER_CONTROL);
-      } else if (pros::millis() - this->state_change_time > 200) {
+      }
+      // } else if (timed_out(1000)) {
+        // this->set_state(STATE_DRIVER_CONTROL);
+      // } else if (pros::millis() - this->state_change_time > 200) {
         // this->fl_motor.move(-25);
         // this->bl_motor.move(25);
         // this->fr_motor.move(-25);
         // this->br_motor.move(25);
-      }
+      // }
       break;
     case STATE_TURN_BRAKE:
-      this->disable_state_change_log();
-      if (pros::millis() - this->state_change_time > 100) this->set_state(STATE_DRIVER_CONTROL);
-      else if (this->x || this->a || this->y) this->set_state(STATE_DRIVER_CONTROL);
+      // this->disable_state_change_log();
+      // if (pros::millis() - this->state_change_time > 100) this->set_state(STATE_DRIVER_CONTROL);
+      if (this->x || this->a || this->y) this->set_state(STATE_DRIVER_CONTROL);
       break;
   }
   if (abs(this->a) > 20) this->above_turn_brake_threshold = pros::millis();

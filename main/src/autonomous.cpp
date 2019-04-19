@@ -38,8 +38,7 @@ void autonomous() {
   auto_update_task.start_task();
   drive.reset_global_angle();
 
-  // drive_turn_sync(FixedAngleTarget(52_deg));
-  // pros::delay(1000);
+  // drive_turn_sync(53.0_deg);
 
   switch(auto_routine) {
     case Auto_Routines::FRONT:
@@ -98,7 +97,7 @@ void auto_red_front_park()
   drive.wait_for_distance(40_in);
   drive_move_sync(-36_in,0_deg,true);
   angler.move_to(shot_positions[(int)SP::G_FRONT_TOP]);
-  drive_turn_async(PointAngleTarget({19.5,12})); //-81
+  drive_turn_async(FixedAngleTarget(-81_deg)); //-81
   drive.wait_for_angle(-20_deg);
   double_shot(shot_positions[(int)SP::G_FRONT_TOP], shot_positions[(int)SP::G_FRONT_MID]);
   angler.move_to(Angler::CAP_PICKUP_POSITION);
@@ -109,12 +108,17 @@ void auto_red_front_park()
   drive_turn_sync(FixedAngleTarget(90_deg));
   drive_move_sync(23.5_in,90_deg);
   drive_turn_sync(FixedAngleTarget(0_deg));
-  drive_move_sync(16.5_in,0_deg,false);
+  drive_move_sync(14_in,0_deg,false);
   climb_on_platform();
   drive.flatten_against_wall(true, true);
   drive.reset_global_angle();
+  drive.set_power(55, 15, 0);
+  while (right_platform_sensor.get_value() < 2000) pros::delay(5);
+  drive.set_power(-55, 15,0);
+  while (right_platform_sensor.get_value() > 1900) pros::delay(5);
+  drive.set_power(0, 0, 0);
   drive_turn_sync(FixedAngleTarget(-47_deg));
-  single_shot(shot_positions[(int)SP::G_FRONT_TOP]-50);
+  single_shot(shot_positions[(int)SP::G_FRONT_TOP]);
 }
 void auto_red_front() {
   pos.reset(57,10,0);
@@ -153,7 +157,7 @@ void auto_red_front() {
   drive_turn_sync(FixedAngleTarget(30_deg));
   drive_move_sync(21.5_in,30_deg);
   pros::delay(100);
-  drive_move_sync(-10.5_in,30_deg);
+  drive_move_sync(-7.5_in,30_deg);
   drive_turn_sync(FixedAngleTarget(-68_deg));
   drive_move_sync(21.5_in,-68_deg);
   printf("%d Picked ball off cap \n", pros::millis());
@@ -202,68 +206,52 @@ void auto_red_front() {
 
 void auto_red_back() {
   int cap_dis = 47_in;
-  log_ln(AUTO, "\n\n >>> before shot 1!!!!! \n\n");
-  single_shot(130);//(shot_positions[(int)SP::A_BACK_1_FAR_FLAG_MID], shot_positions[(int)SP::A_BACK_1_FAR_FLAG_TOP]);
-  log_ln(AUTO, "\n\n >>> after shot 1 !!!!! \n\n");
-  pros::delay(10000);
-  log_ln(AUTO, "\n\n >>> after shot 1 wait !!!!! \n\n");
-  //Pickup
-  intake.intake();
-  angler.move_to(Angler::PICKUP_POSITION);
-  drive_move_sync(cap_dis, 0_deg);
+    //Pickup
+    intake.intake();
+    angler.move_to(Angler::PICKUP_POSITION);
+    drive_move_sync(cap_dis, 0_deg);
 
-  //Shoot
-  drive_move_sync(-(cap_dis-14_in), 0_deg);
+    //Shoot
+    drive_move_sync(-(cap_dis-14_in), 0_deg);
+    drive_turn_sync(FixedAngleTarget(-64.5_deg));
+    double_shot(70, 125);
 
-  //Far
-  drive_turn_sync(FixedAngleTarget(-45_deg)); //IF
-  log_ln(AUTO, "\n\n >>> before shot !!!!! \n\n");
-  double_shot(130, 190);//(shot_positions[(int)SP::A_BACK_1_FAR_FLAG_MID], shot_positions[(int)SP::A_BACK_1_FAR_FLAG_TOP]);
-  log_ln(AUTO, "\n\n >>> after shot !!!!! \n\n");
-  pros::delay(100000);
-/*
-  //Mid
-  drive_turn_async(FixedAngleTarget(-65.5_deg)); //IF
-  drive.wait_for_angle(-30_deg);
-  double_shot(shot_positions[(int)SP::A_BACK_1_MID_FLAG_MID], shot_positions[(int)SP::A_BACK_1_MID_FLAG_TOP]);
-*/
-  //Flatten wall
-  drive_turn_sync(FixedAngleTarget(-90_deg));
-  drive_move_sync(-0.6_tile, -90_deg, false, 200, 0, false);
-  printf(" \n\n >>>> %d auto done back up | %d %d \n", pros::millis(), enc_l.get_value(), enc_r.get_value());
-  drive.flatten_against_wall_base(false, -30, true, 10);
-  drive.reset_global_angle();
-  printf("%d auto RESET: %d %d\n", pros::millis(), enc_l.get_value(), enc_r.get_value());
 
-  //Get balls off back cap
-  double mid_flag_pos = 140, top_flag_pos = 215;
-  drive_move_sync(5_in, 0_deg);
-  angler.move_to(Angler::CAP_PICKUP_POSITION);
-  drive_turn_sync(FixedAngleTarget(90_deg));
-  //pros::delay(1000000);
-  drive_move_sync(27.6_in, 90_deg);
-  pros::delay(200);
-  drive_move_sync(-9_in, 90_deg);
-  pros::delay(700);
+    //Flatten wall
+    drive_turn_sync(FixedAngleTarget(-90_deg));
+    drive_move_sync(-14.4_in, -90_deg);
+    printf(" \n\n >>>> %d auto done back up | %d %d \n", pros::millis(), enc_l.get_value(), enc_r.get_value());
+    drive.flatten_against_wall(false,true);
+    drive.reset_global_angle();
+    printf("%d auto RESET: %d %d\n", pros::millis(), enc_l.get_value(), enc_r.get_value());
 
-  /* Cap flip - caused the robot to end up in an inconsistent spot +-1In (making the next shot fail), and sometimes the base of the cap would land on top of the blue cap (not scored)
-  printf("\n%d Pick cap balls \n", pros::millis());
-  pros::delay(200);
-  printf("\n%d Pick cap balls | WAIT1 \n", pros::millis());
-  drive_move_sync(-9_in, 90_deg);
-  angler.move_to(Angler::CAP_FLIP_POSITION+10);
-  pros::delay(700);
-  printf("\n%d Pick cap balls | WAIT2 \n", pros::millis());
-  intake.outtake();
-  drive_move_sync(18_in, 90_deg);
-  */
+    //Get balls off back cap
+    double mid_flag_pos = 140, top_flag_pos = 215;
+    drive_move_sync(6_in, 0_deg);
+    angler.move_to(Angler::CAP_PICKUP_POSITION);
+    drive_turn_sync(FixedAngleTarget(90_deg));
+    drive_move_sync(27.6_in, 90_deg);
+    pros::delay(200);
+    drive_move_sync(-7_in, 90_deg);
+    pros::delay(700);
 
-  //Shoot
-  drive_turn_async(FixedAngleTarget(29.5_deg)); //IF
-  drive.wait_for_angle(60_deg);
-  double_shot(mid_flag_pos, top_flag_pos);
+    /* Cap flip - caused the robot to end up in an inconsistent spot +-1In (making the next shot fail), and sometimes the base of the cap would land on top of the blue cap (not scored)
+    printf("\n%d Pick cap balls \n", pros::millis());
+    pros::delay(200);
+    printf("\n%d Pick cap balls | WAIT1 \n", pros::millis());
+    drive_move_sync(-9_in, 90_deg);
+    angler.move_to(Angler::CAP_FLIP_POSITION+10);
+    pros::delay(700);
+    printf("\n%d Pick cap balls | WAIT2 \n", pros::millis());
+    intake.outtake();
+    drive_move_sync(18_in, 90_deg);
+    */
 
-  printf("%d Stopped | red\n", pros::millis());
+    //Shoot
+    drive_turn_sync(FixedAngleTarget(30.5_deg));
+    double_shot(mid_flag_pos, top_flag_pos);
+
+    printf("%d Stopped | red\n", pros::millis());
 
 }
 
