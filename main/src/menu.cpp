@@ -256,6 +256,7 @@ void menu_save() {
       write_to_file("/usd/auto_routine.txt", "w", "%d", (int)auto_routine);
       break;
     case Menu_Screens::FLAG_SELECT: {
+      for(int i = 0; i < MAX_NUMBER_OF_SHOTS; i++) flag_config[i] = Flags::NO_FLAG;
       for (int i = 0; i < 3; i++) {
         for (int j = 0; j < 2; j++) {
           Flags temp_flag = (Flags)(i * 2 + j);
