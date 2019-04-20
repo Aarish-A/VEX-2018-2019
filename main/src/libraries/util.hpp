@@ -46,4 +46,5 @@ struct vector {
   double magnitude();
 };
 double flag_angle(vector flag, vector pos, double offset = 0);
+double flag_angle_blue(vector flag, vector pos, double offset = 0);
 vector rotate(vector v, double offset);

@@ -12,6 +12,7 @@ FixedAngleTarget fixed_angle_target(0_deg);
 PointAngleTarget point_angle_target({0, 0});
 bool fixed_target = true;
 
+
 void auto_update(void* _params) {
   uint32_t timer = pros::millis() + 1250;
   while(true) {
