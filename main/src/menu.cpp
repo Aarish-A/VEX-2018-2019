@@ -17,19 +17,6 @@ void menu_init() {
 
   /* ------ Set Default Shot Pos Vals ------- */
   for(int i = 0; i < (int)SP::NUM_OF_ELEMENTS; i++) shot_positions[i] = 0;
-  shot_positions[(int)SP::A_BACK_1_NEAR_FLAG_TOP] = 0;
-  shot_positions[(int)SP::A_BACK_1_NEAR_FLAG_MID] = 0;
-  shot_positions[(int)SP::A_BACK_1_MID_FLAG_TOP] = 125;
-  shot_positions[(int)SP::A_BACK_1_MID_FLAG_MID] = 70;
-  shot_positions[(int)SP::A_BACK_1_FAR_FLAG_TOP] = 130;
-  shot_positions[(int)SP::A_BACK_1_FAR_FLAG_MID] = 190;
-
-  shot_positions[(int)SP::A_BACK_2_NEAR_FLAG_TOP] = 0;
-  shot_positions[(int)SP::A_BACK_2_NEAR_FLAG_MID] = 0;
-  shot_positions[(int)SP::A_BACK_2_MID_FLAG_TOP] = 215;
-  shot_positions[(int)SP::A_BACK_2_MID_FLAG_MID] = 140;
-  shot_positions[(int)SP::A_BACK_2_FAR_FLAG_TOP] = 100;
-  shot_positions[(int)SP::A_BACK_2_FAR_FLAG_MID] = 200;
   /* ---------------------------------------- */
 
   uint32_t temp = 0;
@@ -211,6 +198,8 @@ void menu_element_decrement_action() {
 void menu_selected_action() {
   switch(menu_screen) {
     case Menu_Screens::SHOT_TUNING:
+      make_shot_request(shot_positions[menu_shot_position], Turn_Direction::STRAIGHT, Field_Position::FRONT);
+      trigger_shot_queue();
       break;
     case Menu_Screens::AUTO_SELECT:
       game_side == 'R' ? game_side = 'B' : game_side = 'R';
@@ -267,6 +256,7 @@ void menu_save() {
       write_to_file("/usd/auto_routine.txt", "w", "%d", (int)auto_routine);
       break;
     case Menu_Screens::FLAG_SELECT: {
+      for(int i = 0; i < MAX_NUMBER_OF_SHOTS; i++) flag_config[i] = Flags::NO_FLAG;
       for (int i = 0; i < 3; i++) {
         for (int j = 0; j < 2; j++) {
           Flags temp_flag = (Flags)(i * 2 + j);
