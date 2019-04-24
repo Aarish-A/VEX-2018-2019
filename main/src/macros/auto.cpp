@@ -63,7 +63,7 @@ void cap_on_pole_task_function(void* _param) {
 
     drive_move_sync(5_in, 0_deg);
     drive_turn_async(FixedAngleTarget(13.5_deg));
-    double_shot(shot_positions[S_CLOSE_POLE_TOP], shot_positions[S_CLOSE_POLE_MID]);
+    double_shot(shot_positions[DS_BACK_MID], shot_positions[DS_BACK_TOP]);
     drive.wait_for_stop();
     angler.move_to(Angler::CAP_PICKUP_POSITION);
     capper.move_to_flag_flip(200);
@@ -77,7 +77,7 @@ void cap_on_pole_task_function(void* _param) {
     capper.move_to_velocity(Capper::CARRY_POSITION, 200);
     drive_turn_async(FixedAngleTarget(90_deg));
     drive.wait_for_angle(30_deg);
-    double_shot(shot_positions[G_BACK_TOP], shot_positions[G_BACK_MID]);
+    double_shot(shot_positions[DS_FINAL_MID], shot_positions[DS_FINAL_TOP]);
   } else {
     cap_on_pole();
     master.rumble("-");

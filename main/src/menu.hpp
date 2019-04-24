@@ -37,12 +37,16 @@ enum SP {
 
   S_FRONT_TOP,
   S_FRONT_MID,
-  S_CLOSE_POLE_TOP,
-  S_CLOSE_POLE_MID,
-  S_FAR_POLE_TOP,
-  S_FAR_POLE_LOW,
+  S_BACK_TOP,
+  S_BACK_MID,
+  S_BACK_BOT,
   S_FINAL_LOW,
   S_FINAL_MID,
+
+  DS_BACK_TOP,
+  DS_BACK_MID,
+  DS_FINAL_TOP,
+  DS_FINAL_MID,
 
   NUM_OF_ELEMENTS
 };
@@ -63,13 +67,16 @@ const std::string menu_shot_position_strings[] = {
 
   "S FRONT TOP",
   "S FRONT MID",
-  "S CLOSE POLE TOP",
-  "S CLOSE POLE MID",
-  "S FAR POLE TOP",
-  "S FAR POLE LOW",
+  "S BACK TOP",
+  "S BACK MID",
+  "S BACK BOT",
   "S FINAL LOW",
-  "S FINAL MID"
+  "S FINAL MID",
 
+  "DS BACK TOP",
+  "DS BACK MID",
+  "DS FINAL TOP",
+  "DS FINAL MID",
 };
 
 enum class Auto_Routines {
