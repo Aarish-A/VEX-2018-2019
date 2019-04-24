@@ -72,6 +72,7 @@ void opcontrol() {
 	{
 		while(pros::competition::is_disabled() || !pros::competition::is_connected())
 		{
+			printf("Wait\n");
 			master.update();
 			puncher.update();
 			pros::delay(10);
@@ -89,6 +90,7 @@ void opcontrol() {
 		// printf("Light sensor:%f\n",gyro.get_value());
 		//printf("poti: %d\n",s_pole_poti.get_value());
 		// master.print(2,0,"%d %d                 ",enc_l.get_value(), enc_r.get_value());
+		//printf("%d %d|%d %d|%d | %f\n", pros::millis(), enc_l.get_value(), enc_l.get_value()%360,  enc_r.get_value(), enc_r.get_value()%360, drive.read_global_angle());
 		std::string fps = "";
 		switch(field_position) {
 			case Field_Position::FRONT: fps   = "Front    "; break;
