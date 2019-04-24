@@ -19,7 +19,9 @@ pros::ADIEncoder enc_2(3, 4, false);
 pros::ADIEncoder enc_3(5, 6, false);
 pros::ADIEncoder enc_4(7, 8, false);
 
-//pros::ADIAnalogIn autoPoti (8);
+pros::ADIAnalogIn poti_1 (1);
+pros::ADIAnalogIn poti_2 (2);
+pros::ADIAnalogIn poti_3 (8);
 pros::ADILineSensor ball_sensor(5);
 pros::Vision vision_sensor(6);
 

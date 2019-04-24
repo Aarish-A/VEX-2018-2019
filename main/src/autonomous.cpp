@@ -14,8 +14,6 @@
  * will be stopped. Re-enabling the robot will restart the task, not re-start it
  * from where it left off.
  */
-
-vector flags_blue[] = {{17,11}, {66.5,11}, {114,11}};
 void auto_red_front_park();
 void auto_red_front();
 void auto_red_back();
@@ -29,6 +27,8 @@ void programming_skills_29_points();
 void programming_skills_30_points();
 void driver_skills();
 
+vector flags_blue[] = {{17,11}, {17,11}, {66.5,11}, {66.5,11}, {114,11}, {114,11}};
+
 
 void autonomous() {
   // Auto Start
@@ -39,6 +39,24 @@ void autonomous() {
   drive.reset_global_angle();
 
   // drive_turn_sync(53.0_deg);
+  if(game_side == 'R')
+  {
+    flags_blue[0] = {17,11};
+    flags_blue[1] = {17,11};
+    flags_blue[2] = {66.5,11};
+    flags_blue[3] = {66.5,11};
+    flags_blue[4] = {114,11};
+    flags_blue[5] = {114,11};
+  }
+  if(game_side == 'B')
+  {
+    flags_blue[0] = {114,11};
+    flags_blue[1] = {114,11};
+    flags_blue[2] = {66.5,11};
+    flags_blue[3] = {66.5,11};
+    flags_blue[4] = {17,11};
+    flags_blue[5] = {17,11};
+  }
 
   switch(auto_routine) {
     case Auto_Routines::FRONT:
@@ -147,12 +165,12 @@ void auto_red_front() {
     switch(flag_config[i]) {
       case Flags::LEFT_TOP:
       drive_turn_async(FixedAngleTarget(-81_deg)); //-81
-      if(i==0)drive.wait_for_angle(-20_deg);
+      if(i==0)drive.wait_for_angle(-40_deg);
       single_shot(shot_positions[(int)SP::G_FRONT_TOP]);
       break;
       case Flags::LEFT_MID:
       drive_turn_async(FixedAngleTarget(-81_deg)); //-81
-      if(i==0)drive.wait_for_angle(-20_deg);
+      if(i==0)drive.wait_for_angle(-40_deg);
       single_shot(shot_positions[(int)SP::G_FRONT_MID]);
       break;
       case Flags::MID_TOP:
@@ -227,36 +245,11 @@ void auto_red_back() {
 
     //Shoot
     drive_move_sync(-(cap_dis-14_in), 0_deg);
-    for(int i = 0; i <= 1; i++)
-    {
-      switch(flag_config[i]) {
-        case Flags::LEFT_TOP:
-        drive_turn_sync(FixedAngleTarget(flag_angle(flags_blue[0],{23,104.5}))); //-81
-        single_shot(shot_positions[(int)SP::G_FRONT_TOP]);
-        break;
-        case Flags::LEFT_MID:
-        drive_turn_sync(FixedAngleTarget(flag_angle(flags_blue[0],{23,104.5}))); //-81
-        single_shot(shot_positions[(int)SP::G_FRONT_MID]);
-        break;
-        case Flags::MID_TOP:
-        drive_turn_sync(FixedAngleTarget(flag_angle(flags_blue[1],{23,104.5})));
-        single_shot(shot_positions[(int)SP::G_FRONT_TOP]);
-        break;
-        case Flags::MID_MID:
-        drive_turn_sync(FixedAngleTarget(flag_angle(flags_blue[1],{23,104.5})));
-        single_shot(shot_positions[(int)SP::G_FRONT_MID]);
-        break;
-        case Flags::RIGHT_TOP:
-        drive_turn_sync(FixedAngleTarget(flag_angle(flags_blue[2],{23,104.5})));
-        single_shot(shot_positions[(int)SP::G_FRONT_TOP]);
-        break;
-        case Flags::RIGHT_MID:
-        drive_turn_sync(FixedAngleTarget(flag_angle(flags_blue[2],{23,104.5})));
-        single_shot(shot_positions[(int)SP::G_FRONT_MID]);
-        break;
-        case Flags::NO_FLAG:
-        break;
-      }
+
+    vector pos = {23, 104.5};
+    for(int i = 0; i <= 1; i++) {
+      drive_turn_sync(FixedAngleTarget(flag_angle(flags_blue[(int)flag_config[i]], pos))); //-81
+      single_shot(shot_positions[(int)SP::G_FRONT_TOP]);
     }
 
 
@@ -278,50 +271,12 @@ void auto_red_back() {
     drive_move_sync(-7_in, 90_deg);
     pros::delay(700);
 
-    /* Cap flip - caused the robot to end up in an inconsistent spot +-1In (making the next shot fail), and sometimes the base of the cap would land on top of the blue cap (not scored)
-    printf("\n%d Pick cap balls \n", pros::millis());
-    pros::delay(200);
-    printf("\n%d Pick cap balls | WAIT1 \n", pros::millis());
-    drive_move_sync(-9_in, 90_deg);
-    angler.move_to(Angler::CAP_FLIP_POSITION+10);
-    pros::delay(700);
-    printf("\n%d Pick cap balls | WAIT2 \n", pros::millis());
-    intake.outtake();
-    drive_move_sync(18_in, 90_deg);
-    */
 
-    for(int i = 2; i <= 3; i++)
-    {
-      switch(flag_config[i]) {
-        case Flags::LEFT_TOP:
-        drive_turn_sync(FixedAngleTarget(flag_angle(flags_blue[0],{45.5,129.5},90))); //-81
-        single_shot(shot_positions[(int)SP::G_FRONT_TOP]);
-        break;
-        case Flags::LEFT_MID:
-        drive_turn_sync(FixedAngleTarget(flag_angle(flags_blue[0],{45.5,129.5},90))); //-81
-        single_shot(shot_positions[(int)SP::G_FRONT_MID]);
-        break;
-        case Flags::MID_TOP:
-        drive_turn_sync(FixedAngleTarget(flag_angle(flags_blue[1],{45.5,129.5},90)));
-        single_shot(shot_positions[(int)SP::G_FRONT_TOP]);
-        break;
-        case Flags::MID_MID:
-        drive_turn_sync(FixedAngleTarget(flag_angle(flags_blue[1],{45.5,129.5},90)));
-        single_shot(shot_positions[(int)SP::G_FRONT_MID]);
-        break;
-        case Flags::RIGHT_TOP:
-        drive_turn_sync(FixedAngleTarget(flag_angle(flags_blue[2],{45.5,129.5},90)));
-        single_shot(shot_positions[(int)SP::G_FRONT_TOP]);
-        break;
-        case Flags::RIGHT_MID:
-        drive_turn_sync(FixedAngleTarget(flag_angle(flags_blue[2],{45.5,129.5},90)));
-        single_shot(shot_positions[(int)SP::G_FRONT_MID]);
-        break;
-        case Flags::NO_FLAG:
-        break;
-      }
+    pos = {45.5,129.5};
+    for(int i = 2; i <= 3; i++) {
+      drive_turn_sync(FixedAngleTarget(flag_angle(flags_blue[(int)flag_config[i]], pos, 90))); //-81
+      single_shot(shot_positions[(int)SP::G_FRONT_TOP]);
     }
-
     printf("%d Stopped | red\n", pros::millis());
 
 }
@@ -473,6 +428,48 @@ void auto_blue_front_park() {
   single_shot(front_SP.top-50);
 }
 void auto_blue_back() {
+
+  int cap_dis = 47_in;
+    //Pickup
+    intake.intake();
+    angler.move_to(Angler::PICKUP_POSITION);
+    drive_move_sync(cap_dis, 0_deg);
+
+    //Shoot
+    drive_move_sync(-(cap_dis-14_in), 0_deg);
+
+    vector pos = {23, 104.5};
+    for(int i = 0; i <= 1; i++) {
+      drive_turn_sync(FixedAngleTarget(flag_angle_blue(flags_blue[(int)flag_config[i]], pos))); //-81
+      single_shot(shot_positions[(int)SP::G_FRONT_TOP]);
+    }
+
+
+    //Flatten wall
+    drive_turn_sync(FixedAngleTarget(90_deg));
+    drive_move_sync(-20_in, 90_deg,false);
+    printf(" \n\n >>>> %d auto done back up | %d %d \n", pros::millis(), enc_l.get_value(), enc_r.get_value());
+    drive.flatten_against_wall(false,true);
+    drive.reset_global_angle();
+    printf("%d auto RESET: %d %d\n", pros::millis(), enc_l.get_value(), enc_r.get_value());
+
+    //Get balls off back cap
+    double mid_flag_pos = 140, top_flag_pos = 215;
+    drive_move_sync(6_in, 0_deg);
+    angler.move_to(Angler::CAP_PICKUP_POSITION);
+    drive_turn_sync(FixedAngleTarget(-90_deg));
+    drive_move_sync(27.6_in, -90_deg);
+    pros::delay(200);
+    drive_move_sync(-7_in, -90_deg);
+    pros::delay(700);
+
+    pos = {45.5,129.5};
+    for(int i = 2; i <= 3; i++) {
+      drive_turn_sync(FixedAngleTarget(flag_angle_blue(flags_blue[(int)flag_config[i]], pos))); //-81
+      single_shot(shot_positions[(int)SP::G_FRONT_TOP]);
+    }
+
+    printf("%d Stopped | red\n", pros::millis());
 
 }
 
@@ -737,6 +734,7 @@ void programming_skills_28_points() {
 }
 
 void programming_skills_30_points() {
+  angler.move_to(Angler::PICKUP_POSITION);
   drive_move_async(37_in, 0_deg);
   capper.move_to_velocity(35 * Capper::GEAR_RATIO, 120);
   drive.wait_for_distance(12_in);

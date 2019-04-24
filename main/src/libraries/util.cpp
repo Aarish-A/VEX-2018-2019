@@ -42,6 +42,10 @@ double flag_angle(vector flag, vector pos, double offset) {
   return(((atan2((flag.y - pos.y),(flag.x-pos.x))))+(offset*M_PI/180));
 }
 
+double flag_angle_blue(vector flag, vector pos, double offset) {
+  return((((atan2((flag.y - pos.y),(flag.x-pos.x))))+(offset*M_PI/180))*-1);
+}
+
 vector rotate(vector v, double offset) {
   double m = v.magnitude();
   double a = v.phase() + offset;
