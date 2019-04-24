@@ -15,6 +15,7 @@ void capper_move_to_cap_flip_macro(void* _params) {
 
 
 pilons::Task capper_move_to_cap_flip_task("Capper Cap Flip", [](void* param) {
+
 	capper.move_to_velocity(37 * Capper::GEAR_RATIO, 200);
 	pros::delay(200);
 	intake.intake();
@@ -67,7 +68,16 @@ double get_shot_angle(long double _x, long double _y) {
 
 void opcontrol() {
 	log_ln(PROGRAM_FLOW, "   --- %d START OPCONTROL --- \n", pros::millis());
-	if (auto_routine == Auto_Routines::DRIVER_SKILLS) autonomous();
+	if (auto_routine == Auto_Routines::DRIVER_SKILLS)
+	{
+		while(pros::competition::is_disabled() || !pros::competition::is_connected())
+		{
+			master.update();
+			puncher.update();
+			pros::delay(10);
+		}
+		autonomous();
+	}
 	pilons::Task::stop_all_tasks();
 	Subsystem::enable_all();
 	enc_r.reset();
@@ -134,10 +144,16 @@ void opcontrol() {
 					// intake.intake();
 					break;
 				case BTN_CAP_PICKUP:
-				// angler.move_to(Angler::CAP_PICKUP_POSITION);
-				// intake.intake();
+				if (auto_routine == Auto_Routines::DRIVER_SKILLS)
+				{
+					angler.move_to(Angler::CAP_PICKUP_POSITION);
+					intake.intake();
+				}
+				else
+				{
 					make_shot_request(shot_positions[G_FRONT_ANGLE_TOP], Turn_Direction::STRAIGHT, Field_Position::FRONT);
 					trigger_shot_queue();
+				}
 					break;
 				case BTN_SHOT_R_T:
 					// 41 in x
@@ -196,6 +212,7 @@ void opcontrol() {
 				case BTN_MENU_SELECTED_ACTION: menu_selected_action(); break;
 				case BTN_MENU_CLEAR: menu_clear(); break;
 				case BTN_MENU_SAVE: menu_save(); break;
+				case BTN_FIELD_FRONT: if (flag_shot_counter < 5) flag_shot_counter++; break;
 			}
 		}
 
