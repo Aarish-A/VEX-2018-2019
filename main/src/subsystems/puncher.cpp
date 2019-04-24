@@ -132,6 +132,11 @@ void Puncher::wait_for_shot_finish() {
   while (this->shooting()) pros::delay(2);
 }
 
+void Puncher::wait_for_ball_drop(uint32_t max_duration) {
+  uint32_t timeout = pros::millis();
+  while (!this->ball_on && pros::millis() - timeout < max_duration) pros::delay(2);
+}
+
 void Puncher::set_holding() {
   if (this->state != STATE_LOADING) this->set_state(STATE_LOADED);
 }

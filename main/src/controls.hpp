@@ -27,7 +27,6 @@ constexpr uint8_t BTN_SHOT_CANCEL_PARTNER = GET_BTN_INDEX(pros::E_CONTROLLER_DIG
 constexpr int BTN_GROUND_PICKUP = GET_BTN_INDEX(pros::E_CONTROLLER_DIGITAL_L2);
 constexpr int BTN_CAP_PICKUP = GET_BTN_INDEX(pros::E_CONTROLLER_DIGITAL_L1);
 
-/* Capper */
 constexpr int BTN_SHOT_L_T = GET_BTN_INDEX(pros::E_CONTROLLER_DIGITAL_L1);
 constexpr int BTN_SHOT_L_M = GET_BTN_INDEX(pros::E_CONTROLLER_DIGITAL_L2);
 constexpr int BTN_SHOT_R_T = GET_BTN_INDEX(pros::E_CONTROLLER_DIGITAL_R1);
@@ -37,14 +36,17 @@ constexpr int BTN_FIELD_RED_PF = GET_BTN_INDEX(pros::E_CONTROLLER_DIGITAL_Y);
 constexpr int BTN_FIELD_BLUE_PF = GET_BTN_INDEX(pros::E_CONTROLLER_DIGITAL_A);
 constexpr uint8_t BTN_FIELD_BACK = GET_BTN_INDEX(pros::E_CONTROLLER_DIGITAL_B);
 
+/* Capper */
 constexpr int BTN_CAPPER_DOWN = GET_BTN_INDEX(pros::E_CONTROLLER_DIGITAL_Y);
 constexpr int BTN_CAPPER_UP = GET_BTN_INDEX(pros::E_CONTROLLER_DIGITAL_X);
 constexpr int BTN_CAP_FLIP = GET_BTN_INDEX(pros::E_CONTROLLER_DIGITAL_B);
 
+/* Decapper */
+constexpr uint8_t BTN_DECAPPER_UP = GET_BTN_INDEX(pros::E_CONTROLLER_DIGITAL_UP);
+constexpr uint8_t BTN_DECAPPER_DOWN = GET_BTN_INDEX(pros::E_CONTROLLER_DIGITAL_LEFT);
 
 
 /* Partner Controller Dependent Controls */
-/* Decapper */
 // extern int BTN_DECAPPER_UP;
 // extern int BTN_DECAPPER_DOWN;
 extern int BTN_CHANGE_GAME_SIDE;

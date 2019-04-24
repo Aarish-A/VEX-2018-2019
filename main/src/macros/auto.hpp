@@ -17,6 +17,8 @@ extern pilons::Task auto_update_task;
 extern pilons::Task move_alg_task;
 extern pilons::Task cap_on_pole_task;
 
+extern uint8_t capper_count;
+
 void start_auto_update_task();
 void stop_auto_update_task();
 void stop_move_alg_task();

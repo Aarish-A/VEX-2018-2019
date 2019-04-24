@@ -34,6 +34,7 @@ private:
   uint32_t above_turn_brake_threshold = 0;
 
   int8_t x, y, a, last_a;
+  bool locked = false;
 
   /* Private Functions */
   void set_vel(double x, double y, double a);

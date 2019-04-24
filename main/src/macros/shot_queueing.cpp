@@ -133,22 +133,22 @@ void shot_queue_handle(void* param) {
       while(fabs(drive.get_error()) > 14.5_deg) pros::delay(2);
       pros::delay(20); // DO NOT DELETE THIS DELAY THIS IS REALLY IMPORTANT, WILL DRY SHOOT IF U DELETE!!!! @ZAIN @ANJALEE @STRAUSS @ANYONE ELSE THAT READS THIS
     }
-    // drive.lock();
+    drive.lock();
     // angler.wait_for_target_reach();
     // while(fabs(angler.get_error()) / 7 > 15) pros::delay(2);
     // log_ln(MACRO, "Started shot %d", i + 1);
     while(fabs(angler.get_error()) / 7 > 20) pros::delay(2);
+    puncher.wait_for_ball_drop();
     puncher.shoot();
     puncher.wait_for_shot_finish();
     log_ln(MACRO, "Finished shot %d", i + 1);
 
-    //drive.unlock();
+    drive.unlock();
     drive.wait_for_stop();
     // log_ln(MACRO, "FINISHED SHOT %d, TOOK %d MS", i + 1, pros::millis() - shot_start_time);
     last_turn_direction = temp_target.turn_direction;
   }
   log_ln(MACRO, "FINISHED SHOT QUEUE HANDLING, TOOK %d MS", pros::millis() - macro_start_time);
-  pros::delay(50);
   shot_queue_handle_task.stop_task();
 }
 
@@ -156,5 +156,5 @@ void shot_task_cleanup() {
   if (puncher.shooting()) puncher.cancel_shot();
   shot_queue.clear();
   angler.move_to(Angler::PICKUP_POSITION);
-  intake.intake();
+  if (!menu_enabled) intake.intake();
 }

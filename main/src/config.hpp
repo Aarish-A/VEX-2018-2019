@@ -5,6 +5,7 @@
 #include "subsystems/angler.hpp"
 #include "subsystems/puncher.hpp"
 #include "subsystems/capper.hpp"
+#include "subsystems/decapper.hpp"
 #include "libraries/controller.hpp"
 #include "libraries/tracking.hpp"
 
@@ -24,6 +25,7 @@ extern pros::ADILineSensor s_ball_detector;
 extern pros::Motor m_capper;
 extern pros::ADILineSensor right_platform_sensor;
 extern pros::ADIGyro gyro;
+extern pros::Motor m_decapper;
 
 
 extern Intake intake;
@@ -31,5 +33,6 @@ extern Drive drive;
 extern Angler angler;
 extern Puncher puncher;
 extern Capper capper;
+extern Decapper decapper;
 
 extern Tracking pos;

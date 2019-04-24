@@ -113,7 +113,9 @@ void Drive::update() {
     case STATE_DISABLED:
       break;
     case STATE_DRIVER_CONTROL:
-      this->set_power(this->x, this->y, this->a);
+      if (this->x || this->a || this->y) this->set_power(this->x, this->y, this->a);
+      else if (this->locked) this->set_state(STATE_DRIVE_LOCK);
+      else this->set_power(0);
       // if (this->x == 0 && this->y == 0 && this->a == 0 && pros::millis() - this->above_turn_brake_threshold < 400) {
       //   this->disable_state_change_log();
       //   this->set_state(STATE_TURN_BRAKE);
@@ -267,9 +269,11 @@ void Drive::wait_for_angle(double target_angle) {
 }
 
 void Drive::lock() {
+  this->locked = true;
   this->set_state(STATE_DRIVE_LOCK);
 }
 
 void Drive::unlock() {
+  this->locked = false;
   if (this->state == STATE_DRIVE_LOCK) this->set_state(STATE_DRIVER_CONTROL);
 }

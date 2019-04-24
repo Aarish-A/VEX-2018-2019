@@ -21,6 +21,10 @@ bool pilons::Controller::check_falling(int button) {
   return (!this->buttons[button].pressed && this->buttons[button].last_pressed);
 }
 
+bool pilons::Controller::pressed(int button) {
+  return this->buttons[button].pressed;
+}
+
 /* Public Functions */
 void pilons::Controller::update() {
   if (pros::millis() > pilons::Controller::last_screen_update_time + pilons::Controller::SCREEN_UPDATE_INTERVAL) {

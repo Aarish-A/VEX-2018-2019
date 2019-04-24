@@ -50,4 +50,5 @@ public:
   void finish_capping();
   bool capping();
   bool at_pickup_position();
+  bool at_flag_flip_position();
 };

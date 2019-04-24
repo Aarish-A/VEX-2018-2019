@@ -48,5 +48,6 @@ public:
   void cancel_shot();
   bool shooting();
   void wait_for_shot_finish();
+  void wait_for_ball_drop(uint32_t max_duration = 100);
   void set_holding();
 };

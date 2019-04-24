@@ -123,7 +123,7 @@ void Capper::move_to_flag_flip(double velocity) {
 
 void Capper::pickup_cap(bool expansion_zone) {
   if (expansion_zone) this->move_to_velocity(100 * Capper::GEAR_RATIO, 80);
-  else this->move_to_velocity(Capper::CARRY_POSITION + 4 * Capper::GEAR_RATIO, 65);
+  else this->move_to_velocity(Capper::CARRY_POSITION + 10 * Capper::GEAR_RATIO, 65);
 }
 
 void Capper::start_capping() {
@@ -138,7 +138,9 @@ void Capper::finish_capping() {
 bool Capper::capping() {
   return this->state != STATE_HOLD;
 }
-
+bool Capper::at_flag_flip_position() {
+  return fabs(this->position - Capper::FLAG_FLIP_POSITION) < 10 * Capper::GEAR_RATIO;
+}
 bool Capper::at_pickup_position() {
   return (fabs(this->position) - Capper::PICKUP_POSITION) < 10 * Capper::GEAR_RATIO;
 }

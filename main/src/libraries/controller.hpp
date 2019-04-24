@@ -43,6 +43,7 @@ namespace pilons {
     int8_t get_analog(pros::controller_analog_e_t joystick, uint8_t deadzone);
     bool check_single_press(int button);
     bool check_double_press(int button1, int button2);
+    bool pressed(int button);
 
     void write_line(uint8_t line, const char* format, ...);
   };

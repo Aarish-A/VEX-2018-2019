@@ -6,12 +6,21 @@
 #include "subsystems/intake.hpp"
 #include "subsystems/drive.hpp"
 #include "subsystems/angler.hpp"
+#include "subsystems/decapper.hpp"
 #include "libraries/task.hpp"
 #include "macros/shot_queueing.hpp"
 
 void initialize() {
 	log_init();
 	menu_init();
+
+	angler.reset();
+	puncher.reset();
+	intake.reset();
+	drive.reset();
+	if (auto_routine == Auto_Routines::DRIVER_SKILLS || auto_routine == Auto_Routines::PROGRAMMING_SKILLS) capper.reset();
+	else decapper.reset();
+
 	Subsystem::reset_all();
 	while(Subsystem::any_resetting()) {
 		Subsystem::update_all();
