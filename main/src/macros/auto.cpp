@@ -155,6 +155,7 @@ void drive_move(void* _params) {
   uint8_t max_power = drive_move_param.max_power;
   int8_t start_power = drive_move_param.start_power;
   bool decel = drive_move_param.decel;
+  bool carrying_cap = drive_move_param.carrying_cap;
   drive.target = dist_target;
 
   // If the correct angle is default, the correct angle should be the starting angle
@@ -173,9 +174,9 @@ void drive_move(void* _params) {
   double dist_d_val = 0;
 
   // Angle Correction PID Values
-  double angle_kP = 5.0 / 2.0_deg;
-  double angle_kD = 69.00;
-  double angle_kI = 0.0350;
+  double angle_kP = carrying_cap ? 2.0 / 2.0_deg : 5.0 / 2.0_deg;
+  double angle_kD = carrying_cap ? 80.00 : 69.00;
+  double angle_kI = carrying_cap ? 0.525 : 0.0350;
   double angle_p_val = 0;
   double angle_i_val = 0;
   double angle_d_val = 0;
@@ -201,6 +202,8 @@ void drive_move(void* _params) {
   double power = start_power;
   double angle_power = 0;
 
+  bool safety = false;
+
   do {
     // Calculate how far the robot has moved and get current angle
     delta_enc_l = (drive.enc_l.get_value() - enc_l_start);
@@ -217,7 +220,7 @@ void drive_move(void* _params) {
     // if (abs(dist_current) < 8_in && dist_error > 2_in) {
     if (fabs(dist_current) < fabs(dist_target) * 0.30) {
       power += 0.40 * sgn(dist_target);
-      log_ln(MOVE, "%d Ramping up...", pros::millis(), power, dist_current, dist_error, angle_current, angle_error);
+      log_ln(MOVE_DEBUGGING, "%d Ramping up...", pros::millis(), power, dist_current, dist_error, angle_current, angle_error);
     } else if (decel) {
       // Calculate PID values for distance
       dist_p_val = dist_error * dist_kP;
@@ -228,39 +231,62 @@ void drive_move(void* _params) {
       if (fabs(dist_error) < fabs(dist_target * 0.30) && (dist_error - dist_last_error) < 2.0_in) dist_d_val = (dist_error - dist_last_error) * dist_kD;
       else dist_d_val = 0;
 
-      // Calculate PID Values for angle_error
-      angle_p_val = angle_error * angle_kP;
-
-      angle_i_val += angle_error * angle_kI;
-      // if (abs(angle_error) < 1.5_deg) angle_i_val += angle_error * angle_kI;
-      // else angle_i_val = 0;
-      if (sgn(angle_error) != sgn(angle_last_error)) angle_i_val = 0;
-
-      if (fabs(angle_error) < 2.0_deg) angle_d_val = (angle_error - angle_last_error) * angle_kD;
-      else angle_d_val = 0;
+      // // Calculate PID Values for angle_error
+      // angle_p_val = angle_error * angle_kP;
+      //
+      // angle_i_val += angle_error * angle_kI;
+      // // if (abs(angle_error) < 1.5_deg) angle_i_val += angle_error * angle_kI;
+      // // else angle_i_val = 0;
+      // if (sgn(angle_error) != sgn(angle_last_error)) angle_i_val = 0;
+      //
+      // if (fabs(angle_error) < 2.0_deg) angle_d_val = (angle_error - angle_last_error) * angle_kD;
+      // else angle_d_val = 0;
 
       // Calculate powers
       power = dist_p_val + dist_i_val + dist_d_val;
-      if (fabs(dist_current) > fabs(dist_target) * 0.60) angle_power = angle_p_val + angle_i_val + angle_d_val;
-      else angle_power = 0;
+      // if (fabs(dist_current) > fabs(dist_target) * 0.60) angle_power = angle_p_val + angle_i_val + angle_d_val;
+      // else angle_power = 0;
 
-      log_ln(MOVE, "%d In PID...", pros::millis());
+      log_ln(MOVE_DEBUGGING, "%d In PID...", pros::millis());
     }
 
 
-    log_ln(MOVE, "%d Distance | Current: %f in, Error: %f in, Power: %f, P: %f, I: %f, D: %f", pros::millis(), dist_current, dist_error, power, dist_p_val, dist_i_val, dist_d_val);
-    log_ln(MOVE,  "%d Angle    | Current: %f deg, Error: %f deg, Angle Power: %f, P: %f, I: %f, D: %f", pros::millis(), RAD_TO_DEG(angle_current), RAD_TO_DEG(angle_error), angle_power, angle_p_val, angle_i_val, angle_d_val);
-    log_ln(MOVE, "----------------------------------------------------------------");
+    log_ln(MOVE_DEBUGGING, "%d Distance | Current: %f in, Error: %f in, Power: %f, P: %f, I: %f, D: %f", pros::millis(), dist_current, dist_error, power, dist_p_val, dist_i_val, dist_d_val);
+    log_ln(MOVE_DEBUGGING, "%d Angle    | Current: %f deg, Error: %f deg, Angle Power: %f, P: %f, I: %f, D: %f", pros::millis(), RAD_TO_DEG(angle_current), RAD_TO_DEG(angle_error), angle_power, angle_p_val, angle_i_val, angle_d_val);
+    log_ln(MOVE_DEBUGGING, "----------------------------------------------------------------");
 
     if (fabs(power) > max_power) power = max_power * sgn(power);
-    drive.set_power(0, power, angle_power);
+
+    if (carrying_cap ? true : fabs(dist_current) > fabs(dist_target) * 0.30) {
+      angle_p_val = angle_error * angle_kP;
+      angle_i_val += angle_error * angle_kI;
+      if (sgn(angle_error) != sgn(angle_last_error)) angle_i_val = 0;
+      if (fabs(angle_error) < 2.0_deg) angle_d_val = (angle_error - angle_last_error) * angle_kD;
+      else angle_d_val = 0;
+      angle_power = angle_p_val + angle_i_val + angle_d_val;
+    } else angle_power = 0;
+
+    // drive.set_power(0, power, angle_power);
+    if (carrying_cap) drive.set_side_power(sgn(power + angle_power) == sgn(dist_target) ? power + angle_power : 0, sgn(power - angle_power) == sgn(dist_target) ? power - angle_power : 0);
+    else drive.set_power(0, power, angle_power);
 
     dist_last_error = dist_error;
     angle_last_error = angle_error;
+
+    // if (fabs(dist_target) > 15_in) {
+    //   if (dist_target > 0 && (drive.fl_motor.get_actual_velocity() < 1 || drive.fr_motor.get_actual_velocity() < 1)) {
+    //     safety = true;
+    //     break;
+    //   } else if (dist_target > 0 && (drive.bl_motor.get_actual_velocity() < 1 || drive.br_motor.get_actual_velocity() < 1)) {
+    //     safety = true;
+    //     break;
+    //   }
+    // }
+
     pros::delay(1);
   } while (fabs(dist_error) > 0.3_in && sgn(dist_error) == sgn(dist_last_error));
 
-  if (brake && decel) {
+  if (brake && decel && !safety) {
     double targetFL = drive.fl_motor.get_position() + (dist_error) * (drive.TPR / (drive.WHEEL_DIAMETER * M_PI));
     double targetBL = drive.bl_motor.get_position() + (dist_error) * (drive.TPR / (drive.WHEEL_DIAMETER * M_PI));
     double targetFR = drive.fr_motor.get_position() + (dist_error) * (drive.TPR / (drive.WHEEL_DIAMETER * M_PI));
@@ -270,7 +296,7 @@ void drive_move(void* _params) {
     drive.bl_motor.move_absolute(targetBL, 25);
     drive.fr_motor.move_absolute(targetFR, 25);
     drive.br_motor.move_absolute(targetBR, 25);
-    log_ln(MOVE, "%d Stopping from FL: %f, BL: %f, FR: %f, BR %f", pros::millis(), drive.fl_motor.get_position(), drive.bl_motor.get_position(), drive.fr_motor.get_position(), drive.br_motor.get_position());
+    log_ln(MOVE_DEBUGGING, "%d Stopping from FL: %f, BL: %f, FR: %f, BR %f", pros::millis(), drive.fl_motor.get_position(), drive.bl_motor.get_position(), drive.fr_motor.get_position(), drive.br_motor.get_position());
     uint32_t temp = pros::millis();
     while (fabs(drive.fl_motor.get_position() - targetFL) > 4 || fabs(drive.bl_motor.get_position() - targetBL) > 4 || fabs(drive.fr_motor.get_position() - targetFR) > 4 || fabs(drive.br_motor.get_position() - targetBR) > 4) {
       // printf("Errors: FL: %f, BL: %f, FR: %f, BR: %f\n", fabs(drive.fl_motor.get_position() - targetFL), fabs(drive.bl_motor.get_position() - targetBL), fabs(drive.fr_motor.get_position() - targetFR), fabs(drive.br_motor.get_position() - targetBR));
@@ -301,22 +327,22 @@ void drive_move(void* _params) {
   drive_move_task.stop_task();
 }
 
-void drive_move_async(double dist_target, double angle_target, bool brake, uint8_t max_power, int8_t start_power, bool decel) {
+void drive_move_async(double dist_target, double angle_target, bool brake, uint8_t max_power, int8_t start_power, bool decel, bool carrying_cap) {
   drive.set_state(Drive::STATE_AUTO_CONTROL);
   // if (drive_move_param != nullptr) {
   //   delete drive_move_param;
   //   drive_move_param = nullptr;
   // }
-  drive_move_param = {dist_target, angle_target, brake, max_power, start_power, decel};
+  drive_move_param = {dist_target, angle_target, brake, max_power, start_power, decel, carrying_cap};
   drive.set_error(drive_move_param.dist_target);
   drive.set_target(drive_move_param.dist_target);
   // drive_move_task.start_task((void*)(drive_move_param));
   drive_move_task.start_task();
 }
 
-void drive_move_sync(double dist_target, double angle_target, bool brake, uint8_t max_power, int8_t start_power, bool decel) {
+void drive_move_sync(double dist_target, double angle_target, bool brake, uint8_t max_power, int8_t start_power, bool decel, bool carrying_cap) {
   // drive_move_task.stop_task();
-  drive_move_param = {dist_target, angle_target, brake, max_power, start_power, decel};
+  drive_move_param = {dist_target, angle_target, brake, max_power, start_power, decel, carrying_cap};
   drive_move(nullptr);
 }
 

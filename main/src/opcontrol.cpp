@@ -88,7 +88,7 @@ void opcontrol() {
 	while (true) {
 		// printf("R: %d, L: %d\n", enc_r.get_value(), enc_l.get_value());
 		// printf("Light sensor:%f\n",gyro.get_value());
-		printf("poti: %d\n",s_pole_poti.get_value());
+		// printf("poti: %d\n",s_pole_poti.get_value());
 		// printf("LS: %d\n", right_platform_sensor.get_value());
 		//printf("%d %d|%d %d|%d | %f\n", pros::millis(), enc_l.get_value(), enc_l.get_value()%360,  enc_r.get_value(), enc_r.get_value()%360, drive.read_global_angle());
 		std::string fps = "";
