@@ -88,8 +88,8 @@ void opcontrol() {
 	while (true) {
 		// printf("R: %d, L: %d\n", enc_r.get_value(), enc_l.get_value());
 		// printf("Light sensor:%f\n",gyro.get_value());
-		//printf("poti: %d\n",s_pole_poti.get_value());
-		// master.print(2,0,"%d %d                 ",enc_l.get_value(), enc_r.get_value());
+		printf("poti: %d\n",s_pole_poti.get_value());
+		// printf("LS: %d\n", right_platform_sensor.get_value());
 		//printf("%d %d|%d %d|%d | %f\n", pros::millis(), enc_l.get_value(), enc_l.get_value()%360,  enc_r.get_value(), enc_r.get_value()%360, drive.read_global_angle());
 		std::string fps = "";
 		switch(field_position) {
@@ -185,14 +185,14 @@ void opcontrol() {
 					trigger_shot_queue();
 					break;
 				case BTN_CAPPER_DOWN:
-					if (auto_routine == Auto_Routines::DRIVER_SKILLS) {
+					if (auto_routine == Auto_Routines::DRIVER_SKILLS || auto_routine == Auto_Routines::PROGRAMMING_SKILLS) {
 						capper.move_to_pickup();
 						angler.move_to(Angler::PICKUP_POSITION);
 						intake.stop();
 					} else shot_queue_handle_task.stop_task();
 					break;
 				case BTN_CAPPER_UP:
-					if (auto_routine == Auto_Routines::DRIVER_SKILLS) {
+					if (auto_routine == Auto_Routines::DRIVER_SKILLS || auto_routine == Auto_Routines::PROGRAMMING_SKILLS) {
 						if (capper.at_pickup_position()) capper.pickup_cap();
 						else if (cap_on_pole_task.running()) cap_on_pole_task.stop_task();
 						else cap_on_pole_task.start_task();

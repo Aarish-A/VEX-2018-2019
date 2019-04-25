@@ -59,12 +59,11 @@ void cap_on_pole() {
 void cap_on_pole_task_function(void* _param) {
   if (capper_count == 1) {
     cap_on_pole();
-    angler.move_to(25);
+    angler.move_to(Angler::PICKUP_POSITION);
 
     drive_move_sync(5_in, 0_deg);
-    drive_turn_async(FixedAngleTarget(13.5_deg));
+    drive_turn_sync(FixedAngleTarget(13.5_deg));
     double_shot(shot_positions[DS_BACK_MID], shot_positions[DS_BACK_TOP]);
-    drive.wait_for_stop();
     angler.move_to(Angler::CAP_PICKUP_POSITION);
     capper.move_to_flag_flip(200);
     pros::delay(75);
@@ -75,8 +74,7 @@ void cap_on_pole_task_function(void* _param) {
     drive.wait_for_distance(5_in);
     drive.wait_for_stop();
     capper.move_to_velocity(Capper::CARRY_POSITION, 200);
-    drive_turn_async(FixedAngleTarget(90_deg));
-    drive.wait_for_angle(30_deg);
+    drive_turn_sync(FixedAngleTarget(90_deg));
     double_shot(shot_positions[DS_FINAL_MID], shot_positions[DS_FINAL_TOP]);
   } else {
     cap_on_pole();
@@ -127,7 +125,7 @@ void climb_on_platform() {
   drive.set_power(55, 15, 0);
   while (right_platform_sensor.get_value() < 2000) pros::delay(5);
   drive.set_power(-55, 15,0);
-  while (right_platform_sensor.get_value() > 1900) pros::delay(5);
+  while (right_platform_sensor.get_value() > 2500) pros::delay(5);
   drive.set_power(0, 0, 0);
   gyro.reset();
   angler.move_to(0);
@@ -219,7 +217,7 @@ void drive_move(void* _params) {
     // if (abs(dist_current) < 8_in && dist_error > 2_in) {
     if (fabs(dist_current) < fabs(dist_target) * 0.30) {
       power += 0.40 * sgn(dist_target);
-      log_ln(MOVE_DEBUGGING, "%d Ramping up...", pros::millis(), power, dist_current, dist_error, angle_current, angle_error);
+      log_ln(MOVE, "%d Ramping up...", pros::millis(), power, dist_current, dist_error, angle_current, angle_error);
     } else if (decel) {
       // Calculate PID values for distance
       dist_p_val = dist_error * dist_kP;
@@ -243,15 +241,16 @@ void drive_move(void* _params) {
 
       // Calculate powers
       power = dist_p_val + dist_i_val + dist_d_val;
-      angle_power = angle_p_val + angle_i_val + angle_d_val;
+      if (fabs(dist_current) > fabs(dist_target) * 0.60) angle_power = angle_p_val + angle_i_val + angle_d_val;
+      else angle_power = 0;
 
-      log_ln(MOVE_DEBUGGING, "%d In PID...", pros::millis());
+      log_ln(MOVE, "%d In PID...", pros::millis());
     }
 
 
-    log_ln(MOVE_DEBUGGING, "%d Distance | Current: %f in, Error: %f in, Power: %f, P: %f, I: %f, D: %f", pros::millis(), dist_current, dist_error, power, dist_p_val, dist_i_val, dist_d_val);
-    log_ln(MOVE_DEBUGGING,  "%d Angle    | Current: %f deg, Error: %f deg, Angle Power: %f, P: %f, I: %f, D: %f", pros::millis(), RAD_TO_DEG(angle_current), RAD_TO_DEG(angle_error), angle_power, angle_p_val, angle_i_val, angle_d_val);
-    log_ln(MOVE_DEBUGGING, "----------------------------------------------------------------");
+    log_ln(MOVE, "%d Distance | Current: %f in, Error: %f in, Power: %f, P: %f, I: %f, D: %f", pros::millis(), dist_current, dist_error, power, dist_p_val, dist_i_val, dist_d_val);
+    log_ln(MOVE,  "%d Angle    | Current: %f deg, Error: %f deg, Angle Power: %f, P: %f, I: %f, D: %f", pros::millis(), RAD_TO_DEG(angle_current), RAD_TO_DEG(angle_error), angle_power, angle_p_val, angle_i_val, angle_d_val);
+    log_ln(MOVE, "----------------------------------------------------------------");
 
     if (fabs(power) > max_power) power = max_power * sgn(power);
     drive.set_power(0, power, angle_power);
@@ -271,7 +270,7 @@ void drive_move(void* _params) {
     drive.bl_motor.move_absolute(targetBL, 25);
     drive.fr_motor.move_absolute(targetFR, 25);
     drive.br_motor.move_absolute(targetBR, 25);
-    log_ln(MOVE_DEBUGGING, "%d Stopping from FL: %f, BL: %f, FR: %f, BR %f", pros::millis(), drive.fl_motor.get_position(), drive.bl_motor.get_position(), drive.fr_motor.get_position(), drive.br_motor.get_position());
+    log_ln(MOVE, "%d Stopping from FL: %f, BL: %f, FR: %f, BR %f", pros::millis(), drive.fl_motor.get_position(), drive.bl_motor.get_position(), drive.fr_motor.get_position(), drive.br_motor.get_position());
     uint32_t temp = pros::millis();
     while (fabs(drive.fl_motor.get_position() - targetFL) > 4 || fabs(drive.bl_motor.get_position() - targetBL) > 4 || fabs(drive.fr_motor.get_position() - targetFR) > 4 || fabs(drive.br_motor.get_position() - targetBR) > 4) {
       // printf("Errors: FL: %f, BL: %f, FR: %f, BR: %f\n", fabs(drive.fl_motor.get_position() - targetFL), fabs(drive.bl_motor.get_position() - targetBL), fabs(drive.fr_motor.get_position() - targetFR), fabs(drive.br_motor.get_position() - targetBR));

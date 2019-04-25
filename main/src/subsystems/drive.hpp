@@ -74,7 +74,7 @@ public:
   double read_global_angle();
   void flatten_against_wall(bool forward = true, bool hold = true, int8_t hold_power = 15);
   void flatten_against_wall_base(bool forward, int8_t power, bool hold, int8_t hold_power);
-  void align_with_pole(uint16_t poti_zero = 2820);
+  void align_with_pole(uint16_t poti_zero = 2750);
   bool moving();
 
   void set_error(double error);
