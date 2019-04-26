@@ -203,6 +203,10 @@ void drive_move(void* _params) {
   double angle_power = 0;
 
   bool safety = false;
+  uint32_t safety_timeout = 0;
+  uint32_t safety_count = 1;
+  double safety_error = 0.0;
+  double safety_last_error = 0.0;
 
   do {
     // Calculate how far the robot has moved and get current angle
@@ -247,6 +251,19 @@ void drive_move(void* _params) {
       // if (fabs(dist_current) > fabs(dist_target) * 0.60) angle_power = angle_p_val + angle_i_val + angle_d_val;
       // else angle_power = 0;
 
+      if (safety_count % 10 == 0) {
+        safety_error = dist_error;
+        if (fabs(safety_last_error - safety_error) < 0.050 && !safety_timeout) safety_timeout = pros::millis();
+        else if (fabs(safety_last_error - safety_error) >= 0.050) safety_timeout = 0;
+
+        if (safety_timeout && pros::millis() - safety_timeout >= 200) {
+          safety = true;
+          break;
+        }
+        safety_last_error = safety_error;
+      }
+      safety_count++;
+
       log_ln(MOVE_DEBUGGING, "%d In PID...", pros::millis());
     }
 
@@ -270,9 +287,6 @@ void drive_move(void* _params) {
     if (carrying_cap) drive.set_side_power(sgn(power + angle_power) == sgn(dist_target) ? power + angle_power : 0, sgn(power - angle_power) == sgn(dist_target) ? power - angle_power : 0);
     else drive.set_power(0, power, angle_power);
 
-    dist_last_error = dist_error;
-    angle_last_error = angle_error;
-
     // if (fabs(dist_target) > 15_in) {
     //   if (dist_target > 0 && (drive.fl_motor.get_actual_velocity() < 1 || drive.fr_motor.get_actual_velocity() < 1)) {
     //     safety = true;
@@ -282,6 +296,9 @@ void drive_move(void* _params) {
     //     break;
     //   }
     // }
+
+    dist_last_error = dist_error;
+    angle_last_error = angle_error;
 
     pros::delay(1);
   } while (fabs(dist_error) > 0.3_in && sgn(dist_error) == sgn(dist_last_error));
@@ -458,22 +475,22 @@ void drive_turn(void *_params) {
   pros::delay(25);
   log_ln(MOVE, AUTO, "FINISHED TURN >>>> Took %d ms, Ended At: %f, Angle Error: %f, kP: %.3f, kI: %.3f, kD: %.3f, kP should be %.3f", pros::millis() - start_time, RAD_TO_DEG(current), RAD_TO_DEG(error), kP, kI, kD);
 
-  // pros::delay(100);
-  // current = drive.get_global_angle();
-  // error = target - current;
-  // log_ln(MOVE, AUTO, "FINISHED TURN 1 >>>> Took %d ms, Ended At: %f, Angle Error: %f", pros::millis() - start_time, RAD_TO_DEG(current), RAD_TO_DEG(error));
-  // pros::delay(100);
-  // current = drive.get_global_angle();
-  // error = target - current;
-  // log_ln(MOVE, AUTO, "FINISHED TURN 2 >>>> Took %d ms, Ended At: %f, Angle Error: %f", pros::millis() - start_time, RAD_TO_DEG(current), RAD_TO_DEG(error));
-  // pros::delay(100);
-  // current = drive.get_global_angle();
-  // error = target - current;
-  // log_ln(MOVE, AUTO, "FINISHED TURN 3 >>>> Took %d ms, Ended At: %f, Angle Error: %f", pros::millis() - start_time, RAD_TO_DEG(current), RAD_TO_DEG(error));
-  // pros::delay(100);
-  // current = drive.get_global_angle();
-  // error = target - current;
-  // log_ln(MOVE, AUTO, "FINISHED TURN 4 >>>> Took %d ms, Ended At: %f, Angle Error: %f", pros::millis() - start_time, RAD_TO_DEG(current), RAD_TO_DEG(error));
+  pros::delay(100);
+  current = drive.get_global_angle();
+  error = target - current;
+  log_ln(MOVE, AUTO, "FINISHED TURN 1 >>>> Took %d ms, Ended At: %f, Angle Error: %f", pros::millis() - start_time, RAD_TO_DEG(current), RAD_TO_DEG(error));
+  pros::delay(100);
+  current = drive.get_global_angle();
+  error = target - current;
+  log_ln(MOVE, AUTO, "FINISHED TURN 2 >>>> Took %d ms, Ended At: %f, Angle Error: %f", pros::millis() - start_time, RAD_TO_DEG(current), RAD_TO_DEG(error));
+  pros::delay(100);
+  current = drive.get_global_angle();
+  error = target - current;
+  log_ln(MOVE, AUTO, "FINISHED TURN 3 >>>> Took %d ms, Ended At: %f, Angle Error: %f", pros::millis() - start_time, RAD_TO_DEG(current), RAD_TO_DEG(error));
+  pros::delay(100);
+  current = drive.get_global_angle();
+  error = target - current;
+  log_ln(MOVE, AUTO, "FINISHED TURN 4 >>>> Took %d ms, Ended At: %f, Angle Error: %f", pros::millis() - start_time, RAD_TO_DEG(current), RAD_TO_DEG(error));
 
   drive.set_state(Drive::STATE_DRIVER_CONTROL);
   drive_turn_task.stop_task();

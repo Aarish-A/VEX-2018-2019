@@ -59,6 +59,11 @@ void autonomous() {
     flags_blue[5] = {17,11};
   }
 
+  // angler.move_to(Angler::CAP_PICKUP_POSITION);
+  // intake.intake();
+  // pros::delay(500);
+  // drive_move_sync(40_in, 0_deg);
+
   switch(auto_routine) {
     case Auto_Routines::FRONT:
       if (game_side == 'R') auto_red_front();
@@ -78,21 +83,21 @@ void autonomous() {
       // if (game_side == 'B') programming_skills_30_points();
       break;
     case Auto_Routines::DRIVER_SKILLS:
-    puncher.reset();
-    drive_move_async(37_in, 0_deg);
-    capper.move_to_velocity(35 * Capper::GEAR_RATIO, 120);
-    drive.wait_for_distance(12_in);
-    angler.move_to(Angler::PICKUP_POSITION);
-    drive.wait_for_distance(27_in);
-    intake.intake();
-    drive.wait_for_distance(31_in);
-    drive_move_sync(14.5_in, 0_deg, true, 140);
-    drive_move_sync(-40_in, 0_deg);
-    drive_turn_async(FixedAngleTarget(-86.5_deg));
-    drive.wait_for_angle(-59_deg);
-    double_shot(shot_positions[G_FRONT_TOP],shot_positions[G_FRONT_MID]);
-    capper.move_to_velocity(75 * Capper::GEAR_RATIO, 200);
-    master.rumble("-");
+      puncher.reset();
+      drive_move_async(37_in, 0_deg);
+      capper.move_to_velocity(35 * Capper::GEAR_RATIO, 120);
+      drive.wait_for_distance(12_in);
+      angler.move_to(Angler::PICKUP_POSITION);
+      drive.wait_for_distance(27_in);
+      intake.intake();
+      drive.wait_for_distance(31_in);
+      drive_move_sync(14.5_in, 0_deg, true, 140);
+      drive_move_sync(-40_in, 0_deg);
+      drive_turn_async(FixedAngleTarget(-86.5_deg));
+      drive.wait_for_angle(-59_deg);
+      double_shot(shot_positions[G_FRONT_TOP],shot_positions[G_FRONT_MID]);
+      capper.move_to_velocity(75 * Capper::GEAR_RATIO, 200);
+      master.rumble("-");
       break;
     case Auto_Routines::NUM_OF_ELEMENTS:
       break;
@@ -114,7 +119,7 @@ void autonomous() {
   uint32_t auto_finished_time = pros::millis() - autonomous_time;
   master.write_line(2, "Time: %d", auto_finished_time);
   log_ln(AUTO,"Auto Time %d", auto_finished_time);
-  if(auto_routine!=Auto_Routines::DRIVER_SKILLS) pros::delay(1000);
+  if (auto_routine!=Auto_Routines::DRIVER_SKILLS) pros::delay(1000);
   /* Turn off Motors */
   intake.off();
   drive.set_power(0);
@@ -262,7 +267,8 @@ void auto_red_back() {
     drive_turn_sync(FixedAngleTarget(-90_deg));
     drive_move_sync(-20_in, -90_deg,false);
     printf(" \n\n >>>> %d auto done back up | %d %d \n", pros::millis(), enc_l.get_value(), enc_r.get_value());
-    drive.flatten_against_wall(false,true);
+    drive.flatten_against_wall(false, true);
+    pros::delay(100);
     drive.reset_global_angle();
     printf("%d auto RESET: %d %d\n", pros::millis(), enc_l.get_value(), enc_r.get_value());
 
@@ -271,8 +277,9 @@ void auto_red_back() {
     drive_move_sync(6_in, 0_deg);
     angler.move_to(Angler::CAP_PICKUP_POSITION);
     drive_turn_sync(FixedAngleTarget(90_deg));
-    drive_move_sync(26_in, 90_deg);
-    pros::delay(200);
+    drive_move_sync(23_in, 90_deg);
+    drive_move_sync(3.5_in, 90_deg, true, 80);
+    pros::delay(100);
     drive_move_sync(-7_in, 90_deg);
     pros::delay(700);
 
