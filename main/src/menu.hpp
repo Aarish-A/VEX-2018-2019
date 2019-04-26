@@ -48,6 +48,11 @@ enum SP {
   DS_FINAL_TOP,
   DS_FINAL_MID,
 
+  A_SHOT_1,
+  A_SHOT_2,
+  A_SHOT_3,
+  A_SHOT_4,
+
   NUM_OF_ELEMENTS
 };
 
@@ -77,6 +82,11 @@ const std::string menu_shot_position_strings[] = {
   "DS BACK MID",
   "DS FINAL TOP",
   "DS FINAL MID",
+
+  "A_SHOT_1",
+  "A_SHOT_2",
+  "A_SHOT_3",
+  "A_SHOT_4"
 };
 
 enum class Auto_Routines {
