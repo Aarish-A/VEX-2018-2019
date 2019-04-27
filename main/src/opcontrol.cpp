@@ -13,7 +13,6 @@ void capper_move_to_cap_flip_macro(void* _params) {
 	intake.intake();
 }
 
-
 pilons::Task capper_move_to_cap_flip_task("Capper Cap Flip", [](void* param) {
 
 	capper.move_to_velocity(37 * Capper::GEAR_RATIO, 200);
@@ -65,13 +64,10 @@ double get_shot_angle(long double _x, long double _y) {
 	else return fminl(angle_1 * 7.0, angle_2 * 7.0);
 }
 
-
 void opcontrol() {
 	log_ln(PROGRAM_FLOW, "   --- %d START OPCONTROL --- \n", pros::millis());
-	if (auto_routine == Auto_Routines::DRIVER_SKILLS)
-	{
-		while(pros::competition::is_disabled() || !pros::competition::is_connected())
-		{
+	if (auto_routine == Auto_Routines::DRIVER_SKILLS) {
+		while(pros::competition::is_disabled() || !pros::competition::is_connected()) {
 			printf("Wait\n");
 			master.update();
 			puncher.update();
@@ -87,7 +83,7 @@ void opcontrol() {
 
 	while (true) {
 		// printf("R: %d, L: %d\n", enc_r.get_value(), enc_l.get_value());
-		printf("Light sensor:%f\n",gyro.get_value());
+		// printf("Light sensor:%f\n",gyro.get_value());
 		// printf("poti: %d\n",s_pole_poti.get_value());
 		// printf("LS: %d\n", right_platform_sensor.get_value());
 		//printf("%d %d|%d %d|%d | %f\n", pros::millis(), enc_l.get_value(), enc_l.get_value()%360,  enc_r.get_value(), enc_r.get_value()%360, drive.read_global_angle());
@@ -231,9 +227,9 @@ void opcontrol() {
 			log_ln(IO, "Menu enabled/renabled\n");
 			menu_enabled = !menu_enabled;
 		}
+
 		if (master.check_double_press(BTN_GROUND_PICKUP, BTN_CAP_PICKUP)) {
-			if(auto_routine == Auto_Routines::DRIVER_SKILLS)
-			{
+			if (auto_routine == Auto_Routines::DRIVER_SKILLS) {
 				if (capper.at_flag_flip_position()) {
 					angler.move_to(Angler::PICKUP_POSITION);
 					intake.stop();
@@ -244,9 +240,7 @@ void opcontrol() {
 					pros::delay(75);
 					intake.outtake();
 				}
-			}
-			else
-			{
+			} else {
 				if (angler.at_cap_flip_position()) {
 					angler.move_to(Angler::PICKUP_POSITION);
 					intake.intake();
@@ -294,12 +288,11 @@ void opcontrol() {
 				case BTN_DECAPPER_UP:
 					if (auto_routine == Auto_Routines::DRIVER_SKILLS) capper_count++;
 					break;
-				// case BTN_DRIVE_LOCK:
-					// drive.lock();
-					// break;
 			}
 
-			if (partner.pressed(BTN_DRIVE_LOCK)  && !(drive_y || drive_x || drive_a)) drive.lock();
+			if (partner.check_double_press(BTN_PUNCHER_RESET_UP, BTN_PUNCHER_RESET_RIGHT)) puncher.reset();
+
+			if (partner.pressed(BTN_DRIVE_LOCK) && !(drive_y || drive_x || drive_a)) drive.lock();
 			else if (partner.check_rising(BTN_DRIVE_LOCK)) drive.unlock();
 
 			if (partner.check_double_press(BTN_SHOT_R_T, BTN_SHOT_L_T)) {
@@ -310,31 +303,6 @@ void opcontrol() {
 				make_shot_request(shot_positions[G_PLATFORM_MID_FAR], Turn_Direction::FAR, Field_Position::BLUE_PF);
 			}
 		}
-	pros::delay(5);
+		pros::delay(5);
 	}
-	/*
-	for (int i = 0; i < 10000; i++) {
-    void* x = 0;
-    pros::Task* task = new pros::Task(dummy, x);
-    log_ln(MACRO, "%d", i);
-    pros::delay(100);
-  }
-	*/
-	/* Test Tasks
-	while (true) {
-		log_ln(MOVE, "Start f/w");
-		drive_move_sync(6_in);
-		pros::delay(100);
-		drive_turn_async(PointAngleTarget({10, 10}));
-		drive.wait_for_stop();
-		pros::delay(200);
-
-		log_ln(MOVE, "Start b/w");
-		drive_move_sync(-6_in);
-		pros::delay(100);
-		drive_turn_async(PointAngleTarget({-10, 10}));
-		drive.wait_for_stop();
-		pros::delay(200);
-	}
-	*/
 }
