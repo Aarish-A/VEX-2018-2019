@@ -38,70 +38,69 @@ void autonomous() {
   auto_update_task.start_task();
   drive.reset_global_angle();
   angler.move_to(Angler::PICKUP_POSITION);
-  // puncher.reset();
-  drive_turn_sync(90.0_deg);
-  // if(game_side == 'R')
-  // {
-  //   flags_blue[0] = {17,11};
-  //   flags_blue[1] = {17,11};
-  //   flags_blue[2] = {66.5,11};
-  //   flags_blue[3] = {66.5,11};
-  //   flags_blue[4] = {114,11};
-  //   flags_blue[5] = {114,11};
-  // }
-  // if(game_side == 'B')
-  // {
-  //   flags_blue[0] = {114,11};
-  //   flags_blue[1] = {114,11};
-  //   flags_blue[2] = {66.5,11};
-  //   flags_blue[3] = {66.5,11};
-  //   flags_blue[4] = {17,11};
-  //   flags_blue[5] = {17,11};
-  // }
-  //
-  // // angler.move_to(Angler::CAP_PICKUP_POSITION);
-  // // intake.intake();
-  // // pros::delay(500);
-  // // drive_move_sync(40_in, 0_deg);
-  //
-  // switch(auto_routine) {
-  //   case Auto_Routines::FRONT:
-  //     if (game_side == 'R') auto_red_front();
-  //     if (game_side == 'B') auto_blue_front();
-  //     break;
-  //   case Auto_Routines::BACK:
-  //     if (game_side == 'R') auto_red_back();
-  //     if (game_side == 'B') auto_blue_back();
-  //     break;
-  //   case Auto_Routines::FRONT_PARK:
-  //     if (game_side == 'R') auto_red_front_park();
-  //     if (game_side == 'B') auto_blue_front_park();
-  //     break;
-  //   case Auto_Routines::PROGRAMMING_SKILLS:
-  //     programming_skills_30_points();
-  //     // if (game_side == 'R') programming_skills_29_points();
-  //     // if (game_side == 'B') programming_skills_30_points();
-  //     break;
-  //   case Auto_Routines::DRIVER_SKILLS:
-  //     puncher.reset();
-  //     drive_move_async(37_in, 0_deg);
-  //     capper.move_to_velocity(35 * Capper::GEAR_RATIO, 120);
-  //     drive.wait_for_distance(12_in);
-  //     angler.move_to(Angler::PICKUP_POSITION);
-  //     drive.wait_for_distance(27_in);
-  //     intake.intake();
-  //     drive.wait_for_distance(31_in);
-  //     drive_move_sync(14.5_in, 0_deg, true, 140);
-  //     drive_move_sync(-40_in, 0_deg);
-  //     drive_turn_async(FixedAngleTarget(-86.5_deg));
-  //     drive.wait_for_angle(-59_deg);
-  //     double_shot(shot_positions[G_FRONT_TOP],shot_positions[G_FRONT_MID]);
-  //     capper.move_to_velocity(75 * Capper::GEAR_RATIO, 200);
-  //     master.rumble("-");
-  //     break;
-  //   case Auto_Routines::NUM_OF_ELEMENTS:
-  //     break;
-  // }
+  puncher.reset();
+  if(game_side == 'R')
+  {
+    flags_blue[0] = {17,11};
+    flags_blue[1] = {17,11};
+    flags_blue[2] = {66.5,11};
+    flags_blue[3] = {66.5,11};
+    flags_blue[4] = {110,11};
+    flags_blue[5] = {110,11};
+  }
+  if(game_side == 'B')
+  {
+    flags_blue[0] = {114,11};
+    flags_blue[1] = {114,11};
+    flags_blue[2] = {66.5,11};
+    flags_blue[3] = {66.5,11};
+    flags_blue[4] = {21.5,11};
+    flags_blue[5] = {21.5,11};
+  }
+
+  // angler.move_to(Angler::CAP_PICKUP_POSITION);
+  // intake.intake();
+  // pros::delay(500);
+  // drive_move_sync(40_in, 0_deg);
+
+  switch(auto_routine) {
+    case Auto_Routines::FRONT:
+      if (game_side == 'R') auto_red_front();
+      if (game_side == 'B') auto_blue_front();
+      break;
+    case Auto_Routines::BACK:
+      if (game_side == 'R') auto_red_back();
+      if (game_side == 'B') auto_blue_back();
+      break;
+    case Auto_Routines::FRONT_PARK:
+      if (game_side == 'R') auto_red_front_park();
+      if (game_side == 'B') auto_blue_front_park();
+      break;
+    case Auto_Routines::PROGRAMMING_SKILLS:
+      programming_skills_30_points();
+      // if (game_side == 'R') programming_skills_29_points();
+      // if (game_side == 'B') programming_skills_30_points();
+      break;
+    case Auto_Routines::DRIVER_SKILLS:
+      puncher.reset();
+      drive_move_async(37_in, 0_deg);
+      capper.move_to_velocity(35 * Capper::GEAR_RATIO, 120);
+      drive.wait_for_distance(12_in);
+      angler.move_to(Angler::PICKUP_POSITION);
+      drive.wait_for_distance(27_in);
+      intake.intake();
+      drive.wait_for_distance(31_in);
+      drive_move_sync(14.5_in, 0_deg, true, 140);
+      drive_move_sync(-40_in, 0_deg);
+      drive_turn_async(FixedAngleTarget(-86.5_deg));
+      drive.wait_for_angle(-59_deg);
+      double_shot(shot_positions[G_FRONT_TOP],shot_positions[G_FRONT_MID]);
+      capper.move_to_velocity(75 * Capper::GEAR_RATIO, 200);
+      master.rumble("-");
+      break;
+    case Auto_Routines::NUM_OF_ELEMENTS:
+      break;
+  }
 
 
   // drive_move_async(43_in, 0_deg);
@@ -265,7 +264,7 @@ void auto_red_back() {
 
     //Flatten wall
     drive_turn_sync(FixedAngleTarget(-90_deg));
-    drive_move_sync(-20_in, -90_deg,false);
+    drive_move_sync(-28_in, -90_deg,false);
     printf(" \n\n >>>> %d auto done back up | %d %d \n", pros::millis(), enc_l.get_value(), enc_r.get_value());
     drive.flatten_against_wall(false, true);
     pros::delay(100);
@@ -277,11 +276,9 @@ void auto_red_back() {
     drive_move_sync(6_in, 0_deg);
     angler.move_to(Angler::CAP_PICKUP_POSITION);
     drive_turn_sync(FixedAngleTarget(90_deg));
-    drive_move_sync(23_in, 90_deg);
-    drive_move_sync(3.5_in, 90_deg, true, 80);
+    drive_move_sync(26.5_in, 90_deg);
     pros::delay(100);
     drive_move_sync(-7_in, 90_deg);
-    pros::delay(700);
 
 
     pos = {45.5,129.5};
@@ -517,14 +514,14 @@ void auto_blue_back() {
 
     vector pos = {23, 104.5};
     for(int i = 0; i <= 1; i++) {
-      drive_turn_sync(FixedAngleTarget(flag_angle_blue(flags_blue[(int)flag_config[i]], pos))); //-81
+      if (i == 0) drive_turn_sync(FixedAngleTarget(flag_angle_blue(flags_blue[(int)flag_config[i]], pos))); //-81
       single_shot(shot_positions[A_SHOT_1 + i]);
     }
 
 
     //Flatten wall
     drive_turn_sync(FixedAngleTarget(90_deg));
-    drive_move_sync(-20_in, 90_deg,false);
+    drive_move_sync(-22_in, 90_deg,false);
     printf(" \n\n >>>> %d auto done back up | %d %d \n", pros::millis(), enc_l.get_value(), enc_r.get_value());
     drive.flatten_against_wall(false,true);
     drive.reset_global_angle();
@@ -535,14 +532,16 @@ void auto_blue_back() {
     drive_move_sync(6_in, 0_deg);
     angler.move_to(Angler::CAP_PICKUP_POSITION);
     drive_turn_sync(FixedAngleTarget(-90_deg));
-    drive_move_sync(26_in, -90_deg);
-    pros::delay(200);
+    drive_move_sync(28_in, -90_deg);
+    pros::delay(400);
     drive_move_sync(-7_in, -90_deg);
-    pros::delay(700);
 
     pos = {45.5,129.5};
     for(int i = 2; i <= 3; i++) {
-      drive_turn_sync(FixedAngleTarget(flag_angle_blue(flags_blue[(int)flag_config[i]], pos, 90))); //-81
+      if (i == 2) {
+      drive_turn_async(FixedAngleTarget(flag_angle_blue(flags_blue[(int)flag_config[i]], pos, 90)));
+      while(fabs(drive.get_error())>15_deg) pros::delay(2); //-81
+    }
       single_shot(shot_positions[A_SHOT_1 + i]);
     }
 

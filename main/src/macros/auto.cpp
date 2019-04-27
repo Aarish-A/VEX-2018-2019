@@ -27,8 +27,7 @@ void auto_update(void* _params) {
 /* Shots */
 void single_shot(double targ, bool wait) {
   angler.move_to(targ);
-
-  // while(angler.moving_to_target()) pros::delay(2);
+  while(fabs(angler.get_error())>56) pros::delay(2);
   puncher.shoot();
   if (wait) while(puncher.shooting()) pros::delay(2);
   log_ln(AUTO, "Angle error at shot is %f", RAD_TO_DEG(drive.get_error()));
@@ -456,7 +455,7 @@ void drive_turn(void *_params) {
       // printf("%d | In PID...    ", pros::millis());
     }
 
-    log_ln(MOVE, AUTO, "TURN | Current: %.3f deg, Target: %.3f deg, Error: %.3f deg, Angle Power: %.3f, P: %.3f, I: %.3f, D: %.3f", RAD_TO_DEG(current), RAD_TO_DEG(target), RAD_TO_DEG(error), power, p_val, i_val, d_val);
+    log_ln(MOVE_DEBUGGING, AUTO, "TURN | Current: %.3f deg, Target: %.3f deg, Error: %.3f deg, Angle Power: %.3f, P: %.3f, I: %.3f, D: %.3f", RAD_TO_DEG(current), RAD_TO_DEG(target), RAD_TO_DEG(error), power, p_val, i_val, d_val);
     // printf(" Angle  | Current: %f deg, Target: %f deg, Error: %f deg, Angle Power: %f, P: %f, I: %f, D: %f\n", RAD_TO_DEG(current), RAD_TO_DEG(target), RAD_TO_DEG(error), power, p_val, i_val, d_val);
     // log_ln(MOVE_DEBUGGING, AUTO, "----------------------------------------------------------------");
 

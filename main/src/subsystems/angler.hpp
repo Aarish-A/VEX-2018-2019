@@ -22,7 +22,7 @@ private:
 
   int8_t power;
   uint8_t hold_velocity = 200;
-  uint8_t error_threshold = 5;
+  uint8_t error_threshold = 2;
   uint32_t move_timeout = 800;
 
   /* Private Functions */
@@ -36,7 +36,7 @@ public:
   void update() override;
 
   void driver_set(int8_t power);
-  void move_to(double target, uint8_t hold_velocity = 200, uint32_t timeout = 1200, uint8_t error_threshold = 4);
+  void move_to(double target, uint8_t hold_velocity = 200, uint32_t timeout = 1200, uint8_t error_threshold = 2);
   bool moving_to_target();
   void wait_for_target_reach();
   bool at_cap_flip_position();

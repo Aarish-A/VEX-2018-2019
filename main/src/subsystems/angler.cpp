@@ -24,9 +24,12 @@ void Angler::set_state(uint8_t new_state) {
       this->angler_motor.move_absolute(this->target, 135);
       break;
     case STATE_HOLD:
-      if (this->last_state == STATE_DRIVER_CONTROL) this->target = this->position;
-      // printf("Target : %f\n", this->target);
-      this->angler_motor.move_absolute(this->target, 200);
+      if (this->last_state == STATE_DRIVER_CONTROL) {
+        this->target = this->position;
+        this->angler_motor.move_absolute(this->target, 200);
+      } else if (this->last_state == STATE_AUTO_CONTROL) {
+        // nothing
+      }
       break;
     case STATE_MOVE_HOLD:
       this->target = this->position;

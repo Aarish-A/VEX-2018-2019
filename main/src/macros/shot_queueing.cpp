@@ -129,8 +129,8 @@ void shot_queue_handle(void* param) {
     intake.stop();
     angler.move_to(temp_target.angler_target);
     if (temp_target.turning && (i == 1 ? temp_target.turn_direction != last_turn_direction : true)) {
-      drive_turn_async(PointAngleTarget(temp_target.flag_position));
-      while(fabs(drive.get_error()) > 10_deg) pros::delay(2);
+      drive_turn_sync(PointAngleTarget(temp_target.flag_position));
+      // while(fabs(drive.get_error()) > 10_deg) pros::delay(2);
       pros::delay(20); // DO NOT DELETE THIS DELAY THIS IS REALLY IMPORTANT, WILL DRY SHOOT IF U DELETE!!!! @ZAIN @ANJALEE @STRAUSS @ANYONE ELSE THAT READS THIS
     }
     drive.lock();

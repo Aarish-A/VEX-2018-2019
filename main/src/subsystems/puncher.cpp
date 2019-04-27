@@ -77,7 +77,7 @@ void Puncher::update() {
       break;
     case STATE_RESET:
       if (timed_out(2500)) this->set_state(STATE_DISABLED);
-      else if (below_vel_threshold(5, 100)) {
+      else if (below_vel_threshold(3, 100)) {
         this->puncher_motor.tare_position();
         this->reset_finished = true;
         this->set_state(STATE_LOADING);
