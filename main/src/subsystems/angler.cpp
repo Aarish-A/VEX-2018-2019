@@ -110,5 +110,5 @@ void Angler::wait_for_target_reach() {
 }
 
 bool Angler::at_cap_flip_position() {
-  return (fabs(this->position) - Angler::CAP_FLIP_POSITION) < 40;
+  return (fabs(this->position) - Angler::CAP_FLIP_POSITION) < 20;
 }

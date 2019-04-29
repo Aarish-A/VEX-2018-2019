@@ -26,6 +26,7 @@ extern pros::Motor m_capper;
 extern pros::ADILineSensor right_platform_sensor;
 extern pros::ADIGyro gyro;
 extern pros::Motor m_decapper;
+extern pros::Motor m_pusher;
 
 
 extern Intake intake;

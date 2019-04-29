@@ -12,7 +12,7 @@ public:
 
   static const uint16_t PICKUP_POSITION = 85;
   static const uint16_t CAP_PICKUP_POSITION = 224;
-  static const uint16_t CAP_FLIP_POSITION = 40;
+  static const uint16_t CAP_FLIP_POSITION = 60;
 
 private:
   pros::Motor& angler_motor;

@@ -18,6 +18,7 @@ void initialize() {
 	puncher.reset();
 	intake.reset();
 	drive.reset();
+
 	if (auto_routine == Auto_Routines::DRIVER_SKILLS || auto_routine == Auto_Routines::PROGRAMMING_SKILLS) capper.reset();
 	else decapper.reset();
 
@@ -26,6 +27,19 @@ void initialize() {
 		Subsystem::update_all();
 		pros::delay(2);
 	}
+	uint32_t timeout = pros::millis();
+	m_pusher.move(-60);
+	pros::delay(100);
+	while(fabs(m_pusher.get_actual_velocity()) > 2) {
+		if (pros::millis() - timeout > 1500) break;
+		pros::delay(2);
+	}
+	m_pusher.tare_position();
+	m_pusher.move(-30);
+	m_pusher.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
+	m_puncher.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
+	m_angler.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
+
   log_ln(PROGRAM_FLOW, "%d Finished Init", pros::millis());
 }
 

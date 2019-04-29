@@ -14,15 +14,16 @@
  * will be stopped. Re-enabling the robot will restart the task, not re-start it
  * from where it left off.
  */
+uint32_t autonomous_time = pros::millis();
 void auto_red_front_park();
 void auto_red_front();
 void auto_red_back();
-void auto_red_back_park();
+void auto_red_back_jank();
 void auto_red_back_no_second_shot();
 void auto_blue_front();
 void auto_blue_front_park();
 void auto_blue_back();
-void auto_blue_back_no_second_shot();
+void auto_blue_back_jank();
 void programming_skills_29_points();
 void programming_skills_30_points();
 void driver_skills();
@@ -33,12 +34,13 @@ vector flags_blue[] = {{17,11}, {17,11}, {66.5,11}, {66.5,11}, {114,11}, {114,11
 void autonomous() {
   // Auto Start
   printf("%d Started Auto!\n", pros::millis());
-  uint32_t autonomous_time = pros::millis();
+  autonomous_time = pros::millis();
   Subsystem::enable_all();
   auto_update_task.start_task();
   drive.reset_global_angle();
   angler.move_to(Angler::PICKUP_POSITION);
-  puncher.reset();
+  // puncher.reset();
+  m_pusher.move(-30);
   if(game_side == 'R')
   {
     flags_blue[0] = {17,11};
@@ -98,6 +100,9 @@ void autonomous() {
       capper.move_to_velocity(75 * Capper::GEAR_RATIO, 200);
       master.rumble("-");
       break;
+    case Auto_Routines::BACK_JANK:
+    if (game_side == 'R') auto_red_back_jank();
+    if (game_side == 'B') auto_blue_back_jank();
     case Auto_Routines::NUM_OF_ELEMENTS:
       break;
   }
@@ -251,16 +256,15 @@ void auto_red_back() {
 
     //Shoot
     drive_move_sync(-(cap_dis-14_in), 0_deg);
-
     vector pos = {23, 104.5};
     for(int i = 0; i <= 1; i++) {
       if(flag_config[i] != Flags::NO_FLAG)
       {
-        drive_turn_sync(FixedAngleTarget(flag_angle(flags_blue[(int)flag_config[i]], pos))); //-81
+        drive_turn_sync(FixedAngleTarget(flag_angle(flags_blue[(int)flag_config[i]], pos)));
+        while(pros::millis()-autonomous_time < 4500) pros::delay(2);//-81
         single_shot(shot_positions[A_SHOT_1 + i]);
       }
     }
-
 
     //Flatten wall
     drive_turn_sync(FixedAngleTarget(-90_deg));
@@ -274,6 +278,58 @@ void auto_red_back() {
     //Get balls off back cap
     double mid_flag_pos = 140, top_flag_pos = 215;
     drive_move_sync(6_in, 0_deg);
+    angler.move_to(Angler::CAP_PICKUP_POSITION);
+    drive_turn_sync(FixedAngleTarget(90_deg));
+    drive_move_sync(29_in, 90_deg);
+    pros::delay(100);
+    drive_move_sync(-7_in, 90_deg);
+
+
+    pos = {45.5,129.5};
+    for(int i = 2; i <= 3; i++) {
+      if(flag_config[i] != Flags::NO_FLAG)
+      {
+        drive_turn_sync(FixedAngleTarget(flag_angle(flags_blue[(int)flag_config[i]], pos, 90))); //-81
+        // if (i == 2) single_shot();
+        // else if (i == 3) single_shot();
+        single_shot(shot_positions[A_SHOT_1 + i]);
+      }
+    }
+    printf("%d Stopped | red\n", pros::millis());
+
+}
+
+void auto_red_back_jank() {
+  int cap_dis = 47_in;
+    //Pickup
+    intake.intake();
+    angler.move_to(Angler::CAP_FLIP_POSITION);
+    drive_move_sync(cap_dis, 0_deg);
+
+    //Shoot
+    drive_move_sync(-(cap_dis-14_in), 0_deg);
+
+
+
+    //Flatten wall
+    drive_turn_sync(FixedAngleTarget(-90_deg));
+    drive_move_sync(-28_in, -90_deg,false);
+    printf(" \n\n >>>> %d auto done back up | %d %d \n", pros::millis(), enc_l.get_value(), enc_r.get_value());
+    drive.flatten_against_wall(false, true);
+    pros::delay(100);
+    drive.reset_global_angle();
+    printf("%d auto RESET: %d %d\n", pros::millis(), enc_l.get_value(), enc_r.get_value());
+
+    //Get balls off back cap
+    drive_move_sync(6_in, 0_deg);
+    vector pos = {22.5, 125};
+    for(int i = 0; i <= 1; i++) {
+      if(flag_config[i] != Flags::NO_FLAG)
+      {
+        drive_turn_sync(FixedAngleTarget(flag_angle(flags_blue[(int)flag_config[i]], pos, 90))); //-81
+        single_shot(shot_positions[A_SHOT_1 + i]);
+      }
+    }
     angler.move_to(Angler::CAP_PICKUP_POSITION);
     drive_turn_sync(FixedAngleTarget(90_deg));
     drive_move_sync(26.5_in, 90_deg);
@@ -290,32 +346,6 @@ void auto_red_back() {
       }
     }
     printf("%d Stopped | red\n", pros::millis());
-
-}
-
-void auto_red_back_park() {
-  int cap_dis = 47_in;
-  //Pickup
-  intake.intake();
-  angler.move_to(Angler::PICKUP_POSITION);
-  drive_move_sync(cap_dis, 0_deg);
-
-  //Shoot
-  drive_move_sync(-(cap_dis-14_in), 0_deg);
-  intake.off();
-  drive_turn_sync(FixedAngleTarget(-65.5_deg)); //IF
-  single_shot(30);
-
-  //Get ball of PF
-  intake.intake();
-  drive_move_sync(10_in, -65_deg);
-  drive_move_sync(-7_in, -65_deg);
-
-  //Turn  and get ball off of capper
-
-  //Back up and get on PF
-
-
 
 
 }
@@ -549,7 +579,7 @@ void auto_blue_back() {
 
 }
 
-void auto_blue_back_no_second_shot() {
+void auto_blue_back_jank() {
 
 }
 

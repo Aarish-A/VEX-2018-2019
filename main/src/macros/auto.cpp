@@ -27,7 +27,7 @@ void auto_update(void* _params) {
 /* Shots */
 void single_shot(double targ, bool wait) {
   angler.move_to(targ);
-  while(fabs(angler.get_error())>56) pros::delay(2);
+  while(angler.moving_to_target()) pros::delay(2);
   puncher.shoot();
   if (wait) while(puncher.shooting()) pros::delay(2);
   log_ln(AUTO, "Angle error at shot is %f", RAD_TO_DEG(drive.get_error()));

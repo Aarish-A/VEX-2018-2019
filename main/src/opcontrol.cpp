@@ -21,6 +21,8 @@ pilons::Task capper_move_to_cap_flip_task("Capper Cap Flip", [](void* param) {
 	angler.move_to(Angler::PICKUP_POSITION);
 });
 
+int pusher_count = 0;
+
 double get_shot_angle(long double _x, long double _y) {
 	// constexpr long double ANGLER_MIN_ANGLE = 24.2;
 	constexpr long double ANGLER_MIN_ANGLE = 13.95;
@@ -80,8 +82,10 @@ void opcontrol() {
 	enc_r.reset();
 	enc_l.reset();
 	pos.reset();
+	m_pusher.move(-30);
 
 	while (true) {
+		printf("Pusher val: %f\n", m_pusher.get_position());
 		// printf("R: %d, L: %d\n", enc_r.get_value(), enc_l.get_value());
 		// printf("Light sensor:%f\n",gyro.get_value());
 		// printf("poti: %d\n",s_pole_poti.get_value());
@@ -206,6 +210,15 @@ void opcontrol() {
 				// case BTN_DECAPPER_DOWN:
 					// decapper.previous_position();
 					// break;
+				case BTN_MENU_SAVE:
+					if (pusher_count % 2 == 0) m_pusher.move(100);
+					// else if (pusher_count % 2 == 1)
+					else if (pusher_count % 2 == 1) {
+						// if (fabs(m_pusher.get_position()) < 5) m_pusher.move(-30);
+						m_pusher.move_absolute(0, 200);
+					}
+					pusher_count++;
+					break;
 			}
 		} else {
 			menu_update();
@@ -303,6 +316,8 @@ void opcontrol() {
 				make_shot_request(shot_positions[G_PLATFORM_MID_FAR], Turn_Direction::FAR, Field_Position::BLUE_PF);
 			}
 		}
+
+		// if (fabs(m_pusher.get_position()) < 5 && pusher_count % 2 == 1) m_pusher.move(-30);
 		pros::delay(5);
 	}
 }
