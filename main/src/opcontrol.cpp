@@ -7,6 +7,8 @@
 #include "libraries/task.hpp"
 #include "libraries/logs.hpp"
 
+bool kiddie_control = true;
+
 void capper_move_to_cap_flip_macro(void* _params) {
 	capper.move_to_velocity(39 * Capper::GEAR_RATIO, 200);
 	pros::delay(200);
@@ -116,25 +118,54 @@ void opcontrol() {
 
 
 		/* Drive */
+		int8_t drive_yp = partner.get_analog(JOY_DRIVE_THROTTLE, 10);
+		int8_t drive_xp = partner.get_analog(JOY_DRIVE_STRAFE, 25);
+		int8_t drive_ap = drive_yp ? partner.get_analog(JOY_DRIVE_TURN, 10) : Drive::turn_curve[partner.get_analog(JOY_DRIVE_TURN, 10) + 127];
 		int8_t drive_y = master.get_analog(JOY_DRIVE_THROTTLE, 10);
 		int8_t drive_x = master.get_analog(JOY_DRIVE_STRAFE, 25);
 		int8_t drive_a = drive_y ? master.get_analog(JOY_DRIVE_TURN, 10) : Drive::turn_curve[master.get_analog(JOY_DRIVE_TURN, 10) + 127];
-		drive.driver_set(drive_x, drive_y, drive_a);
+		if (drive_y || drive_x || drive_a) drive.driver_set(drive_x, drive_y, drive_a);
+		else if (kiddie_control) drive.driver_set(drive_xp, drive_yp, drive_ap);
 		if (auto_routine == Auto_Routines::DRIVER_SKILLS && cap_on_pole_task.running() && (drive_y || drive_x || drive_a)) cap_on_pole_task.stop_task();
 
 		/* Angler */
 		int8_t angler_power = master.get_analog(JOY_ANGLER, 40);
 		angler.driver_set(angler_power);
-		// printf("Angler: %f, %f\n", m_angler.get_position() / 7.0, m_angler.get_position());
-		// 24.2
-		double temp = -1;
 
-		if (!menu_enabled) {
-			master.write_line(0, " ");
-			master.write_line(1, " ");
-			master.write_line(2, "%c %s", game_side, fps.c_str());
+		switch(master.single_pressed) {
+			case BTN_INTAKE_UP:
+				if (auto_routine == Auto_Routines::DRIVER_SKILLS) intake.off() && !capper.at_pickup_position() ? intake.intake() : intake.stop();
+				else intake.off() ? intake.intake() : intake.stop();
+				break;
+			case BTN_INTAKE_DOWN:
+				if (auto_routine == Auto_Routines::DRIVER_SKILLS) intake.off() && !capper.at_pickup_position() ? intake.outtake() : intake.stop();
+				else intake.off() ? intake.outtake() : intake.stop();
+				break;
+			case BTN_GROUND_PICKUP:
+				angler.move_to(Angler::PICKUP_POSITION);
+				intake.intake();
+				break;
+			case BTN_CAP_PICKUP:
+				angler.move_to(Angler::CAP_PICKUP_POSITION);
+				intake.intake();
+				break;
+			case BTN_SHOT_R_T:
+				make_shot_request(shot_positions[G_FRONT_TOP], Turn_Direction::STRAIGHT, Field_Position::FRONT);
+				make_shot_request(shot_positions[G_BACK_TOP], Turn_Direction::STRAIGHT, Field_Position::BACK);
+				trigger_shot_queue();
+				break;
+			case BTN_SHOT_R_M:
+				make_shot_request(shot_positions[G_FRONT_MID], Turn_Direction::STRAIGHT, Field_Position::FRONT);
+				make_shot_request(shot_positions[G_BACK_MID], Turn_Direction::STRAIGHT, Field_Position::BACK);
+				trigger_shot_queue();
+				break;
+			case BTN_FIELD_FRONT:
+				kiddie_control = !kiddie_control;
+				break;
+		}
 
-			switch(master.single_pressed) {
+		if (kiddie_control) {
+			switch(partner.single_pressed) {
 				case BTN_INTAKE_UP:
 					if (auto_routine == Auto_Routines::DRIVER_SKILLS) intake.off() && !capper.at_pickup_position() ? intake.intake() : intake.stop();
 					else intake.off() ? intake.intake() : intake.stop();
@@ -144,172 +175,207 @@ void opcontrol() {
 					else intake.off() ? intake.outtake() : intake.stop();
 					break;
 				case BTN_GROUND_PICKUP:
-					if (auto_routine == Auto_Routines::DRIVER_SKILLS) {
-						angler.move_to(Angler::PICKUP_POSITION);
-						intake.intake();
-					} else {
-						make_shot_request(shot_positions[G_FRONT_ANGLE_MID], Turn_Direction::STRAIGHT, Field_Position::FRONT);
-						trigger_shot_queue();
-					}
-					// angler.move_to(Angler::PICKUP_POSITION);
-					// intake.intake();
+					angler.move_to(Angler::PICKUP_POSITION);
+					intake.intake();
 					break;
 				case BTN_CAP_PICKUP:
-					if (auto_routine == Auto_Routines::DRIVER_SKILLS) {
-						angler.move_to(Angler::CAP_PICKUP_POSITION);
-						intake.intake();
-					} else {
-						make_shot_request(shot_positions[G_FRONT_ANGLE_TOP], Turn_Direction::STRAIGHT, Field_Position::FRONT);
-						trigger_shot_queue();
-					}
+					angler.move_to(Angler::CAP_PICKUP_POSITION);
+					intake.intake();
 					break;
 				case BTN_SHOT_R_T:
-					// 41 in x
-					// 29.25 in y
-					// 12.24 + 24.2 (36.44) deg
-					// 12.24 + 13.99 (26.23)
-
-					// 66 in x
-					// 9.71 + 24.2 (33.91) deg
-					// puncher.shoot();
 					make_shot_request(shot_positions[G_FRONT_TOP], Turn_Direction::STRAIGHT, Field_Position::FRONT);
 					make_shot_request(shot_positions[G_BACK_TOP], Turn_Direction::STRAIGHT, Field_Position::BACK);
 					trigger_shot_queue();
 					break;
 				case BTN_SHOT_R_M:
-					// temp = get_shot_angle(67.25, 29.25);
-					// printf("CALC ANGLE: %f, %f", (temp / 7) + 24.2, temp);
-					// angler.move_to(temp);
 					make_shot_request(shot_positions[G_FRONT_MID], Turn_Direction::STRAIGHT, Field_Position::FRONT);
 					make_shot_request(shot_positions[G_BACK_MID], Turn_Direction::STRAIGHT, Field_Position::BACK);
 					trigger_shot_queue();
 					break;
-				case BTN_CAPPER_DOWN:
-					if (auto_routine == Auto_Routines::DRIVER_SKILLS || auto_routine == Auto_Routines::PROGRAMMING_SKILLS) {
-						capper.move_to_pickup();
-						angler.move_to(Angler::PICKUP_POSITION);
-						intake.stop();
-					} else shot_queue_handle_task.stop_task();
-					break;
-				case BTN_CAPPER_UP:
-					if (auto_routine == Auto_Routines::DRIVER_SKILLS || auto_routine == Auto_Routines::PROGRAMMING_SKILLS) {
-						if (capper.at_pickup_position()) capper.pickup_cap();
-						else if (cap_on_pole_task.running()) cap_on_pole_task.stop_task();
-						else cap_on_pole_task.start_task();
-					} else {
-						change_field_position(Field_Position::FRONT);
-					}
-				break;
-				case BTN_CAP_FLIP:
-					if (auto_routine == Auto_Routines::DRIVER_SKILLS) capper_move_to_cap_flip_task.start_task();
-					else change_field_position(Field_Position::BACK);
-					break;
-				// case BTN_DECAPPER_UP:
-					// decapper.next_position();
-					// break;
-				// case BTN_DECAPPER_DOWN:
-					// decapper.previous_position();
-					// break;
-			}
-		} else {
-			menu_update();
-			switch(master.single_pressed) {
-				case BTN_MENU_NEXT_SCREEN: menu_next_screen(); break;
-				case BTN_MENU_PREVIOUS_SCREEN: menu_previous_screen(); break;
-				case BTN_MENU_NEXT_ELEMENT: menu_next_element(); break;
-				case BTN_MENU_PREVIOUS_ELEMENT: menu_previous_element(); break;
-				case BTN_MENU_INCREMENT_ACTION: menu_element_increment_action(); break;
-				case BTN_MENU_DECREMENT_ACTION: menu_element_decrement_action(); break;
-				case BTN_MENU_SELECTED_ACTION: menu_selected_action(); break;
-				case BTN_MENU_CLEAR: menu_clear(); break;
-				case BTN_MENU_SAVE: menu_save(); break;
-				case BTN_FIELD_FRONT: if (flag_shot_counter < 5) flag_shot_counter++; break;
 			}
 		}
 
-		if (master.check_double_press(BTN_SHOT_R_M, BTN_SHOT_L_M)) {
-			log_ln(IO, "Menu enabled/renabled\n");
-			menu_enabled = !menu_enabled;
-		}
-		if (master.check_double_press(BTN_GROUND_PICKUP, BTN_CAP_PICKUP)) {
-			if(auto_routine == Auto_Routines::DRIVER_SKILLS)
-			{
-				if (capper.at_flag_flip_position()) {
-					angler.move_to(Angler::PICKUP_POSITION);
-					intake.stop();
-					capper.move_to_pickup();
-				} else {
-					angler.move_to(Angler::CAP_PICKUP_POSITION);
-					capper.move_to_flag_flip(200);
-					pros::delay(75);
-					intake.outtake();
-				}
-			}
-			else
-			{
-				if (angler.at_cap_flip_position()) {
-					angler.move_to(Angler::PICKUP_POSITION);
-					intake.intake();
-				} else {
-					angler.move_to(Angler::CAP_FLIP_POSITION);
-					intake.outtake();
-				}
-			}
-		}
-
-		if (partner.is_connected()) {
-			switch(partner.single_pressed) {
-				case BTN_SHOT_R_T:
-					make_shot_request(shot_positions[(int)SP::G_PLATFORM_TOP], Turn_Direction::RIGHT, Field_Position::RED_PF);
-					make_shot_request(shot_positions[(int)SP::G_PLATFORM_TOP], Turn_Direction::RIGHT, Field_Position::BLUE_PF);
-					// make_shot_request(shot_positions[(int)SP::G_BACK_TURN_TOP], Turn_Direction::RIGHT, Field_Position::BACK);
-					break;
-				case BTN_SHOT_R_M:
-					make_shot_request(shot_positions[(int)SP::G_PLATFORM_MID], Turn_Direction::RIGHT, Field_Position::RED_PF);
-					make_shot_request(shot_positions[(int)SP::G_PLATFORM_MID], Turn_Direction::RIGHT, Field_Position::BLUE_PF);
-					// make_shot_request(shot_positions[(int)SP::G_BACK_TURN_MID], Turn_Direction::RIGHT, Field_Position::BACK);
-					break;
-				case BTN_SHOT_L_T:
-					make_shot_request(shot_positions[(int)SP::G_PLATFORM_TOP], Turn_Direction::LEFT, Field_Position::RED_PF);
-					make_shot_request(shot_positions[(int)SP::G_PLATFORM_TOP], Turn_Direction::LEFT, Field_Position::BLUE_PF);
-					// make_shot_request(shot_positions[(int)SP::G_BACK_TURN_TOP], Turn_Direction::LEFT, Field_Position::BACK);
-					break;
-				case BTN_SHOT_L_M:
-					make_shot_request(shot_positions[(int)SP::G_PLATFORM_MID], Turn_Direction::LEFT, Field_Position::RED_PF);
-					make_shot_request(shot_positions[(int)SP::G_PLATFORM_MID], Turn_Direction::LEFT, Field_Position::BLUE_PF);
-					// make_shot_request(shot_positions[(int)SP::G_BACK_TURN_MID], Turn_Direction::LEFT, Field_Position::BACK);
-					break;
-				case BTN_FIELD_RED_PF:
-					change_field_position(Field_Position::RED_PF);
-					break;
-				case BTN_FIELD_BLUE_PF:
-					change_field_position(Field_Position::BLUE_PF);
-					break;
-				case BTN_FIELD_FRONT:
-					change_field_position(Field_Position::FRONT);
-					break;
-				case BTN_SHOT_CANCEL_PARTNER:
-					shot_queue_handle_task.stop_task();
-					break;
-				case BTN_DECAPPER_UP:
-					if (auto_routine == Auto_Routines::DRIVER_SKILLS) capper_count++;
-					break;
-				// case BTN_DRIVE_LOCK:
-					// drive.lock();
-					// break;
-			}
-
-			if (partner.pressed(BTN_DRIVE_LOCK)  && !(drive_y || drive_x || drive_a)) drive.lock();
-			else if (partner.check_rising(BTN_DRIVE_LOCK)) drive.unlock();
-
-			if (partner.check_double_press(BTN_SHOT_R_T, BTN_SHOT_L_T)) {
-				make_shot_request(shot_positions[G_PLATFORM_TOP_FAR], Turn_Direction::FAR, Field_Position::RED_PF);
-				make_shot_request(shot_positions[G_PLATFORM_TOP_FAR], Turn_Direction::FAR, Field_Position::BLUE_PF);
-			} else if (partner.check_double_press(BTN_SHOT_R_M, BTN_SHOT_L_M)) {
-				make_shot_request(shot_positions[G_PLATFORM_MID_FAR], Turn_Direction::FAR, Field_Position::RED_PF);
-				make_shot_request(shot_positions[G_PLATFORM_MID_FAR], Turn_Direction::FAR, Field_Position::BLUE_PF);
-			}
-		}
+		// if (!menu_enabled) {
+		// 	master.write_line(0, " ");
+		// 	master.write_line(1, " ");
+		// 	master.write_line(2, "%c %s", game_side, fps.c_str());
+		//
+		// 	switch(master.single_pressed) {
+		// 		case BTN_INTAKE_UP:
+		// 			if (auto_routine == Auto_Routines::DRIVER_SKILLS) intake.off() && !capper.at_pickup_position() ? intake.intake() : intake.stop();
+		// 			else intake.off() ? intake.intake() : intake.stop();
+		// 			break;
+		// 		case BTN_INTAKE_DOWN:
+		// 			if (auto_routine == Auto_Routines::DRIVER_SKILLS) intake.off() && !capper.at_pickup_position() ? intake.outtake() : intake.stop();
+		// 			else intake.off() ? intake.outtake() : intake.stop();
+		// 			break;
+		// 		case BTN_GROUND_PICKUP:
+		// 			if (auto_routine == Auto_Routines::DRIVER_SKILLS) {
+		// 				angler.move_to(Angler::PICKUP_POSITION);
+		// 				intake.intake();
+		// 			} else {
+		// 				make_shot_request(shot_positions[G_FRONT_ANGLE_MID], Turn_Direction::STRAIGHT, Field_Position::FRONT);
+		// 				trigger_shot_queue();
+		// 			}
+		// 			// angler.move_to(Angler::PICKUP_POSITION);
+		// 			// intake.intake();
+		// 			break;
+		// 		case BTN_CAP_PICKUP:
+		// 			if (auto_routine == Auto_Routines::DRIVER_SKILLS) {
+		// 				angler.move_to(Angler::CAP_PICKUP_POSITION);
+		// 				intake.intake();
+		// 			} else {
+		// 				make_shot_request(shot_positions[G_FRONT_ANGLE_TOP], Turn_Direction::STRAIGHT, Field_Position::FRONT);
+		// 				trigger_shot_queue();
+		// 			}
+		// 			break;
+		// 		case BTN_SHOT_R_T:
+		// 			// 41 in x
+		// 			// 29.25 in y
+		// 			// 12.24 + 24.2 (36.44) deg
+		// 			// 12.24 + 13.99 (26.23)
+		//
+		// 			// 66 in x
+		// 			// 9.71 + 24.2 (33.91) deg
+		// 			// puncher.shoot();
+		// 			make_shot_request(shot_positions[G_FRONT_TOP], Turn_Direction::STRAIGHT, Field_Position::FRONT);
+		// 			make_shot_request(shot_positions[G_BACK_TOP], Turn_Direction::STRAIGHT, Field_Position::BACK);
+		// 			trigger_shot_queue();
+		// 			break;
+		// 		case BTN_SHOT_R_M:
+		// 			// temp = get_shot_angle(67.25, 29.25);
+		// 			// printf("CALC ANGLE: %f, %f", (temp / 7) + 24.2, temp);
+		// 			// angler.move_to(temp);
+		// 			make_shot_request(shot_positions[G_FRONT_MID], Turn_Direction::STRAIGHT, Field_Position::FRONT);
+		// 			make_shot_request(shot_positions[G_BACK_MID], Turn_Direction::STRAIGHT, Field_Position::BACK);
+		// 			trigger_shot_queue();
+		// 			break;
+		// 		case BTN_CAPPER_DOWN:
+		// 			if (auto_routine == Auto_Routines::DRIVER_SKILLS || auto_routine == Auto_Routines::PROGRAMMING_SKILLS) {
+		// 				capper.move_to_pickup();
+		// 				angler.move_to(Angler::PICKUP_POSITION);
+		// 				intake.stop();
+		// 			} else shot_queue_handle_task.stop_task();
+		// 			break;
+		// 		case BTN_CAPPER_UP:
+		// 			if (auto_routine == Auto_Routines::DRIVER_SKILLS || auto_routine == Auto_Routines::PROGRAMMING_SKILLS) {
+		// 				if (capper.at_pickup_position()) capper.pickup_cap();
+		// 				else if (cap_on_pole_task.running()) cap_on_pole_task.stop_task();
+		// 				else cap_on_pole_task.start_task();
+		// 			} else {
+		// 				change_field_position(Field_Position::FRONT);
+		// 			}
+		// 		break;
+		// 		case BTN_CAP_FLIP:
+		// 			if (auto_routine == Auto_Routines::DRIVER_SKILLS) capper_move_to_cap_flip_task.start_task();
+		// 			else change_field_position(Field_Position::BACK);
+		// 			break;
+		// 		// case BTN_DECAPPER_UP:
+		// 			// decapper.next_position();
+		// 			// break;
+		// 		// case BTN_DECAPPER_DOWN:
+		// 			// decapper.previous_position();
+		// 			// break;
+		// 	}
+		// } else {
+		// 	menu_update();
+		// 	switch(master.single_pressed) {
+		// 		case BTN_MENU_NEXT_SCREEN: menu_next_screen(); break;
+		// 		case BTN_MENU_PREVIOUS_SCREEN: menu_previous_screen(); break;
+		// 		case BTN_MENU_NEXT_ELEMENT: menu_next_element(); break;
+		// 		case BTN_MENU_PREVIOUS_ELEMENT: menu_previous_element(); break;
+		// 		case BTN_MENU_INCREMENT_ACTION: menu_element_increment_action(); break;
+		// 		case BTN_MENU_DECREMENT_ACTION: menu_element_decrement_action(); break;
+		// 		case BTN_MENU_SELECTED_ACTION: menu_selected_action(); break;
+		// 		case BTN_MENU_CLEAR: menu_clear(); break;
+		// 		case BTN_MENU_SAVE: menu_save(); break;
+		// 		case BTN_FIELD_FRONT: if (flag_shot_counter < 5) flag_shot_counter++; break;
+		// 	}
+		// }
+		//
+		// if (master.check_double_press(BTN_SHOT_R_M, BTN_SHOT_L_M)) {
+		// 	log_ln(IO, "Menu enabled/renabled\n");
+		// 	menu_enabled = !menu_enabled;
+		// }
+		// if (master.check_double_press(BTN_GROUND_PICKUP, BTN_CAP_PICKUP)) {
+		// 	if(auto_routine == Auto_Routines::DRIVER_SKILLS)
+		// 	{
+		// 		if (capper.at_flag_flip_position()) {
+		// 			angler.move_to(Angler::PICKUP_POSITION);
+		// 			intake.stop();
+		// 			capper.move_to_pickup();
+		// 		} else {
+		// 			angler.move_to(Angler::CAP_PICKUP_POSITION);
+		// 			capper.move_to_flag_flip(200);
+		// 			pros::delay(75);
+		// 			intake.outtake();
+		// 		}
+		// 	}
+		// 	else
+		// 	{
+		// 		if (angler.at_cap_flip_position()) {
+		// 			angler.move_to(Angler::PICKUP_POSITION);
+		// 			intake.intake();
+		// 		} else {
+		// 			angler.move_to(Angler::CAP_FLIP_POSITION);
+		// 			intake.outtake();
+		// 		}
+		// 	}
+		// }
+		//
+		// if (partner.is_connected()) {
+		// 	switch(partner.single_pressed) {
+		// 		case BTN_SHOT_R_T:
+		// 			make_shot_request(shot_positions[(int)SP::G_PLATFORM_TOP], Turn_Direction::RIGHT, Field_Position::RED_PF);
+		// 			make_shot_request(shot_positions[(int)SP::G_PLATFORM_TOP], Turn_Direction::RIGHT, Field_Position::BLUE_PF);
+		// 			// make_shot_request(shot_positions[(int)SP::G_BACK_TURN_TOP], Turn_Direction::RIGHT, Field_Position::BACK);
+		// 			break;
+		// 		case BTN_SHOT_R_M:
+		// 			make_shot_request(shot_positions[(int)SP::G_PLATFORM_MID], Turn_Direction::RIGHT, Field_Position::RED_PF);
+		// 			make_shot_request(shot_positions[(int)SP::G_PLATFORM_MID], Turn_Direction::RIGHT, Field_Position::BLUE_PF);
+		// 			// make_shot_request(shot_positions[(int)SP::G_BACK_TURN_MID], Turn_Direction::RIGHT, Field_Position::BACK);
+		// 			break;
+		// 		case BTN_SHOT_L_T:
+		// 			make_shot_request(shot_positions[(int)SP::G_PLATFORM_TOP], Turn_Direction::LEFT, Field_Position::RED_PF);
+		// 			make_shot_request(shot_positions[(int)SP::G_PLATFORM_TOP], Turn_Direction::LEFT, Field_Position::BLUE_PF);
+		// 			// make_shot_request(shot_positions[(int)SP::G_BACK_TURN_TOP], Turn_Direction::LEFT, Field_Position::BACK);
+		// 			break;
+		// 		case BTN_SHOT_L_M:
+		// 			make_shot_request(shot_positions[(int)SP::G_PLATFORM_MID], Turn_Direction::LEFT, Field_Position::RED_PF);
+		// 			make_shot_request(shot_positions[(int)SP::G_PLATFORM_MID], Turn_Direction::LEFT, Field_Position::BLUE_PF);
+		// 			// make_shot_request(shot_positions[(int)SP::G_BACK_TURN_MID], Turn_Direction::LEFT, Field_Position::BACK);
+		// 			break;
+		// 		case BTN_FIELD_RED_PF:
+		// 			change_field_position(Field_Position::RED_PF);
+		// 			break;
+		// 		case BTN_FIELD_BLUE_PF:
+		// 			change_field_position(Field_Position::BLUE_PF);
+		// 			break;
+		// 		case BTN_FIELD_FRONT:
+		// 			change_field_position(Field_Position::FRONT);
+		// 			break;
+		// 		case BTN_SHOT_CANCEL_PARTNER:
+		// 			shot_queue_handle_task.stop_task();
+		// 			break;
+		// 		case BTN_DECAPPER_UP:
+		// 			if (auto_routine == Auto_Routines::DRIVER_SKILLS) capper_count++;
+		// 			break;
+		// 		// case BTN_DRIVE_LOCK:
+		// 			// drive.lock();
+		// 			// break;
+		// 	}
+		//
+		// 	if (partner.pressed(BTN_DRIVE_LOCK)  && !(drive_y || drive_x || drive_a)) drive.lock();
+		// 	else if (partner.check_rising(BTN_DRIVE_LOCK)) drive.unlock();
+		//
+		// 	if (partner.check_double_press(BTN_SHOT_R_T, BTN_SHOT_L_T)) {
+		// 		make_shot_request(shot_positions[G_PLATFORM_TOP_FAR], Turn_Direction::FAR, Field_Position::RED_PF);
+		// 		make_shot_request(shot_positions[G_PLATFORM_TOP_FAR], Turn_Direction::FAR, Field_Position::BLUE_PF);
+		// 	} else if (partner.check_double_press(BTN_SHOT_R_M, BTN_SHOT_L_M)) {
+		// 		make_shot_request(shot_positions[G_PLATFORM_MID_FAR], Turn_Direction::FAR, Field_Position::RED_PF);
+		// 		make_shot_request(shot_positions[G_PLATFORM_MID_FAR], Turn_Direction::FAR, Field_Position::BLUE_PF);
+		// 	}
+		// }
 	pros::delay(5);
 	}
 	/*
