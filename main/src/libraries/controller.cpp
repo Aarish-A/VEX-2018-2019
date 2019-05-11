@@ -10,6 +10,8 @@ pilons::Controller::Controller(pros::controller_id_e_t id, std::string controlle
 	this->buttons[BTN_SHOT_L_M].button_press_time = 100;
   this->buttons[BTN_SHOT_R_T].button_press_time = 100;
   this->buttons[BTN_SHOT_R_M].button_press_time = 100;
+  this->buttons[BTN_PUNCHER_RESET_UP].button_press_time = 100;
+  this->buttons[BTN_PUNCHER_RESET_RIGHT].button_press_time = 100;
 }
 
 /* Private Functions */

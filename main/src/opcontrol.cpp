@@ -15,7 +15,6 @@ void capper_move_to_cap_flip_macro(void* _params) {
 	intake.intake();
 }
 
-
 pilons::Task capper_move_to_cap_flip_task("Capper Cap Flip", [](void* param) {
 
 	capper.move_to_velocity(37 * Capper::GEAR_RATIO, 200);
@@ -23,6 +22,8 @@ pilons::Task capper_move_to_cap_flip_task("Capper Cap Flip", [](void* param) {
 	intake.intake();
 	angler.move_to(Angler::PICKUP_POSITION);
 });
+
+int pusher_count = 0;
 
 double get_shot_angle(long double _x, long double _y) {
 	// constexpr long double ANGLER_MIN_ANGLE = 24.2;
@@ -67,13 +68,10 @@ double get_shot_angle(long double _x, long double _y) {
 	else return fminl(angle_1 * 7.0, angle_2 * 7.0);
 }
 
-
 void opcontrol() {
 	log_ln(PROGRAM_FLOW, "   --- %d START OPCONTROL --- \n", pros::millis());
-	if (auto_routine == Auto_Routines::DRIVER_SKILLS)
-	{
-		while(pros::competition::is_disabled() || !pros::competition::is_connected())
-		{
+	if (auto_routine == Auto_Routines::DRIVER_SKILLS) {
+		while(pros::competition::is_disabled() || !pros::competition::is_connected()) {
 			printf("Wait\n");
 			master.update();
 			puncher.update();
@@ -86,10 +84,12 @@ void opcontrol() {
 	enc_r.reset();
 	enc_l.reset();
 	pos.reset();
+	m_pusher.move(-30);
 
 	while (true) {
+		printf("Pusher val: %f\n", m_pusher.get_position());
 		// printf("R: %d, L: %d\n", enc_r.get_value(), enc_l.get_value());
-		printf("Light sensor:%f\n",gyro.get_value());
+		// printf("Light sensor:%f\n",gyro.get_value());
 		// printf("poti: %d\n",s_pole_poti.get_value());
 		// printf("LS: %d\n", right_platform_sensor.get_value());
 		//printf("%d %d|%d %d|%d | %f\n", pros::millis(), enc_l.get_value(), enc_l.get_value()%360,  enc_r.get_value(), enc_r.get_value()%360, drive.read_global_angle());
@@ -376,31 +376,7 @@ void opcontrol() {
 		// 		make_shot_request(shot_positions[G_PLATFORM_MID_FAR], Turn_Direction::FAR, Field_Position::BLUE_PF);
 		// 	}
 		// }
-	pros::delay(5);
+		// if (fabs(m_pusher.get_position()) < 5 && pusher_count % 2 == 1) m_pusher.move(-30);
+		pros::delay(5);
 	}
-	/*
-	for (int i = 0; i < 10000; i++) {
-    void* x = 0;
-    pros::Task* task = new pros::Task(dummy, x);
-    log_ln(MACRO, "%d", i);
-    pros::delay(100);
-  }
-	*/
-	/* Test Tasks
-	while (true) {
-		log_ln(MOVE, "Start f/w");
-		drive_move_sync(6_in);
-		pros::delay(100);
-		drive_turn_async(PointAngleTarget({10, 10}));
-		drive.wait_for_stop();
-		pros::delay(200);
-
-		log_ln(MOVE, "Start b/w");
-		drive_move_sync(-6_in);
-		pros::delay(100);
-		drive_turn_async(PointAngleTarget({-10, 10}));
-		drive.wait_for_stop();
-		pros::delay(200);
-	}
-	*/
 }

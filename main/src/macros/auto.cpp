@@ -27,8 +27,7 @@ void auto_update(void* _params) {
 /* Shots */
 void single_shot(double targ, bool wait) {
   angler.move_to(targ);
-
-  // while(angler.moving_to_target()) pros::delay(2);
+  while(angler.moving_to_target()) pros::delay(2);
   puncher.shoot();
   if (wait) while(puncher.shooting()) pros::delay(2);
   log_ln(AUTO, "Angle error at shot is %f", RAD_TO_DEG(drive.get_error()));
@@ -422,6 +421,7 @@ void drive_turn(void *_params) {
   double power = 0;
   double ramp_up_power = fabs(error) >= 60_deg ? 0.75 : map(fabs(error), 0_deg, 60_deg, 0.125, 0.75);
 
+  if (fabs(error) < 1.5_deg) goto turn_end;
 
   do {
     // Get current angle
@@ -456,7 +456,7 @@ void drive_turn(void *_params) {
       // printf("%d | In PID...    ", pros::millis());
     }
 
-    log_ln(MOVE, AUTO, "TURN | Current: %.3f deg, Target: %.3f deg, Error: %.3f deg, Angle Power: %.3f, P: %.3f, I: %.3f, D: %.3f", RAD_TO_DEG(current), RAD_TO_DEG(target), RAD_TO_DEG(error), power, p_val, i_val, d_val);
+    log_ln(MOVE_DEBUGGING, AUTO, "TURN | Current: %.3f deg, Target: %.3f deg, Error: %.3f deg, Angle Power: %.3f, P: %.3f, I: %.3f, D: %.3f", RAD_TO_DEG(current), RAD_TO_DEG(target), RAD_TO_DEG(error), power, p_val, i_val, d_val);
     // printf(" Angle  | Current: %f deg, Target: %f deg, Error: %f deg, Angle Power: %f, P: %f, I: %f, D: %f\n", RAD_TO_DEG(current), RAD_TO_DEG(target), RAD_TO_DEG(error), power, p_val, i_val, d_val);
     // log_ln(MOVE_DEBUGGING, AUTO, "----------------------------------------------------------------");
 
@@ -475,22 +475,23 @@ void drive_turn(void *_params) {
   pros::delay(25);
   log_ln(MOVE, AUTO, "FINISHED TURN >>>> Took %d ms, Ended At: %f, Angle Error: %f, kP: %.3f, kI: %.3f, kD: %.3f, kP should be %.3f", pros::millis() - start_time, RAD_TO_DEG(current), RAD_TO_DEG(error), kP, kI, kD);
 
-  pros::delay(100);
-  current = drive.get_global_angle();
-  error = target - current;
-  log_ln(MOVE, AUTO, "FINISHED TURN 1 >>>> Took %d ms, Ended At: %f, Angle Error: %f", pros::millis() - start_time, RAD_TO_DEG(current), RAD_TO_DEG(error));
-  pros::delay(100);
-  current = drive.get_global_angle();
-  error = target - current;
-  log_ln(MOVE, AUTO, "FINISHED TURN 2 >>>> Took %d ms, Ended At: %f, Angle Error: %f", pros::millis() - start_time, RAD_TO_DEG(current), RAD_TO_DEG(error));
-  pros::delay(100);
-  current = drive.get_global_angle();
-  error = target - current;
-  log_ln(MOVE, AUTO, "FINISHED TURN 3 >>>> Took %d ms, Ended At: %f, Angle Error: %f", pros::millis() - start_time, RAD_TO_DEG(current), RAD_TO_DEG(error));
-  pros::delay(100);
-  current = drive.get_global_angle();
-  error = target - current;
-  log_ln(MOVE, AUTO, "FINISHED TURN 4 >>>> Took %d ms, Ended At: %f, Angle Error: %f", pros::millis() - start_time, RAD_TO_DEG(current), RAD_TO_DEG(error));
+turn_end:
+  // pros::delay(100);
+  // current = drive.get_global_angle();
+  // error = target - current;
+  // log_ln(MOVE, AUTO, "FINISHED TURN 1 >>>> Took %d ms, Ended At: %f, Angle Error: %f", pros::millis() - start_time, RAD_TO_DEG(current), RAD_TO_DEG(error));
+  // pros::delay(100);
+  // current = drive.get_global_angle();
+  // error = target - current;
+  // log_ln(MOVE, AUTO, "FINISHED TURN 2 >>>> Took %d ms, Ended At: %f, Angle Error: %f", pros::millis() - start_time, RAD_TO_DEG(current), RAD_TO_DEG(error));
+  // pros::delay(100);
+  // current = drive.get_global_angle();
+  // error = target - current;
+  // log_ln(MOVE, AUTO, "FINISHED TURN 3 >>>> Took %d ms, Ended At: %f, Angle Error: %f", pros::millis() - start_time, RAD_TO_DEG(current), RAD_TO_DEG(error));
+  // pros::delay(100);
+  // current = drive.get_global_angle();
+  // error = target - current;
+  // log_ln(MOVE, AUTO, "FINISHED TURN 4 >>>> Took %d ms, Ended At: %f, Angle Error: %f", pros::millis() - start_time, RAD_TO_DEG(current), RAD_TO_DEG(error));
 
   drive.set_state(Drive::STATE_DRIVER_CONTROL);
   drive_turn_task.stop_task();

@@ -92,6 +92,7 @@ const std::string menu_shot_position_strings[] = {
 enum class Auto_Routines {
   FRONT,
   BACK,
+  BACK_JANK,
   FRONT_PARK,
   PROGRAMMING_SKILLS,
   DRIVER_SKILLS,
@@ -101,6 +102,7 @@ enum class Auto_Routines {
 const std::string auto_routine_strings[] = {
   "Front",
   "Back",
+  "Back Jank",
   "Front Park",
   "Prog. Skills",
   "Driv. Skills"

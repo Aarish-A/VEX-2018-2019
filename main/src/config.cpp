@@ -17,6 +17,7 @@ pros::Motor m_capper(11, pros::E_MOTOR_GEARSET_18, true, pros::E_MOTOR_ENCODER_D
 pros::ADILineSensor right_platform_sensor(4);
 pros::ADIGyro gyro(6);
 pros::Motor m_decapper(11, pros::E_MOTOR_GEARSET_18, true, pros::E_MOTOR_ENCODER_DEGREES);
+pros::Motor m_pusher(20, pros::E_MOTOR_GEARSET_18, true, pros::E_MOTOR_ENCODER_DEGREES);
 
 Intake intake("Intake", Intake::STATE_OFF, m_intake);
 Drive drive("Drive", Drive::STATE_DRIVER_CONTROL, m_drive_fl, m_drive_fr, m_drive_bl, m_drive_br, s_pole_poti, enc_l, enc_r);
