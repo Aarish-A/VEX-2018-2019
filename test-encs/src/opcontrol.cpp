@@ -15,8 +15,19 @@
  * task, not resume it from where it left off.
  */
 void opcontrol() {
+	printf("%d start \n", pros::millis());
+	enc_l.reset();
+	enc_r.reset();
+	enc_1.reset();
+	enc_2.reset();
+	enc_3.reset();
+	enc_4.reset();
 	while (true) {
-		printf("%d %d %d \n", pros::millis(), enc_l.get_value(), enc_r.get_value());
+		printf("%d %d|%d %d|%d \n", pros::millis(), enc_l.get_value(), enc_l.get_value()%360,  enc_r.get_value(), enc_r.get_value()%360);
+
+		//printf("%d|||  %d|%d %d|%d %d|%d %d|%d \n", pros::millis(), enc_1.get_value(), enc_1.get_value()%360, enc_2.get_value(), enc_2.get_value()%360, enc_3.get_value(), enc_3.get_value()%360, enc_4.get_value(), enc_4.get_value()%360);
+
+		//printf("%d, %d, %d \n", poti_1.get_value(), poti_2.get_value(), poti_3.get_value());
 		if (ctrler.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_B))
 		{
 			enc_l.reset();

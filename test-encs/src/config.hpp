@@ -27,7 +27,14 @@ extern pros::Motor puncherRight;
 extern pros::ADIEncoder enc_l;
 extern pros::ADIEncoder enc_r;
 extern pros::ADIEncoder enc_s;
+extern pros::ADIEncoder enc_1;
+extern pros::ADIEncoder enc_2;
+extern pros::ADIEncoder enc_3;
+extern pros::ADIEncoder enc_4;
 extern pros::ADIAnalogIn autoPoti;
+extern pros::ADIAnalogIn poti_1;
+extern pros::ADIAnalogIn poti_2;
+extern pros::ADIAnalogIn poti_3;
 extern pros::ADILineSensor ball_sensor;
 extern pros::Vision vision_sensor;
 

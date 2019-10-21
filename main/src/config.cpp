@@ -1,22 +1,27 @@
 #include "config.hpp"
 
-pros::Controller ctrler(pros::E_CONTROLLER_MASTER);
-pros::Controller partner(pros::E_CONTROLLER_PARTNER);
-pros::Motor drive_fl(7, pros::E_MOTOR_GEARSET_18, true, pros::E_MOTOR_ENCODER_DEGREES);
-pros::Motor drive_bl(4, pros::E_MOTOR_GEARSET_18, true, pros::E_MOTOR_ENCODER_DEGREES);
-pros::Motor drive_fr(10, pros::E_MOTOR_GEARSET_18, false, pros::E_MOTOR_ENCODER_DEGREES);
-pros::Motor drive_br(8, pros::E_MOTOR_GEARSET_18, false, pros::E_MOTOR_ENCODER_DEGREES);
-pros::Motor angler(9, pros::E_MOTOR_GEARSET_18, false, pros::E_MOTOR_ENCODER_DEGREES);
-pros::Motor intake(2, pros::E_MOTOR_GEARSET_18, false, pros::E_MOTOR_ENCODER_DEGREES);
-pros::Motor decapper(1, pros::E_MOTOR_GEARSET_18, true, pros::E_MOTOR_ENCODER_DEGREES);
-pros::Motor puncherLeft(3, pros::E_MOTOR_GEARSET_18, false, pros::E_MOTOR_ENCODER_DEGREES);
-pros::Motor puncherRight(5, pros::E_MOTOR_GEARSET_18, false, pros::E_MOTOR_ENCODER_DEGREES);
-pros::ADIEncoder enc_r(7, 8, false);
-pros::ADIEncoder enc_l(1, 2, false);
-pros::ADIEncoder enc_s(5, 6, true);
-pros::ADILineSensor ball_sensor(5);
-pros::ADILineSensor left_platform_sensor(6);
-pros::ADILineSensor right_platform_sensor(4);
-pros::Vision vision_sensor(6);
+pilons::Controller master(pros::E_CONTROLLER_MASTER, "Master");
+pilons::Controller partner(pros::E_CONTROLLER_PARTNER, "Partner");
 
-bool is_disabled = false;
+pros::ADIEncoder enc_s(5, 6, false);
+pros::Motor m_intake(6, pros::E_MOTOR_GEARSET_18, false, pros::E_MOTOR_ENCODER_DEGREES);
+pros::Motor m_drive_fl(7 , pros::E_MOTOR_GEARSET_18, true, pros::E_MOTOR_ENCODER_DEGREES);
+pros::Motor m_drive_fr(10, pros::E_MOTOR_GEARSET_18, false, pros::E_MOTOR_ENCODER_DEGREES);
+pros::Motor m_drive_bl(4, pros::E_MOTOR_GEARSET_18, true, pros::E_MOTOR_ENCODER_DEGREES);
+pros::Motor m_drive_br(8, pros::E_MOTOR_GEARSET_18, false, pros::E_MOTOR_ENCODER_DEGREES);
+pros::Motor m_angler(9, pros::E_MOTOR_GEARSET_18, false, pros::E_MOTOR_ENCODER_DEGREES);
+pros::ADIAnalogIn s_pole_poti(3);
+pros::Motor m_puncher(13, pros::E_MOTOR_GEARSET_18, true, pros::E_MOTOR_ENCODER_DEGREES);
+pros::ADILineSensor s_ball_detector(5);
+pros::Motor m_capper(11, pros::E_MOTOR_GEARSET_18, true, pros::E_MOTOR_ENCODER_DEGREES);
+pros::ADILineSensor right_platform_sensor(4);
+pros::ADIGyro gyro(6);
+pros::Motor m_decapper(11, pros::E_MOTOR_GEARSET_18, true, pros::E_MOTOR_ENCODER_DEGREES);
+pros::Motor m_pusher(20, pros::E_MOTOR_GEARSET_18, true, pros::E_MOTOR_ENCODER_DEGREES);
+
+Intake intake("Intake", Intake::STATE_OFF, m_intake);
+Drive drive("Drive", Drive::STATE_DRIVER_CONTROL, m_drive_fl, m_drive_fr, m_drive_bl, m_drive_br, s_pole_poti, enc_l, enc_r);
+Angler angler("Angler", Angler::STATE_DRIVER_CONTROL, m_angler);
+Puncher puncher("Puncher", Puncher::STATE_LOADED, m_puncher, s_ball_detector);
+Capper capper("Capper", Capper::STATE_HOLD, m_capper);
+Decapper decapper("Decapper", Capper::STATE_HOLD, m_decapper);

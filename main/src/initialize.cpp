@@ -1,58 +1,46 @@
 #include "main.h"
-#include "button.hpp"
 #include "controls.hpp"
-#include "angler.hpp"
-#include "puncher.hpp"
-#include "intake.hpp"
-#include "drive.hpp"
-#include "logs.hpp"
-#include "gui.hpp"
-#include "decapper.hpp"
-#include "shot_select.hpp"
-
-void side_initialize();
-void auto_routine_initialize();
+#include "libraries/logs.hpp"
+#include "config.hpp"
+#include "menu.hpp"
+#include "subsystems/intake.hpp"
+#include "subsystems/drive.hpp"
+#include "subsystems/angler.hpp"
+#include "subsystems/decapper.hpp"
+#include "libraries/task.hpp"
+#include "macros/shot_queueing.hpp"
 
 void initialize() {
-  printf("%d PRINT - START INIT \n", pros::millis());
-  log_ln(LOG_AUTO, "   --- %d START INITIALIZE --- \n", pros::millis());
-  buttons[BTN_SHOT_L_T].button_press_time = BTN_PRESS_TIME;
-	buttons[BTN_SHOT_L_M].button_press_time = BTN_PRESS_TIME;
-  buttons[BTN_SHOT_R_T].button_press_time = BTN_PRESS_TIME;
-  buttons[BTN_SHOT_R_M].button_press_time = BTN_PRESS_TIME;
-  buttons[BTN_DECAPPER_UP].button_press_time = BTN_PRESS_TIME;
-  buttons[BTN_DECAPPER_DOWN].button_press_time = BTN_PRESS_TIME;
-  is_disabled = false;
 	log_init();
-  printf("log init completed\n");
+	menu_init();
 
-  ctrler.set_text(0, 0, "               ");
-  pros::delay(60);
-  ctrler.set_text(1, 0, "               ");
-  pros::delay(60);
-  partner.set_text(0, 0, "               ");
-  pros::delay(60);
-  partner.set_text(1, 0, "               ");
+	angler.reset();
+	puncher.reset();
+	intake.reset();
+	drive.reset();
 
-  // pros::delay(1000);
-  controls_init();
-	gui_init();
-	pun_init();
-  printf("%d start reset \n", pros::millis());
-  pun_state_set(PunState::CalA);
-  while (pun_state != PunState::Loaded && pun_state != PunState::FatalError) {
-    pun_handle();
-    pros::delay(10);
-  }
-  /*
-	pun_cal();
-  drive_init();
-  angler_init();
-  intake_init();
-	angler_cal();
-  decapper_cal();
-  */
-  log_ln(LOG_DRIVE, "%d Finished Init ", pros::millis());
+	if (auto_routine == Auto_Routines::DRIVER_SKILLS || auto_routine == Auto_Routines::PROGRAMMING_SKILLS) capper.reset();
+	else decapper.reset();
+
+	Subsystem::reset_all();
+	while(Subsystem::any_resetting()) {
+		Subsystem::update_all();
+		pros::delay(2);
+	}
+	uint32_t timeout = pros::millis();
+	m_pusher.move(-60);
+	pros::delay(100);
+	while(fabs(m_pusher.get_actual_velocity()) > 2) {
+		if (pros::millis() - timeout > 1500) break;
+		pros::delay(2);
+	}
+	m_pusher.tare_position();
+	m_pusher.move(-30);
+	m_pusher.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
+	m_puncher.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
+	m_angler.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
+
+  log_ln(PROGRAM_FLOW, "%d Finished Init", pros::millis());
 }
 
 /**
@@ -61,13 +49,16 @@ void initialize() {
  * the robot is enabled, this task will exit.
  */
 void disabled() {
-  is_disabled = true;
-  shot_req_handle_stop_task();
-  auto_update_stop_task();
-  pun_set(PUN_HOLD_PWR);
-  log_ln(LOG_AUTO, "   --- %d START DISABLED --- \n", pros::millis());
-  setDrive(0);
-  angler.move(0);
+	pilons::Task::stop_all_tasks();
+
+	m_drive_bl.move(0);
+	m_drive_br.move(0);
+	m_drive_fl.move(0);
+	m_drive_fr.move(0);
+	m_puncher.move(7);
+	m_angler.move(0);
+	m_capper.move(0);
+	m_intake.move(0);
 }
 
 /**
